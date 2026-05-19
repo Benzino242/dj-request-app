@@ -12,9 +12,11 @@ type Request = {
   artist: string;
   status: RequestStatus;
   tip_amount: number;
+  tip_currency: string;
   created_at: string;
 };
 
+const TIP_CURRENCY = "GHS";
 const MINIMUM_TIP = 10;
 
 export default function Home() {
@@ -72,7 +74,7 @@ export default function Home() {
     }
 
     if (tipAmount < MINIMUM_TIP) {
-      setMessage(`Minimum tip is GHS ${MINIMUM_TIP}.`);
+      setMessage(`Minimum tip is ${TIP_CURRENCY} ${MINIMUM_TIP}.`);
       return;
     }
 
@@ -87,6 +89,7 @@ export default function Home() {
           song: song.trim(),
           artist: artist.trim(),
           tip_amount: tipAmount,
+          tip_currency: TIP_CURRENCY,
           status: "pending",
         },
       ])
@@ -176,7 +179,7 @@ export default function Home() {
               </label>
 
               <span className="text-xs bg-purple-700 px-3 py-1 rounded-full">
-                Min GHS {MINIMUM_TIP}
+                Min {TIP_CURRENCY} {MINIMUM_TIP}
               </span>
             </div>
 
@@ -200,7 +203,7 @@ export default function Home() {
           >
             {submitting
               ? "Submitting..."
-              : `Submit Request • GHS ${tipAmount}`}
+              : `Submit Request • ${TIP_CURRENCY} ${tipAmount}`}
           </button>
         </form>
 
@@ -210,9 +213,7 @@ export default function Home() {
       </div>
 
       <div className="mt-10 w-full max-w-md">
-        <h2 className="text-3xl font-bold mb-4">
-          Live Requests
-        </h2>
+        <h2 className="text-3xl font-bold mb-4">Live Requests</h2>
 
         <div className="space-y-4">
           {requests.length === 0 && (
@@ -244,7 +245,8 @@ export default function Home() {
                 </p>
 
                 <p className="text-sm text-green-400 font-semibold">
-                  GHS {request.tip_amount || MINIMUM_TIP}
+                  {request.tip_currency || TIP_CURRENCY}{" "}
+                  {request.tip_amount || MINIMUM_TIP}
                 </p>
               </div>
             </div>
