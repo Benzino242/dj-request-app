@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import QRCodeBox from "../components/QRCodeBox";
 
@@ -12,11 +12,14 @@ type SongRequest = {
   song: string;
   artist: string;
   status: RequestStatus;
+  created_at?: string;
 };
 
 export default function AdminPage() {
   const [requests, setRequests] = useState<SongRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   async function fetchRequests() {
     const { data, error } = await supabase
@@ -26,11 +29,13 @@ export default function AdminPage() {
 
     if (error) {
       console.error("Error fetching requests:", error.message);
+      setErrorMessage("Could not load requests. Please refresh.");
       setLoading(false);
       return;
     }
 
     setRequests((data || []) as SongRequest[]);
+    setErrorMessage("");
     setLoading(false);
   }
 
@@ -58,6 +63,8 @@ export default function AdminPage() {
   }, []);
 
   async function updateStatus(id: number, status: RequestStatus) {
+    setActionLoadingId(id);
+
     const { error } = await supabase
       .from("requests")
       .update({ status })
@@ -65,13 +72,24 @@ export default function AdminPage() {
 
     if (error) {
       console.error("Error updating status:", error.message);
+      setErrorMessage("Could not update request.");
+      setActionLoadingId(null);
       return;
     }
 
     await fetchRequests();
+    setActionLoadingId(null);
   }
 
   async function deleteRequest(id: number) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this request?"
+    );
+
+    if (!confirmed) return;
+
+    setActionLoadingId(id);
+
     const { error } = await supabase
       .from("requests")
       .delete()
@@ -79,16 +97,23 @@ export default function AdminPage() {
 
     if (error) {
       console.error("Error deleting request:", error.message);
+      setErrorMessage("Could not delete request.");
+      setActionLoadingId(null);
       return;
     }
 
     await fetchRequests();
+    setActionLoadingId(null);
   }
 
-  const pending = requests.filter((r) => r.status === "pending");
-  const accepted = requests.filter((r) => r.status === "accepted");
-  const rejected = requests.filter((r) => r.status === "rejected");
-  const played = requests.filter((r) => r.status === "played");
+  const grouped = useMemo(() => {
+    return {
+      pending: requests.filter((r) => r.status === "pending"),
+      accepted: requests.filter((r) => r.status === "accepted"),
+      rejected: requests.filter((r) => r.status === "rejected"),
+      played: requests.filter((r) => r.status === "played"),
+    };
+  }, [requests]);
 
   if (loading) {
     return (
@@ -99,15 +124,23 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white p-8">
+    <main className="min-h-screen bg-black text-white p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-5xl font-bold text-purple-500 mb-2">
-          DJ Queue Dashboard
-        </h1>
+        <div className="mb-10">
+          <h1 className="text-4xl md:text-5xl font-bold text-purple-500 mb-2">
+            DJ Queue Dashboard
+          </h1>
 
-        <p className="text-zinc-400 mb-10">
-          Manage your live DJ set in real time
-        </p>
+          <p className="text-zinc-400">
+            Manage your live DJ set in real time
+          </p>
+        </div>
+
+        {errorMessage && (
+          <div className="mb-6 bg-red-950 border border-red-700 text-red-200 p-4 rounded-xl">
+            {errorMessage}
+          </div>
+        )}
 
         <div className="mb-12">
           <QRCodeBox />
@@ -115,22 +148,25 @@ export default function AdminPage() {
 
         <div className="grid md:grid-cols-2 gap-8">
           <RequestColumn
-            title="Pending Requests"
+            title={`Pending Requests (${grouped.pending.length})`}
             titleColor="text-yellow-400"
-            requests={pending}
+            requests={grouped.pending}
             borderColor="border-zinc-800"
+            actionLoadingId={actionLoadingId}
             buttons={(request) => (
               <>
                 <button
+                  disabled={actionLoadingId === request.id}
                   onClick={() => updateStatus(request.id, "accepted")}
-                  className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl"
+                  className="bg-green-600 hover:bg-green-700 disabled:bg-zinc-700 px-4 py-2 rounded-xl"
                 >
                   Accept
                 </button>
 
                 <button
+                  disabled={actionLoadingId === request.id}
                   onClick={() => updateStatus(request.id, "rejected")}
-                  className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl"
+                  className="bg-red-600 hover:bg-red-700 disabled:bg-zinc-700 px-4 py-2 rounded-xl"
                 >
                   Reject
                 </button>
@@ -139,23 +175,26 @@ export default function AdminPage() {
           />
 
           <RequestColumn
-            title="Accepted Queue"
+            title={`Accepted Queue (${grouped.accepted.length})`}
             titleColor="text-green-400"
-            requests={accepted}
+            requests={grouped.accepted}
             borderColor="border-green-700"
             showQueueNumber
+            actionLoadingId={actionLoadingId}
             buttons={(request) => (
               <>
                 <button
+                  disabled={actionLoadingId === request.id}
                   onClick={() => updateStatus(request.id, "played")}
-                  className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl"
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-700 px-4 py-2 rounded-xl"
                 >
                   Mark Played
                 </button>
 
                 <button
+                  disabled={actionLoadingId === request.id}
                   onClick={() => deleteRequest(request.id)}
-                  className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl"
+                  className="bg-zinc-700 hover:bg-zinc-600 disabled:bg-zinc-800 px-4 py-2 rounded-xl"
                 >
                   Delete
                 </button>
@@ -164,22 +203,25 @@ export default function AdminPage() {
           />
 
           <RequestColumn
-            title="Rejected"
+            title={`Rejected (${grouped.rejected.length})`}
             titleColor="text-red-400"
-            requests={rejected}
+            requests={grouped.rejected}
             borderColor="border-red-700"
+            actionLoadingId={actionLoadingId}
             buttons={(request) => (
               <>
                 <button
+                  disabled={actionLoadingId === request.id}
                   onClick={() => updateStatus(request.id, "pending")}
-                  className="bg-yellow-500 text-black hover:bg-yellow-600 px-4 py-2 rounded-xl"
+                  className="bg-yellow-500 text-black hover:bg-yellow-600 disabled:bg-zinc-700 disabled:text-white px-4 py-2 rounded-xl"
                 >
                   Restore
                 </button>
 
                 <button
+                  disabled={actionLoadingId === request.id}
                   onClick={() => deleteRequest(request.id)}
-                  className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl"
+                  className="bg-zinc-700 hover:bg-zinc-600 disabled:bg-zinc-800 px-4 py-2 rounded-xl"
                 >
                   Delete
                 </button>
@@ -188,14 +230,16 @@ export default function AdminPage() {
           />
 
           <RequestColumn
-            title="Played Songs"
+            title={`Played Songs (${grouped.played.length})`}
             titleColor="text-blue-400"
-            requests={played}
+            requests={grouped.played}
             borderColor="border-blue-700"
+            actionLoadingId={actionLoadingId}
             buttons={(request) => (
               <button
+                disabled={actionLoadingId === request.id}
                 onClick={() => deleteRequest(request.id)}
-                className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl"
+                className="bg-zinc-700 hover:bg-zinc-600 disabled:bg-zinc-800 px-4 py-2 rounded-xl"
               >
                 Delete
               </button>
@@ -214,6 +258,7 @@ function RequestColumn({
   borderColor,
   buttons,
   showQueueNumber = false,
+  actionLoadingId,
 }: {
   title: string;
   titleColor: string;
@@ -221,16 +266,19 @@ function RequestColumn({
   borderColor: string;
   buttons: (request: SongRequest) => React.ReactNode;
   showQueueNumber?: boolean;
+  actionLoadingId: number | null;
 }) {
   return (
-    <div>
-      <h2 className={`text-3xl font-bold mb-5 ${titleColor}`}>
+    <section>
+      <h2 className={`text-2xl md:text-3xl font-bold mb-5 ${titleColor}`}>
         {title}
       </h2>
 
       <div className="space-y-4">
         {requests.length === 0 && (
-          <p className="text-zinc-500">No requests yet.</p>
+          <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
+            <p className="text-zinc-500">No requests yet.</p>
+          </div>
         )}
 
         {requests.map((request, index) => (
@@ -238,25 +286,29 @@ function RequestColumn({
             key={request.id}
             className={`bg-zinc-900 border ${borderColor} p-5 rounded-2xl`}
           >
-            <div className="flex justify-between items-center gap-3">
-              <h3 className="text-xl font-bold">
+            <div className="flex justify-between items-start gap-3">
+              <h3 className="text-xl font-bold leading-snug">
                 {showQueueNumber
                   ? `#${index + 1} — ${request.song}`
                   : request.song}
               </h3>
 
               {showQueueNumber && index === 0 && (
-                <span className="bg-purple-600 px-3 py-1 rounded-full text-sm font-bold whitespace-nowrap">
-                  NOW PLAYING
+                <span className="bg-purple-600 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap">
+                  NEXT UP
                 </span>
               )}
             </div>
 
-            <p className="text-zinc-400">{request.artist}</p>
+            <p className="text-zinc-400 mt-1">{request.artist}</p>
 
             <p className="text-purple-400 mt-2">
               Requested by {request.name}
             </p>
+
+            {actionLoadingId === request.id && (
+              <p className="text-xs text-zinc-500 mt-3">Updating...</p>
+            )}
 
             <div className="flex flex-wrap gap-3 mt-4">
               {buttons(request)}
@@ -264,6 +316,6 @@ function RequestColumn({
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
