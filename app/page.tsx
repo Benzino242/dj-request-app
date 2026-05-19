@@ -18,12 +18,9 @@ export default function Home() {
   const [name, setName] = useState("");
   const [song, setSong] = useState("");
   const [artist, setArtist] = useState("");
-
   const [tipAmount, setTipAmount] = useState(10);
   const [tipCurrency, setTipCurrency] = useState("GHS");
-
   const [requests, setRequests] = useState<Request[]>([]);
-
   const [submitting, setSubmitting] = useState(false);
 
   async function fetchRequests() {
@@ -37,9 +34,7 @@ export default function Home() {
       return;
     }
 
-    if (data) {
-      setRequests(data);
-    }
+    setRequests((data || []) as Request[]);
   }
 
   useEffect(() => {
@@ -66,25 +61,29 @@ export default function Home() {
   }, []);
 
   async function handlePayment() {
-    if (!name || !song || !artist) {
+    if (!name.trim() || !song.trim() || !artist.trim()) {
       alert("Please fill all fields");
       return;
     }
-  
+
+    if (!tipAmount || tipAmount < 1) {
+      alert("Please enter a valid tip amount");
+      return;
+    }
+
     setSubmitting(true);
-  
+
     const PaystackPop =
       (await import("@paystack/inline-js")).default;
-  
+
     const paystack = new PaystackPop();
-  
+
     paystack.newTransaction({
       key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!,
       email: `${name.replace(/\s/g, "")}@blackline.app`,
       amount: tipAmount * 100,
-  
       currency: tipCurrency,
-  
+
       metadata: {
         custom_fields: [
           {
@@ -99,16 +98,16 @@ export default function Home() {
           },
         ],
       },
-  
+
       onSuccess: async (transaction: any) => {
         try {
           const { data: requestData, error } = await supabase
             .from("requests")
             .insert([
               {
-                name,
-                song,
-                artist,
+                name: name.trim(),
+                song: song.trim(),
+                artist: artist.trim(),
                 status: "pending",
                 tip_amount: tipAmount,
                 tip_currency: tipCurrency,
@@ -116,19 +115,19 @@ export default function Home() {
             ])
             .select()
             .single();
-  
+
           if (error) {
             console.error(error);
             alert("Failed to save request");
             return;
           }
-  
+
           await supabase.from("payments").insert([
             {
               request_id: requestData.id,
-              guest_name: name,
-              song,
-              artist,
+              guest_name: name.trim(),
+              song: song.trim(),
+              artist: artist.trim(),
               amount: tipAmount,
               currency: tipCurrency,
               status: "paid",
@@ -138,12 +137,14 @@ export default function Home() {
               platform_fee: tipAmount * 0.1,
             },
           ]);
-  
+
+          await fetchRequests();
+
           setName("");
           setSong("");
           setArtist("");
           setTipAmount(10);
-  
+
           alert("Payment successful & request submitted!");
         } catch (err) {
           console.error(err);
@@ -152,7 +153,7 @@ export default function Home() {
           setSubmitting(false);
         }
       },
-  
+
       onCancel: () => {
         setSubmitting(false);
         alert("Payment cancelled");
@@ -163,7 +164,6 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white flex flex-col items-center p-10">
       <div className="bg-zinc-900 p-8 rounded-3xl shadow-2xl w-full max-w-md border border-zinc-800">
-
         <h1 className="text-5xl font-bold text-center mb-3 text-purple-500">
           BLACKLINE
         </h1>
@@ -179,7 +179,6 @@ export default function Home() {
         </div>
 
         <div className="space-y-4">
-
           <input
             className="w-full p-4 rounded-xl bg-black border border-zinc-700"
             placeholder="Your Name"
@@ -202,57 +201,42 @@ export default function Home() {
           />
 
           <div className="grid grid-cols-2 gap-4">
-
             <select
               value={tipCurrency}
-              onChange={(e) =>
-                setTipCurrency(e.target.value)
-              }
+              onChange={(e) => setTipCurrency(e.target.value)}
               className="p-4 rounded-xl bg-black border border-zinc-700"
             >
               <option value="GHS">🇬🇭 GHS</option>
-<option value="USD">🇺🇸 USD</option>
-<option value="EUR">🇪🇺 EUR</option>
-<option value="GBP">🇬🇧 GBP</option>
-<option value="CAD">🇨🇦 CAD</option>
-<option value="AUD">🇦🇺 AUD</option>
-
-<option value="NGN">🇳🇬 NGN</option>
-<option value="KES">🇰🇪 KES</option>
-<option value="ZAR">🇿🇦 ZAR</option>
-
-<option value="SGD">🇸🇬 SGD</option>
-<option value="MYR">🇲🇾 MYR</option>
-<option value="IDR">🇮🇩 IDR</option>
-<option value="THB">🇹🇭 THB</option>
-<option value="PHP">🇵🇭 PHP</option>
-<option value="VND">🇻🇳 VND</option>
-
-<option value="CNY">🇨🇳 CNY</option>
-<option value="JPY">🇯🇵 JPY</option>
-<option value="KRW">🇰🇷 KRW</option>
-<option value="INR">🇮🇳 INR</option>
-
-<option value="AED">🇦🇪 AED</option>
-<option value="SAR">🇸🇦 SAR</option>
-<option value="QAR">🇶🇦 QAR</option>
-
-<option value="BRL">🇧🇷 BRL</option>
-<option value="MXN">🇲🇽 MXN</option>
+              <option value="USD">🇺🇸 USD</option>
+              <option value="EUR">🇪🇺 EUR</option>
+              <option value="GBP">🇬🇧 GBP</option>
+              <option value="CAD">🇨🇦 CAD</option>
+              <option value="AUD">🇦🇺 AUD</option>
+              <option value="NGN">🇳🇬 NGN</option>
+              <option value="KES">🇰🇪 KES</option>
+              <option value="ZAR">🇿🇦 ZAR</option>
+              <option value="SGD">🇸🇬 SGD</option>
+              <option value="MYR">🇲🇾 MYR</option>
+              <option value="IDR">🇮🇩 IDR</option>
+              <option value="THB">🇹🇭 THB</option>
+              <option value="PHP">🇵🇭 PHP</option>
+              <option value="VND">🇻🇳 VND</option>
+              <option value="CNY">🇨🇳 CNY</option>
+              <option value="JPY">🇯🇵 JPY</option>
+              <option value="KRW">🇰🇷 KRW</option>
+              <option value="INR">🇮🇳 INR</option>
+              <option value="AED">🇦🇪 AED</option>
+              <option value="SAR">🇸🇦 SAR</option>
+              <option value="QAR">🇶🇦 QAR</option>
+              <option value="BRL">🇧🇷 BRL</option>
+              <option value="MXN">🇲🇽 MXN</option>
             </select>
 
             <input
               type="number"
               min="1"
               value={tipAmount === 0 ? "" : tipAmount}
-              onFocus={() => {
-                if (tipAmount === 0) {
-                  setTipAmount(0);
-                }
-              }}
-              onChange={(e) =>
-                setTipAmount(Number(e.target.value))
-              }
+              onChange={(e) => setTipAmount(Number(e.target.value))}
               className="p-4 rounded-xl bg-black border border-zinc-700"
               placeholder="Tip Amount"
             />
@@ -265,17 +249,14 @@ export default function Home() {
           >
             {submitting
               ? "Processing Payment..."
-              : `Pay ${tipCurrency} ${tipAmount} & Request`}
+              : `Pay ${tipCurrency} ${tipAmount || 0} & Request`}
           </button>
         </div>
       </div>
 
       <div className="mt-10 w-full max-w-md">
-
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-3xl font-bold">
-            Live Requests
-          </h2>
+          <h2 className="text-3xl font-bold">Live Requests</h2>
 
           <span className="bg-purple-600 px-3 py-1 rounded-full text-sm font-bold">
             VIP Priority
@@ -287,19 +268,13 @@ export default function Home() {
             <div
               key={request.id}
               className={`bg-zinc-900 p-4 rounded-xl border ${
-                index === 0
-                  ? "border-yellow-500"
-                  : "border-zinc-800"
+                index === 0 ? "border-yellow-500" : "border-zinc-800"
               }`}
             >
               <div className="flex items-center justify-between mb-2">
-
-                <p className="font-bold text-lg">
-                  {request.song}
-                </p>
+                <p className="font-bold text-lg">{request.song}</p>
 
                 <div className="flex gap-2 items-center">
-
                   {index === 0 && (
                     <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
                       TOP TIP
@@ -307,15 +282,12 @@ export default function Home() {
                   )}
 
                   <span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
-                    {request.tip_currency}{" "}
-                    {request.tip_amount}
+                    {request.tip_currency} {request.tip_amount}
                   </span>
                 </div>
               </div>
 
-              <p className="text-zinc-400">
-                {request.artist}
-              </p>
+              <p className="text-zinc-400">{request.artist}</p>
 
               <p className="text-sm text-purple-400 mt-2">
                 Requested by {request.name}
