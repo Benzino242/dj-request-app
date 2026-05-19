@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
-import PaystackPop from "@paystack/inline-js";
 
 type Request = {
   id: number;
@@ -71,18 +70,21 @@ export default function Home() {
       alert("Please fill all fields");
       return;
     }
-
+  
     setSubmitting(true);
-
+  
+    const PaystackPop =
+      (await import("@paystack/inline-js")).default;
+  
     const paystack = new PaystackPop();
-
+  
     paystack.newTransaction({
       key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!,
       email: `${name.replace(/\s/g, "")}@blackline.app`,
       amount: tipAmount * 100,
-
+  
       currency: tipCurrency,
-
+  
       metadata: {
         custom_fields: [
           {
@@ -97,7 +99,7 @@ export default function Home() {
           },
         ],
       },
-
+  
       onSuccess: async (transaction: any) => {
         try {
           const { data: requestData, error } = await supabase
@@ -114,13 +116,13 @@ export default function Home() {
             ])
             .select()
             .single();
-
+  
           if (error) {
             console.error(error);
             alert("Failed to save request");
             return;
           }
-
+  
           await supabase.from("payments").insert([
             {
               request_id: requestData.id,
@@ -136,12 +138,12 @@ export default function Home() {
               platform_fee: tipAmount * 0.1,
             },
           ]);
-
+  
           setName("");
           setSong("");
           setArtist("");
           setTipAmount(10);
-
+  
           alert("Payment successful & request submitted!");
         } catch (err) {
           console.error(err);
@@ -150,7 +152,7 @@ export default function Home() {
           setSubmitting(false);
         }
       },
-
+  
       onCancel: () => {
         setSubmitting(false);
         alert("Payment cancelled");
