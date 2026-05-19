@@ -24,7 +24,9 @@ export default function Home() {
   const [artist, setArtist] = useState("");
 
   const [tipCurrency, setTipCurrency] = useState("GHS");
-  const [tipAmount, setTipAmount] = useState(MINIMUM_TIP);
+  const [tipAmount, setTipAmount] = useState(
+    String(MINIMUM_TIP)
+  );
 
   const [requests, setRequests] = useState<Request[]>([]);
   const [submitting, setSubmitting] = useState(false);
@@ -75,7 +77,12 @@ export default function Home() {
       return;
     }
 
-    if (tipAmount < MINIMUM_TIP) {
+    const numericTipAmount = Number(tipAmount);
+
+    if (
+      !numericTipAmount ||
+      numericTipAmount < MINIMUM_TIP
+    ) {
       setMessage(
         `Minimum tip is ${tipCurrency} ${MINIMUM_TIP}.`
       );
@@ -92,7 +99,7 @@ export default function Home() {
           name: name.trim(),
           song: song.trim(),
           artist: artist.trim(),
-          tip_amount: tipAmount,
+          tip_amount: numericTipAmount,
           tip_currency: tipCurrency,
           status: "pending",
         },
@@ -117,7 +124,7 @@ export default function Home() {
     setName("");
     setSong("");
     setArtist("");
-    setTipAmount(MINIMUM_TIP);
+    setTipAmount(String(MINIMUM_TIP));
 
     setMessage("✅ Request submitted successfully!");
 
@@ -205,13 +212,24 @@ export default function Home() {
             </select>
 
             <input
-              type="number"
-              min={MINIMUM_TIP}
+              type="text"
+              inputMode="numeric"
               className="w-full p-4 rounded-xl bg-zinc-950 border border-zinc-700"
               value={tipAmount}
-              onChange={(e) =>
-                setTipAmount(Number(e.target.value))
-              }
+              onFocus={() => {
+                if (
+                  tipAmount === String(MINIMUM_TIP)
+                ) {
+                  setTipAmount("");
+                }
+              }}
+              onChange={(e) => {
+                const value = e.target.value.replace(
+                  /\D/g,
+                  ""
+                );
+                setTipAmount(value);
+              }}
             />
 
             <p className="text-xs text-zinc-500">
@@ -226,7 +244,9 @@ export default function Home() {
           >
             {submitting
               ? "Submitting..."
-              : `Submit Request • ${tipCurrency} ${tipAmount}`}
+              : `Submit Request • ${tipCurrency} ${
+                  tipAmount || MINIMUM_TIP
+                }`}
           </button>
         </form>
 
