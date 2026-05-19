@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
+type RequestStatus = "pending" | "accepted" | "rejected" | "played";
+
 type Request = {
   id: number;
   name: string;
   song: string;
   artist: string;
-  status: string;
+  status: RequestStatus;
   created_at: string;
 };
 
@@ -17,6 +19,8 @@ export default function Home() {
   const [song, setSong] = useState("");
   const [artist, setArtist] = useState("");
   const [requests, setRequests] = useState<Request[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   async function fetchRequests() {
     const { data, error } = await supabase
@@ -25,20 +29,18 @@ export default function Home() {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error(error);
+      console.error("Error fetching requests:", error.message);
       return;
     }
 
-    if (data) {
-      setRequests(data);
-    }
+    setRequests((data || []) as Request[]);
   }
 
   useEffect(() => {
     fetchRequests();
 
     const channel = supabase
-      .channel("requests-channel")
+      .channel("guest-live-requests")
       .on(
         "postgres_changes",
         {
@@ -60,29 +62,53 @@ export default function Home() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!name || !song || !artist) return;
+    if (!name.trim() || !song.trim() || !artist.trim()) {
+      setSuccessMessage("Please fill in all fields.");
+      return;
+    }
+
+    setSubmitting(true);
+    setSuccessMessage("");
 
     const { error } = await supabase.from("requests").insert([
       {
-        name,
-        song,
-        artist,
+        name: name.trim(),
+        song: song.trim(),
+        artist: artist.trim(),
         status: "pending",
       },
     ]);
 
     if (error) {
-      console.error(error);
+      console.error("Error submitting request:", error.message);
+      setSuccessMessage("Something went wrong. Please try again.");
+      setSubmitting(false);
       return;
     }
 
     setName("");
     setSong("");
     setArtist("");
+    setSuccessMessage("✅ Request submitted successfully!");
+
+    await fetchRequests();
+
+    setSubmitting(false);
+
+    setTimeout(() => {
+      setSuccessMessage("");
+    }, 4000);
+  }
+
+  function getStatusColor(status: RequestStatus) {
+    if (status === "accepted") return "bg-green-600";
+    if (status === "rejected") return "bg-red-600";
+    if (status === "played") return "bg-blue-600";
+    return "bg-yellow-600";
   }
 
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col items-center p-10">
+    <main className="min-h-screen bg-black text-white flex flex-col items-center p-6">
       <div className="bg-zinc-900 p-8 rounded-3xl shadow-2xl w-full max-w-md">
         <h1 className="text-5xl font-bold text-center mb-3">
           DJ Request App
@@ -91,6 +117,12 @@ export default function Home() {
         <p className="text-center text-zinc-400 mb-8">
           Request your favorite song
         </p>
+
+        {successMessage && (
+          <div className="mb-4 bg-purple-900 border border-purple-600 text-white p-4 rounded-xl text-center">
+            {successMessage}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
@@ -116,9 +148,10 @@ export default function Home() {
 
           <button
             type="submit"
-            className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-semibold"
+            disabled={submitting}
+            className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-zinc-700 disabled:cursor-not-allowed transition p-4 rounded-xl text-xl font-semibold"
           >
-            Submit Request
+            {submitting ? "Submitting..." : "Submit Request"}
           </button>
         </form>
       </div>
@@ -129,24 +162,24 @@ export default function Home() {
         </h2>
 
         <div className="space-y-4">
+          {requests.length === 0 && (
+            <p className="text-zinc-500">No requests yet.</p>
+          )}
+
           {requests.map((request) => (
             <div
               key={request.id}
               className="bg-zinc-900 p-4 rounded-xl border border-zinc-800"
             >
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between gap-3 mb-2">
                 <p className="font-bold text-lg">
                   {request.song}
                 </p>
 
                 <span
-                  className={`text-xs px-3 py-1 rounded-full ${
-                    request.status === "playing"
-                      ? "bg-green-600"
-                      : request.status === "completed"
-                      ? "bg-blue-600"
-                      : "bg-yellow-600"
-                  }`}
+                  className={`text-xs px-3 py-1 rounded-full ${getStatusColor(
+                    request.status
+                  )}`}
                 >
                   {request.status}
                 </span>
