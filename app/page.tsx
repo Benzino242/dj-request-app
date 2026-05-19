@@ -98,14 +98,20 @@ export default function Home() {
     }
 
     setName("");
-    setSong("");
-    setArtist("");
-    setMessage("✅ Request submitted successfully!");
-    setSubmitting(false);
+setSong("");
+setArtist("");
 
-    setTimeout(() => {
-      setMessage("");
-    }, 4000);
+setMessage("✅ Request submitted successfully!");
+
+// keep loading state visible briefly
+setTimeout(() => {
+  setSubmitting(false);
+}, 800);
+
+// clear success message later
+setTimeout(() => {
+  setMessage("");
+}, 4000);
   }
 
   function getStatusColor(status: RequestStatus) {
