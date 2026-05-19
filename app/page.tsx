@@ -20,7 +20,7 @@ export default function Home() {
   const [artist, setArtist] = useState("");
   const [requests, setRequests] = useState<Request[]>([]);
   const [submitting, setSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [message, setMessage] = useState("");
 
   async function fetchRequests() {
     const { data, error } = await supabase
@@ -29,7 +29,7 @@ export default function Home() {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching requests:", error.message);
+      console.error("Fetch error:", error.message);
       return;
     }
 
@@ -63,40 +63,48 @@ export default function Home() {
     e.preventDefault();
 
     if (!name.trim() || !song.trim() || !artist.trim()) {
-      setSuccessMessage("Please fill in all fields.");
+      setMessage("Please fill in all fields.");
       return;
     }
 
     setSubmitting(true);
-    setSuccessMessage("");
+    setMessage("");
 
-    const { error } = await supabase.from("requests").insert([
-      {
-        name: name.trim(),
-        song: song.trim(),
-        artist: artist.trim(),
-        status: "pending",
-      },
-    ]);
+    const { data, error } = await supabase
+      .from("requests")
+      .insert([
+        {
+          name: name.trim(),
+          song: song.trim(),
+          artist: artist.trim(),
+          status: "pending",
+        },
+      ])
+      .select()
+      .single();
 
     if (error) {
-      console.error("Error submitting request:", error.message);
-      setSuccessMessage("Something went wrong. Please try again.");
+      console.error("Submit error:", error.message);
+      setMessage("Something went wrong. Please try again.");
       setSubmitting(false);
       return;
+    }
+
+    if (data) {
+      setRequests((currentRequests) => [
+        data as Request,
+        ...currentRequests,
+      ]);
     }
 
     setName("");
     setSong("");
     setArtist("");
-    setSuccessMessage("✅ Request submitted successfully!");
-
-    await fetchRequests();
-
+    setMessage("✅ Request submitted successfully!");
     setSubmitting(false);
 
     setTimeout(() => {
-      setSuccessMessage("");
+      setMessage("");
     }, 4000);
   }
 
@@ -118,9 +126,9 @@ export default function Home() {
           Request your favorite song
         </p>
 
-        {successMessage && (
+        {message && (
           <div className="mb-4 bg-purple-900 border border-purple-600 text-white p-4 rounded-xl text-center">
-            {successMessage}
+            {message}
           </div>
         )}
 
@@ -185,9 +193,7 @@ export default function Home() {
                 </span>
               </div>
 
-              <p className="text-zinc-400">
-                {request.artist}
-              </p>
+              <p className="text-zinc-400">{request.artist}</p>
 
               <p className="text-sm text-purple-400 mt-2">
                 Requested by {request.name}
