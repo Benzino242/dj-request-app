@@ -16,14 +16,16 @@ type Request = {
   created_at: string;
 };
 
-const TIP_CURRENCY = "GHS";
 const MINIMUM_TIP = 10;
 
 export default function Home() {
   const [name, setName] = useState("");
   const [song, setSong] = useState("");
   const [artist, setArtist] = useState("");
+
+  const [tipCurrency, setTipCurrency] = useState("GHS");
   const [tipAmount, setTipAmount] = useState(MINIMUM_TIP);
+
   const [requests, setRequests] = useState<Request[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
@@ -74,7 +76,9 @@ export default function Home() {
     }
 
     if (tipAmount < MINIMUM_TIP) {
-      setMessage(`Minimum tip is ${TIP_CURRENCY} ${MINIMUM_TIP}.`);
+      setMessage(
+        `Minimum tip is ${tipCurrency} ${MINIMUM_TIP}.`
+      );
       return;
     }
 
@@ -89,7 +93,7 @@ export default function Home() {
           song: song.trim(),
           artist: artist.trim(),
           tip_amount: tipAmount,
-          tip_currency: TIP_CURRENCY,
+          tip_currency: tipCurrency,
           status: "pending",
         },
       ])
@@ -172,26 +176,45 @@ export default function Home() {
             onChange={(e) => setArtist(e.target.value)}
           />
 
-          <div className="bg-black border border-purple-700 rounded-2xl p-4">
-            <div className="flex items-center justify-between mb-2">
+          <div className="bg-black border border-purple-700 rounded-2xl p-4 space-y-4">
+            <div className="flex items-center justify-between">
               <label className="font-semibold text-purple-300">
                 Tip the DJ
               </label>
 
               <span className="text-xs bg-purple-700 px-3 py-1 rounded-full">
-                Min {TIP_CURRENCY} {MINIMUM_TIP}
+                Min {tipCurrency} {MINIMUM_TIP}
               </span>
             </div>
+
+            <select
+              value={tipCurrency}
+              onChange={(e) =>
+                setTipCurrency(e.target.value)
+              }
+              className="w-full p-4 rounded-xl bg-zinc-950 border border-zinc-700"
+            >
+              <option value="GHS">🇬🇭 GHS</option>
+              <option value="USD">🇺🇸 USD</option>
+              <option value="GBP">🇬🇧 GBP</option>
+              <option value="EUR">🇪🇺 EUR</option>
+              <option value="NGN">🇳🇬 NGN</option>
+              <option value="ZAR">🇿🇦 ZAR</option>
+              <option value="CAD">🇨🇦 CAD</option>
+              <option value="AUD">🇦🇺 AUD</option>
+            </select>
 
             <input
               type="number"
               min={MINIMUM_TIP}
               className="w-full p-4 rounded-xl bg-zinc-950 border border-zinc-700"
               value={tipAmount}
-              onChange={(e) => setTipAmount(Number(e.target.value))}
+              onChange={(e) =>
+                setTipAmount(Number(e.target.value))
+              }
             />
 
-            <p className="text-xs text-zinc-500 mt-2">
+            <p className="text-xs text-zinc-500">
               Higher tips can help your request stand out.
             </p>
           </div>
@@ -203,7 +226,7 @@ export default function Home() {
           >
             {submitting
               ? "Submitting..."
-              : `Submit Request • ${TIP_CURRENCY} ${tipAmount}`}
+              : `Submit Request • ${tipCurrency} ${tipAmount}`}
           </button>
         </form>
 
@@ -213,11 +236,15 @@ export default function Home() {
       </div>
 
       <div className="mt-10 w-full max-w-md">
-        <h2 className="text-3xl font-bold mb-4">Live Requests</h2>
+        <h2 className="text-3xl font-bold mb-4">
+          Live Requests
+        </h2>
 
         <div className="space-y-4">
           {requests.length === 0 && (
-            <p className="text-zinc-500">No requests yet.</p>
+            <p className="text-zinc-500">
+              No requests yet.
+            </p>
           )}
 
           {requests.map((request) => (
@@ -226,7 +253,9 @@ export default function Home() {
               className="bg-zinc-900 p-4 rounded-xl border border-zinc-800"
             >
               <div className="flex items-center justify-between gap-3 mb-2">
-                <p className="font-bold text-lg">{request.song}</p>
+                <p className="font-bold text-lg">
+                  {request.song}
+                </p>
 
                 <span
                   className={`text-xs px-3 py-1 rounded-full ${getStatusColor(
@@ -237,7 +266,9 @@ export default function Home() {
                 </span>
               </div>
 
-              <p className="text-zinc-400">{request.artist}</p>
+              <p className="text-zinc-400">
+                {request.artist}
+              </p>
 
               <div className="flex items-center justify-between mt-2">
                 <p className="text-sm text-purple-400">
@@ -245,8 +276,8 @@ export default function Home() {
                 </p>
 
                 <p className="text-sm text-green-400 font-semibold">
-                  {request.tip_currency || TIP_CURRENCY}{" "}
-                  {request.tip_amount || MINIMUM_TIP}
+                  {request.tip_currency}{" "}
+                  {request.tip_amount}
                 </p>
               </div>
             </div>
