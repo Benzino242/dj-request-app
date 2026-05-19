@@ -12,6 +12,8 @@ type SongRequest = {
   song: string;
   artist: string;
   status: RequestStatus;
+  tip_amount: number;
+  tip_currency: string;
   created_at?: string;
 };
 
@@ -25,7 +27,6 @@ export default function AdminPage() {
   const [requests, setRequests] = useState<SongRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
-  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const savedAccess = localStorage.getItem("dj-admin-access");
@@ -45,7 +46,7 @@ export default function AdminPage() {
       return;
     }
 
-    setLoginError("Wrong password. Try again.");
+    setLoginError("Wrong password");
   }
 
   function handleLogout() {
@@ -61,14 +62,11 @@ export default function AdminPage() {
       .order("tip_amount", { ascending: false });
 
     if (error) {
-      console.error("Error fetching requests:", error.message);
-      setErrorMessage("Could not load requests. Please refresh.");
-      setLoading(false);
+      console.error(error);
       return;
     }
 
     setRequests((data || []) as SongRequest[]);
-    setErrorMessage("");
     setLoading(false);
   }
 
@@ -78,7 +76,7 @@ export default function AdminPage() {
     fetchRequests();
 
     const channel = supabase
-      .channel("admin-live-requests")
+      .channel("admin-live")
       .on(
         "postgres_changes",
         {
@@ -100,44 +98,32 @@ export default function AdminPage() {
   async function updateStatus(id: number, status: RequestStatus) {
     setActionLoadingId(id);
 
-    const { error } = await supabase
+    await supabase
       .from("requests")
       .update({ status })
       .eq("id", id);
 
-    if (error) {
-      console.error("Error updating status:", error.message);
-      setErrorMessage("Could not update request.");
-      setActionLoadingId(null);
-      return;
-    }
-
     await fetchRequests();
+
     setActionLoadingId(null);
   }
 
   async function deleteRequest(id: number) {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this request?"
+      "Delete this request?"
     );
 
     if (!confirmed) return;
 
     setActionLoadingId(id);
 
-    const { error } = await supabase
+    await supabase
       .from("requests")
       .delete()
       .eq("id", id);
 
-    if (error) {
-      console.error("Error deleting request:", error.message);
-      setErrorMessage("Could not delete request.");
-      setActionLoadingId(null);
-      return;
-    }
-
     await fetchRequests();
+
     setActionLoadingId(null);
   }
 
@@ -150,29 +136,40 @@ export default function AdminPage() {
     };
   }, [requests]);
 
+  const totalTips = requests.reduce(
+    (sum, req) => sum + Number(req.tip_amount || 0),
+    0
+  );
+
+  const vipRequests = requests.filter(
+    (r) => r.tip_amount >= 50
+  ).length;
+
   if (!isUnlocked) {
     return (
       <main className="min-h-screen bg-black text-white flex items-center justify-center p-6">
-        <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl w-full max-w-md shadow-2xl">
-          <h1 className="text-4xl font-bold text-purple-500 mb-3 text-center">
-            Admin Login
+        <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl w-full max-w-md">
+          <h1 className="text-4xl font-bold text-purple-500 text-center mb-3">
+            Blackline Admin
           </h1>
 
           <p className="text-zinc-400 text-center mb-8">
-            Enter password to manage the DJ queue.
+            DJ dashboard access
           </p>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <input
               type="password"
-              placeholder="Admin password"
+              placeholder="Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) =>
+                setPassword(e.target.value)
+              }
               className="w-full p-4 rounded-xl bg-black border border-zinc-700"
             />
 
             {loginError && (
-              <p className="text-red-400 text-sm text-center">
+              <p className="text-red-400 text-center text-sm">
                 {loginError}
               </p>
             )}
@@ -192,44 +189,87 @@ export default function AdminPage() {
   if (loading) {
     return (
       <main className="min-h-screen bg-black text-white flex items-center justify-center">
-        <p className="text-zinc-400 text-xl">Loading DJ dashboard...</p>
+        Loading dashboard...
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-black text-white p-6 md:p-8">
+    <main className="min-h-screen bg-black text-white p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-10 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+
+        <div className="flex flex-col md:flex-row justify-between gap-4 mb-10">
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold text-purple-500 mb-2">
-              DJ Queue Dashboard
+            <h1 className="text-5xl font-bold text-purple-500 mb-2">
+              Blackline DJ Dashboard
             </h1>
 
             <p className="text-zinc-400">
-              Manage your live DJ set in real time
+              Live premium request management
             </p>
           </div>
 
           <button
             onClick={handleLogout}
-            className="bg-zinc-800 hover:bg-zinc-700 px-5 py-3 rounded-xl text-sm"
+            className="bg-zinc-800 hover:bg-zinc-700 px-5 py-3 rounded-xl"
           >
             Logout
           </button>
         </div>
 
-        {errorMessage && (
-          <div className="mb-6 bg-red-950 border border-red-700 text-red-200 p-4 rounded-xl">
-            {errorMessage}
-          </div>
-        )}
+        {/* STATS */}
+        <div className="grid md:grid-cols-4 gap-4 mb-10">
 
+          <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
+            <p className="text-zinc-500 text-sm">
+              Total Requests
+            </p>
+
+            <h2 className="text-4xl font-bold mt-2">
+              {requests.length}
+            </h2>
+          </div>
+
+          <div className="bg-zinc-900 border border-green-700 p-5 rounded-2xl">
+            <p className="text-zinc-500 text-sm">
+              Total Tips
+            </p>
+
+            <h2 className="text-4xl font-bold text-green-400 mt-2">
+              {totalTips}
+            </h2>
+          </div>
+
+          <div className="bg-zinc-900 border border-purple-700 p-5 rounded-2xl">
+            <p className="text-zinc-500 text-sm">
+              VIP Requests
+            </p>
+
+            <h2 className="text-4xl font-bold text-purple-400 mt-2">
+              {vipRequests}
+            </h2>
+          </div>
+
+          <div className="bg-zinc-900 border border-yellow-700 p-5 rounded-2xl">
+            <p className="text-zinc-500 text-sm">
+              Pending Queue
+            </p>
+
+            <h2 className="text-4xl font-bold text-yellow-400 mt-2">
+              {grouped.pending.length}
+            </h2>
+          </div>
+
+        </div>
+
+        {/* QR */}
         <div className="mb-12">
           <QRCodeBox />
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
+
+          {/* PENDING */}
           <RequestColumn
             title={`Pending Requests (${grouped.pending.length})`}
             titleColor="text-yellow-400"
@@ -240,16 +280,20 @@ export default function AdminPage() {
               <>
                 <button
                   disabled={actionLoadingId === request.id}
-                  onClick={() => updateStatus(request.id, "accepted")}
-                  className="bg-green-600 hover:bg-green-700 disabled:bg-zinc-700 px-4 py-2 rounded-xl"
+                  onClick={() =>
+                    updateStatus(request.id, "accepted")
+                  }
+                  className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl"
                 >
                   Accept
                 </button>
 
                 <button
                   disabled={actionLoadingId === request.id}
-                  onClick={() => updateStatus(request.id, "rejected")}
-                  className="bg-red-600 hover:bg-red-700 disabled:bg-zinc-700 px-4 py-2 rounded-xl"
+                  onClick={() =>
+                    updateStatus(request.id, "rejected")
+                  }
+                  className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl"
                 >
                   Reject
                 </button>
@@ -257,6 +301,7 @@ export default function AdminPage() {
             )}
           />
 
+          {/* ACCEPTED */}
           <RequestColumn
             title={`Accepted Queue (${grouped.accepted.length})`}
             titleColor="text-green-400"
@@ -268,16 +313,20 @@ export default function AdminPage() {
               <>
                 <button
                   disabled={actionLoadingId === request.id}
-                  onClick={() => updateStatus(request.id, "played")}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-700 px-4 py-2 rounded-xl"
+                  onClick={() =>
+                    updateStatus(request.id, "played")
+                  }
+                  className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl"
                 >
                   Mark Played
                 </button>
 
                 <button
                   disabled={actionLoadingId === request.id}
-                  onClick={() => deleteRequest(request.id)}
-                  className="bg-zinc-700 hover:bg-zinc-600 disabled:bg-zinc-800 px-4 py-2 rounded-xl"
+                  onClick={() =>
+                    deleteRequest(request.id)
+                  }
+                  className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl"
                 >
                   Delete
                 </button>
@@ -285,49 +334,6 @@ export default function AdminPage() {
             )}
           />
 
-          <RequestColumn
-            title={`Rejected (${grouped.rejected.length})`}
-            titleColor="text-red-400"
-            requests={grouped.rejected}
-            borderColor="border-red-700"
-            actionLoadingId={actionLoadingId}
-            buttons={(request) => (
-              <>
-                <button
-                  disabled={actionLoadingId === request.id}
-                  onClick={() => updateStatus(request.id, "pending")}
-                  className="bg-yellow-500 text-black hover:bg-yellow-600 disabled:bg-zinc-700 disabled:text-white px-4 py-2 rounded-xl"
-                >
-                  Restore
-                </button>
-
-                <button
-                  disabled={actionLoadingId === request.id}
-                  onClick={() => deleteRequest(request.id)}
-                  className="bg-zinc-700 hover:bg-zinc-600 disabled:bg-zinc-800 px-4 py-2 rounded-xl"
-                >
-                  Delete
-                </button>
-              </>
-            )}
-          />
-
-          <RequestColumn
-            title={`Played Songs (${grouped.played.length})`}
-            titleColor="text-blue-400"
-            requests={grouped.played}
-            borderColor="border-blue-700"
-            actionLoadingId={actionLoadingId}
-            buttons={(request) => (
-              <button
-                disabled={actionLoadingId === request.id}
-                onClick={() => deleteRequest(request.id)}
-                className="bg-zinc-700 hover:bg-zinc-600 disabled:bg-zinc-800 px-4 py-2 rounded-xl"
-              >
-                Delete
-              </button>
-            )}
-          />
         </div>
       </div>
     </main>
@@ -353,51 +359,70 @@ function RequestColumn({
 }) {
   return (
     <section>
-      <h2 className={`text-2xl md:text-3xl font-bold mb-5 ${titleColor}`}>
+      <h2 className={`text-3xl font-bold mb-5 ${titleColor}`}>
         {title}
       </h2>
 
       <div className="space-y-4">
-        {requests.length === 0 && (
-          <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
-            <p className="text-zinc-500">No requests yet.</p>
-          </div>
-        )}
 
         {requests.map((request, index) => (
           <div
             key={request.id}
             className={`bg-zinc-900 border ${borderColor} p-5 rounded-2xl`}
           >
+
             <div className="flex justify-between items-start gap-3">
-              <h3 className="text-xl font-bold leading-snug">
-                {showQueueNumber
-                  ? `#${index + 1} — ${request.song}`
-                  : request.song}
-              </h3>
 
-              {showQueueNumber && index === 0 && (
-                <span className="bg-purple-600 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap">
-                  NEXT UP
-                </span>
-              )}
+              <div>
+                <h3 className="text-2xl font-bold">
+                  {showQueueNumber
+                    ? `#${index + 1} — ${request.song}`
+                    : request.song}
+                </h3>
+
+                <p className="text-zinc-400 mt-1">
+                  {request.artist}
+                </p>
+
+                <p className="text-purple-400 mt-2">
+                  Requested by {request.name}
+                </p>
+              </div>
+
+              <div className="flex flex-col items-end gap-2">
+
+                {showQueueNumber && index === 0 && (
+                  <span className="bg-purple-600 px-3 py-1 rounded-full text-xs font-bold">
+                    NEXT UP
+                  </span>
+                )}
+
+                {request.tip_amount >= 50 && (
+                  <span className="bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold">
+                    VIP
+                  </span>
+                )}
+
+                <div className="bg-green-700 px-4 py-2 rounded-xl font-bold">
+                  {request.tip_currency} {request.tip_amount}
+                </div>
+
+              </div>
             </div>
-
-            <p className="text-zinc-400 mt-1">{request.artist}</p>
-
-            <p className="text-purple-400 mt-2">
-              Requested by {request.name}
-            </p>
 
             {actionLoadingId === request.id && (
-              <p className="text-xs text-zinc-500 mt-3">Updating...</p>
+              <p className="text-zinc-500 text-sm mt-3">
+                Updating...
+              </p>
             )}
 
-            <div className="flex flex-wrap gap-3 mt-4">
+            <div className="flex flex-wrap gap-3 mt-5">
               {buttons(request)}
             </div>
+
           </div>
         ))}
+
       </div>
     </section>
   );
