@@ -11,13 +11,17 @@ type Request = {
   song: string;
   artist: string;
   status: RequestStatus;
+  tip_amount: number;
   created_at: string;
 };
+
+const MINIMUM_TIP = 10;
 
 export default function Home() {
   const [name, setName] = useState("");
   const [song, setSong] = useState("");
   const [artist, setArtist] = useState("");
+  const [tipAmount, setTipAmount] = useState(MINIMUM_TIP);
   const [requests, setRequests] = useState<Request[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
@@ -67,6 +71,11 @@ export default function Home() {
       return;
     }
 
+    if (tipAmount < MINIMUM_TIP) {
+      setMessage(`Minimum tip is GHS ${MINIMUM_TIP}.`);
+      return;
+    }
+
     setSubmitting(true);
     setMessage("");
 
@@ -77,6 +86,7 @@ export default function Home() {
           name: name.trim(),
           song: song.trim(),
           artist: artist.trim(),
+          tip_amount: tipAmount,
           status: "pending",
         },
       ])
@@ -98,20 +108,19 @@ export default function Home() {
     }
 
     setName("");
-setSong("");
-setArtist("");
+    setSong("");
+    setArtist("");
+    setTipAmount(MINIMUM_TIP);
 
-setMessage("✅ Request submitted successfully!");
+    setMessage("✅ Request submitted successfully!");
 
-// keep loading state visible briefly
-setTimeout(() => {
-  setSubmitting(false);
-}, 800);
+    setTimeout(() => {
+      setSubmitting(false);
+    }, 800);
 
-// clear success message later
-setTimeout(() => {
-  setMessage("");
-}, 4000);
+    setTimeout(() => {
+      setMessage("");
+    }, 4000);
   }
 
   function getStatusColor(status: RequestStatus) {
@@ -123,13 +132,13 @@ setTimeout(() => {
 
   return (
     <main className="min-h-screen bg-black text-white flex flex-col items-center p-6">
-      <div className="bg-zinc-900 p-8 rounded-3xl shadow-2xl w-full max-w-md">
-        <h1 className="text-5xl font-bold text-center mb-3">
-          DJ Request App
+      <div className="bg-zinc-900 p-8 rounded-3xl shadow-2xl w-full max-w-md border border-zinc-800">
+        <h1 className="text-5xl font-bold text-center mb-3 text-purple-500">
+          Blackline
         </h1>
 
         <p className="text-center text-zinc-400 mb-8">
-          Request your favorite song
+          Request your favorite song and support the DJ
         </p>
 
         {message && (
@@ -160,14 +169,44 @@ setTimeout(() => {
             onChange={(e) => setArtist(e.target.value)}
           />
 
+          <div className="bg-black border border-purple-700 rounded-2xl p-4">
+            <div className="flex items-center justify-between mb-2">
+              <label className="font-semibold text-purple-300">
+                Tip the DJ
+              </label>
+
+              <span className="text-xs bg-purple-700 px-3 py-1 rounded-full">
+                Min GHS {MINIMUM_TIP}
+              </span>
+            </div>
+
+            <input
+              type="number"
+              min={MINIMUM_TIP}
+              className="w-full p-4 rounded-xl bg-zinc-950 border border-zinc-700"
+              value={tipAmount}
+              onChange={(e) => setTipAmount(Number(e.target.value))}
+            />
+
+            <p className="text-xs text-zinc-500 mt-2">
+              Higher tips can help your request stand out.
+            </p>
+          </div>
+
           <button
             type="submit"
             disabled={submitting}
             className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-zinc-700 disabled:cursor-not-allowed transition p-4 rounded-xl text-xl font-semibold"
           >
-            {submitting ? "Submitting..." : "Submit Request"}
+            {submitting
+              ? "Submitting..."
+              : `Submit Request • GHS ${tipAmount}`}
           </button>
         </form>
+
+        <p className="text-center text-zinc-600 text-xs mt-6">
+          Powered by Blackline
+        </p>
       </div>
 
       <div className="mt-10 w-full max-w-md">
@@ -186,9 +225,7 @@ setTimeout(() => {
               className="bg-zinc-900 p-4 rounded-xl border border-zinc-800"
             >
               <div className="flex items-center justify-between gap-3 mb-2">
-                <p className="font-bold text-lg">
-                  {request.song}
-                </p>
+                <p className="font-bold text-lg">{request.song}</p>
 
                 <span
                   className={`text-xs px-3 py-1 rounded-full ${getStatusColor(
@@ -201,9 +238,15 @@ setTimeout(() => {
 
               <p className="text-zinc-400">{request.artist}</p>
 
-              <p className="text-sm text-purple-400 mt-2">
-                Requested by {request.name}
-              </p>
+              <div className="flex items-center justify-between mt-2">
+                <p className="text-sm text-purple-400">
+                  Requested by {request.name}
+                </p>
+
+                <p className="text-sm text-green-400 font-semibold">
+                  GHS {request.tip_amount || MINIMUM_TIP}
+                </p>
+              </div>
             </div>
           ))}
         </div>

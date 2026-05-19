@@ -15,11 +15,44 @@ type SongRequest = {
   created_at?: string;
 };
 
+const ADMIN_PASSWORD = "blackline123";
+
 export default function AdminPage() {
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+
   const [requests, setRequests] = useState<SongRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    const savedAccess = localStorage.getItem("dj-admin-access");
+
+    if (savedAccess === "true") {
+      setIsUnlocked(true);
+    }
+  }, []);
+
+  function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+
+    if (password === ADMIN_PASSWORD) {
+      localStorage.setItem("dj-admin-access", "true");
+      setIsUnlocked(true);
+      setLoginError("");
+      return;
+    }
+
+    setLoginError("Wrong password. Try again.");
+  }
+
+  function handleLogout() {
+    localStorage.removeItem("dj-admin-access");
+    setIsUnlocked(false);
+    setPassword("");
+  }
 
   async function fetchRequests() {
     const { data, error } = await supabase
@@ -40,6 +73,8 @@ export default function AdminPage() {
   }
 
   useEffect(() => {
+    if (!isUnlocked) return;
+
     fetchRequests();
 
     const channel = supabase
@@ -60,7 +95,7 @@ export default function AdminPage() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [isUnlocked]);
 
   async function updateStatus(id: number, status: RequestStatus) {
     setActionLoadingId(id);
@@ -115,6 +150,45 @@ export default function AdminPage() {
     };
   }, [requests]);
 
+  if (!isUnlocked) {
+    return (
+      <main className="min-h-screen bg-black text-white flex items-center justify-center p-6">
+        <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl w-full max-w-md shadow-2xl">
+          <h1 className="text-4xl font-bold text-purple-500 mb-3 text-center">
+            Admin Login
+          </h1>
+
+          <p className="text-zinc-400 text-center mb-8">
+            Enter password to manage the DJ queue.
+          </p>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <input
+              type="password"
+              placeholder="Admin password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+            />
+
+            {loginError && (
+              <p className="text-red-400 text-sm text-center">
+                {loginError}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              className="w-full bg-purple-600 hover:bg-purple-700 p-4 rounded-xl text-xl font-semibold"
+            >
+              Unlock Dashboard
+            </button>
+          </form>
+        </div>
+      </main>
+    );
+  }
+
   if (loading) {
     return (
       <main className="min-h-screen bg-black text-white flex items-center justify-center">
@@ -126,14 +200,23 @@ export default function AdminPage() {
   return (
     <main className="min-h-screen bg-black text-white p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-10">
-          <h1 className="text-4xl md:text-5xl font-bold text-purple-500 mb-2">
-            DJ Queue Dashboard
-          </h1>
+        <div className="mb-10 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-bold text-purple-500 mb-2">
+              DJ Queue Dashboard
+            </h1>
 
-          <p className="text-zinc-400">
-            Manage your live DJ set in real time
-          </p>
+            <p className="text-zinc-400">
+              Manage your live DJ set in real time
+            </p>
+          </div>
+
+          <button
+            onClick={handleLogout}
+            className="bg-zinc-800 hover:bg-zinc-700 px-5 py-3 rounded-xl text-sm"
+          >
+            Logout
+          </button>
         </div>
 
         {errorMessage && (
