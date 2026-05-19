@@ -36,8 +36,7 @@ export default function Home() {
     const { data, error } = await supabase
       .from("requests")
       .select("*")
-      .order("created_at", { ascending: false });
-
+      .order("tip_amount", { ascending: false });
     if (error) {
       console.error("Fetch error:", error.message);
       return;

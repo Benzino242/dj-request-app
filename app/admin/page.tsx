@@ -58,7 +58,7 @@ export default function AdminPage() {
     const { data, error } = await supabase
       .from("requests")
       .select("*")
-      .order("id", { ascending: true });
+      .order("tip_amount", { ascending: false });
 
     if (error) {
       console.error("Error fetching requests:", error.message);
