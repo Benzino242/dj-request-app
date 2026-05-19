@@ -17,6 +17,16 @@ type SongRequest = {
   created_at?: string;
 };
 
+type Payment = {
+  id: number;
+  amount: number;
+  currency: string;
+  status: string;
+  dj_amount: number;
+  platform_fee: number;
+  payout_status: string;
+};
+
 const ADMIN_PASSWORD = "blackline123";
 
 export default function AdminPage() {
@@ -25,13 +35,12 @@ export default function AdminPage() {
   const [loginError, setLoginError] = useState("");
 
   const [requests, setRequests] = useState<SongRequest[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
 
   useEffect(() => {
-    const savedAccess = localStorage.getItem("dj-admin-access");
-
-    if (savedAccess === "true") {
+    if (localStorage.getItem("dj-admin-access") === "true") {
       setIsUnlocked(true);
     }
   }, []);
@@ -55,28 +64,37 @@ export default function AdminPage() {
     setPassword("");
   }
 
-  async function fetchRequests() {
-    const { data, error } = await supabase
+  async function fetchDashboardData() {
+    const { data: requestsData, error: requestsError } = await supabase
       .from("requests")
       .select("*")
       .order("tip_amount", { ascending: false });
 
-    if (error) {
-      console.error(error);
-      return;
+    const { data: paymentsData, error: paymentsError } = await supabase
+      .from("payments")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (requestsError) {
+      console.error("Requests error:", requestsError.message);
     }
 
-    setRequests((data || []) as SongRequest[]);
+    if (paymentsError) {
+      console.error("Payments error:", paymentsError.message);
+    }
+
+    setRequests((requestsData || []) as SongRequest[]);
+    setPayments((paymentsData || []) as Payment[]);
     setLoading(false);
   }
 
   useEffect(() => {
     if (!isUnlocked) return;
 
-    fetchRequests();
+    fetchDashboardData();
 
-    const channel = supabase
-      .channel("admin-live")
+    const requestsChannel = supabase
+      .channel("admin-live-requests")
       .on(
         "postgres_changes",
         {
@@ -85,45 +103,49 @@ export default function AdminPage() {
           table: "requests",
         },
         () => {
-          fetchRequests();
+          fetchDashboardData();
+        }
+      )
+      .subscribe();
+
+    const paymentsChannel = supabase
+      .channel("admin-live-payments")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "payments",
+        },
+        () => {
+          fetchDashboardData();
         }
       )
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(requestsChannel);
+      supabase.removeChannel(paymentsChannel);
     };
   }, [isUnlocked]);
 
   async function updateStatus(id: number, status: RequestStatus) {
     setActionLoadingId(id);
 
-    await supabase
-      .from("requests")
-      .update({ status })
-      .eq("id", id);
+    await supabase.from("requests").update({ status }).eq("id", id);
 
-    await fetchRequests();
-
+    await fetchDashboardData();
     setActionLoadingId(null);
   }
 
   async function deleteRequest(id: number) {
-    const confirmed = window.confirm(
-      "Delete this request?"
-    );
-
-    if (!confirmed) return;
+    if (!window.confirm("Delete this request?")) return;
 
     setActionLoadingId(id);
 
-    await supabase
-      .from("requests")
-      .delete()
-      .eq("id", id);
+    await supabase.from("requests").delete().eq("id", id);
 
-    await fetchRequests();
-
+    await fetchDashboardData();
     setActionLoadingId(null);
   }
 
@@ -136,14 +158,29 @@ export default function AdminPage() {
     };
   }, [requests]);
 
-  const totalTips = requests.reduce(
-    (sum, req) => sum + Number(req.tip_amount || 0),
+  const currency =
+    payments[0]?.currency || requests[0]?.tip_currency || "GHS";
+
+  const grossRevenue = payments.reduce(
+    (sum, payment) => sum + Number(payment.amount || 0),
     0
   );
 
-  const vipRequests = requests.filter(
-    (r) => r.tip_amount >= 50
+  const netEarnings = payments.reduce(
+    (sum, payment) => sum + Number(payment.dj_amount || 0),
+    0
+  );
+
+  const serviceFees = payments.reduce(
+    (sum, payment) => sum + Number(payment.platform_fee || 0),
+    0
+  );
+
+  const pendingPayouts = payments.filter(
+    (payment) => payment.payout_status === "pending"
   ).length;
+
+  const vipRequests = requests.filter((r) => r.tip_amount >= 50).length;
 
   if (!isUnlocked) {
     return (
@@ -162,9 +199,7 @@ export default function AdminPage() {
               type="password"
               placeholder="Password"
               value={password}
-              onChange={(e) =>
-                setPassword(e.target.value)
-              }
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full p-4 rounded-xl bg-black border border-zinc-700"
             />
 
@@ -197,7 +232,6 @@ export default function AdminPage() {
   return (
     <main className="min-h-screen bg-black text-white p-6">
       <div className="max-w-7xl mx-auto">
-
         <div className="flex flex-col md:flex-row justify-between gap-4 mb-10">
           <div>
             <h1 className="text-5xl font-bold text-purple-500 mb-2">
@@ -217,59 +251,54 @@ export default function AdminPage() {
           </button>
         </div>
 
-        {/* STATS */}
         <div className="grid md:grid-cols-4 gap-4 mb-10">
-
-          <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
-            <p className="text-zinc-500 text-sm">
-              Total Requests
-            </p>
-
-            <h2 className="text-4xl font-bold mt-2">
-              {requests.length}
-            </h2>
-          </div>
-
-          <div className="bg-zinc-900 border border-green-700 p-5 rounded-2xl">
-            <p className="text-zinc-500 text-sm">
-              Total Tips
-            </p>
-
-            <h2 className="text-4xl font-bold text-green-400 mt-2">
-              {totalTips}
-            </h2>
-          </div>
-
-          <div className="bg-zinc-900 border border-purple-700 p-5 rounded-2xl">
-            <p className="text-zinc-500 text-sm">
-              VIP Requests
-            </p>
-
-            <h2 className="text-4xl font-bold text-purple-400 mt-2">
-              {vipRequests}
-            </h2>
-          </div>
-
-          <div className="bg-zinc-900 border border-yellow-700 p-5 rounded-2xl">
-            <p className="text-zinc-500 text-sm">
-              Pending Queue
-            </p>
-
-            <h2 className="text-4xl font-bold text-yellow-400 mt-2">
-              {grouped.pending.length}
-            </h2>
-          </div>
-
+          <StatCard title="Total Requests" value={requests.length} />
+          <StatCard title="VIP Requests" value={vipRequests} color="text-purple-400" />
+          <StatCard title="Pending Queue" value={grouped.pending.length} color="text-yellow-400" />
+          <StatCard title="Paid Transactions" value={payments.length} color="text-green-400" />
         </div>
 
-        {/* QR */}
+        <div className="mb-10">
+          <h2 className="text-3xl font-bold mb-4 text-green-400">
+            Earnings Overview
+          </h2>
+
+          <div className="grid md:grid-cols-4 gap-4">
+            <StatCard
+              title="Gross Revenue"
+              value={`${currency} ${grossRevenue.toFixed(2)}`}
+              color="text-green-400"
+            />
+
+            <StatCard
+              title="Net Earnings"
+              value={`${currency} ${netEarnings.toFixed(2)}`}
+              color="text-cyan-400"
+            />
+
+            <StatCard
+              title="Service Fees"
+              value={`${currency} ${serviceFees.toFixed(2)}`}
+              color="text-zinc-300"
+            />
+
+            <StatCard
+              title="Pending Payouts"
+              value={pendingPayouts}
+              color="text-yellow-400"
+            />
+          </div>
+
+          <p className="text-xs text-zinc-500 mt-3">
+            Service fees are shown here for payout transparency and accounting.
+          </p>
+        </div>
+
         <div className="mb-12">
           <QRCodeBox />
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
-
-          {/* PENDING */}
           <RequestColumn
             title={`Pending Requests (${grouped.pending.length})`}
             titleColor="text-yellow-400"
@@ -280,9 +309,7 @@ export default function AdminPage() {
               <>
                 <button
                   disabled={actionLoadingId === request.id}
-                  onClick={() =>
-                    updateStatus(request.id, "accepted")
-                  }
+                  onClick={() => updateStatus(request.id, "accepted")}
                   className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl"
                 >
                   Accept
@@ -290,9 +317,7 @@ export default function AdminPage() {
 
                 <button
                   disabled={actionLoadingId === request.id}
-                  onClick={() =>
-                    updateStatus(request.id, "rejected")
-                  }
+                  onClick={() => updateStatus(request.id, "rejected")}
                   className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl"
                 >
                   Reject
@@ -301,7 +326,6 @@ export default function AdminPage() {
             )}
           />
 
-          {/* ACCEPTED */}
           <RequestColumn
             title={`Accepted Queue (${grouped.accepted.length})`}
             titleColor="text-green-400"
@@ -313,9 +337,7 @@ export default function AdminPage() {
               <>
                 <button
                   disabled={actionLoadingId === request.id}
-                  onClick={() =>
-                    updateStatus(request.id, "played")
-                  }
+                  onClick={() => updateStatus(request.id, "played")}
                   className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl"
                 >
                   Mark Played
@@ -323,9 +345,7 @@ export default function AdminPage() {
 
                 <button
                   disabled={actionLoadingId === request.id}
-                  onClick={() =>
-                    deleteRequest(request.id)
-                  }
+                  onClick={() => deleteRequest(request.id)}
                   className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl"
                 >
                   Delete
@@ -334,9 +354,69 @@ export default function AdminPage() {
             )}
           />
 
+          <RequestColumn
+            title={`Rejected (${grouped.rejected.length})`}
+            titleColor="text-red-400"
+            requests={grouped.rejected}
+            borderColor="border-red-700"
+            actionLoadingId={actionLoadingId}
+            buttons={(request) => (
+              <>
+                <button
+                  disabled={actionLoadingId === request.id}
+                  onClick={() => updateStatus(request.id, "pending")}
+                  className="bg-yellow-500 text-black hover:bg-yellow-600 px-4 py-2 rounded-xl"
+                >
+                  Restore
+                </button>
+
+                <button
+                  disabled={actionLoadingId === request.id}
+                  onClick={() => deleteRequest(request.id)}
+                  className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl"
+                >
+                  Delete
+                </button>
+              </>
+            )}
+          />
+
+          <RequestColumn
+            title={`Played Songs (${grouped.played.length})`}
+            titleColor="text-blue-400"
+            requests={grouped.played}
+            borderColor="border-blue-700"
+            actionLoadingId={actionLoadingId}
+            buttons={(request) => (
+              <button
+                disabled={actionLoadingId === request.id}
+                onClick={() => deleteRequest(request.id)}
+                className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl"
+              >
+                Delete
+              </button>
+            )}
+          />
         </div>
       </div>
     </main>
+  );
+}
+
+function StatCard({
+  title,
+  value,
+  color = "text-white",
+}: {
+  title: string;
+  value: string | number;
+  color?: string;
+}) {
+  return (
+    <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
+      <p className="text-zinc-500 text-sm">{title}</p>
+      <h2 className={`text-3xl font-bold mt-2 ${color}`}>{value}</h2>
+    </div>
   );
 }
 
@@ -364,15 +444,18 @@ function RequestColumn({
       </h2>
 
       <div className="space-y-4">
+        {requests.length === 0 && (
+          <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
+            <p className="text-zinc-500">No requests yet.</p>
+          </div>
+        )}
 
         {requests.map((request, index) => (
           <div
             key={request.id}
             className={`bg-zinc-900 border ${borderColor} p-5 rounded-2xl`}
           >
-
             <div className="flex justify-between items-start gap-3">
-
               <div>
                 <h3 className="text-2xl font-bold">
                   {showQueueNumber
@@ -380,9 +463,7 @@ function RequestColumn({
                     : request.song}
                 </h3>
 
-                <p className="text-zinc-400 mt-1">
-                  {request.artist}
-                </p>
+                <p className="text-zinc-400 mt-1">{request.artist}</p>
 
                 <p className="text-purple-400 mt-2">
                   Requested by {request.name}
@@ -390,7 +471,6 @@ function RequestColumn({
               </div>
 
               <div className="flex flex-col items-end gap-2">
-
                 {showQueueNumber && index === 0 && (
                   <span className="bg-purple-600 px-3 py-1 rounded-full text-xs font-bold">
                     NEXT UP
@@ -406,7 +486,6 @@ function RequestColumn({
                 <div className="bg-green-700 px-4 py-2 rounded-xl font-bold">
                   {request.tip_currency} {request.tip_amount}
                 </div>
-
               </div>
             </div>
 
@@ -419,10 +498,8 @@ function RequestColumn({
             <div className="flex flex-wrap gap-3 mt-5">
               {buttons(request)}
             </div>
-
           </div>
         ))}
-
       </div>
     </section>
   );
