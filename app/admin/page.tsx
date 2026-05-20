@@ -77,9 +77,10 @@ export default function AdminPage() {
 
   async function fetchDashboardData() {
     const { data: requestsData } = await supabase
-      .from("requests")
-      .select("*")
-      .order("tip_amount", { ascending: false });
+    .from("requests")
+    .select("*")
+    .eq("dj_id", 1)
+    .order("tip_amount", { ascending: false });
 
     const { data: paymentsData } = await supabase
       .from("payments")
