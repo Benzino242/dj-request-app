@@ -177,22 +177,29 @@ export default function StageRequestPage() {
             return;
           }
 
-          await supabase.from("payments").insert([
-            {
-              dj_id: dj.id,
-              request_id: requestData.id,
-              guest_name: name.trim(),
-              song: song.trim(),
-              artist: artist.trim(),
-              amount: tipAmount,
-              currency: tipCurrency,
-              status: "paid",
-              provider: "paystack",
-              provider_reference: transaction.reference,
-              dj_amount: tipAmount * 0.9,
-              platform_fee: tipAmount * 0.1,
-            },
-          ]);
+          const { error: paymentError } = await supabase
+  .from("payments")
+  .insert([
+    {
+      dj_id: dj.id,
+      request_id: requestData.id,
+      guest_name: name.trim(),
+      song: song.trim(),
+      artist: artist.trim(),
+      amount: tipAmount,
+      currency: tipCurrency,
+      status: "paid",
+      provider: "paystack",
+      provider_reference: transaction.reference,
+      dj_amount: Number((tipAmount * 0.9).toFixed(2)),
+      platform_fee: Number((tipAmount * 0.1).toFixed(2)),
+      payout_status: "pending",
+    },
+  ]);
+
+if (paymentError) {
+  console.error("PAYMENT INSERT ERROR:", paymentError);
+}
 
           await fetchRequests(dj.id);
 
