@@ -43,6 +43,18 @@ export default function AdminPage() {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
+  function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+  
+    if (password === ADMIN_PASSWORD) {
+      localStorage.setItem("dj-admin-access", "true");
+      setIsUnlocked(true);
+      setLoginError("");
+      return;
+    }
+  
+    setLoginError("Wrong password");
+  }
 
   const [requests, setRequests] = useState<SongRequest[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
