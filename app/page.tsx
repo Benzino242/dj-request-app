@@ -241,7 +241,26 @@ export default function Home() {
               placeholder="Tip Amount"
             />
           </div>
+          <div className="bg-black border border-purple-800 rounded-2xl p-4 mt-4">
+  <p className="text-sm text-zinc-400 mb-3">
+    Quick Tip Boost
+  </p>
 
+  <div className="grid grid-cols-4 gap-2">
+    {[10, 20, 50, 100].map((boost) => (
+      <button
+        key={boost}
+        type="button"
+        onClick={() =>
+          setTipAmount((current) => Number(current || 0) + boost)
+        }
+        className="bg-purple-700 hover:bg-purple-600 px-3 py-3 rounded-xl font-bold text-sm"
+      >
+        +{tipCurrency} {boost}
+      </button>
+    ))}
+  </div>
+</div>
           <button
             onClick={handlePayment}
             disabled={submitting}
