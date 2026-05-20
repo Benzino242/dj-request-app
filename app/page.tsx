@@ -4,14 +4,13 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
 type Request = {
-  id: number;
-  name: string;
-  song: string;
-  artist: string;
-  status: string;
-  created_at: string;
-  tip_amount: number;
-  tip_currency: string;
+  dj_id: 1,
+  name: name.trim(),
+  song: song.trim(),
+  artist: artist.trim(),
+  status: "pending",
+  tip_amount: tipAmount,
+  tip_currency: tipCurrency,
 };
 
 export default function Home() {
