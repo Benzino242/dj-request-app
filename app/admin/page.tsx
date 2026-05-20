@@ -410,7 +410,7 @@ export default function AdminPage() {
         </div>
 
         <div className="mb-12">
-          <QRCodeBox />
+        <QRCodeBox stageName="djbenzino99" />
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
