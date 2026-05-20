@@ -11,7 +11,7 @@ type Request = {
   status: "pending",
   tip_amount: tipAmount,
   tip_currency: tipCurrency,
-};
+}
 
 export default function Home() {
   const [name, setName] = useState("");
