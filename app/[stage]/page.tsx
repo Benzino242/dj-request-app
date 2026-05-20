@@ -179,6 +179,7 @@ export default function StageRequestPage() {
 
           await supabase.from("payments").insert([
             {
+              dj_id: dj.id,
               request_id: requestData.id,
               guest_name: name.trim(),
               song: song.trim(),
