@@ -52,85 +52,62 @@ export default function AdminPage() {
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
 
   useEffect(() => {
-    if (localStorage.getItem("dj-admin-access") === "true") {
-      setIsUnlocked(true);
-    }
-  }, []);
-
-  function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
-
-    if (password === ADMIN_PASSWORD) {
-      localStorage.setItem("dj-admin-access", "true");
-      setIsUnlocked(true);
-      setLoginError("");
-      return;
-    }
-
-    setLoginError("Wrong password");
-  }
-
-  function handleLogout() {
-    localStorage.removeItem("dj-admin-access");
-    setIsUnlocked(false);
-    setPassword("");
-  }
-
-  async function fetchDashboardData() {
-    const { data: requestsData } = await supabase
-      .from("requests")
-      .select("*")
-      .order("tip_amount", { ascending: false });
-
-    const { data: paymentsData } = await supabase
-      .from("payments")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    const { data: withdrawalsData } = await supabase
-      .from("withdrawals")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    setRequests((requestsData || []) as SongRequest[]);
-    setPayments((paymentsData || []) as Payment[]);
-    setWithdrawals((withdrawalsData || []) as Withdrawal[]);
-    setLoading(false);
-  }
-
-  useEffect(() => {
     if (!isUnlocked) return;
-
+  
     fetchDashboardData();
-
+  
+    const refreshInterval = setInterval(() => {
+      fetchDashboardData();
+    }, 3000);
+  
     const requestsChannel = supabase
       .channel("admin-live-requests")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "requests" },
-        () => fetchDashboardData()
+        {
+          event: "*",
+          schema: "public",
+          table: "requests",
+        },
+        () => {
+          fetchDashboardData();
+        }
       )
       .subscribe();
-
+  
     const paymentsChannel = supabase
       .channel("admin-live-payments")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "payments" },
-        () => fetchDashboardData()
+        {
+          event: "*",
+          schema: "public",
+          table: "payments",
+        },
+        () => {
+          fetchDashboardData();
+        }
       )
       .subscribe();
-
+  
     const withdrawalsChannel = supabase
       .channel("admin-live-withdrawals")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "withdrawals" },
-        () => fetchDashboardData()
+        {
+          event: "*",
+          schema: "public",
+          table: "withdrawals",
+        },
+        () => {
+          fetchDashboardData();
+        }
       )
       .subscribe();
-
+  
     return () => {
+      clearInterval(refreshInterval);
+  
       supabase.removeChannel(requestsChannel);
       supabase.removeChannel(paymentsChannel);
       supabase.removeChannel(withdrawalsChannel);
