@@ -43,83 +43,98 @@ export default function AdminPage() {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
+
+  const [requests, setRequests] = useState<SongRequest[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (localStorage.getItem("dj-admin-access") === "true") {
+      setIsUnlocked(true);
+    }
+  }, []);
+
   function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-  
+
     if (password === ADMIN_PASSWORD) {
       localStorage.setItem("dj-admin-access", "true");
       setIsUnlocked(true);
       setLoginError("");
       return;
     }
-  
+
     setLoginError("Wrong password");
   }
 
-  const [requests, setRequests] = useState<SongRequest[]>([]);
-  const [payments, setPayments] = useState<Payment[]>([]);
-  const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
+  function handleLogout() {
+    localStorage.removeItem("dj-admin-access");
+    setIsUnlocked(false);
+    setPassword("");
+  }
 
-  const [loading, setLoading] = useState(true);
-  const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
+  async function fetchDashboardData() {
+    const { data: requestsData } = await supabase
+      .from("requests")
+      .select("*")
+      .order("tip_amount", { ascending: false });
+
+    const { data: paymentsData } = await supabase
+      .from("payments")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    const { data: withdrawalsData } = await supabase
+      .from("withdrawals")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    setRequests((requestsData || []) as SongRequest[]);
+    setPayments((paymentsData || []) as Payment[]);
+    setWithdrawals((withdrawalsData || []) as Withdrawal[]);
+    setLoading(false);
+  }
 
   useEffect(() => {
     if (!isUnlocked) return;
-  
+
     fetchDashboardData();
-  
+
     const refreshInterval = setInterval(() => {
       fetchDashboardData();
     }, 3000);
-  
+
     const requestsChannel = supabase
       .channel("admin-live-requests")
       .on(
         "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "requests",
-        },
-        () => {
-          fetchDashboardData();
-        }
+        { event: "*", schema: "public", table: "requests" },
+        () => fetchDashboardData()
       )
       .subscribe();
-  
+
     const paymentsChannel = supabase
       .channel("admin-live-payments")
       .on(
         "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "payments",
-        },
-        () => {
-          fetchDashboardData();
-        }
+        { event: "*", schema: "public", table: "payments" },
+        () => fetchDashboardData()
       )
       .subscribe();
-  
+
     const withdrawalsChannel = supabase
       .channel("admin-live-withdrawals")
       .on(
         "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "withdrawals",
-        },
-        () => {
-          fetchDashboardData();
-        }
+        { event: "*", schema: "public", table: "withdrawals" },
+        () => fetchDashboardData()
       )
       .subscribe();
-  
+
     return () => {
       clearInterval(refreshInterval);
-  
       supabase.removeChannel(requestsChannel);
       supabase.removeChannel(paymentsChannel);
       supabase.removeChannel(withdrawalsChannel);
@@ -232,7 +247,6 @@ export default function AdminPage() {
             <h1 className="text-5xl font-bold text-purple-500 mb-2">
               Blackline DJ Dashboard
             </h1>
-
             <p className="text-zinc-400">Live premium request management</p>
           </div>
 
@@ -257,29 +271,10 @@ export default function AdminPage() {
           </h2>
 
           <div className="grid md:grid-cols-4 gap-4">
-            <StatCard
-              title="Gross Revenue"
-              value={`${currency} ${grossRevenue.toFixed(2)}`}
-              color="text-green-400"
-            />
-
-            <StatCard
-              title="DJ Earnings"
-              value={`${currency} ${netEarnings.toFixed(2)}`}
-              color="text-cyan-400"
-            />
-
-            <StatCard
-              title="Platform Revenue"
-              value={`${currency} ${serviceFees.toFixed(2)}`}
-              color="text-zinc-300"
-            />
-
-            <StatCard
-              title="Pending Payouts"
-              value={pendingPayouts}
-              color="text-yellow-400"
-            />
+            <StatCard title="Gross Revenue" value={`${currency} ${grossRevenue.toFixed(2)}`} color="text-green-400" />
+            <StatCard title="DJ Earnings" value={`${currency} ${netEarnings.toFixed(2)}`} color="text-cyan-400" />
+            <StatCard title="Platform Revenue" value={`${currency} ${serviceFees.toFixed(2)}`} color="text-zinc-300" />
+            <StatCard title="Pending Payouts" value={pendingPayouts} color="text-yellow-400" />
           </div>
 
           <p className="text-xs text-zinc-500 mt-3">
@@ -293,18 +288,8 @@ export default function AdminPage() {
           </h2>
 
           <div className="grid md:grid-cols-3 gap-4 mb-6">
-            <StatCard
-              title="Withdrawal Requests"
-              value={withdrawals.length}
-              color="text-cyan-400"
-            />
-
-            <StatCard
-              title="Total Withdrawals"
-              value={`${currency} ${totalWithdrawals.toFixed(2)}`}
-              color="text-green-400"
-            />
-
+            <StatCard title="Withdrawal Requests" value={withdrawals.length} color="text-cyan-400" />
+            <StatCard title="Total Withdrawals" value={`${currency} ${totalWithdrawals.toFixed(2)}`} color="text-green-400" />
             <StatCard
               title="Pending Withdrawals"
               value={withdrawals.filter((w) => w.status === "pending").length}
@@ -509,7 +494,9 @@ function RequestColumn({
             <div className="flex justify-between items-start gap-3">
               <div>
                 <h3 className="text-2xl font-bold">
-                  {showQueueNumber ? `#${index + 1} — ${request.song}` : request.song}
+                  {showQueueNumber
+                    ? `#${index + 1} — ${request.song}`
+                    : request.song}
                 </h3>
 
                 <p className="text-zinc-400 mt-1">{request.artist}</p>
