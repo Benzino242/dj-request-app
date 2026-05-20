@@ -8,6 +8,7 @@ type RequestStatus = "pending" | "accepted" | "rejected" | "played";
 
 type SongRequest = {
   id: number;
+  dj_id: number;
   name: string;
   song: string;
   artist: string;
@@ -19,6 +20,7 @@ type SongRequest = {
 
 type Payment = {
   id: number;
+  dj_id: number;
   amount: number;
   currency: string;
   status: string;
@@ -37,54 +39,110 @@ type Withdrawal = {
   created_at?: string;
 };
 
-const ADMIN_PASSWORD = "blackline123";
+type DJ = {
+  id: number;
+  stage_name: string;
+  email: string | null;
+  user_id: string;
+};
 
 export default function AdminPage() {
-  const [isUnlocked, setIsUnlocked] = useState(false);
-  const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
+  const [dj, setDj] = useState<DJ | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [loginError, setLoginError] = useState("");
   const [requests, setRequests] = useState<SongRequest[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (localStorage.getItem("dj-admin-access") === "true") {
-      setIsUnlocked(true);
-    }
-  }, []);
+  async function loadLoggedInDJ() {
+    setAuthLoading(true);
 
-  function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (password === ADMIN_PASSWORD) {
-      localStorage.setItem("dj-admin-access", "true");
-      setIsUnlocked(true);
-      setLoginError("");
+    if (!user) {
+      setDj(null);
+      setAuthLoading(false);
+      setLoading(false);
       return;
     }
 
-    setLoginError("Wrong password");
+    const { data, error } = await supabase
+      .from("djs")
+      .select("*")
+      .eq("user_id", user.id)
+      .single();
+
+    if (error || !data) {
+      console.error(error);
+      setDj(null);
+      setAuthLoading(false);
+      setLoading(false);
+      return;
+    }
+
+    setDj(data as DJ);
+    setAuthLoading(false);
   }
 
-  function handleLogout() {
-    localStorage.removeItem("dj-admin-access");
-    setIsUnlocked(false);
+  useEffect(() => {
+    loadLoggedInDJ();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
+      loadLoggedInDJ();
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+    setLoginError("");
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setLoginError(error.message);
+      return;
+    }
+
+    await loadLoggedInDJ();
+  }
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    setDj(null);
+    setEmail("");
     setPassword("");
   }
 
   async function fetchDashboardData() {
+    if (!dj) return;
+
     const { data: requestsData } = await supabase
-    .from("requests")
-    .select("*")
-    .eq("dj_id", 1)
-    .order("tip_amount", { ascending: false });
+      .from("requests")
+      .select("*")
+      .eq("dj_id", dj.id)
+      .order("tip_amount", { ascending: false });
 
     const { data: paymentsData } = await supabase
       .from("payments")
       .select("*")
+      .eq("dj_id", dj.id)
       .order("created_at", { ascending: false });
 
     const { data: withdrawalsData } = await supabase
@@ -99,7 +157,7 @@ export default function AdminPage() {
   }
 
   useEffect(() => {
-    if (!isUnlocked) return;
+    if (!dj) return;
 
     fetchDashboardData();
 
@@ -108,28 +166,29 @@ export default function AdminPage() {
     }, 3000);
 
     const requestsChannel = supabase
-      .channel("admin-live-requests")
+      .channel(`admin-live-requests-${dj.id}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "requests" },
+        {
+          event: "*",
+          schema: "public",
+          table: "requests",
+          filter: `dj_id=eq.${dj.id}`,
+        },
         () => fetchDashboardData()
       )
       .subscribe();
 
     const paymentsChannel = supabase
-      .channel("admin-live-payments")
+      .channel(`admin-live-payments-${dj.id}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "payments" },
-        () => fetchDashboardData()
-      )
-      .subscribe();
-
-    const withdrawalsChannel = supabase
-      .channel("admin-live-withdrawals")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "withdrawals" },
+        {
+          event: "*",
+          schema: "public",
+          table: "payments",
+          filter: `dj_id=eq.${dj.id}`,
+        },
         () => fetchDashboardData()
       )
       .subscribe();
@@ -138,9 +197,8 @@ export default function AdminPage() {
       clearInterval(refreshInterval);
       supabase.removeChannel(requestsChannel);
       supabase.removeChannel(paymentsChannel);
-      supabase.removeChannel(withdrawalsChannel);
     };
-  }, [isUnlocked]);
+  }, [dj]);
 
   async function updateStatus(id: number, status: RequestStatus) {
     setActionLoadingId(id);
@@ -195,25 +253,43 @@ export default function AdminPage() {
     0
   );
 
-  if (!isUnlocked) {
+  if (authLoading) {
+    return (
+      <main className="min-h-screen bg-black text-white flex items-center justify-center">
+        Checking login...
+      </main>
+    );
+  }
+
+  if (!dj) {
     return (
       <main className="min-h-screen bg-black text-white flex items-center justify-center p-6">
         <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl w-full max-w-md">
           <h1 className="text-4xl font-bold text-purple-500 text-center mb-3">
-            Blackline Admin
+            Blackline DJ Login
           </h1>
 
           <p className="text-zinc-400 text-center mb-8">
-            DJ dashboard access
+            Sign in to manage your requests, tips, and payouts.
           </p>
 
           <form onSubmit={handleLogin} className="space-y-4">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+              required
+            />
+
             <input
               type="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+              required
             />
 
             {loginError && (
@@ -224,7 +300,7 @@ export default function AdminPage() {
               type="submit"
               className="w-full bg-purple-600 hover:bg-purple-700 p-4 rounded-xl text-xl font-semibold"
             >
-              Unlock Dashboard
+              Login
             </button>
           </form>
         </div>
@@ -246,7 +322,7 @@ export default function AdminPage() {
         <div className="flex flex-col md:flex-row justify-between gap-4 mb-10">
           <div>
             <h1 className="text-5xl font-bold text-purple-500 mb-2">
-              Blackline DJ Dashboard
+              {dj.stage_name.toUpperCase()} Dashboard
             </h1>
             <p className="text-zinc-400">Live premium request management</p>
           </div>
@@ -279,7 +355,7 @@ export default function AdminPage() {
           </div>
 
           <p className="text-xs text-zinc-500 mt-3">
-            Platform revenue is hidden from DJs publicly but visible here for accounting.
+            Platform revenue is shown here for accounting and reconciliation.
           </p>
         </div>
 
