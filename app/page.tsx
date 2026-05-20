@@ -4,14 +4,15 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
 type Request = {
-  dj_id: 1,
-  name: name.trim(),
-  song: song.trim(),
-  artist: artist.trim(),
-  status: "pending",
-  tip_amount: tipAmount,
-  tip_currency: tipCurrency,
-}
+  id: number;
+  name: string;
+  song: string;
+  artist: string;
+  status: string;
+  created_at: string;
+  tip_amount: number;
+  tip_currency: string;
+};
 
 export default function Home() {
   const [name, setName] = useState("");
