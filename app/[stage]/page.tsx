@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
+import { useParams } from "next/navigation";
+import { supabase } from "../../lib/supabase";
 
 type Request = {
   id: number;
+  dj_id: number;
   name: string;
   song: string;
   artist: string;
@@ -14,7 +16,20 @@ type Request = {
   tip_currency: string;
 };
 
-export default function Home() {
+type DJ = {
+  id: number;
+  stage_name: string;
+  email: string | null;
+  profile_image: string | null;
+};
+
+export default function StageRequestPage() {
+  const params = useParams();
+  const stage = String(params.stage || "").toLowerCase();
+
+  const [dj, setDj] = useState<DJ | null>(null);
+  const [djLoading, setDjLoading] = useState(true);
+
   const [name, setName] = useState("");
   const [song, setSong] = useState("");
   const [artist, setArtist] = useState("");
@@ -23,10 +38,32 @@ export default function Home() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
-  async function fetchRequests() {
+  async function fetchDJ() {
+    if (!stage) return;
+
+    const { data, error } = await supabase
+      .from("djs")
+      .select("*")
+      .eq("stage_name", stage)
+      .single();
+
+    if (error || !data) {
+      console.error("DJ not found:", error);
+      setDj(null);
+      setDjLoading(false);
+      return;
+    }
+
+    setDj(data as DJ);
+    setDjLoading(false);
+    fetchRequests(data.id);
+  }
+
+  async function fetchRequests(djId: number) {
     const { data, error } = await supabase
       .from("requests")
       .select("*")
+      .eq("dj_id", djId)
       .order("tip_amount", { ascending: false });
 
     if (error) {
@@ -38,19 +75,26 @@ export default function Home() {
   }
 
   useEffect(() => {
-    fetchRequests();
+    fetchDJ();
+  }, [stage]);
+
+  useEffect(() => {
+    if (!dj) return;
+
+    fetchRequests(dj.id);
 
     const channel = supabase
-      .channel("requests-channel")
+      .channel(`requests-channel-${dj.id}`)
       .on(
         "postgres_changes",
         {
           event: "*",
           schema: "public",
           table: "requests",
+          filter: `dj_id=eq.${dj.id}`,
         },
         () => {
-          fetchRequests();
+          fetchRequests(dj.id);
         }
       )
       .subscribe();
@@ -58,9 +102,14 @@ export default function Home() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [dj]);
 
   async function handlePayment() {
+    if (!dj) {
+      alert("DJ profile not found");
+      return;
+    }
+
     if (!name.trim() || !song.trim() || !artist.trim()) {
       alert("Please fill all fields");
       return;
@@ -87,6 +136,11 @@ export default function Home() {
       metadata: {
         custom_fields: [
           {
+            display_name: "DJ",
+            variable_name: "dj_stage_name",
+            value: dj.stage_name,
+          },
+          {
             display_name: "Guest Name",
             variable_name: "guest_name",
             value: name,
@@ -105,7 +159,7 @@ export default function Home() {
             .from("requests")
             .insert([
               {
-                dj_id: 1,
+                dj_id: dj.id,
                 name: name.trim(),
                 song: song.trim(),
                 artist: artist.trim(),
@@ -139,7 +193,7 @@ export default function Home() {
             },
           ]);
 
-          await fetchRequests();
+          await fetchRequests(dj.id);
 
           setName("");
           setSong("");
@@ -162,11 +216,38 @@ export default function Home() {
     });
   }
 
+  if (djLoading) {
+    return (
+      <main className="min-h-screen bg-black text-white flex items-center justify-center">
+        Loading DJ page...
+      </main>
+    );
+  }
+
+  if (!dj) {
+    return (
+      <main className="min-h-screen bg-black text-white flex items-center justify-center p-6">
+        <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl max-w-md text-center">
+          <h1 className="text-4xl font-bold text-red-400 mb-3">
+            DJ Not Found
+          </h1>
+          <p className="text-zinc-400">
+            No Blackline DJ profile exists for /{stage}
+          </p>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-black text-white flex flex-col items-center p-10">
       <div className="bg-zinc-900 p-8 rounded-3xl shadow-2xl w-full max-w-md border border-zinc-800">
-        <h1 className="text-5xl font-bold text-center mb-3 text-purple-500">
-          BLACKLINE
+        <p className="text-center text-zinc-500 text-sm mb-2">
+          Requesting from DJ
+        </p>
+
+        <h1 className="text-5xl font-bold text-center mb-3 text-purple-500 uppercase">
+          {dj.stage_name}
         </h1>
 
         <p className="text-center text-zinc-400 mb-8">
@@ -242,26 +323,28 @@ export default function Home() {
               placeholder="Tip Amount"
             />
           </div>
-          <div className="bg-black border border-purple-800 rounded-2xl p-4 mt-4">
-  <p className="text-sm text-zinc-400 mb-3">
-    Boost Your Request 🔥
-  </p>
 
-  <div className="grid grid-cols-4 gap-2">
-    {[10, 20, 50, 100].map((boost) => (
-      <button
-        key={boost}
-        type="button"
-        onClick={() =>
-          setTipAmount((current) => Number(current || 0) + boost)
-        }
-        className="bg-purple-700 hover:bg-purple-600 px-3 py-3 rounded-xl font-bold text-sm"
-      >
-        +{tipCurrency} {boost}
-      </button>
-    ))}
-  </div>
-</div>
+          <div className="bg-black border border-purple-800 rounded-2xl p-4 mt-4">
+            <p className="text-sm text-zinc-400 mb-3">
+              Boost Your Request 🔥
+            </p>
+
+            <div className="grid grid-cols-4 gap-2">
+              {[10, 20, 50, 100].map((boost) => (
+                <button
+                  key={boost}
+                  type="button"
+                  onClick={() =>
+                    setTipAmount((current) => Number(current || 0) + boost)
+                  }
+                  className="bg-purple-700 hover:bg-purple-600 px-3 py-3 rounded-xl font-bold text-sm"
+                >
+                  +{tipCurrency} {boost}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <button
             onClick={handlePayment}
             disabled={submitting}
