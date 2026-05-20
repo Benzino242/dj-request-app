@@ -4,7 +4,7 @@ import QRCode from "react-qr-code";
 
 export default function QRCodeBox() {
   const requestUrl =
-    "https://dj-request-app-topaz.vercel.app";
+    "https://dj-request-app-topaz.vercel.app/benzino";
 
   return (
     <div className="bg-zinc-900 p-6 rounded-2xl border border-zinc-800 text-center">
