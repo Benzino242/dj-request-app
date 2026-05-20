@@ -243,7 +243,7 @@ export default function Home() {
           </div>
           <div className="bg-black border border-purple-800 rounded-2xl p-4 mt-4">
   <p className="text-sm text-zinc-400 mb-3">
-    Quick Tip Boost
+    Boost Your Request 🔥
   </p>
 
   <div className="grid grid-cols-4 gap-2">
