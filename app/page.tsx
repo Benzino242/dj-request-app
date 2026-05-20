@@ -1,321 +1,149 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
+import Link from "next/link";
 
-type Request = {
-  id: number;
-  name: string;
-  song: string;
-  artist: string;
-  status: string;
-  created_at: string;
-  tip_amount: number;
-  tip_currency: string;
-};
-
-export default function Home() {
-  const [name, setName] = useState("");
-  const [song, setSong] = useState("");
-  const [artist, setArtist] = useState("");
-  const [tipAmount, setTipAmount] = useState(10);
-  const [tipCurrency, setTipCurrency] = useState("GHS");
-  const [requests, setRequests] = useState<Request[]>([]);
-  const [submitting, setSubmitting] = useState(false);
-
-  async function fetchRequests() {
-    const { data, error } = await supabase
-      .from("requests")
-      .select("*")
-      .order("tip_amount", { ascending: false });
-
-    if (error) {
-      console.error(error);
-      return;
-    }
-
-    setRequests((data || []) as Request[]);
-  }
-
-  useEffect(() => {
-    fetchRequests();
-
-    const channel = supabase
-      .channel("requests-channel")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "requests",
-        },
-        () => {
-          fetchRequests();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  async function handlePayment() {
-    if (!name.trim() || !song.trim() || !artist.trim()) {
-      alert("Please fill all fields");
-      return;
-    }
-
-    if (!tipAmount || tipAmount < 1) {
-      alert("Please enter a valid tip amount");
-      return;
-    }
-
-    setSubmitting(true);
-
-    const PaystackPop =
-      (await import("@paystack/inline-js")).default;
-
-    const paystack = new PaystackPop();
-
-    paystack.newTransaction({
-      key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!,
-      email: `${name.replace(/\s/g, "")}@blackline.app`,
-      amount: tipAmount * 100,
-      currency: tipCurrency,
-
-      metadata: {
-        custom_fields: [
-          {
-            display_name: "Guest Name",
-            variable_name: "guest_name",
-            value: name,
-          },
-          {
-            display_name: "Song",
-            variable_name: "song",
-            value: song,
-          },
-        ],
-      },
-
-      onSuccess: async (transaction: any) => {
-        try {
-          const { data: requestData, error } = await supabase
-            .from("requests")
-            .insert([
-              {
-                dj_id: 1,
-                name: name.trim(),
-                song: song.trim(),
-                artist: artist.trim(),
-                status: "pending",
-                tip_amount: tipAmount,
-                tip_currency: tipCurrency,
-              },
-            ])
-            .select()
-            .single();
-
-          if (error) {
-            console.error(error);
-            alert("Failed to save request");
-            return;
-          }
-
-          await supabase.from("payments").insert([
-            {
-              request_id: requestData.id,
-              guest_name: name.trim(),
-              song: song.trim(),
-              artist: artist.trim(),
-              amount: tipAmount,
-              currency: tipCurrency,
-              status: "paid",
-              provider: "paystack",
-              provider_reference: transaction.reference,
-              dj_amount: tipAmount * 0.9,
-              platform_fee: tipAmount * 0.1,
-            },
-          ]);
-
-          await fetchRequests();
-
-          setName("");
-          setSong("");
-          setArtist("");
-          setTipAmount(10);
-
-          alert("Payment successful & request submitted!");
-        } catch (err) {
-          console.error(err);
-          alert("Something went wrong");
-        } finally {
-          setSubmitting(false);
-        }
-      },
-
-      onCancel: () => {
-        setSubmitting(false);
-        alert("Payment cancelled");
-      },
-    });
-  }
-
+export default function HomePage() {
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col items-center p-10">
-      <div className="bg-zinc-900 p-8 rounded-3xl shadow-2xl w-full max-w-md border border-zinc-800">
-        <h1 className="text-5xl font-bold text-center mb-3 text-purple-500">
+    <main className="min-h-screen bg-black text-white">
+      {/* HERO */}
+      <section className="px-6 py-24 text-center max-w-6xl mx-auto">
+        <div className="inline-block bg-purple-900/40 border border-purple-700 px-4 py-2 rounded-full text-sm mb-6">
+          LIVE DJ REQUEST PLATFORM
+        </div>
+
+        <h1 className="text-6xl md:text-8xl font-black leading-tight mb-6">
           BLACKLINE
         </h1>
 
-        <p className="text-center text-zinc-400 mb-8">
-          Request songs. Skip the queue. Tip the DJ.
+        <p className="text-2xl md:text-3xl text-purple-400 font-semibold mb-6">
+          The premium song request experience for DJs & nightlife.
         </p>
 
-        <div className="bg-purple-950 border border-purple-700 p-4 rounded-2xl mb-6">
-          <p className="text-sm text-purple-200">
-            Higher tips move your request closer to the top 🔥
-          </p>
-        </div>
+        <p className="text-zinc-400 text-lg max-w-3xl mx-auto leading-relaxed mb-10">
+          Guests scan a QR code, request songs instantly, and boost requests
+          with tips. DJs manage everything live from a powerful real-time dashboard.
+        </p>
 
-        <div className="space-y-4">
-          <input
-            className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            placeholder="Your Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-
-          <input
-            className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            placeholder="Song Name"
-            value={song}
-            onChange={(e) => setSong(e.target.value)}
-          />
-
-          <input
-            className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            placeholder="Artist"
-            value={artist}
-            onChange={(e) => setArtist(e.target.value)}
-          />
-
-          <div className="grid grid-cols-2 gap-4">
-            <select
-              value={tipCurrency}
-              onChange={(e) => setTipCurrency(e.target.value)}
-              className="p-4 rounded-xl bg-black border border-zinc-700"
-            >
-              <option value="GHS">🇬🇭 GHS</option>
-              <option value="USD">🇺🇸 USD</option>
-              <option value="EUR">🇪🇺 EUR</option>
-              <option value="GBP">🇬🇧 GBP</option>
-              <option value="CAD">🇨🇦 CAD</option>
-              <option value="AUD">🇦🇺 AUD</option>
-              <option value="NGN">🇳🇬 NGN</option>
-              <option value="KES">🇰🇪 KES</option>
-              <option value="ZAR">🇿🇦 ZAR</option>
-              <option value="SGD">🇸🇬 SGD</option>
-              <option value="MYR">🇲🇾 MYR</option>
-              <option value="IDR">🇮🇩 IDR</option>
-              <option value="THB">🇹🇭 THB</option>
-              <option value="PHP">🇵🇭 PHP</option>
-              <option value="VND">🇻🇳 VND</option>
-              <option value="CNY">🇨🇳 CNY</option>
-              <option value="JPY">🇯🇵 JPY</option>
-              <option value="KRW">🇰🇷 KRW</option>
-              <option value="INR">🇮🇳 INR</option>
-              <option value="AED">🇦🇪 AED</option>
-              <option value="SAR">🇸🇦 SAR</option>
-              <option value="QAR">🇶🇦 QAR</option>
-              <option value="BRL">🇧🇷 BRL</option>
-              <option value="MXN">🇲🇽 MXN</option>
-            </select>
-
-            <input
-              type="number"
-              min="1"
-              value={tipAmount === 0 ? "" : tipAmount}
-              onChange={(e) => setTipAmount(Number(e.target.value))}
-              className="p-4 rounded-xl bg-black border border-zinc-700"
-              placeholder="Tip Amount"
-            />
-          </div>
-          <div className="bg-black border border-purple-800 rounded-2xl p-4 mt-4">
-  <p className="text-sm text-zinc-400 mb-3">
-    Boost Your Request 🔥
-  </p>
-
-  <div className="grid grid-cols-4 gap-2">
-    {[10, 20, 50, 100].map((boost) => (
-      <button
-        key={boost}
-        type="button"
-        onClick={() =>
-          setTipAmount((current) => Number(current || 0) + boost)
-        }
-        className="bg-purple-700 hover:bg-purple-600 px-3 py-3 rounded-xl font-bold text-sm"
-      >
-        +{tipCurrency} {boost}
-      </button>
-    ))}
-  </div>
-</div>
-          <button
-            onClick={handlePayment}
-            disabled={submitting}
-            className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
+        <div className="flex flex-col md:flex-row gap-4 justify-center">
+          <Link
+            href="/signup"
+            className="bg-purple-600 hover:bg-purple-700 px-8 py-5 rounded-2xl text-xl font-bold transition"
           >
-            {submitting
-              ? "Processing Payment..."
-              : `Pay ${tipCurrency} ${tipAmount || 0} & Request`}
-          </button>
+            Become a Blackline DJ
+          </Link>
+
+          <Link
+            href="/admin"
+            className="bg-zinc-900 border border-zinc-700 hover:bg-zinc-800 px-8 py-5 rounded-2xl text-xl font-bold transition"
+          >
+            DJ Login
+          </Link>
         </div>
-      </div>
+      </section>
 
-      <div className="mt-10 w-full max-w-md">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-3xl font-bold">Live Requests</h2>
+      {/* HOW IT WORKS */}
+      <section className="px-6 py-20 border-t border-zinc-900">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-5xl font-black text-center mb-16">
+            HOW BLACKLINE WORKS
+          </h2>
 
-          <span className="bg-purple-600 px-3 py-1 rounded-full text-sm font-bold">
-            VIP Priority
-          </span>
-        </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl">
+              <div className="text-5xl mb-5">📲</div>
 
-        <div className="space-y-4">
-          {requests.map((request, index) => (
-            <div
-              key={request.id}
-              className={`bg-zinc-900 p-4 rounded-xl border ${
-                index === 0 ? "border-yellow-500" : "border-zinc-800"
-              }`}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <p className="font-bold text-lg">{request.song}</p>
+              <h3 className="text-3xl font-bold mb-4">
+                Scan QR Code
+              </h3>
 
-                <div className="flex gap-2 items-center">
-                  {index === 0 && (
-                    <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
-                      TOP TIP
-                    </span>
-                  )}
-
-                  <span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
-                    {request.tip_currency} {request.tip_amount}
-                  </span>
-                </div>
-              </div>
-
-              <p className="text-zinc-400">{request.artist}</p>
-
-              <p className="text-sm text-purple-400 mt-2">
-                Requested by {request.name}
+              <p className="text-zinc-400 leading-relaxed">
+                Guests scan the DJ’s unique Blackline QR code using their phone.
               </p>
             </div>
-          ))}
+
+            <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl">
+              <div className="text-5xl mb-5">🎵</div>
+
+              <h3 className="text-3xl font-bold mb-4">
+                Request Songs
+              </h3>
+
+              <p className="text-zinc-400 leading-relaxed">
+                Guests submit song requests instantly without walking to the DJ booth.
+              </p>
+            </div>
+
+            <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl">
+              <div className="text-5xl mb-5">🔥</div>
+
+              <h3 className="text-3xl font-bold mb-4">
+                Boost Requests
+              </h3>
+
+              <p className="text-zinc-400 leading-relaxed">
+                Higher tips move requests closer to the top of the live DJ queue.
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* DJ FEATURES */}
+      <section className="px-6 py-20 border-t border-zinc-900">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-5xl font-black text-center mb-16">
+            BUILT FOR PROFESSIONAL DJs
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-purple-950 border border-purple-800 p-8 rounded-3xl">
+              <h3 className="text-3xl font-bold mb-5">
+                Live DJ Dashboard
+              </h3>
+
+              <ul className="space-y-4 text-zinc-300">
+                <li>✅ Real-time song requests</li>
+                <li>✅ VIP priority queue</li>
+                <li>✅ Earnings tracking</li>
+                <li>✅ QR identity system</li>
+                <li>✅ DJ-specific request pages</li>
+              </ul>
+            </div>
+
+            <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl">
+              <h3 className="text-3xl font-bold mb-5">
+                Monetize Every Set
+              </h3>
+
+              <ul className="space-y-4 text-zinc-300">
+                <li>💸 Accept paid requests</li>
+                <li>🔥 Boost request system</li>
+                <li>📈 Increase audience engagement</li>
+                <li>🌍 International currencies supported</li>
+                <li>⚡ Instant live updates</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="px-6 py-24 border-t border-zinc-900 text-center">
+        <h2 className="text-5xl font-black mb-6">
+          Ready to upgrade your DJ experience?
+        </h2>
+
+        <p className="text-zinc-400 text-xl mb-10">
+          Join Blackline and start accepting live premium song requests today.
+        </p>
+
+        <Link
+          href="/signup"
+          className="bg-purple-600 hover:bg-purple-700 px-10 py-5 rounded-2xl text-2xl font-bold transition"
+        >
+          Create DJ Account
+        </Link>
+      </section>
     </main>
   );
 }
