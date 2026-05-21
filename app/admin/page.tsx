@@ -40,15 +40,16 @@ type Withdrawal = {
 };
 
 type DJ = {
-  id: number;
-  stage_name: string;
-  email: string | null;
-  user_id: string;
-  bio?: string | null;
-  city?: string | null;
-  instagram?: string | null;
-  profile_image?: string | null;
-};
+    id: number;
+    stage_name: string;
+    email: string | null;
+    user_id: string;
+    bio?: string | null;
+    city?: string | null;
+    instagram?: string | null;
+    profile_image?: string | null;
+    is_live?: boolean | null;
+  };
 
 export default function AdminPage() {
   const [dj, setDj] = useState<DJ | null>(null);
@@ -120,6 +121,28 @@ export default function AdminPage() {
   async function handleLogout() {
     await supabase.auth.signOut();
     setDj(null);
+  }
+
+  async function toggleLiveStatus() {
+    if (!dj) return;
+
+    const nextLiveStatus = !dj.is_live;
+
+    const { error } = await supabase
+      .from("djs")
+      .update({ is_live: nextLiveStatus })
+      .eq("id", dj.id);
+
+    if (error) {
+      console.error(error);
+      alert("Failed to update live status");
+      return;
+    }
+
+    setDj({
+      ...dj,
+      is_live: nextLiveStatus,
+    });
   }
 
   async function saveProfile() {
@@ -355,6 +378,43 @@ export default function AdminPage() {
           <StatCard title="VIP Requests" value={vipRequests} color="text-purple-400" />
           <StatCard title="Pending Queue" value={grouped.pending.length} color="text-yellow-400" />
           <StatCard title="Paid Transactions" value={payments.length} color="text-green-400" />
+        </div>
+
+        <div
+          className={`border rounded-3xl p-6 mb-10 ${
+            dj.is_live
+              ? "bg-green-950 border-green-700"
+              : "bg-zinc-900 border-zinc-800"
+          }`}
+        >
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h2
+                className={`text-3xl font-bold ${
+                  dj.is_live ? "text-green-400" : "text-zinc-300"
+                }`}
+              >
+                {dj.is_live ? "LIVE NOW 🟢" : "OFFLINE 🔴"}
+              </h2>
+
+              <p className="text-zinc-400 mt-2">
+                {dj.is_live
+                  ? "Guests can currently submit paid song requests."
+                  : "Requests are currently closed for this DJ page."}
+              </p>
+            </div>
+
+            <button
+              onClick={toggleLiveStatus}
+              className={`px-6 py-4 rounded-xl font-bold text-lg ${
+                dj.is_live
+                  ? "bg-red-600 hover:bg-red-700"
+                  : "bg-green-600 hover:bg-green-700"
+              }`}
+            >
+              {dj.is_live ? "Go Offline" : "Go Live"}
+            </button>
+          </div>
         </div>
 
         <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
