@@ -157,6 +157,29 @@ export default function AdminPage() {
     setSavingProfile(false);
   }
 
+  async function handleProfileImageUpload(file: File) {
+    if (!dj) return;
+
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${dj.stage_name}-${Date.now()}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("dj-profile-images")
+      .upload(fileName, file);
+
+    if (uploadError) {
+      console.error(uploadError);
+      alert("Failed to upload image");
+      return;
+    }
+
+    const { data } = supabase.storage
+      .from("dj-profile-images")
+      .getPublicUrl(fileName);
+
+    setProfileImage(data.publicUrl);
+  }
+
   async function fetchDashboardData() {
     if (!dj) return;
 
@@ -295,15 +318,7 @@ export default function AdminPage() {
 
     return (
       <main className="min-h-screen bg-black text-white flex items-center justify-center p-6">
-        <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl w-full max-w-md text-center">
-          <h1 className="text-3xl font-bold text-purple-500 mb-4">
-            Redirecting...
-          </h1>
-
-          <p className="text-zinc-400">
-            Taking you to the Blackline DJ login page.
-          </p>
-        </div>
+        Redirecting...
       </main>
     );
   }
@@ -342,52 +357,85 @@ export default function AdminPage() {
           <StatCard title="Paid Transactions" value={payments.length} color="text-green-400" />
         </div>
 
-        <div className="mb-10 bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
-          <h2 className="text-3xl font-bold mb-4 text-purple-400">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
+          <h2 className="text-4xl font-bold text-purple-400 mb-8">
             DJ Profile Settings
           </h2>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <input
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              placeholder="City e.g. Accra, Ghana"
-              className="bg-black border border-zinc-700 p-4 rounded-xl"
-            />
+          <div className="space-y-6">
+            <div className="flex flex-col items-center">
+              {profileImage ? (
+                <img
+                  src={profileImage}
+                  alt="DJ Profile"
+                  className="w-32 h-32 rounded-full object-cover border-4 border-purple-600 mb-4"
+                />
+              ) : (
+                <div className="w-32 h-32 rounded-full bg-zinc-800 border-4 border-zinc-700 flex items-center justify-center text-zinc-500 mb-4">
+                  No Image
+                </div>
+              )}
+
+              <label className="bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-xl cursor-pointer font-semibold">
+                Upload Profile Photo
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleProfileImageUpload(file);
+                  }}
+                />
+              </label>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                type="text"
+                placeholder="City e.g. Accra, Ghana"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+              />
+
+              <input
+                type="text"
+                placeholder="Instagram handle e.g. @djbenzino"
+                value={instagram}
+                onChange={(e) => setInstagram(e.target.value)}
+                className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+              />
+            </div>
 
             <input
-              value={instagram}
-              onChange={(e) => setInstagram(e.target.value)}
-              placeholder="Instagram handle e.g. @djbenzino"
-              className="bg-black border border-zinc-700 p-4 rounded-xl"
-            />
-
-            <input
+              type="text"
+              placeholder="Profile image URL"
               value={profileImage}
               onChange={(e) => setProfileImage(e.target.value)}
-              placeholder="Profile image URL"
-              className="bg-black border border-zinc-700 p-4 rounded-xl md:col-span-2"
+              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
             />
 
             <textarea
+              placeholder="Short DJ bio / music style"
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              placeholder="Short DJ bio / music style"
-              className="bg-black border border-zinc-700 p-4 rounded-xl md:col-span-2 min-h-28"
+              rows={5}
+              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
             />
+
+            <button
+              onClick={saveProfile}
+              disabled={savingProfile}
+              className="bg-purple-600 hover:bg-purple-700 px-8 py-4 rounded-xl font-bold text-lg disabled:opacity-50"
+            >
+              {savingProfile ? "Saving..." : "Save Profile"}
+            </button>
+
+            {profileMessage && (
+              <p className="text-green-400 font-semibold">{profileMessage}</p>
+            )}
           </div>
-
-          <button
-            onClick={saveProfile}
-            disabled={savingProfile}
-            className="mt-5 bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-xl font-bold disabled:opacity-50"
-          >
-            {savingProfile ? "Saving..." : "Save Profile"}
-          </button>
-
-          {profileMessage && (
-            <p className="text-sm text-zinc-400 mt-3">{profileMessage}</p>
-          )}
         </div>
 
         <div className="mb-10">
