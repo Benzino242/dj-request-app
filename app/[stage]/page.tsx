@@ -24,6 +24,7 @@ type DJ = {
   bio: string | null;
   city: string | null;
   instagram: string | null;
+  is_live: boolean | null;
 };
 
 export default function StageRequestPage() {
@@ -88,9 +89,10 @@ export default function StageRequestPage() {
 
     const refreshInterval = setInterval(() => {
       fetchRequests(dj.id);
+      fetchDJ();
     }, 3000);
 
-    const channel = supabase
+    const requestsChannel = supabase
       .channel(`requests-channel-${dj.id}`)
       .on(
         "postgres_changes",
@@ -106,15 +108,37 @@ export default function StageRequestPage() {
       )
       .subscribe();
 
+    const djChannel = supabase
+      .channel(`dj-live-channel-${dj.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "djs",
+          filter: `id=eq.${dj.id}`,
+        },
+        () => {
+          fetchDJ();
+        }
+      )
+      .subscribe();
+
     return () => {
       clearInterval(refreshInterval);
-      supabase.removeChannel(channel);
+      supabase.removeChannel(requestsChannel);
+      supabase.removeChannel(djChannel);
     };
-  }, [dj]);
+  }, [dj?.id]);
 
   async function handlePayment() {
     if (!dj) {
       alert("DJ profile not found");
+      return;
+    }
+
+    if (!dj.is_live) {
+      alert("This DJ is currently offline. Please try again when they are live.");
       return;
     }
 
@@ -269,6 +293,16 @@ export default function StageRequestPage() {
             {dj.stage_name}
           </h1>
 
+          <div
+            className={`inline-block px-4 py-2 rounded-full text-sm font-bold mb-4 ${
+              dj.is_live
+                ? "bg-green-600 text-white"
+                : "bg-red-600 text-white"
+            }`}
+          >
+            {dj.is_live ? "LIVE NOW 🟢" : "OFFLINE 🔴"}
+          </div>
+
           {dj.city && (
             <p className="text-zinc-400 text-sm mb-2">📍 {dj.city}</p>
           )}
@@ -286,6 +320,14 @@ export default function StageRequestPage() {
           )}
         </div>
 
+        {!dj.is_live && (
+          <div className="bg-red-950 border border-red-700 p-4 rounded-2xl mb-6 text-center">
+            <p className="text-red-200 font-semibold">
+              This DJ is currently offline. Requests are closed.
+            </p>
+          </div>
+        )}
+
         <p className="text-center text-zinc-400 mb-8">
           Request songs. Skip the queue. Tip the DJ.
         </p>
@@ -302,6 +344,7 @@ export default function StageRequestPage() {
             placeholder="Your Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            disabled={!dj.is_live}
           />
 
           <input
@@ -309,6 +352,7 @@ export default function StageRequestPage() {
             placeholder="Song Name"
             value={song}
             onChange={(e) => setSong(e.target.value)}
+            disabled={!dj.is_live}
           />
 
           <input
@@ -316,6 +360,7 @@ export default function StageRequestPage() {
             placeholder="Artist"
             value={artist}
             onChange={(e) => setArtist(e.target.value)}
+            disabled={!dj.is_live}
           />
 
           <div className="grid grid-cols-2 gap-4">
@@ -323,6 +368,7 @@ export default function StageRequestPage() {
               value={tipCurrency}
               onChange={(e) => setTipCurrency(e.target.value)}
               className="p-4 rounded-xl bg-black border border-zinc-700"
+              disabled={!dj.is_live}
             >
               <option value="GHS">🇬🇭 GHS</option>
               <option value="USD">🇺🇸 USD</option>
@@ -357,6 +403,7 @@ export default function StageRequestPage() {
               onChange={(e) => setTipAmount(Number(e.target.value))}
               className="p-4 rounded-xl bg-black border border-zinc-700"
               placeholder="Tip Amount"
+              disabled={!dj.is_live}
             />
           </div>
 
@@ -373,7 +420,8 @@ export default function StageRequestPage() {
                   onClick={() =>
                     setTipAmount((current) => Number(current || 0) + boost)
                   }
-                  className="bg-purple-700 hover:bg-purple-600 px-3 py-3 rounded-xl font-bold text-sm"
+                  disabled={!dj.is_live}
+                  className="bg-purple-700 hover:bg-purple-600 px-3 py-3 rounded-xl font-bold text-sm disabled:opacity-40"
                 >
                   +{tipCurrency} {boost}
                 </button>
@@ -383,10 +431,12 @@ export default function StageRequestPage() {
 
           <button
             onClick={handlePayment}
-            disabled={submitting}
+            disabled={submitting || !dj.is_live}
             className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
           >
-            {submitting
+            {!dj.is_live
+              ? "Requests Closed"
+              : submitting
               ? "Processing Payment..."
               : `Pay ${tipCurrency} ${tipAmount || 0} & Request`}
           </button>
