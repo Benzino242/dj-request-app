@@ -21,6 +21,9 @@ type DJ = {
   stage_name: string;
   email: string | null;
   profile_image: string | null;
+  bio: string | null;
+  city: string | null;
+  instagram: string | null;
 };
 
 export default function StageRequestPage() {
@@ -80,13 +83,13 @@ export default function StageRequestPage() {
 
   useEffect(() => {
     if (!dj) return;
-  
+
     fetchRequests(dj.id);
-  
+
     const refreshInterval = setInterval(() => {
       fetchRequests(dj.id);
     }, 3000);
-  
+
     const channel = supabase
       .channel(`requests-channel-${dj.id}`)
       .on(
@@ -102,7 +105,7 @@ export default function StageRequestPage() {
         }
       )
       .subscribe();
-  
+
     return () => {
       clearInterval(refreshInterval);
       supabase.removeChannel(channel);
@@ -127,9 +130,7 @@ export default function StageRequestPage() {
 
     setSubmitting(true);
 
-    const PaystackPop =
-      (await import("@paystack/inline-js")).default;
-
+    const PaystackPop = (await import("@paystack/inline-js")).default;
     const paystack = new PaystackPop();
 
     paystack.newTransaction({
@@ -182,29 +183,27 @@ export default function StageRequestPage() {
             return;
           }
 
-          const { error: paymentError } = await supabase
-  .from("payments")
-  .insert([
-    {
-      dj_id: dj.id,
-      request_id: requestData.id,
-      guest_name: name.trim(),
-      song: song.trim(),
-      artist: artist.trim(),
-      amount: tipAmount,
-      currency: tipCurrency,
-      status: "paid",
-      provider: "paystack",
-      provider_reference: transaction.reference,
-      dj_amount: Number((tipAmount * 0.9).toFixed(2)),
-      platform_fee: Number((tipAmount * 0.1).toFixed(2)),
-      payout_status: "pending",
-    },
-  ]);
+          const { error: paymentError } = await supabase.from("payments").insert([
+            {
+              dj_id: dj.id,
+              request_id: requestData.id,
+              guest_name: name.trim(),
+              song: song.trim(),
+              artist: artist.trim(),
+              amount: tipAmount,
+              currency: tipCurrency,
+              status: "paid",
+              provider: "paystack",
+              provider_reference: transaction.reference,
+              dj_amount: Number((tipAmount * 0.9).toFixed(2)),
+              platform_fee: Number((tipAmount * 0.1).toFixed(2)),
+              payout_status: "pending",
+            },
+          ]);
 
-if (paymentError) {
-  console.error("PAYMENT INSERT ERROR:", paymentError);
-}
+          if (paymentError) {
+            console.error("PAYMENT INSERT ERROR:", paymentError);
+          }
 
           await fetchRequests(dj.id);
 
@@ -255,13 +254,37 @@ if (paymentError) {
   return (
     <main className="min-h-screen bg-black text-white flex flex-col items-center p-10">
       <div className="bg-zinc-900 p-8 rounded-3xl shadow-2xl w-full max-w-md border border-zinc-800">
-        <p className="text-center text-zinc-500 text-sm mb-2">
-          Requesting from DJ
-        </p>
+        <div className="text-center mb-6">
+          {dj.profile_image && (
+            <img
+              src={dj.profile_image}
+              alt={dj.stage_name}
+              className="w-28 h-28 rounded-full object-cover mx-auto mb-4 border-4 border-purple-600"
+            />
+          )}
 
-        <h1 className="text-5xl font-bold text-center mb-3 text-purple-500 uppercase">
-          {dj.stage_name}
-        </h1>
+          <p className="text-zinc-500 text-sm mb-2">Requesting from DJ</p>
+
+          <h1 className="text-5xl font-bold mb-3 text-purple-500 uppercase">
+            {dj.stage_name}
+          </h1>
+
+          {dj.city && (
+            <p className="text-zinc-400 text-sm mb-2">📍 {dj.city}</p>
+          )}
+
+          {dj.bio && (
+            <p className="text-zinc-300 text-sm leading-relaxed mb-3">
+              {dj.bio}
+            </p>
+          )}
+
+          {dj.instagram && (
+            <p className="text-purple-400 text-sm font-semibold">
+              Instagram: {dj.instagram}
+            </p>
+          )}
+        </div>
 
         <p className="text-center text-zinc-400 mb-8">
           Request songs. Skip the queue. Tip the DJ.
@@ -328,115 +351,115 @@ if (paymentError) {
             </select>
 
             <input
-  type="number"
-  min="1"
-  value={tipAmount === 0 ? "" : tipAmount}
-  onChange={(e) => setTipAmount(Number(e.target.value))}
-  className="p-4 rounded-xl bg-black border border-zinc-700"
-  placeholder="Tip Amount"
-/>
-</div>
-
-<div className="bg-black border border-purple-800 rounded-2xl p-4 mt-4">
-  <p className="text-sm text-zinc-400 mb-3">
-    Boost Your Request 🔥
-  </p>
-
-  <div className="grid grid-cols-4 gap-2">
-    {[10, 20, 50, 100].map((boost) => (
-      <button
-        key={boost}
-        type="button"
-        onClick={() =>
-          setTipAmount((current) => Number(current || 0) + boost)
-        }
-        className="bg-purple-700 hover:bg-purple-600 px-3 py-3 rounded-xl font-bold text-sm"
-      >
-        +{tipCurrency} {boost}
-      </button>
-    ))}
-  </div>
-</div>
-
-<button
-  onClick={handlePayment}
-  disabled={submitting}
-  className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
->
-  {submitting
-    ? "Processing Payment..."
-    : `Pay ${tipCurrency} ${tipAmount || 0} & Request`}
-</button>
-
-<p className="text-xs text-zinc-500 text-center mt-4 leading-relaxed">
-  Boosting a request increases priority in the DJ queue but does not guarantee
-  playback or acceptance by the DJ.
-</p>
-</div>
-</div>
-
-<div className="mt-10 w-full max-w-md">
-  <div className="flex items-center justify-between mb-4">
-    <h2 className="text-3xl font-bold">Live Requests</h2>
-
-    <span className="bg-purple-600 px-3 py-1 rounded-full text-sm font-bold">
-      VIP Priority
-    </span>
-  </div>
-
-  <div className="space-y-4">
-    {requests.map((request, index) => (
-      <div
-        key={request.id}
-        className={`bg-zinc-900 p-4 rounded-xl border ${
-          index === 0 ? "border-yellow-500" : "border-zinc-800"
-        }`}
-      >
-        <div className="flex items-center justify-between mb-2">
-          <p className="font-bold text-lg">{request.song}</p>
-
-          <div className="flex gap-2 items-center">
-            {index === 0 && (
-              <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
-                TOP TIP
-              </span>
-            )}
-
-            <span
-              className={`text-xs px-3 py-1 rounded-full font-bold ${
-                request.status === "accepted"
-                  ? "bg-green-600 text-white"
-                  : request.status === "rejected"
-                  ? "bg-red-600 text-white"
-                  : request.status === "played"
-                  ? "bg-blue-600 text-white"
-                  : "bg-yellow-500 text-black"
-              }`}
-            >
-              {request.status === "accepted"
-                ? "ACCEPTED ✅"
-                : request.status === "rejected"
-                ? "REJECTED ❌"
-                : request.status === "played"
-                ? "PLAYED 🎵"
-                : "PENDING ⏳"}
-            </span>
-
-            <span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
-              {request.tip_currency} {request.tip_amount}
-            </span>
+              type="number"
+              min="1"
+              value={tipAmount === 0 ? "" : tipAmount}
+              onChange={(e) => setTipAmount(Number(e.target.value))}
+              className="p-4 rounded-xl bg-black border border-zinc-700"
+              placeholder="Tip Amount"
+            />
           </div>
+
+          <div className="bg-black border border-purple-800 rounded-2xl p-4 mt-4">
+            <p className="text-sm text-zinc-400 mb-3">
+              Boost Your Request 🔥
+            </p>
+
+            <div className="grid grid-cols-4 gap-2">
+              {[10, 20, 50, 100].map((boost) => (
+                <button
+                  key={boost}
+                  type="button"
+                  onClick={() =>
+                    setTipAmount((current) => Number(current || 0) + boost)
+                  }
+                  className="bg-purple-700 hover:bg-purple-600 px-3 py-3 rounded-xl font-bold text-sm"
+                >
+                  +{tipCurrency} {boost}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={handlePayment}
+            disabled={submitting}
+            className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
+          >
+            {submitting
+              ? "Processing Payment..."
+              : `Pay ${tipCurrency} ${tipAmount || 0} & Request`}
+          </button>
+
+          <p className="text-xs text-zinc-500 text-center mt-4 leading-relaxed">
+            Boosting a request increases priority in the DJ queue but does not
+            guarantee playback or acceptance by the DJ.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-10 w-full max-w-md">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-3xl font-bold">Live Requests</h2>
+
+          <span className="bg-purple-600 px-3 py-1 rounded-full text-sm font-bold">
+            VIP Priority
+          </span>
         </div>
 
-        <p className="text-zinc-400">{request.artist}</p>
+        <div className="space-y-4">
+          {requests.map((request, index) => (
+            <div
+              key={request.id}
+              className={`bg-zinc-900 p-4 rounded-xl border ${
+                index === 0 ? "border-yellow-500" : "border-zinc-800"
+              }`}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <p className="font-bold text-lg">{request.song}</p>
 
-        <p className="text-sm text-purple-400 mt-2">
-          Requested by {request.name}
-        </p>
+                <div className="flex gap-2 items-center">
+                  {index === 0 && (
+                    <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
+                      TOP TIP
+                    </span>
+                  )}
+
+                  <span
+                    className={`text-xs px-3 py-1 rounded-full font-bold ${
+                      request.status === "accepted"
+                        ? "bg-green-600 text-white"
+                        : request.status === "rejected"
+                        ? "bg-red-600 text-white"
+                        : request.status === "played"
+                        ? "bg-blue-600 text-white"
+                        : "bg-yellow-500 text-black"
+                    }`}
+                  >
+                    {request.status === "accepted"
+                      ? "ACCEPTED ✅"
+                      : request.status === "rejected"
+                      ? "REJECTED ❌"
+                      : request.status === "played"
+                      ? "PLAYED 🎵"
+                      : "PENDING ⏳"}
+                  </span>
+
+                  <span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
+                    {request.tip_currency} {request.tip_amount}
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-zinc-400">{request.artist}</p>
+
+              <p className="text-sm text-purple-400 mt-2">
+                Requested by {request.name}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
-    ))}
-  </div>
-</div>
-</main>
-);
+    </main>
+  );
 }
