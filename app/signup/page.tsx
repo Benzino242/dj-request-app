@@ -35,7 +35,12 @@ export default function SignupPage() {
     const userId = data.user?.id;
 
     if (!userId) {
-      setMessage("Account created. Please check your email to confirm signup.");
+      setMessage("Account created. Redirecting to login...");
+
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 1500);
+
       setLoading(false);
       return;
     }
@@ -54,14 +59,16 @@ export default function SignupPage() {
       return;
     }
 
-    setMessage(
-      `Account created! Your DJ page is /${cleanStageName}. You can now log in at /admin.`
-    );
+    setMessage("Account created! Redirecting to dashboard...");
 
     setStageName("");
     setEmail("");
     setPassword("");
     setLoading(false);
+
+    setTimeout(() => {
+      window.location.href = "/admin";
+    }, 1500);
   }
 
   return (

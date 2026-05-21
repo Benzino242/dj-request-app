@@ -262,47 +262,20 @@ export default function AdminPage() {
   }
 
   if (!dj) {
+    if (typeof window !== "undefined") {
+      window.location.href = "/login";
+    }
+  
     return (
       <main className="min-h-screen bg-black text-white flex items-center justify-center p-6">
-        <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl w-full max-w-md">
-          <h1 className="text-4xl font-bold text-purple-500 text-center mb-3">
-            Blackline DJ Login
+        <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl w-full max-w-md text-center">
+          <h1 className="text-3xl font-bold text-purple-500 mb-4">
+            Redirecting...
           </h1>
-
-          <p className="text-zinc-400 text-center mb-8">
-            Sign in to manage your requests, tips, and payouts.
+  
+          <p className="text-zinc-400">
+            Taking you to the Blackline DJ login page.
           </p>
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-              required
-            />
-
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-              required
-            />
-
-            {loginError && (
-              <p className="text-red-400 text-center text-sm">{loginError}</p>
-            )}
-
-            <button
-              type="submit"
-              className="w-full bg-purple-600 hover:bg-purple-700 p-4 rounded-xl text-xl font-semibold"
-            >
-              Login
-            </button>
-          </form>
         </div>
       </main>
     );

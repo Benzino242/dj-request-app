@@ -80,9 +80,13 @@ export default function StageRequestPage() {
 
   useEffect(() => {
     if (!dj) return;
-
+  
     fetchRequests(dj.id);
-
+  
+    const refreshInterval = setInterval(() => {
+      fetchRequests(dj.id);
+    }, 3000);
+  
     const channel = supabase
       .channel(`requests-channel-${dj.id}`)
       .on(
@@ -98,8 +102,9 @@ export default function StageRequestPage() {
         }
       )
       .subscribe();
-
+  
     return () => {
+      clearInterval(refreshInterval);
       supabase.removeChannel(channel);
     };
   }, [dj]);
@@ -392,9 +397,29 @@ if (paymentError) {
                     </span>
                   )}
 
-                  <span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
-                    {request.tip_currency} {request.tip_amount}
-                  </span>
+                <span
+  className={`text-xs px-3 py-1 rounded-full font-bold ${
+    request.status === "accepted"
+      ? "bg-green-600 text-white"
+      : request.status === "rejected"
+      ? "bg-red-600 text-white"
+      : request.status === "played"
+      ? "bg-blue-600 text-white"
+      : "bg-yellow-500 text-black"
+  }`}
+>
+  {request.status === "accepted"
+    ? "ACCEPTED ✅"
+    : request.status === "rejected"
+    ? "REJECTED ❌"
+    : request.status === "played"
+    ? "PLAYED 🎵"
+    : "PENDING ⏳"}
+</span>
+
+<span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
+  {request.tip_currency} {request.tip_amount}
+</span>
                 </div>
               </div>
 
