@@ -388,6 +388,16 @@ export default function AdminPage() {
                   }}
                 />
               </label>
+
+              {profileImage && (
+                <button
+                  type="button"
+                  onClick={() => setProfileImage("")}
+                  className="mt-3 bg-zinc-700 hover:bg-zinc-600 px-5 py-3 rounded-xl font-semibold"
+                >
+                  Remove Photo
+                </button>
+              )}
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
