@@ -44,16 +44,23 @@ type DJ = {
   stage_name: string;
   email: string | null;
   user_id: string;
+  bio?: string | null;
+  city?: string | null;
+  instagram?: string | null;
+  profile_image?: string | null;
 };
 
 export default function AdminPage() {
   const [dj, setDj] = useState<DJ | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [bio, setBio] = useState("");
+  const [city, setCity] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [profileImage, setProfileImage] = useState("");
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [profileMessage, setProfileMessage] = useState("");
 
-  const [loginError, setLoginError] = useState("");
   const [requests, setRequests] = useState<SongRequest[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
@@ -89,6 +96,10 @@ export default function AdminPage() {
     }
 
     setDj(data as DJ);
+    setBio(data.bio || "");
+    setCity(data.city || "");
+    setInstagram(data.instagram || "");
+    setProfileImage(data.profile_image || "");
     setAuthLoading(false);
   }
 
@@ -106,28 +117,44 @@ export default function AdminPage() {
     };
   }, []);
 
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
-    setLoginError("");
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      setLoginError(error.message);
-      return;
-    }
-
-    await loadLoggedInDJ();
-  }
-
   async function handleLogout() {
     await supabase.auth.signOut();
     setDj(null);
-    setEmail("");
-    setPassword("");
+  }
+
+  async function saveProfile() {
+    if (!dj) return;
+
+    setSavingProfile(true);
+    setProfileMessage("");
+
+    const { error } = await supabase
+      .from("djs")
+      .update({
+        bio,
+        city,
+        instagram,
+        profile_image: profileImage,
+      })
+      .eq("id", dj.id);
+
+    if (error) {
+      console.error(error);
+      setProfileMessage("Profile update failed.");
+      setSavingProfile(false);
+      return;
+    }
+
+    setDj({
+      ...dj,
+      bio,
+      city,
+      instagram,
+      profile_image: profileImage,
+    });
+
+    setProfileMessage("Profile updated successfully.");
+    setSavingProfile(false);
   }
 
   async function fetchDashboardData() {
@@ -265,14 +292,14 @@ export default function AdminPage() {
     if (typeof window !== "undefined") {
       window.location.href = "/login";
     }
-  
+
     return (
       <main className="min-h-screen bg-black text-white flex items-center justify-center p-6">
         <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl w-full max-w-md text-center">
           <h1 className="text-3xl font-bold text-purple-500 mb-4">
             Redirecting...
           </h1>
-  
+
           <p className="text-zinc-400">
             Taking you to the Blackline DJ login page.
           </p>
@@ -313,6 +340,54 @@ export default function AdminPage() {
           <StatCard title="VIP Requests" value={vipRequests} color="text-purple-400" />
           <StatCard title="Pending Queue" value={grouped.pending.length} color="text-yellow-400" />
           <StatCard title="Paid Transactions" value={payments.length} color="text-green-400" />
+        </div>
+
+        <div className="mb-10 bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+          <h2 className="text-3xl font-bold mb-4 text-purple-400">
+            DJ Profile Settings
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <input
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder="City e.g. Accra, Ghana"
+              className="bg-black border border-zinc-700 p-4 rounded-xl"
+            />
+
+            <input
+              value={instagram}
+              onChange={(e) => setInstagram(e.target.value)}
+              placeholder="Instagram handle e.g. @djbenzino"
+              className="bg-black border border-zinc-700 p-4 rounded-xl"
+            />
+
+            <input
+              value={profileImage}
+              onChange={(e) => setProfileImage(e.target.value)}
+              placeholder="Profile image URL"
+              className="bg-black border border-zinc-700 p-4 rounded-xl md:col-span-2"
+            />
+
+            <textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Short DJ bio / music style"
+              className="bg-black border border-zinc-700 p-4 rounded-xl md:col-span-2 min-h-28"
+            />
+          </div>
+
+          <button
+            onClick={saveProfile}
+            disabled={savingProfile}
+            className="mt-5 bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-xl font-bold disabled:opacity-50"
+          >
+            {savingProfile ? "Saving..." : "Save Profile"}
+          </button>
+
+          {profileMessage && (
+            <p className="text-sm text-zinc-400 mt-3">{profileMessage}</p>
+          )}
         </div>
 
         <div className="mb-10">
@@ -383,7 +458,7 @@ export default function AdminPage() {
         </div>
 
         <div className="mb-12">
-        <QRCodeBox stageName={dj.stage_name} />
+          <QRCodeBox stageName={dj.stage_name} />
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
