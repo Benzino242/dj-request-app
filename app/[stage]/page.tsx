@@ -101,6 +101,7 @@ export default function StageRequestPage() {
       setNowPlaying(null);
       previousNowPlayingId.current = null;
     }
+  }
 
   useEffect(() => {
     fetchDJ();
