@@ -65,9 +65,15 @@ export default function AdminPage() {
   const [requests, setRequests] = useState<SongRequest[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
+  
+  const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [accountName, setAccountName] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [provider, setProvider] = useState("MTN");
+  const [withdrawLoading, setWithdrawLoading] = useState(false);
+  
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
-
   async function loadLoggedInDJ() {
     setAuthLoading(true);
 
@@ -287,6 +293,67 @@ export default function AdminPage() {
     await supabase.from("requests").delete().eq("id", id);
     await fetchDashboardData();
     setActionLoadingId(null);
+  }
+  async function requestWithdrawal() {
+    if (!dj) return;
+  
+    const amount = Number(withdrawAmount);
+  
+    if (!amount || amount <= 0) {
+      alert("Enter a valid withdrawal amount");
+      return;
+    }
+  
+    if (!accountName.trim()) {
+      alert("Enter account name");
+      return;
+    }
+  
+    if (!accountNumber.trim()) {
+      alert("Enter account number");
+      return;
+    }
+  
+    const availableBalance = netEarnings - totalWithdrawals;
+  
+    if (amount > availableBalance) {
+      alert("Insufficient available balance");
+      return;
+    }
+  
+    setWithdrawLoading(true);
+  
+    const { error } = await supabase.from("withdrawals").insert([
+      {
+        dj_id: dj.id,
+        dj_name: dj.stage_name,
+        amount,
+        currency,
+        payout_method: "Mobile Money",
+        account_name: accountName,
+        account_number: accountNumber,
+        provider,
+        status: "pending",
+      },
+    ]);
+  
+    if (error) {
+      console.error(error);
+      alert("Failed to submit withdrawal request");
+      setWithdrawLoading(false);
+      return;
+    }
+  
+    alert("Withdrawal request submitted");
+  
+    setWithdrawAmount("");
+    setAccountName("");
+    setAccountNumber("");
+    setProvider("MTN");
+  
+    await fetchDashboardData();
+  
+    setWithdrawLoading(false);
   }
 
   const grouped = useMemo(() => {
