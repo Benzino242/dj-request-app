@@ -338,11 +338,13 @@ export default function AdminPage() {
     ]);
   
     if (error) {
-      console.error(error);
-      alert("Failed to submit withdrawal request");
-      setWithdrawLoading(false);
-      return;
-    }
+        console.error("WITHDRAWAL ERROR:", error);
+      
+        alert(error.message || JSON.stringify(error));
+      
+        setWithdrawLoading(false);
+        return;
+      }
   
     alert("Withdrawal request submitted");
   
