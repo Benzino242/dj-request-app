@@ -597,6 +597,68 @@ export default function AdminPage() {
             Withdrawal Activity
           </h2>
 
+          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 mb-8">
+  <h3 className="text-2xl font-bold text-white mb-5">
+    Request Withdrawal
+  </h3>
+
+  <div className="grid md:grid-cols-2 gap-4 mb-4">
+    <input
+      type="number"
+      placeholder="Withdrawal Amount"
+      value={withdrawAmount}
+      onChange={(e) => setWithdrawAmount(e.target.value)}
+      className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+    />
+
+    <select
+      value={provider}
+      onChange={(e) => setProvider(e.target.value)}
+      className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+    >
+      <option value="MTN">MTN Mobile Money</option>
+      <option value="Telecel">Telecel Cash</option>
+      <option value="AirtelTigo">AirtelTigo Money</option>
+    </select>
+  </div>
+
+  <div className="grid md:grid-cols-2 gap-4 mb-4">
+    <input
+      type="text"
+      placeholder="Account Name"
+      value={accountName}
+      onChange={(e) => setAccountName(e.target.value)}
+      className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+    />
+
+    <input
+      type="text"
+      placeholder="Mobile Money Number"
+      value={accountNumber}
+      onChange={(e) => setAccountNumber(e.target.value)}
+      className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+    />
+  </div>
+
+  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+      <p className="text-zinc-400 text-sm">Available Balance</p>
+
+      <h4 className="text-3xl font-bold text-green-400">
+        {currency} {(netEarnings - totalWithdrawals).toFixed(2)}
+      </h4>
+    </div>
+
+    <button
+      onClick={requestWithdrawal}
+      disabled={withdrawLoading}
+      className="bg-cyan-600 hover:bg-cyan-700 px-8 py-4 rounded-xl font-bold text-lg disabled:opacity-50"
+    >
+      {withdrawLoading ? "Submitting..." : "Request Payout"}
+    </button>
+  </div>
+</div>
+
           <div className="grid md:grid-cols-3 gap-4 mb-6">
             <StatCard title="Withdrawal Requests" value={withdrawals.length} color="text-cyan-400" />
             <StatCard title="Total Withdrawals" value={`${currency} ${totalWithdrawals.toFixed(2)}`} color="text-green-400" />
