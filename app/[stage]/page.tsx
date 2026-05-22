@@ -86,19 +86,21 @@ export default function StageRequestPage() {
 
     if (latestPlayed) {
       setNowPlaying(latestPlayed);
-
+    
       if (latestPlayed.id !== previousNowPlayingId.current) {
         previousNowPlayingId.current = latestPlayed.id;
-
+    
         if (typeof navigator !== "undefined" && "vibrate" in navigator) {
           navigator.vibrate?.([300, 150, 300, 150, 500]);
         }
-
+    
         setFlashAlert(true);
         setTimeout(() => setFlashAlert(false), 1800);
       }
+    } else {
+      setNowPlaying(null);
+      previousNowPlayingId.current = null;
     }
-  }
 
   useEffect(() => {
     fetchDJ();
