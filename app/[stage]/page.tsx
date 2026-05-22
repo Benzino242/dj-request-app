@@ -511,13 +511,15 @@ export default function StageRequestPage() {
         </div>
 
         <div className="space-y-4">
-          {requests.map((request, index) => (
-            <div
-              key={request.id}
-              className={`bg-zinc-900 p-4 rounded-xl border ${
-                index === 0 ? "border-yellow-500" : "border-zinc-800"
-              }`}
-            >
+  {requests
+    .filter((request) => request.status !== "finished")
+    .map((request, index) => (
+      <div
+        key={request.id}
+        className={`bg-zinc-900 p-4 rounded-xl border ${
+          index === 0 ? "border-yellow-500" : "border-zinc-800"
+        }`}
+      >
               <div className="flex items-center justify-between mb-2">
                 <p className="font-bold text-lg">{request.song}</p>
 
