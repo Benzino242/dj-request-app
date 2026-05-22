@@ -4,7 +4,12 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import QRCodeBox from "../components/QRCodeBox";
 
-type RequestStatus = "pending" | "accepted" | "rejected" | "played";
+type RequestStatus =
+  | "pending"
+  | "accepted"
+  | "rejected"
+  | "played"
+  | "finished";
 
 type SongRequest = {
   id: number;
@@ -364,6 +369,7 @@ export default function AdminPage() {
       accepted: requests.filter((r) => r.status === "accepted"),
       rejected: requests.filter((r) => r.status === "rejected"),
       played: requests.filter((r) => r.status === "played"),
+finished: requests.filter((r) => r.status === "finished"),
     };
   }, [requests]);
 
