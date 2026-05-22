@@ -338,27 +338,6 @@ export default function StageRequestPage() {
         </div>
       )}
 
-{upNext && (
-  <div className="w-full max-w-md mb-8">
-    <div className="bg-zinc-900 border border-cyan-500 p-5 rounded-3xl text-center shadow-[0_0_25px_rgba(34,211,238,0.3)]">
-      <p className="text-xs tracking-[0.3em] text-cyan-400 font-bold mb-2">
-        UP NEXT ⏭️
-      </p>
-
-      <h2 className="text-2xl font-black text-white">
-        {upNext.song}
-      </h2>
-
-      <p className="text-zinc-300 mt-2">
-        {upNext.artist}
-      </p>
-
-      <p className="text-cyan-400 text-sm mt-3">
-        Requested by {upNext.name}
-      </p>
-    </div>
-  </div>
-)}
 
       <div className="bg-zinc-900 p-8 rounded-3xl shadow-2xl w-full max-w-md border border-zinc-800">
         <div className="text-center mb-6">
