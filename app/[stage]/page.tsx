@@ -482,17 +482,28 @@ export default function StageRequestPage() {
             </div>
           </div>
 
-          <button
-            onClick={handlePayment}
-            disabled={submitting || !dj.is_live}
-            className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
-          >
-            {!dj.is_live
-              ? "Requests Closed"
-              : submitting
-              ? "Processing Payment..."
-              : `Pay ${tipCurrency} ${tipAmount || 0} & Request`}
-          </button>
+          {tipCurrency !== "GHS" && (
+  <div className="bg-yellow-950 border border-yellow-600 text-yellow-300 p-4 rounded-2xl text-sm text-center">
+    {tipCurrency} payments are coming soon.
+    Please use GHS for now.
+  </div>
+)}
+
+<button
+  onClick={handlePayment}
+  disabled={
+    submitting || !dj.is_live || tipCurrency !== "GHS"
+  }
+  className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
+>
+  {!dj.is_live
+    ? "Requests Closed"
+    : tipCurrency !== "GHS"
+    ? `${tipCurrency} Coming Soon`
+    : submitting
+    ? "Processing Payment..."
+    : `Pay ${tipCurrency} ${tipAmount || 0} & Request`}
+</button>
 
           <p className="text-xs text-zinc-500 text-center mt-4 leading-relaxed">
             Boosting a request increases priority in the DJ queue but does not
