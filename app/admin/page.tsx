@@ -45,16 +45,16 @@ type Withdrawal = {
 };
 
 type DJ = {
-    id: number;
-    stage_name: string;
-    email: string | null;
-    user_id: string;
-    bio?: string | null;
-    city?: string | null;
-    instagram?: string | null;
-    profile_image?: string | null;
-    is_live?: boolean | null;
-  };
+  id: number;
+  stage_name: string;
+  email: string | null;
+  user_id: string;
+  bio?: string | null;
+  city?: string | null;
+  instagram?: string | null;
+  profile_image?: string | null;
+  is_live?: boolean | null;
+};
 
 export default function AdminPage() {
   const [dj, setDj] = useState<DJ | null>(null);
@@ -70,15 +70,16 @@ export default function AdminPage() {
   const [requests, setRequests] = useState<SongRequest[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
-  
+
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [accountName, setAccountName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [provider, setProvider] = useState("MTN");
   const [withdrawLoading, setWithdrawLoading] = useState(false);
-  
+
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
+
   async function loadLoggedInDJ() {
     setAuthLoading(true);
 
@@ -299,35 +300,36 @@ export default function AdminPage() {
     await fetchDashboardData();
     setActionLoadingId(null);
   }
+
   async function requestWithdrawal() {
     if (!dj) return;
-  
+
     const amount = Number(withdrawAmount);
-  
+
     if (!amount || amount <= 0) {
       alert("Enter a valid withdrawal amount");
       return;
     }
-  
+
     if (!accountName.trim()) {
       alert("Enter account name");
       return;
     }
-  
+
     if (!accountNumber.trim()) {
       alert("Enter account number");
       return;
     }
-  
+
     const availableBalance = netEarnings - totalWithdrawals;
-  
+
     if (amount > availableBalance) {
       alert("Insufficient available balance");
       return;
     }
-  
+
     setWithdrawLoading(true);
-  
+
     const { error } = await supabase.from("withdrawals").insert([
       {
         dj_id: dj.id,
@@ -341,25 +343,23 @@ export default function AdminPage() {
         status: "pending",
       },
     ]);
-  
+
     if (error) {
-        console.error("WITHDRAWAL ERROR:", error);
-      
-        alert(error.message || JSON.stringify(error));
-      
-        setWithdrawLoading(false);
-        return;
-      }
-  
+      console.error("WITHDRAWAL ERROR:", error);
+      alert(error.message || JSON.stringify(error));
+      setWithdrawLoading(false);
+      return;
+    }
+
     alert("Withdrawal request submitted");
-  
+
     setWithdrawAmount("");
     setAccountName("");
     setAccountNumber("");
     setProvider("MTN");
-  
+
     await fetchDashboardData();
-  
+
     setWithdrawLoading(false);
   }
 
@@ -369,7 +369,7 @@ export default function AdminPage() {
       accepted: requests.filter((r) => r.status === "accepted"),
       rejected: requests.filter((r) => r.status === "rejected"),
       played: requests.filter((r) => r.status === "played"),
-finished: requests.filter((r) => r.status === "finished"),
+      finished: requests.filter((r) => r.status === "finished"),
     };
   }, [requests]);
 
@@ -606,66 +606,66 @@ finished: requests.filter((r) => r.status === "finished"),
           </h2>
 
           <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 mb-8">
-  <h3 className="text-2xl font-bold text-white mb-5">
-    Request Withdrawal
-  </h3>
+            <h3 className="text-2xl font-bold text-white mb-5">
+              Request Withdrawal
+            </h3>
 
-  <div className="grid md:grid-cols-2 gap-4 mb-4">
-    <input
-      type="number"
-      placeholder="Withdrawal Amount"
-      value={withdrawAmount}
-      onChange={(e) => setWithdrawAmount(e.target.value)}
-      className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-    />
+            <div className="grid md:grid-cols-2 gap-4 mb-4">
+              <input
+                type="number"
+                placeholder="Withdrawal Amount"
+                value={withdrawAmount}
+                onChange={(e) => setWithdrawAmount(e.target.value)}
+                className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+              />
 
-    <select
-      value={provider}
-      onChange={(e) => setProvider(e.target.value)}
-      className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-    >
-      <option value="MTN">MTN Mobile Money</option>
-      <option value="Telecel">Telecel Cash</option>
-      <option value="AirtelTigo">AirtelTigo Money</option>
-    </select>
-  </div>
+              <select
+                value={provider}
+                onChange={(e) => setProvider(e.target.value)}
+                className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+              >
+                <option value="MTN">MTN Mobile Money</option>
+                <option value="Telecel">Telecel Cash</option>
+                <option value="AirtelTigo">AirtelTigo Money</option>
+              </select>
+            </div>
 
-  <div className="grid md:grid-cols-2 gap-4 mb-4">
-    <input
-      type="text"
-      placeholder="Account Name"
-      value={accountName}
-      onChange={(e) => setAccountName(e.target.value)}
-      className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-    />
+            <div className="grid md:grid-cols-2 gap-4 mb-4">
+              <input
+                type="text"
+                placeholder="Account Name"
+                value={accountName}
+                onChange={(e) => setAccountName(e.target.value)}
+                className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+              />
 
-    <input
-      type="text"
-      placeholder="Mobile Money Number"
-      value={accountNumber}
-      onChange={(e) => setAccountNumber(e.target.value)}
-      className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-    />
-  </div>
+              <input
+                type="text"
+                placeholder="Mobile Money Number"
+                value={accountNumber}
+                onChange={(e) => setAccountNumber(e.target.value)}
+                className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+              />
+            </div>
 
-  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-    <div>
-      <p className="text-zinc-400 text-sm">Available Balance</p>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div>
+                <p className="text-zinc-400 text-sm">Available Balance</p>
 
-      <h4 className="text-3xl font-bold text-green-400">
-        {currency} {(netEarnings - totalWithdrawals).toFixed(2)}
-      </h4>
-    </div>
+                <h4 className="text-3xl font-bold text-green-400">
+                  {currency} {(netEarnings - totalWithdrawals).toFixed(2)}
+                </h4>
+              </div>
 
-    <button
-      onClick={requestWithdrawal}
-      disabled={withdrawLoading}
-      className="bg-cyan-600 hover:bg-cyan-700 px-8 py-4 rounded-xl font-bold text-lg disabled:opacity-50"
-    >
-      {withdrawLoading ? "Submitting..." : "Request Payout"}
-    </button>
-  </div>
-</div>
+              <button
+                onClick={requestWithdrawal}
+                disabled={withdrawLoading}
+                className="bg-cyan-600 hover:bg-cyan-700 px-8 py-4 rounded-xl font-bold text-lg disabled:opacity-50"
+              >
+                {withdrawLoading ? "Submitting..." : "Request Payout"}
+              </button>
+            </div>
+          </div>
 
           <div className="grid md:grid-cols-3 gap-4 mb-6">
             <StatCard title="Withdrawal Requests" value={withdrawals.length} color="text-cyan-400" />
@@ -800,9 +800,36 @@ finished: requests.filter((r) => r.status === "finished"),
           />
 
           <RequestColumn
-            title={`Played Songs (${grouped.played.length})`}
-            titleColor="text-blue-400"
+            title={`Now Playing (${grouped.played.length})`}
+            titleColor="text-purple-400"
             requests={grouped.played}
+            borderColor="border-purple-700"
+            actionLoadingId={actionLoadingId}
+            buttons={(request) => (
+              <>
+                <button
+                  disabled={actionLoadingId === request.id}
+                  onClick={() => updateStatus(request.id, "finished")}
+                  className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-xl disabled:bg-zinc-800"
+                >
+                  Clear Now Playing
+                </button>
+
+                <button
+                  disabled={actionLoadingId === request.id}
+                  onClick={() => deleteRequest(request.id)}
+                  className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:bg-zinc-800"
+                >
+                  Delete
+                </button>
+              </>
+            )}
+          />
+
+          <RequestColumn
+            title={`Played History (${grouped.finished.length})`}
+            titleColor="text-blue-400"
+            requests={grouped.finished}
             borderColor="border-blue-700"
             actionLoadingId={actionLoadingId}
             buttons={(request) => (
