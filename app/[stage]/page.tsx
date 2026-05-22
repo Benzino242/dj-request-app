@@ -43,6 +43,7 @@ export default function StageRequestPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const [nowPlaying, setNowPlaying] = useState<Request | null>(null);
+  const [upNext, setUpNext] = useState<Request | null>(null);
   const [flashAlert, setFlashAlert] = useState(false);
   const previousNowPlayingId = useRef<number | null>(null);
 
@@ -83,6 +84,11 @@ export default function StageRequestPage() {
     setRequests(allRequests);
 
     const latestPlayed = allRequests.find((request) => request.status === "played");
+    const nextAccepted = allRequests.find(
+      (request) => request.status === "accepted"
+    );
+    
+    setUpNext(nextAccepted || null);
 
     if (latestPlayed) {
       setNowPlaying(latestPlayed);
@@ -332,6 +338,28 @@ export default function StageRequestPage() {
         </div>
       )}
 
+{upNext && (
+  <div className="w-full max-w-md mb-8">
+    <div className="bg-zinc-900 border border-cyan-500 p-5 rounded-3xl text-center shadow-[0_0_25px_rgba(34,211,238,0.3)]">
+      <p className="text-xs tracking-[0.3em] text-cyan-400 font-bold mb-2">
+        UP NEXT ⏭️
+      </p>
+
+      <h2 className="text-2xl font-black text-white">
+        {upNext.song}
+      </h2>
+
+      <p className="text-zinc-300 mt-2">
+        {upNext.artist}
+      </p>
+
+      <p className="text-cyan-400 text-sm mt-3">
+        Requested by {upNext.name}
+      </p>
+    </div>
+  </div>
+)}
+
       <div className="bg-zinc-900 p-8 rounded-3xl shadow-2xl w-full max-w-md border border-zinc-800">
         <div className="text-center mb-6">
           {dj.profile_image && (
@@ -512,7 +540,30 @@ export default function StageRequestPage() {
         </div>
       </div>
 
-      <div className="mt-10 w-full max-w-md">
+      {requests.find((request) => request.status === "accepted") && (
+  <div className="mt-10 w-full max-w-md">
+    <div className="bg-zinc-900 border border-cyan-500 p-5 rounded-3xl text-center shadow-[0_0_25px_rgba(34,211,238,0.3)] mb-6">
+      <p className="text-xs tracking-[0.3em] text-cyan-400 font-bold mb-2">
+        UP NEXT ⏭️
+      </p>
+
+      <h2 className="text-2xl font-black text-white">
+        {requests.find((request) => request.status === "accepted")?.song}
+      </h2>
+
+      <p className="text-zinc-300 mt-2">
+        {requests.find((request) => request.status === "accepted")?.artist}
+      </p>
+
+      <p className="text-cyan-400 text-sm mt-3">
+        Requested by{" "}
+        {requests.find((request) => request.status === "accepted")?.name}
+      </p>
+    </div>
+  </div>
+)}
+
+<div className="mt-10 w-full max-w-md">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-3xl font-bold">Live Requests</h2>
 
