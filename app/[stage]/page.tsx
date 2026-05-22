@@ -43,7 +43,7 @@ export default function StageRequestPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const [nowPlaying, setNowPlaying] = useState<Request | null>(null);
-
+  const [flashAlert, setFlashAlert] = useState(false);
   const previousNowPlayingId = useRef<number | null>(null);
 
   async function fetchDJ() {
@@ -80,23 +80,22 @@ export default function StageRequestPage() {
     }
 
     const allRequests = (data || []) as Request[];
-
     setRequests(allRequests);
 
-    const currentlyPlaying = allRequests.find(
-      (request) => request.status === "played"
-    );
+    const latestPlayed = allRequests.find((request) => request.status === "played");
 
-    if (
-      currentlyPlaying &&
-      currentlyPlaying.id !== previousNowPlayingId.current
-    ) {
-      previousNowPlayingId.current = currentlyPlaying.id;
+    if (latestPlayed) {
+      setNowPlaying(latestPlayed);
 
-      setNowPlaying(currentlyPlaying);
+      if (latestPlayed.id !== previousNowPlayingId.current) {
+        previousNowPlayingId.current = latestPlayed.id;
 
-      if ("vibrate" in navigator) {
-        navigator.vibrate([200, 100, 200, 100, 300]);
+        if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+          navigator.vibrate?.([300, 150, 300, 150, 500]);
+        }
+
+        setFlashAlert(true);
+        setTimeout(() => setFlashAlert(false), 1800);
       }
     }
   }
@@ -290,7 +289,6 @@ export default function StageRequestPage() {
           <h1 className="text-4xl font-bold text-red-400 mb-3">
             DJ Not Found
           </h1>
-
           <p className="text-zinc-400">
             No Blackline DJ profile exists for /{stage}
           </p>
@@ -300,7 +298,14 @@ export default function StageRequestPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col items-center p-10">
+    <main
+      className={`min-h-screen bg-black text-white flex flex-col items-center p-10 ${
+        flashAlert ? "animate-pulse" : ""
+      }`}
+    >
+      {flashAlert && (
+        <div className="fixed inset-0 bg-purple-600/30 z-50 pointer-events-none animate-pulse" />
+      )}
 
       {nowPlaying && (
         <div className="w-full max-w-md mb-8 animate-pulse">
@@ -325,7 +330,6 @@ export default function StageRequestPage() {
       )}
 
       <div className="bg-zinc-900 p-8 rounded-3xl shadow-2xl w-full max-w-md border border-zinc-800">
-
         <div className="text-center mb-6">
           {dj.profile_image && (
             <img
@@ -335,9 +339,7 @@ export default function StageRequestPage() {
             />
           )}
 
-          <p className="text-zinc-500 text-sm mb-2">
-            Requesting from DJ
-          </p>
+          <p className="text-zinc-500 text-sm mb-2">Requesting from DJ</p>
 
           <h1 className="text-5xl font-bold mb-3 text-purple-500 uppercase">
             {dj.stage_name}
@@ -345,18 +347,14 @@ export default function StageRequestPage() {
 
           <div
             className={`inline-block px-4 py-2 rounded-full text-sm font-bold mb-4 ${
-              dj.is_live
-                ? "bg-green-600 text-white"
-                : "bg-red-600 text-white"
+              dj.is_live ? "bg-green-600 text-white" : "bg-red-600 text-white"
             }`}
           >
             {dj.is_live ? "LIVE NOW 🟢" : "OFFLINE 🔴"}
           </div>
 
           {dj.city && (
-            <p className="text-zinc-400 text-sm mb-2">
-              📍 {dj.city}
-            </p>
+            <p className="text-zinc-400 text-sm mb-2">📍 {dj.city}</p>
           )}
 
           {dj.bio && (
@@ -424,6 +422,28 @@ export default function StageRequestPage() {
             >
               <option value="GHS">🇬🇭 GHS</option>
               <option value="USD">🇺🇸 USD</option>
+              <option value="EUR">🇪🇺 EUR</option>
+              <option value="GBP">🇬🇧 GBP</option>
+              <option value="CAD">🇨🇦 CAD</option>
+              <option value="AUD">🇦🇺 AUD</option>
+              <option value="NGN">🇳🇬 NGN</option>
+              <option value="KES">🇰🇪 KES</option>
+              <option value="ZAR">🇿🇦 ZAR</option>
+              <option value="SGD">🇸🇬 SGD</option>
+              <option value="MYR">🇲🇾 MYR</option>
+              <option value="IDR">🇮🇩 IDR</option>
+              <option value="THB">🇹🇭 THB</option>
+              <option value="PHP">🇵🇭 PHP</option>
+              <option value="VND">🇻🇳 VND</option>
+              <option value="CNY">🇨🇳 CNY</option>
+              <option value="JPY">🇯🇵 JPY</option>
+              <option value="KRW">🇰🇷 KRW</option>
+              <option value="INR">🇮🇳 INR</option>
+              <option value="AED">🇦🇪 AED</option>
+              <option value="SAR">🇸🇦 SAR</option>
+              <option value="QAR">🇶🇦 QAR</option>
+              <option value="BRL">🇧🇷 BRL</option>
+              <option value="MXN">🇲🇽 MXN</option>
             </select>
 
             <input
@@ -437,6 +457,28 @@ export default function StageRequestPage() {
             />
           </div>
 
+          <div className="bg-black border border-purple-800 rounded-2xl p-4 mt-4">
+            <p className="text-sm text-zinc-400 mb-3">
+              Boost Your Request 🔥
+            </p>
+
+            <div className="grid grid-cols-4 gap-2">
+              {[10, 20, 50, 100].map((boost) => (
+                <button
+                  key={boost}
+                  type="button"
+                  onClick={() =>
+                    setTipAmount((current) => Number(current || 0) + boost)
+                  }
+                  disabled={!dj.is_live}
+                  className="bg-purple-700 hover:bg-purple-600 px-3 py-3 rounded-xl font-bold text-sm disabled:opacity-40"
+                >
+                  +{tipCurrency} {boost}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <button
             onClick={handlePayment}
             disabled={submitting || !dj.is_live}
@@ -448,6 +490,74 @@ export default function StageRequestPage() {
               ? "Processing Payment..."
               : `Pay ${tipCurrency} ${tipAmount || 0} & Request`}
           </button>
+
+          <p className="text-xs text-zinc-500 text-center mt-4 leading-relaxed">
+            Boosting a request increases priority in the DJ queue but does not
+            guarantee playback or acceptance by the DJ.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-10 w-full max-w-md">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-3xl font-bold">Live Requests</h2>
+
+          <span className="bg-purple-600 px-3 py-1 rounded-full text-sm font-bold">
+            VIP Priority
+          </span>
+        </div>
+
+        <div className="space-y-4">
+          {requests.map((request, index) => (
+            <div
+              key={request.id}
+              className={`bg-zinc-900 p-4 rounded-xl border ${
+                index === 0 ? "border-yellow-500" : "border-zinc-800"
+              }`}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <p className="font-bold text-lg">{request.song}</p>
+
+                <div className="flex gap-2 items-center">
+                  {index === 0 && (
+                    <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
+                      TOP TIP
+                    </span>
+                  )}
+
+                  <span
+                    className={`text-xs px-3 py-1 rounded-full font-bold ${
+                      request.status === "accepted"
+                        ? "bg-green-600 text-white"
+                        : request.status === "rejected"
+                        ? "bg-red-600 text-white"
+                        : request.status === "played"
+                        ? "bg-blue-600 text-white"
+                        : "bg-yellow-500 text-black"
+                    }`}
+                  >
+                    {request.status === "accepted"
+                      ? "ACCEPTED ✅"
+                      : request.status === "rejected"
+                      ? "REJECTED ❌"
+                      : request.status === "played"
+                      ? "PLAYED 🎵"
+                      : "PENDING ⏳"}
+                  </span>
+
+                  <span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
+                    {request.tip_currency} {request.tip_amount}
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-zinc-400">{request.artist}</p>
+
+              <p className="text-sm text-purple-400 mt-2">
+                Requested by {request.name}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </main>
