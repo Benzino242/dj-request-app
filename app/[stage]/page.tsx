@@ -606,6 +606,9 @@ export default function StageRequestPage() {
               <p className="text-sm text-purple-400 mt-2">
                 Requested by {request.name}
               </p>
+              <p className="text-xs text-cyan-400 mt-2">
+  Estimated wait: ~{getEstimatedWait(index)} mins
+</p>
             </div>
           ))}
         </div>
