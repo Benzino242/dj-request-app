@@ -292,6 +292,36 @@ export default function AdminPage() {
     await fetchDashboardData();
     setActionLoadingId(null);
   }
+  async function moveRequest(requestId: number, direction: "up" | "down") {
+    const currentIndex = grouped.accepted.findIndex(
+      (request) => request.id === requestId
+    );
+  
+    if (currentIndex === -1) return;
+  
+    const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+  
+    if (targetIndex < 0 || targetIndex >= grouped.accepted.length) return;
+  
+    const currentRequest = grouped.accepted[currentIndex];
+    const targetRequest = grouped.accepted[targetIndex];
+  
+    setActionLoadingId(requestId);
+  
+    await supabase
+      .from("requests")
+      .update({ queue_position: targetRequest.queue_position ?? targetIndex })
+      .eq("id", currentRequest.id);
+  
+    await supabase
+      .from("requests")
+      .update({ queue_position: currentRequest.queue_position ?? currentIndex })
+      .eq("id", targetRequest.id);
+  
+    await fetchDashboardData();
+  
+    setActionLoadingId(null);
+  }
 
   async function requestWithdrawal() {
     if (!dj) return;
@@ -747,12 +777,28 @@ export default function AdminPage() {
               <>
                 <button
                   disabled={actionLoadingId === request.id}
+                  onClick={() => moveRequest(request.id, "up")}
+                  className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl"
+                >
+                  ⬆️ Up
+                </button>
+            
+                <button
+                  disabled={actionLoadingId === request.id}
+                  onClick={() => moveRequest(request.id, "down")}
+                  className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl"
+                >
+                  ⬇️ Down
+                </button>
+            
+                <button
+                  disabled={actionLoadingId === request.id}
                   onClick={() => updateStatus(request.id, "played")}
                   className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl disabled:bg-zinc-700"
                 >
                   Mark Played
                 </button>
-
+            
                 <button
                   disabled={actionLoadingId === request.id}
                   onClick={() => deleteRequest(request.id)}
