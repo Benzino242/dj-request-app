@@ -303,20 +303,19 @@ export default function AdminPage() {
   
     if (targetIndex < 0 || targetIndex >= grouped.accepted.length) return;
   
-    const currentRequest = grouped.accepted[currentIndex];
-    const targetRequest = grouped.accepted[targetIndex];
+    const reordered = [...grouped.accepted];
+  
+    const [movedItem] = reordered.splice(currentIndex, 1);
+    reordered.splice(targetIndex, 0, movedItem);
   
     setActionLoadingId(requestId);
   
-    await supabase
-      .from("requests")
-      .update({ queue_position: targetRequest.queue_position ?? targetIndex })
-      .eq("id", currentRequest.id);
-  
-    await supabase
-      .from("requests")
-      .update({ queue_position: currentRequest.queue_position ?? currentIndex })
-      .eq("id", targetRequest.id);
+    for (let index = 0; index < reordered.length; index++) {
+      await supabase
+        .from("requests")
+        .update({ queue_position: index + 1 })
+        .eq("id", reordered[index].id);
+    }
   
     await fetchDashboardData();
   
