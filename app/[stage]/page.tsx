@@ -46,6 +46,10 @@ export default function StageRequestPage() {
   const [upNext, setUpNext] = useState<Request | null>(null);
   const [flashAlert, setFlashAlert] = useState(false);
   const previousNowPlayingId = useRef<number | null>(null);
+  function getEstimatedWait(index: number) {
+    const minutesPerSong = 4;
+    return (index + 1) * minutesPerSong;
+  }
 
   async function fetchDJ() {
     if (!stage) return;
