@@ -605,10 +605,13 @@ export default function StageRequestPage() {
 
               <p className="text-sm text-purple-400 mt-2">
                 Requested by {request.name}
-              </p>
+             </p>
+             
+              {request.status !== "played" && request.status !== "finished" && (
               <p className="text-xs text-cyan-400 mt-2">
-  Estimated wait: ~{getEstimatedWait(index)} mins
-</p>
+                Estimated wait: ~{getEstimatedWait(index)} mins
+             </p>
+             )}
             </div>
           ))}
         </div>
