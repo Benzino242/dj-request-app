@@ -11,28 +11,18 @@ type RequestStatus =
   | "played"
   | "finished";
 
-type SongRequest = {
-  id: number;
-  dj_id: number;
-  name: string;
-  song: string;
-  artist: string;
-  status: RequestStatus;
-  tip_amount: number;
-  tip_currency: string;
-  created_at?: string;
-};
-
-type Payment = {
-  id: number;
-  dj_id: number;
-  amount: number;
-  currency: string;
-  status: string;
-  dj_amount: number;
-  platform_fee: number;
-  payout_status: string;
-};
+  type SongRequest = {
+    id: number;
+    dj_id: number;
+    name: string;
+    song: string;
+    artist: string;
+    status: RequestStatus;
+    tip_amount: number;
+    tip_currency: string;
+    queue_position?: number | null;
+    created_at?: string;
+  };
 
 type Withdrawal = {
   id: number;
@@ -219,10 +209,12 @@ export default function AdminPage() {
     if (!dj) return;
 
     const { data: requestsData } = await supabase
-      .from("requests")
-      .select("*")
-      .eq("dj_id", dj.id)
-      .order("tip_amount", { ascending: false });
+  .from("requests")
+  .select("*")
+  .eq("dj_id", dj.id)
+  .order("queue_position", { ascending: true })
+  .order("tip_amount", { ascending: false });
+      
 
     const { data: paymentsData } = await supabase
       .from("payments")
