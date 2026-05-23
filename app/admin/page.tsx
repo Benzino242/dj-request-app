@@ -147,6 +147,40 @@ export default function AdminPage() {
     });
   }
 
+  async function endDJSet() {
+    if (!dj) return;
+  
+    const confirmEnd = window.confirm(
+      "End DJ set and clear active queue?"
+    );
+  
+    if (!confirmEnd) return;
+  
+    setLoading(true);
+  
+    await supabase
+      .from("djs")
+      .update({ is_live: false })
+      .eq("id", dj.id);
+  
+    await supabase
+      .from("requests")
+      .update({ status: "finished" })
+      .eq("dj_id", dj.id)
+      .in("status", ["accepted", "played"]);
+  
+    await fetchDashboardData();
+  
+    setDj({
+      ...dj,
+      is_live: false,
+    });
+  
+    setLoading(false);
+  
+    alert("DJ set ended successfully");
+  }
+
   async function saveProfile() {
     if (!dj) return;
 
@@ -509,6 +543,12 @@ export default function AdminPage() {
               }`}
             >
               {dj.is_live ? "Go Offline" : "Go Live"}
+            </button>
+            <button
+              onClick={endDJSet}
+              className="bg-red-600 hover:bg-red-700 px-6 py-4 rounded-xl font-bold text-lg ml-4"
+            >
+              End DJ Set
             </button>
           </div>
         </div>
