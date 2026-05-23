@@ -44,6 +44,8 @@ type DJ = {
   instagram?: string | null;
   profile_image?: string | null;
   is_live?: boolean | null;
+  event_name?: string | null;
+  venue?: string | null;  
 };
 
 export default function AdminPage() {
@@ -53,6 +55,8 @@ export default function AdminPage() {
   const [bio, setBio] = useState("");
   const [city, setCity] = useState("");
   const [instagram, setInstagram] = useState("");
+  const [eventName, setEventName] = useState("");
+  const [venue, setVenue] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const [savingProfile, setSavingProfile] = useState(false);
   const [profileMessage, setProfileMessage] = useState("");
@@ -103,6 +107,8 @@ export default function AdminPage() {
     setCity(data.city || "");
     setInstagram(data.instagram || "");
     setProfileImage(data.profile_image || "");
+    setEventName(data.event_name || "");
+    setVenue(data.venue || "");
     setAuthLoading(false);
   }
 
