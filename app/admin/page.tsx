@@ -194,13 +194,15 @@ export default function AdminPage() {
     setProfileMessage("");
 
     const { error } = await supabase
-      .from("djs")
-      .update({
-        bio,
-        city,
-        instagram,
-        profile_image: profileImage,
-      })
+  .from("djs")
+  .update({
+    bio,
+    city,
+    instagram,
+    profile_image: profileImage,
+    event_name: eventName,
+    venue,
+  })
       .eq("id", dj.id);
 
     if (error) {
@@ -216,6 +218,8 @@ export default function AdminPage() {
       city,
       instagram,
       profile_image: profileImage,
+      event_name: eventName,
+      venue,
     });
 
     setProfileMessage("Profile updated successfully.");
@@ -601,6 +605,24 @@ export default function AdminPage() {
                 </button>
               )}
             </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+  <input
+    type="text"
+    placeholder="Event name e.g. Friday Night @ Garage Lounge"
+    value={eventName}
+    onChange={(e) => setEventName(e.target.value)}
+    className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+  />
+
+  <input
+    type="text"
+    placeholder="Venue e.g. Garage Lounge, Accra"
+    value={venue}
+    onChange={(e) => setVenue(e.target.value)}
+    className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+  />
+</div>
 
             <div className="grid md:grid-cols-2 gap-4">
               <input
