@@ -25,6 +25,8 @@ type DJ = {
   city: string | null;
   instagram: string | null;
   is_live: boolean | null;
+  event_name: string | null;
+  venue: string | null;
 };
 
 export default function StageRequestPage() {
@@ -55,10 +57,10 @@ export default function StageRequestPage() {
     if (!stage) return;
 
     const { data, error } = await supabase
-      .from("djs")
-      .select("*")
-      .eq("stage_name", stage)
-      .single();
+  .from("djs")
+  .select("*")
+  .ilike("stage_name", stage)
+  .single();
 
     if (error || !data) {
       console.error("DJ not found:", error);
@@ -367,6 +369,20 @@ export default function StageRequestPage() {
             {dj.is_live ? "LIVE NOW 🟢" : "OFFLINE 🔴"}
           </div>
 
+          {dj.event_name && (
+         <div className="mb-3">
+      <p className="text-purple-400 font-bold text-lg">
+      {dj.event_name}
+    </p>
+
+    {dj.venue && (
+      <p className="text-white text-sm mt-1">
+        📍 {dj.venue}
+      </p>
+    )}
+  </div>
+)}
+
           {dj.city && (
             <p className="text-zinc-400 text-sm mb-2">📍 {dj.city}</p>
           )}
@@ -606,7 +622,7 @@ export default function StageRequestPage() {
               <p className="text-sm text-purple-400 mt-2">
                 Requested by {request.name}
              </p>
-             
+
               {request.status !== "played" && request.status !== "finished" && (
               <p className="text-xs text-cyan-400 mt-2">
                 Estimated wait: ~{getEstimatedWait(index)} mins
