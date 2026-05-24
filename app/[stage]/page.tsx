@@ -368,9 +368,6 @@ export default function StageRequestPage() {
             }`}
           >
             {dj.is_live ? "LIVE NOW 🟢" : "OFFLINE 🔴"}
-            <p className="text-yellow-400 text-sm mt-3">
-  DEBUG EVENT: {dj.event_name || "NO EVENT"} / {dj.venue || "NO VENUE"}
-</p>
           </div>
 
           {dj.event_name && (
