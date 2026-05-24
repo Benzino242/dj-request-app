@@ -184,6 +184,11 @@ export default function StageRequestPage() {
       alert("Please fill all fields");
       return;
     }
+    
+    if (duplicateWarning) {
+      alert("This song is already in the queue. Please choose another song.");
+      return;
+    }
 
     if (!tipAmount || tipAmount < 1) {
       alert("Please enter a valid tip amount");
