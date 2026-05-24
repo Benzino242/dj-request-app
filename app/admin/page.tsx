@@ -16,11 +16,22 @@ type RequestStatus =
     dj_id: number;
     name: string;
     song: string;
-    artist: string;
+   artist: string;
     status: RequestStatus;
     tip_amount: number;
     tip_currency: string;
     queue_position?: number | null;
+    created_at?: string;
+  };
+  
+  type Payment = {
+    id: number;
+    dj_id: number;
+    amount: number;
+    dj_amount: number;
+    platform_fee: number;
+    currency: string;
+    payout_status?: string;
     created_at?: string;
   };
 
