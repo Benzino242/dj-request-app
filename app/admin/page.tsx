@@ -189,39 +189,33 @@ export default function AdminPage() {
 
   async function saveProfile() {
     if (!dj) return;
-
+  
     setSavingProfile(true);
     setProfileMessage("");
-
-    const { error } = await supabase
-  .from("djs")
-  .update({
-    bio,
-    city,
-    instagram,
-    profile_image: profileImage,
-    event_name: eventName,
-    venue,
-  })
-      .eq("id", dj.id);
-
+  
+    const { data, error } = await supabase
+      .from("djs")
+      .update({
+        bio,
+        city,
+        instagram,
+        profile_image: profileImage,
+        event_name: eventName,
+        venue,
+      })
+      .eq("id", dj.id)
+      .select()
+      .single();
+  
     if (error) {
-      console.error(error);
-      setProfileMessage("Profile update failed.");
+      console.error("PROFILE UPDATE ERROR:", error);
+      setProfileMessage(error.message || "Profile update failed.");
       setSavingProfile(false);
       return;
     }
-
-    setDj({
-      ...dj,
-      bio,
-      city,
-      instagram,
-      profile_image: profileImage,
-      event_name: eventName,
-      venue,
-    });
-
+  
+    setDj(data as DJ);
+  
     setProfileMessage("Profile updated successfully.");
     setSavingProfile(false);
   }
