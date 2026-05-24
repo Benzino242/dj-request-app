@@ -42,6 +42,7 @@ export default function StageRequestPage() {
   const [tipAmount, setTipAmount] = useState(10);
   const [tipCurrency, setTipCurrency] = useState("GHS");
   const [requests, setRequests] = useState<Request[]>([]);
+  const [duplicateWarning, setDuplicateWarning] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const [nowPlaying, setNowPlaying] = useState<Request | null>(null);
@@ -367,6 +368,9 @@ export default function StageRequestPage() {
             }`}
           >
             {dj.is_live ? "LIVE NOW 🟢" : "OFFLINE 🔴"}
+            <p className="text-yellow-400 text-sm mt-3">
+  DEBUG EVENT: {dj.event_name || "NO EVENT"} / {dj.venue || "NO VENUE"}
+</p>
           </div>
 
           {dj.event_name && (
@@ -427,13 +431,36 @@ export default function StageRequestPage() {
             disabled={!dj.is_live}
           />
 
-          <input
-            className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            placeholder="Song Name"
-            value={song}
-            onChange={(e) => setSong(e.target.value)}
-            disabled={!dj.is_live}
-          />
+<input
+  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+  placeholder="Song Name"
+  value={song}
+  onChange={(e) => {
+    const value = e.target.value;
+
+    setSong(value);
+
+    const existingRequest = requests.find(
+      (request) =>
+        request.song.toLowerCase().trim() ===
+        value.toLowerCase().trim()
+    );
+
+    if (existingRequest) {
+      setDuplicateWarning(
+        `⚠️ "${value}" is already in the queue`
+      );
+    } else {
+      setDuplicateWarning("");
+    }
+  }}
+  disabled={!dj.is_live}
+/>
+{duplicateWarning && (
+  <div className="bg-yellow-950 border border-yellow-600 text-yellow-300 p-3 rounded-xl text-sm">
+    {duplicateWarning}
+  </div>
+)}
 
           <input
             className="w-full p-4 rounded-xl bg-black border border-zinc-700"
