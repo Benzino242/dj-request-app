@@ -667,13 +667,8 @@ export default function StageRequestPage() {
   {request.tip_currency} {request.tip_amount}
 </span>
 </div>
-</div>
 
-{isVIPRequest(request.tip_amount) && (
-  <div className="mb-2 inline-block bg-yellow-500 text-black text-xs font-black px-3 py-1 rounded-full">
-    🔥 VIP REQUEST
-  </div>
-)}
+
 
 <p className="text-zinc-400">{request.artist}</p>
 
