@@ -49,6 +49,9 @@ export default function StageRequestPage() {
   const [upNext, setUpNext] = useState<Request | null>(null);
   const [flashAlert, setFlashAlert] = useState(false);
   const previousNowPlayingId = useRef<number | null>(null);
+  function isVIPRequest(tip: number) {
+    return tip >= 50;
+  }
   function getEstimatedWait(index: number) {
     const minutesPerSong = 4;
     return (index + 1) * minutesPerSong;
@@ -609,17 +612,22 @@ export default function StageRequestPage() {
         className={`bg-zinc-900 p-4 rounded-xl border ${
           index === 0 ? "border-yellow-500" : "border-zinc-800"
         }`}
-      >
-              <div className="flex items-center justify-between mb-2">
-                <p className="font-bold text-lg">{request.song}</p>
-
-                <div className="flex gap-2 items-center">
-                  {index === 0 && (
-                    <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
-                      TOP TIP
-                    </span>
-                  )}
-
+      ><div className="mb-2">
+      {isVIPRequest(request.tip_amount) && (
+        <div className="mb-2 inline-block bg-yellow-500 text-black text-xs font-black px-3 py-1 rounded-full">
+          🔥 VIP REQUEST
+        </div>
+      )}
+    
+      <div className="flex items-center justify-between">
+        <p className="font-bold text-lg">{request.song}</p>
+    
+        <div className="flex gap-2 items-center">
+          {index === 0 && (
+            <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
+              TOP TIP
+            </span>
+          )}
                   <span
                     className={`text-xs px-3 py-1 rounded-full font-bold ${
                       request.status === "accepted"
