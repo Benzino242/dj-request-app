@@ -625,46 +625,55 @@ export default function StageRequestPage() {
         <div className="flex gap-2 items-center">
           {index === 0 && (
             <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
-              TOP TIP
-            </span>
-          )}
-                  <span
-                    className={`text-xs px-3 py-1 rounded-full font-bold ${
-                      request.status === "accepted"
-                        ? "bg-green-600 text-white"
-                        : request.status === "rejected"
-                        ? "bg-red-600 text-white"
-                        : request.status === "played"
-                        ? "bg-blue-600 text-white"
-                        : "bg-yellow-500 text-black"
-                    }`}
-                  >
-                    {request.status === "accepted"
-                      ? "ACCEPTED ✅"
-                      : request.status === "rejected"
-                      ? "REJECTED ❌"
-                      : request.status === "played"
-                      ? "PLAYED 🎵"
-                      : "PENDING ⏳"}
-                  </span>
+              {index === 0 && (
+  <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
+    TOP TIP
+  </span>
+)}
 
-                  <span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
-                    {request.tip_currency} {request.tip_amount}
-                  </span>
-                </div>
-              </div>
+<span
+  className={`text-xs px-3 py-1 rounded-full font-bold ${
+    request.status === "accepted"
+      ? "bg-green-600 text-white"
+      : request.status === "rejected"
+      ? "bg-red-600 text-white"
+      : request.status === "played"
+      ? "bg-blue-600 text-white"
+      : "bg-yellow-500 text-black"
+  }`}
+>
+  {request.status === "accepted"
+    ? "ACCEPTED ✅"
+    : request.status === "rejected"
+    ? "REJECTED ❌"
+    : request.status === "played"
+    ? "PLAYED 🎵"
+    : "PENDING ⏳"}
+</span>
 
-              <p className="text-zinc-400">{request.artist}</p>
+<span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
+  {request.tip_currency} {request.tip_amount}
+</span>
+</div>
+</div>
 
-              <p className="text-sm text-purple-400 mt-2">
-                Requested by {request.name}
-             </p>
+{isVIPRequest(request.tip_amount) && (
+  <div className="mb-2 inline-block bg-yellow-500 text-black text-xs font-black px-3 py-1 rounded-full">
+    🔥 VIP REQUEST
+  </div>
+)}
 
-              {request.status !== "played" && request.status !== "finished" && (
-              <p className="text-xs text-cyan-400 mt-2">
-                Estimated wait: ~{getEstimatedWait(index)} mins
-             </p>
-             )}
+<p className="text-zinc-400">{request.artist}</p>
+
+<p className="text-sm text-purple-400 mt-2">
+  Requested by {request.name}
+</p>
+
+{request.status !== "played" && request.status !== "finished" && (
+  <p className="text-xs text-cyan-400 mt-2">
+    Estimated wait: ~{getEstimatedWait(index)} mins
+  </p>
+)}
             </div>
           ))}
         </div>
