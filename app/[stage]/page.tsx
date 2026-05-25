@@ -609,8 +609,12 @@ export default function StageRequestPage() {
     .map((request, index) => (
       <div
         key={request.id}
-        className={`bg-zinc-900 p-4 rounded-xl border ${
-          index === 0 ? "border-yellow-500" : "border-zinc-800"
+        className={`rounded-xl p-4 transition-all duration-300 ${
+          isVIPRequest(request.tip_amount)
+            ? "bg-zinc-900 border-2 border-yellow-400 shadow-[0_0_25px_rgba(250,204,21,0.45)] scale-[1.02]"
+            : index === 0
+            ? "bg-zinc-900 border border-yellow-500"
+            : "bg-zinc-900 border border-zinc-800"
         }`}
       ><div className="mb-2">
       {isVIPRequest(request.tip_amount) && (
