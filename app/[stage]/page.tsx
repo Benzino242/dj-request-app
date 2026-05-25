@@ -620,7 +620,15 @@ export default function StageRequestPage() {
       )}
     
       <div className="flex items-center justify-between">
-        <p className="font-bold text-lg">{request.song}</p>
+      <div>
+  {isVIPRequest(request.tip_amount) && (
+    <div className="mb-2 inline-block bg-yellow-500 text-black text-xs font-black px-3 py-1 rounded-full">
+      🔥 VIP REQUEST
+    </div>
+  )}
+
+  <p className="font-bold text-lg">{request.song}</p>
+</div>
     
         <div className="flex gap-2 items-center">
           {index === 0 && (
