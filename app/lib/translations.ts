@@ -20,6 +20,19 @@ export const translations = {
     upNext: "UP NEXT ⏭️",
     nowPlaying: "NOW PLAYING 🎵",
     estimatedWait: "Estimated wait",
+    higherTips: "Higher tips move your request closer to the top 🔥",
+    boostingDisclaimer:
+      "Boosting a request increases priority in the DJ queue but does not guarantee playback or acceptance by the DJ.",
+    pay: "Pay",
+    andRequest: "& Request",
+    requestedBy: "Requested by",
+    topTip: "TOP TIP",
+    vipRequest: "🔥 VIP REQUEST",
+    accepted: "ACCEPTED ✅",
+    rejected: "REJECTED ❌",
+    played: "PLAYED 🎵",
+    pending: "PENDING ⏳",
+    currencyComingSoon: "payments are coming soon. Please use GHS for now.",
   },
 
   zh: {
@@ -41,5 +54,18 @@ export const translations = {
     upNext: "下一首 ⏭️",
     nowPlaying: "正在播放 🎵",
     estimatedWait: "预计等待",
+    higherTips: "更高的小费会让你的点歌更靠前 🔥",
+    boostingDisclaimer:
+      "提升点歌会提高在 DJ 队列中的优先级，但不保证 DJ 一定播放或接受。",
+    pay: "支付",
+    andRequest: "并点歌",
+    requestedBy: "点歌人",
+    topTip: "最高小费",
+    vipRequest: "🔥 VIP 点歌",
+    accepted: "已接受 ✅",
+    rejected: "已拒绝 ❌",
+    played: "已播放 🎵",
+    pending: "等待中 ⏳",
+    currencyComingSoon: "付款即将支持。请暂时使用 GHS。",
   },
-};
+} as const;
