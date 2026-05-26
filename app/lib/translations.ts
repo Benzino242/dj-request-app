@@ -34,6 +34,8 @@ export const translations = {
     pending: "PENDING ⏳",
     currencyComingSoon: "payments are coming soon. Please use GHS for now.",
     requestInstruction: "Request songs. Skip the queue. Tip the DJ.",
+    payRequest: "Pay GHS 10 & Request",
+    vipPriorityFull: "VIP PRIORITY",
   },
 
   zh: {
@@ -69,5 +71,7 @@ export const translations = {
     pending: "等待中 ⏳",
     currencyComingSoon: "付款即将支持。请暂时使用 GHS。",
     requestInstruction: "点歌、跳过队列、给 DJ 小费。",
+    payRequest: "支付 GHS 10 并点歌",
+    vipPriorityFull: "VIP 优先",
   },
 } as const;

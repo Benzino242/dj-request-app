@@ -350,7 +350,7 @@ export default function StageRequestPage() {
             </p>
 
             <p className="text-xs text-white/70 mt-4">
-              Requested by {nowPlaying.name}
+            {t.requestedBy} {nowPlaying.name}
             </p>
           </div>
         </div>
@@ -571,12 +571,12 @@ export default function StageRequestPage() {
   className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
 >
   {!dj.is_live
-    ? "Requests Closed"
+    ? t.requestsClosed
     : tipCurrency !== "GHS"
-    ? `${tipCurrency} Coming Soon`
+    ? `${tipCurrency} ${t.currencyComingSoon}`
     : submitting
-    ? "Processing Payment..."
-    : `Pay ${tipCurrency} ${tipAmount || 0} & Request`}
+    ? t.processingPayment
+    : `${t.pay} ${tipCurrency} ${tipAmount || 0} ${t.andRequest}`}
 </button>
 
           <p className="text-xs text-zinc-500 text-center mt-4 leading-relaxed">
@@ -613,7 +613,7 @@ export default function StageRequestPage() {
         <h2 className="text-3xl font-bold">{t.liveRequests}</h2>
 
           <span className="bg-purple-600 px-3 py-1 rounded-full text-sm font-bold">
-            VIP Priority
+          {t.vipPriorityFull}
           </span>
         </div>
 
