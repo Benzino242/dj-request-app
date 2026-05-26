@@ -33,6 +33,7 @@ export const translations = {
     played: "PLAYED 🎵",
     pending: "PENDING ⏳",
     currencyComingSoon: "payments are coming soon. Please use GHS for now.",
+    requestInstruction: "Request songs. Skip the queue. Tip the DJ.",
   },
 
   zh: {
@@ -67,5 +68,6 @@ export const translations = {
     played: "已播放 🎵",
     pending: "等待中 ⏳",
     currencyComingSoon: "付款即将支持。请暂时使用 GHS。",
+    requestInstruction: "点歌、跳过队列、给 DJ 小费。",
   },
 } as const;

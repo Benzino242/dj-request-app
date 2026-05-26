@@ -433,7 +433,7 @@ export default function StageRequestPage() {
         )}
 
         <p className="text-center text-zinc-400 mb-8">
-          Request songs. Skip the queue. Tip the DJ.
+        {t.requestInstruction}
         </p>
 
         <div className="bg-purple-950 border border-purple-700 p-4 rounded-2xl mb-6">
@@ -580,8 +580,7 @@ export default function StageRequestPage() {
 </button>
 
           <p className="text-xs text-zinc-500 text-center mt-4 leading-relaxed">
-            Boosting a request increases priority in the DJ queue but does not
-            guarantee playback or acceptance by the DJ.
+          {t.boostingDisclaimer}
           </p>
         </div>
       </div>
@@ -602,7 +601,7 @@ export default function StageRequestPage() {
       </p>
 
       <p className="text-cyan-400 text-sm mt-3">
-        Requested by{" "}
+      {t.requestedBy}{" "}
         {requests.find((request) => request.status === "accepted")?.name}
       </p>
     </div>
@@ -677,7 +676,7 @@ export default function StageRequestPage() {
                 <p className="text-zinc-400">{request.artist}</p>
 
                 <p className="text-sm text-purple-400 mt-2">
-                  Requested by {request.name}
+                {t.requestedBy} {request.name}
                 </p>
 
                 {request.status !== "played" && request.status !== "finished" && (
