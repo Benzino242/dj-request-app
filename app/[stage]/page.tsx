@@ -1,5 +1,5 @@
 "use client";
-
+import { translations, Language } from "../lib/translations";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "../../lib/supabase";
@@ -43,7 +43,10 @@ export default function StageRequestPage() {
   const [tipCurrency, setTipCurrency] = useState("GHS");
   const [requests, setRequests] = useState<Request[]>([]);
   const [duplicateWarning, setDuplicateWarning] = useState("");
+  const [language, setLanguage] = useState<Language>("en");
   const [submitting, setSubmitting] = useState(false);
+
+  const t = translations[language];
 
   const [nowPlaying, setNowPlaying] = useState<Request | null>(null);
   const [upNext, setUpNext] = useState<Request | null>(null);
@@ -355,6 +358,16 @@ export default function StageRequestPage() {
 
 
       <div className="bg-zinc-900 p-8 rounded-3xl shadow-2xl w-full max-w-md border border-zinc-800">
+      <div className="flex justify-end mb-6">
+  <select
+    value={language}
+    onChange={(e) => setLanguage(e.target.value as Language)}
+    className="bg-black border border-zinc-700 rounded-xl px-4 py-2 text-sm"
+  >
+    <option value="en">🇺🇸 English</option>
+    <option value="zh">🇨🇳 中文</option>
+  </select>
+</div>
         <div className="text-center mb-6">
           {dj.profile_image && (
             <img
@@ -364,7 +377,9 @@ export default function StageRequestPage() {
             />
           )}
 
-          <p className="text-zinc-500 text-sm mb-2">Requesting from DJ</p>
+<p className="text-zinc-500 text-sm mb-2">
+  {t.requestingFromDj}
+</p>
 
           <h1 className="text-5xl font-bold mb-3 text-purple-500 uppercase">
             {dj.stage_name}
@@ -375,7 +390,7 @@ export default function StageRequestPage() {
               dj.is_live ? "bg-green-600 text-white" : "bg-red-600 text-white"
             }`}
           >
-            {dj.is_live ? "LIVE NOW 🟢" : "OFFLINE 🔴"}
+            {dj.is_live ? t.liveNow : t.offline}
           </div>
 
           {dj.event_name && (
@@ -430,7 +445,7 @@ export default function StageRequestPage() {
         <div className="space-y-4">
           <input
             className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            placeholder="Your Name"
+            placeholder={t.yourName}
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={!dj.is_live}
@@ -438,7 +453,7 @@ export default function StageRequestPage() {
 
 <input
   className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-  placeholder="Song Name"
+  placeholder={t.songName}
   value={song}
   onChange={(e) => {
     const value = e.target.value;
@@ -469,7 +484,7 @@ export default function StageRequestPage() {
 
           <input
             className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            placeholder="Artist"
+            placeholder={t.artist}
             value={artist}
             onChange={(e) => setArtist(e.target.value)}
             disabled={!dj.is_live}
