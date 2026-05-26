@@ -438,7 +438,7 @@ export default function StageRequestPage() {
 
         <div className="bg-purple-950 border border-purple-700 p-4 rounded-2xl mb-6">
           <p className="text-sm text-purple-200">
-            Higher tips move your request closer to the top 🔥
+          {t.higherTips}
           </p>
         </div>
 
@@ -536,7 +536,7 @@ export default function StageRequestPage() {
 
           <div className="bg-black border border-purple-800 rounded-2xl p-4 mt-4">
             <p className="text-sm text-zinc-400 mb-3">
-              Boost Your Request 🔥
+            {t.boostYourRequest}
             </p>
 
             <div className="grid grid-cols-4 gap-2">
@@ -611,7 +611,7 @@ export default function StageRequestPage() {
 
 <div className="mt-10 w-full max-w-md">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-3xl font-bold">Live Requests</h2>
+        <h2 className="text-3xl font-bold">{t.liveRequests}</h2>
 
           <span className="bg-purple-600 px-3 py-1 rounded-full text-sm font-bold">
             VIP Priority
@@ -634,7 +634,7 @@ export default function StageRequestPage() {
               >
                 {isVIPRequest(request.tip_amount) && (
                   <div className="mb-2 inline-block bg-yellow-500 text-black text-xs font-black px-3 py-1 rounded-full">
-                    🔥 VIP REQUEST
+                    {t.vipRequest}
                   </div>
                 )}
 
