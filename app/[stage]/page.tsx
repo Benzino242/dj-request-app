@@ -589,7 +589,7 @@ export default function StageRequestPage() {
   <div className="mt-10 w-full max-w-md">
     <div className="bg-zinc-900 border border-cyan-500 p-5 rounded-3xl text-center shadow-[0_0_25px_rgba(34,211,238,0.3)] mb-6">
       <p className="text-xs tracking-[0.3em] text-cyan-400 font-bold mb-2">
-        UP NEXT ⏭️
+      {t.upNext}
       </p>
 
       <h2 className="text-2xl font-black text-white">
@@ -643,7 +643,7 @@ export default function StageRequestPage() {
                   <div className="flex gap-2 items-center">
                     {index === 0 && (
                       <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
-                        TOP TIP
+                        {t.topTip}
                       </span>
                     )}
 
@@ -659,12 +659,12 @@ export default function StageRequestPage() {
                       }`}
                     >
                       {request.status === "accepted"
-                        ? "ACCEPTED ✅"
+                        ? t.accepted
                         : request.status === "rejected"
-                        ? "REJECTED ❌"
+                        ? t.rejected
                         : request.status === "played"
-                        ? "PLAYED 🎵"
-                        : "PENDING ⏳"}
+                        ? t.played
+                        : t.pending}
                     </span>
 
                     <span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
@@ -681,7 +681,7 @@ export default function StageRequestPage() {
 
                 {request.status !== "played" && request.status !== "finished" && (
                   <p className="text-xs text-cyan-400 mt-2">
-                    Estimated wait: ~{getEstimatedWait(index)} mins
+                    {t.estimatedWait}: ~{getEstimatedWait(index)} mins
                   </p>
                 )}
               </div>
