@@ -15,7 +15,8 @@ export type Language =
   | "fr"
   | "de"
   | "ru"
-  | "tr";
+  | "tr"
+  | "it";
 
 export const translations = {
   en: {
@@ -676,6 +677,46 @@ export const translations = {
       "Şarkı iste. Sırayı atla. DJ’ye bahşiş ver.",
     payRequest: "GHS 10 Öde ve İstek Gönder",
     vipPriorityFull: "VIP ÖNCELİK",
+  },
+
+  it: {
+    language: "Lingua",
+    english: "Inglese",
+    mandarin: "Mandarino",
+    requestingFromDj: "Richiedi una canzone al DJ",
+    liveNow: "DAL VIVO 🟢",
+    offline: "OFFLINE 🔴",
+    requestsClosed: "Richieste Chiuse",
+    yourName: "Il tuo nome",
+    songName: "Nome della canzone",
+    artist: "Artista",
+    boostYourRequest: "Dai Priorità alla tua Richiesta 🔥",
+    payAndRequest: "Paga e Richiedi",
+    processingPayment: "Elaborazione pagamento...",
+    liveRequests: "Richieste Live",
+    vipPriority: "Priorità VIP",
+    upNext: "PROSSIMA ⏭️",
+    nowPlaying: "IN RIPRODUZIONE 🎵",
+    estimatedWait: "Tempo di attesa stimato",
+    higherTips:
+      "Mance più alte portano la tua richiesta più in alto 🔥",
+    boostingDisclaimer:
+      "Dare priorità a una richiesta aumenta la sua posizione nella coda del DJ ma non garantisce che venga riprodotta o accettata.",
+    pay: "Paga",
+    andRequest: "e Richiedi",
+    requestedBy: "Richiesta da",
+    topTip: "MANCIA PIÙ ALTA",
+    vipRequest: "🔥 RICHIESTA VIP",
+    accepted: "ACCETTATA ✅",
+    rejected: "RIFIUTATA ❌",
+    played: "RIPRODOTTA 🎵",
+    pending: "IN ATTESA ⏳",
+    currencyComingSoon:
+      "I pagamenti in questa valuta arriveranno presto. Usa GHS per ora.",
+    requestInstruction:
+      "Richiedi canzoni. Salta la fila. Lascia una mancia al DJ.",
+    payRequest: "Paga GHS 10 e Richiedi",
+    vipPriorityFull: "PRIORITÀ VIP",
   },
 
 

@@ -381,6 +381,7 @@ export default function StageRequestPage() {
     <option value="de">🇩🇪 Deutsch</option>
     <option value="ru">🇷🇺 Русский</option>
     <option value="tr">🇹🇷 Türkçe</option>
+    <option value="it">🇮🇹 Italiano</option>
    </select>
     </div>
         <div className="text-center mb-6">
