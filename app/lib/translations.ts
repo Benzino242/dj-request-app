@@ -18,7 +18,8 @@ export type Language =
   | "tr"
   | "it"
   | "nl"
-  | "pl";
+  | "pl"
+  | "el";
 
 export const translations = {
   en: {
@@ -799,6 +800,46 @@ export const translations = {
       "Proś o utwory. Omiń kolejkę. Daj napiwek DJ-owi.",
     payRequest: "Zapłać GHS 10 i Poproś",
     vipPriorityFull: "PRIORYTET VIP",
+  },
+
+  el: {
+    language: "Γλώσσα",
+    english: "Αγγλικά",
+    mandarin: "Μανδαρινικά",
+    requestingFromDj: "Ζητήστε τραγούδι από τον DJ",
+    liveNow: "ΖΩΝΤΑΝΑ 🟢",
+    offline: "ΕΚΤΟΣ ΣΥΝΔΕΣΗΣ 🔴",
+    requestsClosed: "Τα Αιτήματα Έκλεισαν",
+    yourName: "Το Όνομά σας",
+    songName: "Όνομα Τραγουδιού",
+    artist: "Καλλιτέχνης",
+    boostYourRequest: "Ενισχύστε το Αίτημά σας 🔥",
+    payAndRequest: "Πληρώστε & Ζητήστε",
+    processingPayment: "Επεξεργασία πληρωμής...",
+    liveRequests: "Ζωντανά Αιτήματα",
+    vipPriority: "Προτεραιότητα VIP",
+    upNext: "ΕΠΟΜΕΝΟ ⏭️",
+    nowPlaying: "ΠΑΙΖΕΙ ΤΩΡΑ 🎵",
+    estimatedWait: "Εκτιμώμενος χρόνος αναμονής",
+    higherTips:
+      "Τα μεγαλύτερα φιλοδωρήματα ανεβάζουν το αίτημά σας ψηλότερα 🔥",
+    boostingDisclaimer:
+      "Η ενίσχυση ενός αιτήματος αυξάνει την προτεραιότητά του στη λίστα του DJ αλλά δεν εγγυάται αναπαραγωγή ή αποδοχή.",
+    pay: "Πληρώστε",
+    andRequest: "και Ζητήστε",
+    requestedBy: "Ζητήθηκε από",
+    topTip: "ΜΕΓΑΛΥΤΕΡΟ ΦΙΛΟΔΩΡΗΜΑ",
+    vipRequest: "🔥 VIP ΑΙΤΗΜΑ",
+    accepted: "ΕΓΚΡΙΘΗΚΕ ✅",
+    rejected: "ΑΠΟΡΡΙΦΘΗΚΕ ❌",
+    played: "ΑΝΑΠΑΡΑΧΘΗΚΕ 🎵",
+    pending: "ΣΕ ΑΝΑΜΟΝΗ ⏳",
+    currencyComingSoon:
+      "Οι πληρωμές σε αυτό το νόμισμα έρχονται σύντομα. Χρησιμοποιήστε GHS προς το παρόν.",
+    requestInstruction:
+      "Ζητήστε τραγούδια. Παρακάμψτε τη σειρά. Δώστε φιλοδώρημα στον DJ.",
+    payRequest: "Πληρώστε GHS 10 & Ζητήστε",
+    vipPriorityFull: "VIP ΠΡΟΤΕΡΑΙΟΤΗΤΑ",
   },
 
 
