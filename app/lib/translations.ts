@@ -10,7 +10,8 @@ export type Language =
   | "ar"
   | "vi"
   | "tl"
-  | "pt";
+  | "pt"
+  | "es";
 
 export const translations = {
   en: {
@@ -474,6 +475,45 @@ export const translations = {
     vipPriorityFull: "PRIORIDADE VIP",
   },
 
-  
+  es: {
+    language: "Idioma",
+    english: "Inglés",
+    mandarin: "Mandarín",
+    requestingFromDj: "Pidiendo canción al DJ",
+    liveNow: "EN VIVO 🟢",
+    offline: "DESCONECTADO 🔴",
+    requestsClosed: "Solicitudes Cerradas",
+    yourName: "Tu Nombre",
+    songName: "Nombre de la Canción",
+    artist: "Artista",
+    boostYourRequest: "Impulsa tu Solicitud 🔥",
+    payAndRequest: "Pagar y Solicitar",
+    processingPayment: "Procesando Pago...",
+    liveRequests: "Solicitudes en Vivo",
+    vipPriority: "Prioridad VIP",
+    upNext: "SIGUIENTE ⏭️",
+    nowPlaying: "REPRODUCIENDO 🎵",
+    estimatedWait: "Tiempo estimado de espera",
+    higherTips: "Las propinas más altas suben tu solicitud 🔥",
+    boostingDisclaimer:
+      "Impulsar una solicitud aumenta su prioridad en la fila del DJ, pero no garantiza que la canción sea reproducida o aceptada.",
+    pay: "Pagar",
+    andRequest: "y Solicitar",
+    requestedBy: "Solicitado por",
+    topTip: "PROPINA MÁS ALTA",
+    vipRequest: "🔥 SOLICITUD VIP",
+    accepted: "ACEPTADA ✅",
+    rejected: "RECHAZADA ❌",
+    played: "REPRODUCIDA 🎵",
+    pending: "PENDIENTE ⏳",
+    currencyComingSoon:
+      "Los pagos en esta moneda estarán disponibles pronto. Usa GHS por ahora.",
+    requestInstruction:
+      "Pide canciones. Salta la fila. Da propina al DJ.",
+    payRequest: "Pagar GHS 10 y Solicitar",
+    vipPriorityFull: "PRIORIDAD VIP",
+  },
+
+
 
 } as const;
