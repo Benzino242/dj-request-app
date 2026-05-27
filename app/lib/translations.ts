@@ -7,7 +7,8 @@ export type Language =
   | "ms"
   | "th"
   | "hi"
-  | "ar";
+  | "ar"
+  | "vi";
 
 export const translations = {
   en: {
@@ -352,6 +353,45 @@ export const translations = {
       "اطلب الأغاني. تجاوز الطابور. أعطِ DJ إكرامية.",
     payRequest: "ادفع GHS 10 واطلب",
     vipPriorityFull: "أولوية VIP",
+  },
+
+  vi: {
+    language: "Ngôn ngữ",
+    english: "Tiếng Anh",
+    mandarin: "Tiếng Trung",
+    requestingFromDj: "Đang yêu cầu bài hát từ DJ",
+    liveNow: "ĐANG LIVE 🟢",
+    offline: "NGOẠI TUYẾN 🔴",
+    requestsClosed: "Đã đóng yêu cầu",
+    yourName: "Tên của bạn",
+    songName: "Tên bài hát",
+    artist: "Nghệ sĩ",
+    boostYourRequest: "Tăng ưu tiên yêu cầu 🔥",
+    payAndRequest: "Thanh toán & Yêu cầu",
+    processingPayment: "Đang xử lý thanh toán...",
+    liveRequests: "Yêu cầu trực tiếp",
+    vipPriority: "Ưu tiên VIP",
+    upNext: "TIẾP THEO ⏭️",
+    nowPlaying: "ĐANG PHÁT 🎵",
+    estimatedWait: "Thời gian chờ dự kiến",
+    higherTips: "Tip cao hơn sẽ đưa yêu cầu của bạn lên đầu 🔥",
+    boostingDisclaimer:
+      "Tăng ưu tiên yêu cầu sẽ giúp bài hát của bạn lên cao hơn trong hàng đợi DJ nhưng không đảm bảo DJ sẽ phát hoặc chấp nhận.",
+    pay: "Thanh toán",
+    andRequest: "& Yêu cầu",
+    requestedBy: "Yêu cầu bởi",
+    topTip: "TIP CAO NHẤT",
+    vipRequest: "🔥 YÊU CẦU VIP",
+    accepted: "ĐÃ CHẤP NHẬN ✅",
+    rejected: "ĐÃ TỪ CHỐI ❌",
+    played: "ĐÃ PHÁT 🎵",
+    pending: "ĐANG CHỜ ⏳",
+    currencyComingSoon:
+      "Thanh toán bằng loại tiền này sẽ sớm được hỗ trợ. Vui lòng dùng GHS hiện tại.",
+    requestInstruction:
+      "Yêu cầu bài hát. Bỏ qua hàng chờ. Tip cho DJ.",
+    payRequest: "Thanh toán GHS 10 & Yêu cầu",
+    vipPriorityFull: "ƯU TIÊN VIP",
   },
 
 } as const;
