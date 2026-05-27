@@ -8,7 +8,8 @@ export type Language =
   | "th"
   | "hi"
   | "ar"
-  | "vi";
+  | "vi"
+  | "tl";
 
 export const translations = {
   en: {
@@ -392,6 +393,45 @@ export const translations = {
       "Yêu cầu bài hát. Bỏ qua hàng chờ. Tip cho DJ.",
     payRequest: "Thanh toán GHS 10 & Yêu cầu",
     vipPriorityFull: "ƯU TIÊN VIP",
+  },
+
+  tl: {
+    language: "Wika",
+    english: "Ingles",
+    mandarin: "Mandarin",
+    requestingFromDj: "Humihiling ng kanta sa DJ",
+    liveNow: "LIVE NGAYON 🟢",
+    offline: "OFFLINE 🔴",
+    requestsClosed: "Sarado ang Requests",
+    yourName: "Iyong Pangalan",
+    songName: "Pangalan ng Kanta",
+    artist: "Artist",
+    boostYourRequest: "I-boost ang Iyong Request 🔥",
+    payAndRequest: "Magbayad at Mag-request",
+    processingPayment: "Pinoproseso ang Bayad...",
+    liveRequests: "Live Requests",
+    vipPriority: "VIP Priority",
+    upNext: "SUSUNOD ⏭️",
+    nowPlaying: "NGAYONG TUMUTUGTOG 🎵",
+    estimatedWait: "Tinatayang Oras ng Paghihintay",
+    higherTips: "Mas mataas na tip ay nagpapataas ng priority ng request 🔥",
+    boostingDisclaimer:
+      "Ang pag-boost ng request ay nagpapataas ng priority sa DJ queue ngunit hindi ginagarantiya na ito ay tutugtugin o tatanggapin ng DJ.",
+    pay: "Magbayad",
+    andRequest: "at Mag-request",
+    requestedBy: "Hiniling ni",
+    topTip: "PINAKAMATAAS NA TIP",
+    vipRequest: "🔥 VIP REQUEST",
+    accepted: "TINANGGAP ✅",
+    rejected: "TINANGGIHAN ❌",
+    played: "NATUGTOG 🎵",
+    pending: "NAGHIHINTAY ⏳",
+    currencyComingSoon:
+      "Malapit nang suportahan ang currency na ito. Gamitin muna ang GHS.",
+    requestInstruction:
+      "Humiling ng kanta. Lampasan ang pila. Mag-tip sa DJ.",
+    payRequest: "Magbayad ng GHS 10 at Mag-request",
+    vipPriorityFull: "VIP PRIORITY",
   },
 
 } as const;
