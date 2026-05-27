@@ -380,6 +380,7 @@ export default function StageRequestPage() {
     <option value="fr">🇫🇷 Français</option>
     <option value="de">🇩🇪 Deutsch</option>
     <option value="ru">🇷🇺 Русский</option>
+    <option value="tr">🇹🇷 Türkçe</option>
    </select>
     </div>
         <div className="text-center mb-6">
