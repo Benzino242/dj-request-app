@@ -17,7 +17,8 @@ export type Language =
   | "ru"
   | "tr"
   | "it"
-  | "nl";
+  | "nl"
+  | "pl";
 
 export const translations = {
   en: {
@@ -758,6 +759,46 @@ export const translations = {
       "Vraag nummers aan. Sla de wachtrij over. Geef de DJ een fooi.",
     payRequest: "Betaal GHS 10 & Vraag Aan",
     vipPriorityFull: "VIP PRIORITEIT",
+  },
+
+  pl: {
+    language: "Język",
+    english: "Angielski",
+    mandarin: "Mandaryński",
+    requestingFromDj: "Poproś DJ-a o utwór",
+    liveNow: "NA ŻYWO 🟢",
+    offline: "OFFLINE 🔴",
+    requestsClosed: "Prośby Zamknięte",
+    yourName: "Twoje Imię",
+    songName: "Nazwa Utworu",
+    artist: "Artysta",
+    boostYourRequest: "Wyróżnij Swoją Prośbę 🔥",
+    payAndRequest: "Zapłać i Poproś",
+    processingPayment: "Przetwarzanie płatności...",
+    liveRequests: "Prośby na Żywo",
+    vipPriority: "Priorytet VIP",
+    upNext: "NASTĘPNE ⏭️",
+    nowPlaying: "TERAZ GRANE 🎵",
+    estimatedWait: "Szacowany czas oczekiwania",
+    higherTips:
+      "Wyższe napiwki przesuwają Twoją prośbę wyżej 🔥",
+    boostingDisclaimer:
+      "Wyróżnienie prośby zwiększa jej priorytet w kolejce DJ-a, ale nie gwarantuje odtworzenia lub akceptacji.",
+    pay: "Zapłać",
+    andRequest: "i Poproś",
+    requestedBy: "Poprosił",
+    topTip: "NAJWYŻSZY NAPIWEK",
+    vipRequest: "🔥 PROŚBA VIP",
+    accepted: "ZAAKCEPTOWANO ✅",
+    rejected: "ODRZUCONO ❌",
+    played: "ODTWORZONO 🎵",
+    pending: "OCZEKUJE ⏳",
+    currencyComingSoon:
+      "Płatności w tej walucie będą dostępne wkrótce. Na razie użyj GHS.",
+    requestInstruction:
+      "Proś o utwory. Omiń kolejkę. Daj napiwek DJ-owi.",
+    payRequest: "Zapłać GHS 10 i Poproś",
+    vipPriorityFull: "PRIORYTET VIP",
   },
 
 
