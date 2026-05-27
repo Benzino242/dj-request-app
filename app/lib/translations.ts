@@ -4,7 +4,8 @@ export type Language =
   | "ja"
   | "ko"
   | "id"
-  | "ms";
+  | "ms"
+  | "th";
 
 export const translations = {
   en: {
@@ -232,5 +233,44 @@ export const translations = {
       "Minta lagu. Potong barisan. Beri tip kepada DJ.",
     payRequest: "Bayar GHS 10 & Minta Lagu",
     vipPriorityFull: "KEUTAMAAN VIP",
+  },
+
+  th: {
+    language: "ภาษา",
+    english: "อังกฤษ",
+    mandarin: "จีนกลาง",
+    requestingFromDj: "กำลังขอเพลงจาก DJ",
+    liveNow: "กำลัง LIVE 🟢",
+    offline: "ออฟไลน์ 🔴",
+    requestsClosed: "ปิดรับคำขอเพลง",
+    yourName: "ชื่อของคุณ",
+    songName: "ชื่อเพลง",
+    artist: "ศิลปิน",
+    boostYourRequest: "เพิ่มความสำคัญคำขอ 🔥",
+    payAndRequest: "ชำระเงินและขอเพลง",
+    processingPayment: "กำลังดำเนินการชำระเงิน...",
+    liveRequests: "คำขอเพลงสด",
+    vipPriority: "สิทธิ์ VIP",
+    upNext: "เพลงถัดไป ⏭️",
+    nowPlaying: "กำลังเล่น 🎵",
+    estimatedWait: "เวลารอโดยประมาณ",
+    higherTips: "ทิปที่สูงขึ้นจะทำให้คำขอของคุณอยู่ด้านบน 🔥",
+    boostingDisclaimer:
+      "การเพิ่มความสำคัญคำขอจะช่วยให้คำขออยู่สูงขึ้นในคิว DJ แต่ไม่ได้รับประกันว่าจะถูกเล่นหรือยอมรับ",
+    pay: "ชำระ",
+    andRequest: "และขอเพลง",
+    requestedBy: "ขอโดย",
+    topTip: "ทิปสูงสุด",
+    vipRequest: "🔥 คำขอ VIP",
+    accepted: "ยอมรับแล้ว ✅",
+    rejected: "ปฏิเสธ ❌",
+    played: "เล่นแล้ว 🎵",
+    pending: "รอดำเนินการ ⏳",
+    currencyComingSoon:
+      "การชำระเงินสกุลนี้จะพร้อมใช้งานเร็ว ๆ นี้ กรุณาใช้ GHS ไปก่อน",
+    requestInstruction:
+      "ขอเพลง ข้ามคิว และให้ทิป DJ",
+    payRequest: "ชำระ GHS 10 และขอเพลง",
+    vipPriorityFull: "สิทธิ์ VIP",
   },
 } as const;
