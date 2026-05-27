@@ -101,10 +101,10 @@ export const translations = {
     payRequest: "支付 GHS 10 并点歌",
     vipPriorityFull: "VIP 优先",
     adminSubtitle: "实时高级点歌管理",
-    totalRequests: "Total Requests",
-    vipRequests: "VIP Requests",
-    pendingQueue: "Pending Queue",
-    paidTransactions: "Paid Transactions",
+    totalRequests: "总点歌数",
+    vipRequests: "VIP 点歌",
+    pendingQueue: "等待队列",
+    paidTransactions: "已付款交易", 
   },
 
   ja: {
