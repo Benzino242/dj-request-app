@@ -13,7 +13,8 @@ export type Language =
   | "pt"
   | "es"
   | "fr"
-  | "de";
+  | "de"
+  | "ru";
 
 export const translations = {
   en: {
@@ -594,6 +595,46 @@ export const translations = {
       "Songs anfragen. Die Warteschlange überspringen. Dem DJ Trinkgeld geben.",
     payRequest: "GHS 10 bezahlen & anfragen",
     vipPriorityFull: "VIP-PRIORITÄT",
+  },
+
+  ru: {
+    language: "Язык",
+    english: "Английский",
+    mandarin: "Китайский",
+    requestingFromDj: "Запрос песни у DJ",
+    liveNow: "СЕЙЧАС В ЭФИРЕ 🟢",
+    offline: "НЕ В СЕТИ 🔴",
+    requestsClosed: "Запросы Закрыты",
+    yourName: "Ваше Имя",
+    songName: "Название Песни",
+    artist: "Исполнитель",
+    boostYourRequest: "Поднять запрос 🔥",
+    payAndRequest: "Оплатить и Запросить",
+    processingPayment: "Обработка платежа...",
+    liveRequests: "Живые Запросы",
+    vipPriority: "VIP Приоритет",
+    upNext: "СЛЕДУЮЩАЯ ⏭️",
+    nowPlaying: "СЕЙЧАС ИГРАЕТ 🎵",
+    estimatedWait: "Примерное время ожидания",
+    higherTips:
+      "Более высокие чаевые поднимают ваш запрос выше 🔥",
+    boostingDisclaimer:
+      "Повышение запроса увеличивает его приоритет в очереди DJ, но не гарантирует воспроизведение или принятие.",
+    pay: "Оплатить",
+    andRequest: "и Запросить",
+    requestedBy: "Запросил",
+    topTip: "САМЫЕ БОЛЬШИЕ ЧАЕВЫЕ",
+    vipRequest: "🔥 VIP ЗАПРОС",
+    accepted: "ПРИНЯТО ✅",
+    rejected: "ОТКЛОНЕНО ❌",
+    played: "ВОСПРОИЗВЕДЕНО 🎵",
+    pending: "ОЖИДАНИЕ ⏳",
+    currencyComingSoon:
+      "Платежи в этой валюте скоро будут доступны. Пока используйте GHS.",
+    requestInstruction:
+      "Запрашивайте песни. Пропускайте очередь. Оставляйте чаевые DJ.",
+    payRequest: "Оплатить GHS 10 и Запросить",
+    vipPriorityFull: "VIP ПРИОРИТЕТ",
   },
 
 
