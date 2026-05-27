@@ -364,10 +364,17 @@ export default function StageRequestPage() {
     onChange={(e) => setLanguage(e.target.value as Language)}
     className="bg-black border border-zinc-700 rounded-xl px-4 py-2 text-sm"
   >
-    <option value="en">🇺🇸 English</option>
+      <option value="en">🇺🇸 English</option>
     <option value="zh">🇨🇳 中文</option>
-  </select>
-</div>
+    <option value="ja">🇯🇵 日本語</option>
+    <option value="ko">🇰🇷 한국어</option>
+    <option value="id">🇮🇩 Bahasa Indonesia</option>
+    <option value="ms">🇲🇾 Bahasa Melayu</option>
+    <option value="th">🇹🇭 ไทย</option>
+    <option value="hi">🇮🇳 हिन्दी</option>
+    <option value="ar">🇦🇪 العربية</option>
+   </select>
+    </div>
         <div className="text-center mb-6">
           {dj.profile_image && (
             <img
@@ -664,7 +671,7 @@ export default function StageRequestPage() {
                         ? t.rejected
                         : request.status === "played"
                         ? t.played
-                        : t.pending}
+                        : t.pending
                     </span>
 
                     <span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
