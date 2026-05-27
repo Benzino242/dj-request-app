@@ -671,7 +671,7 @@ export default function StageRequestPage() {
                         ? t.rejected
                         : request.status === "played"
                         ? t.played
-                        : t.pending
+                        : t.pending}
                     </span>
 
                     <span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
