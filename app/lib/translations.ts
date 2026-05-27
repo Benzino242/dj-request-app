@@ -63,6 +63,12 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "Logout",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   zh: {
@@ -106,6 +112,11 @@ export const translations = {
     pendingQueue: "等待队列",
     paidTransactions: "已付款交易", 
     logout: "退出登录",
+    liveGuestsMessage: "访客目前可以提交付费点歌请求。",
+    offlineGuestsMessage: "此 DJ 页面当前已关闭点歌请求。",
+    goOffline: "下线",
+    goLive: "上线",
+    endDjSet: "结束 DJ 演出",
   },
 
   ja: {
@@ -150,6 +161,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "ログアウト",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   ko: {
@@ -193,6 +209,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "로그아웃",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   id: {
@@ -238,6 +259,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "Keluar",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   ms: {
@@ -283,6 +309,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "Log Keluar",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   th: {
@@ -328,6 +359,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "ออกจากระบบ",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   hi: {
@@ -373,6 +409,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "लॉग आउट",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   ar: {
@@ -418,6 +459,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "تسجيل الخروج",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   vi: {
@@ -463,6 +509,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "Đăng xuất",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   tl: {
@@ -508,6 +559,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "Mag-logout",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   pt: {
@@ -553,6 +609,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "Sair",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   es: {
@@ -598,6 +659,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "Cerrar sesión",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   fr: {
@@ -644,6 +710,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "Déconnexion",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   de: {
@@ -690,6 +761,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "Abmelden",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   ru: {
@@ -736,6 +812,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "Выйти",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   tr: {
@@ -782,6 +863,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "Çıkış Yap",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   it: {
@@ -828,6 +914,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "Disconnetti",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   nl: {
@@ -874,6 +965,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "Uitloggen",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   pl: {
@@ -920,6 +1016,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "Wyloguj się",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   el: {
@@ -966,6 +1067,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "Αποσύνδεση",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
 
   uk: {
@@ -1012,8 +1118,11 @@ export const translations = {
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
     logout: "Вийти",
+    liveGuestsMessage: "Guests can currently submit paid song requests.",
+    offlineGuestsMessage: "Requests are currently closed for this DJ page.",
+    goOffline: "Go Offline",
+    goLive: "Go Live",
+    endDjSet: "End DJ Set",
   },
-
-
 
 } as const;

@@ -549,7 +549,7 @@ export default function AdminPage() {
             onClick={handleLogout}
             className="bg-zinc-800 hover:bg-zinc-700 px-5 py-3 rounded-xl"
           >
-            Logout
+            {t.logout}
           </button>
         </div>
 
@@ -578,9 +578,9 @@ export default function AdminPage() {
               </h2>
 
               <p className="text-zinc-400 mt-2">
-                {dj.is_live
-                  ? "Guests can currently submit paid song requests."
-                  : "Requests are currently closed for this DJ page."}
+                 {dj.is_live
+                  ? t.liveGuestsMessage
+                  : t.offlineGuestsMessage}
               </p>
             </div>
 
@@ -592,13 +592,13 @@ export default function AdminPage() {
                   : "bg-green-600 hover:bg-green-700"
               }`}
             >
-              {dj.is_live ? "Go Offline" : "Go Live"}
+              {dj.is_live ? t.goOffline : t.goLive}
             </button>
             <button
               onClick={endDJSet}
               className="bg-red-600 hover:bg-red-700 px-6 py-4 rounded-xl font-bold text-lg ml-4"
             >
-              End DJ Set
+              t.endDjSet
             </button>
           </div>
         </div>
