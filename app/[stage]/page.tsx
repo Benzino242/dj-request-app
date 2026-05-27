@@ -385,6 +385,7 @@ export default function StageRequestPage() {
     <option value="nl">🇳🇱 Nederlands</option>
     <option value="pl">🇵🇱 Polski</option>
     <option value="el">🇬🇷 Ελληνικά</option>
+    <option value="uk">🇺🇦 Українська</option>
    </select>
     </div>
         <div className="text-center mb-6">

@@ -19,7 +19,8 @@ export type Language =
   | "it"
   | "nl"
   | "pl"
-  | "el";
+  | "el"
+  | "uk";
 
 export const translations = {
   en: {
@@ -840,6 +841,46 @@ export const translations = {
       "Ζητήστε τραγούδια. Παρακάμψτε τη σειρά. Δώστε φιλοδώρημα στον DJ.",
     payRequest: "Πληρώστε GHS 10 & Ζητήστε",
     vipPriorityFull: "VIP ΠΡΟΤΕΡΑΙΟΤΗΤΑ",
+  },
+
+  uk: {
+    language: "Мова",
+    english: "Англійська",
+    mandarin: "Мандаринська",
+    requestingFromDj: "Замовити пісню у DJ",
+    liveNow: "НАЖИВО 🟢",
+    offline: "ОФЛАЙН 🔴",
+    requestsClosed: "Запити Закрито",
+    yourName: "Ваше Ім'я",
+    songName: "Назва Пісні",
+    artist: "Виконавець",
+    boostYourRequest: "Підняти Ваш Запит 🔥",
+    payAndRequest: "Оплатити та Замовити",
+    processingPayment: "Обробка платежу...",
+    liveRequests: "Живі Запити",
+    vipPriority: "VIP Пріоритет",
+    upNext: "НАСТУПНА ⏭️",
+    nowPlaying: "ЗАРАЗ ГРАЄ 🎵",
+    estimatedWait: "Орієнтовний час очікування",
+    higherTips:
+      "Вищі чайові піднімають ваш запит вище 🔥",
+    boostingDisclaimer:
+      "Підняття запиту збільшує його пріоритет у черзі DJ, але не гарантує відтворення або прийняття.",
+    pay: "Оплатити",
+    andRequest: "та Замовити",
+    requestedBy: "Замовив",
+    topTip: "НАЙВИЩІ ЧАЙОВІ",
+    vipRequest: "🔥 VIP ЗАПИТ",
+    accepted: "ПРИЙНЯТО ✅",
+    rejected: "ВІДХИЛЕНО ❌",
+    played: "ВІДТВОРЕНО 🎵",
+    pending: "ОЧІКУЄ ⏳",
+    currencyComingSoon:
+      "Платежі у цій валюті скоро будуть доступні. Поки використовуйте GHS.",
+    requestInstruction:
+      "Замовляйте пісні. Пропускайте чергу. Залишайте чайові DJ.",
+    payRequest: "Оплатити GHS 10 та Замовити",
+    vipPriorityFull: "VIP ПРІОРИТЕТ",
   },
 
 
