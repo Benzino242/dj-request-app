@@ -1,4 +1,7 @@
-export type Language = "en" | "zh";
+export type Language =
+  | "en"
+  | "zh"
+  | "ja";
 
 export const translations = {
   en: {
@@ -73,5 +76,43 @@ export const translations = {
     requestInstruction: "点歌、跳过队列、给 DJ 小费。",
     payRequest: "支付 GHS 10 并点歌",
     vipPriorityFull: "VIP 优先",
+  },
+
+  ja: {
+    language: "言語",
+    english: "英語",
+    mandarin: "中国語",
+    requestingFromDj: "DJ にリクエスト中",
+    liveNow: "ライブ中 🟢",
+    offline: "オフライン 🔴",
+    requestsClosed: "リクエスト受付終了",
+    yourName: "あなたの名前",
+    songName: "曲名",
+    artist: "アーティスト",
+    boostYourRequest: "リクエストをブースト 🔥",
+    payAndRequest: "支払ってリクエスト",
+    processingPayment: "支払い処理中...",
+    liveRequests: "ライブリクエスト",
+    vipPriority: "VIP 優先",
+    upNext: "次の曲 ⏭️",
+    nowPlaying: "再生中 🎵",
+    estimatedWait: "予想待ち時間",
+    higherTips: "高いチップほど上位に表示されます 🔥",
+    boostingDisclaimer:
+      "ブーストすると DJ キュー内の優先度が上がりますが、再生や承認を保証するものではありません。",
+    pay: "支払う",
+    andRequest: "してリクエスト",
+    requestedBy: "リクエスト者",
+    topTip: "最高チップ",
+    vipRequest: "🔥 VIP リクエスト",
+    accepted: "承認済み ✅",
+    rejected: "拒否 ❌",
+    played: "再生済み 🎵",
+    pending: "保留中 ⏳",
+    currencyComingSoon: "この通貨は近日対応予定です。今は GHS をご利用ください。",
+    requestInstruction:
+      "曲をリクエスト。列をスキップ。DJ にチップ。",
+    payRequest: "GHS 10 を支払ってリクエスト",
+    vipPriorityFull: "VIP 優先",
   },
 } as const;
