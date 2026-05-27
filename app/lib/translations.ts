@@ -58,6 +58,7 @@ export const translations = {
     requestInstruction: "Request songs. Skip the queue. Tip the DJ.",
     payRequest: "Pay GHS 10 & Request",
     vipPriorityFull: "VIP PRIORITY",
+    adminSubtitle: "Live premium request management",
   },
 
   zh: {
@@ -95,6 +96,7 @@ export const translations = {
     requestInstruction: "点歌、跳过队列、给 DJ 小费。",
     payRequest: "支付 GHS 10 并点歌",
     vipPriorityFull: "VIP 优先",
+    adminSubtitle: "实时高级点歌管理",
   },
 
   ja: {
@@ -133,6 +135,7 @@ export const translations = {
       "曲をリクエスト。列をスキップ。DJ にチップ。",
     payRequest: "GHS 10 を支払ってリクエスト",
     vipPriorityFull: "VIP 優先",
+    adminSubtitle: "ライブ高級リクエスト管理",
   },
 
   ko: {
@@ -170,6 +173,7 @@ export const translations = {
     requestInstruction: "곡을 신청하고, 대기열을 건너뛰고, DJ에게 팁을 주세요.",
     payRequest: "GHS 10 결제하고 신청",
     vipPriorityFull: "VIP 우선",
+    adminSubtitle: "Live premium request management",
   },
 
   id: {
@@ -209,6 +213,7 @@ export const translations = {
       "Minta lagu. Lewati antrean. Beri tip ke DJ.",
     payRequest: "Bayar GHS 10 & Minta Lagu",
     vipPriorityFull: "PRIORITAS VIP",
+    adminSubtitle: "Live premium request management",
   },
 
   ms: {
@@ -248,6 +253,7 @@ export const translations = {
       "Minta lagu. Potong barisan. Beri tip kepada DJ.",
     payRequest: "Bayar GHS 10 & Minta Lagu",
     vipPriorityFull: "KEUTAMAAN VIP",
+    adminSubtitle: "Live premium request management",
   },
 
   th: {
@@ -287,6 +293,7 @@ export const translations = {
       "ขอเพลง ข้ามคิว และให้ทิป DJ",
     payRequest: "ชำระ GHS 10 และขอเพลง",
     vipPriorityFull: "สิทธิ์ VIP",
+    adminSubtitle: "Live premium request management",
   },
 
   hi: {
@@ -326,6 +333,7 @@ export const translations = {
       "गाने का अनुरोध करें। कतार छोड़ें। DJ को टिप दें।",
     payRequest: "GHS 10 भुगतान करें और अनुरोध करें",
     vipPriorityFull: "VIP प्राथमिकता",
+    adminSubtitle: "Live premium request management",
   },
 
   ar: {
@@ -365,6 +373,7 @@ export const translations = {
       "اطلب الأغاني. تجاوز الطابور. أعطِ DJ إكرامية.",
     payRequest: "ادفع GHS 10 واطلب",
     vipPriorityFull: "أولوية VIP",
+    adminSubtitle: "Live premium request management",
   },
 
   vi: {
@@ -404,6 +413,7 @@ export const translations = {
       "Yêu cầu bài hát. Bỏ qua hàng chờ. Tip cho DJ.",
     payRequest: "Thanh toán GHS 10 & Yêu cầu",
     vipPriorityFull: "ƯU TIÊN VIP",
+    adminSubtitle: "Live premium request management",
   },
 
   tl: {
@@ -443,6 +453,7 @@ export const translations = {
       "Humiling ng kanta. Lampasan ang pila. Mag-tip sa DJ.",
     payRequest: "Magbayad ng GHS 10 at Mag-request",
     vipPriorityFull: "VIP PRIORITY",
+    adminSubtitle: "Live premium request management",
   },
 
   pt: {
@@ -482,6 +493,7 @@ export const translations = {
       "Peça músicas. Pule a fila. Dê gorjeta ao DJ.",
     payRequest: "Pagar GHS 10 & Pedir Música",
     vipPriorityFull: "PRIORIDADE VIP",
+    adminSubtitle: "Live premium request management",
   },
 
   es: {
@@ -521,6 +533,7 @@ export const translations = {
       "Pide canciones. Salta la fila. Da propina al DJ.",
     payRequest: "Pagar GHS 10 y Solicitar",
     vipPriorityFull: "PRIORIDAD VIP",
+    adminSubtitle: "Live premium request management",
   },
 
   fr: {
@@ -561,6 +574,7 @@ export const translations = {
       "Demandez des chansons. Passez la file. Donnez un pourboire au DJ.",
     payRequest: "Payer GHS 10 et Demander",
     vipPriorityFull: "PRIORITÉ VIP",
+    adminSubtitle: "Live premium request management",
   },
 
   de: {
@@ -601,6 +615,7 @@ export const translations = {
       "Songs anfragen. Die Warteschlange überspringen. Dem DJ Trinkgeld geben.",
     payRequest: "GHS 10 bezahlen & anfragen",
     vipPriorityFull: "VIP-PRIORITÄT",
+    adminSubtitle: "Live premium request management",
   },
 
   ru: {
@@ -641,6 +656,7 @@ export const translations = {
       "Запрашивайте песни. Пропускайте очередь. Оставляйте чаевые DJ.",
     payRequest: "Оплатить GHS 10 и Запросить",
     vipPriorityFull: "VIP ПРИОРИТЕТ",
+    adminSubtitle: "Live premium request management",
   },
 
   tr: {
@@ -681,6 +697,7 @@ export const translations = {
       "Şarkı iste. Sırayı atla. DJ’ye bahşiş ver.",
     payRequest: "GHS 10 Öde ve İstek Gönder",
     vipPriorityFull: "VIP ÖNCELİK",
+    adminSubtitle: "Live premium request management",
   },
 
   it: {
@@ -721,6 +738,7 @@ export const translations = {
       "Richiedi canzoni. Salta la fila. Lascia una mancia al DJ.",
     payRequest: "Paga GHS 10 e Richiedi",
     vipPriorityFull: "PRIORITÀ VIP",
+    adminSubtitle: "Live premium request management",
   },
 
   nl: {
@@ -761,6 +779,7 @@ export const translations = {
       "Vraag nummers aan. Sla de wachtrij over. Geef de DJ een fooi.",
     payRequest: "Betaal GHS 10 & Vraag Aan",
     vipPriorityFull: "VIP PRIORITEIT",
+    adminSubtitle: "Live premium request management",
   },
 
   pl: {
@@ -801,6 +820,7 @@ export const translations = {
       "Proś o utwory. Omiń kolejkę. Daj napiwek DJ-owi.",
     payRequest: "Zapłać GHS 10 i Poproś",
     vipPriorityFull: "PRIORYTET VIP",
+    adminSubtitle: "Live premium request management",
   },
 
   el: {
@@ -841,6 +861,7 @@ export const translations = {
       "Ζητήστε τραγούδια. Παρακάμψτε τη σειρά. Δώστε φιλοδώρημα στον DJ.",
     payRequest: "Πληρώστε GHS 10 & Ζητήστε",
     vipPriorityFull: "VIP ΠΡΟΤΕΡΑΙΟΤΗΤΑ",
+    adminSubtitle: "Live premium request management",
   },
 
   uk: {
@@ -881,6 +902,7 @@ export const translations = {
       "Замовляйте пісні. Пропускайте чергу. Залишайте чайові DJ.",
     payRequest: "Оплатити GHS 10 та Замовити",
     vipPriorityFull: "VIP ПРІОРИТЕТ",
+    adminSubtitle: "Live premium request management",
   },
 
 

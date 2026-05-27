@@ -540,9 +540,9 @@ export default function AdminPage() {
         <div className="flex flex-col md:flex-row justify-between gap-4 mb-10">
           <div>
             <h1 className="text-5xl font-bold text-purple-500 mb-2">
-              {dj.stage_name.toUpperCase()} Dashboard
+            {dj.stage_name.toUpperCase()} Dashboard
             </h1>
-            <p className="text-zinc-400">Live premium request management</p>
+            <p className="text-zinc-400">{t.adminSubtitle}</p>
           </div>
 
           <button
