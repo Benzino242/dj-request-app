@@ -11,7 +11,8 @@ export type Language =
   | "vi"
   | "tl"
   | "pt"
-  | "es";
+  | "es"
+  | "fr";
 
 export const translations = {
   en: {
@@ -512,6 +513,46 @@ export const translations = {
       "Pide canciones. Salta la fila. Da propina al DJ.",
     payRequest: "Pagar GHS 10 y Solicitar",
     vipPriorityFull: "PRIORIDAD VIP",
+  },
+
+  fr: {
+    language: "Langue",
+    english: "Anglais",
+    mandarin: "Mandarin",
+    requestingFromDj: "Demande au DJ",
+    liveNow: "EN DIRECT 🟢",
+    offline: "HORS LIGNE 🔴",
+    requestsClosed: "Demandes Fermées",
+    yourName: "Votre Nom",
+    songName: "Nom de la Chanson",
+    artist: "Artiste",
+    boostYourRequest: "Boostez votre demande 🔥",
+    payAndRequest: "Payer et Demander",
+    processingPayment: "Traitement du paiement...",
+    liveRequests: "Demandes en Direct",
+    vipPriority: "Priorité VIP",
+    upNext: "À SUIVRE ⏭️",
+    nowPlaying: "EN LECTURE 🎵",
+    estimatedWait: "Temps d'attente estimé",
+    higherTips:
+      "Les pourboires plus élevés rapprochent votre demande du sommet 🔥",
+    boostingDisclaimer:
+      "Booster une demande augmente sa priorité dans la file du DJ mais ne garantit pas qu’elle sera jouée ou acceptée.",
+    pay: "Payer",
+    andRequest: "et Demander",
+    requestedBy: "Demandé par",
+    topTip: "MEILLEUR POURBOIRE",
+    vipRequest: "🔥 DEMANDE VIP",
+    accepted: "ACCEPTÉE ✅",
+    rejected: "REFUSÉE ❌",
+    played: "JOUÉE 🎵",
+    pending: "EN ATTENTE ⏳",
+    currencyComingSoon:
+      "Les paiements dans cette devise arrivent bientôt. Veuillez utiliser GHS pour le moment.",
+    requestInstruction:
+      "Demandez des chansons. Passez la file. Donnez un pourboire au DJ.",
+    payRequest: "Payer GHS 10 et Demander",
+    vipPriorityFull: "PRIORITÉ VIP",
   },
 
 
