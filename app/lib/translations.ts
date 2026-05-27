@@ -105,6 +105,7 @@ export const translations = {
     vipRequests: "VIP 点歌",
     pendingQueue: "等待队列",
     paidTransactions: "已付款交易", 
+    logout: "退出登录",
   },
 
   ja: {
@@ -148,6 +149,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "ログアウト",
   },
 
   ko: {
@@ -190,6 +192,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "로그아웃",
   },
 
   id: {
@@ -234,6 +237,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "Keluar",
   },
 
   ms: {
@@ -278,6 +282,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "Log Keluar",
   },
 
   th: {
@@ -322,6 +327,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "ออกจากระบบ",
   },
 
   hi: {
@@ -366,6 +372,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "लॉग आउट",
   },
 
   ar: {
@@ -410,6 +417,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "تسجيل الخروج",
   },
 
   vi: {
@@ -454,6 +462,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "Đăng xuất",
   },
 
   tl: {
@@ -498,6 +507,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "Mag-logout",
   },
 
   pt: {
@@ -542,6 +552,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "Sair",
   },
 
   es: {
@@ -586,6 +597,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "Cerrar sesión",
   },
 
   fr: {
@@ -631,6 +643,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "Déconnexion",
   },
 
   de: {
@@ -676,6 +689,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "Abmelden",
   },
 
   ru: {
@@ -721,6 +735,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "Выйти",
   },
 
   tr: {
@@ -766,6 +781,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "Çıkış Yap",
   },
 
   it: {
@@ -811,6 +827,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "Disconnetti",
   },
 
   nl: {
@@ -856,6 +873,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "Uitloggen",
   },
 
   pl: {
@@ -901,6 +919,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "Wyloguj się",
   },
 
   el: {
@@ -946,6 +965,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "Αποσύνδεση",
   },
 
   uk: {
@@ -991,6 +1011,7 @@ export const translations = {
     vipRequests: "VIP Requests",
     pendingQueue: "Pending Queue",
     paidTransactions: "Paid Transactions",
+    logout: "Вийти",
   },
 
 
