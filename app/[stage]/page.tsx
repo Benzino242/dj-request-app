@@ -372,6 +372,7 @@ export default function StageRequestPage() {
     <option value="ms">🇲🇾 Bahasa Melayu</option>
     <option value="th">🇹🇭 ไทย</option>
     <option value="hi">🇮🇳 हिन्दी</option>
+    <option value="ar">🇦🇪 العربية</option>
    </select>
     </div>
         <div className="text-center mb-6">

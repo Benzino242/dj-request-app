@@ -6,7 +6,8 @@ export type Language =
   | "id"
   | "ms"
   | "th"
-  | "hi";
+  | "hi"
+  | "ar";
 
 export const translations = {
   en: {
@@ -313,5 +314,44 @@ export const translations = {
     payRequest: "GHS 10 भुगतान करें और अनुरोध करें",
     vipPriorityFull: "VIP प्राथमिकता",
   },
-  
+
+  ar: {
+    language: "اللغة",
+    english: "الإنجليزية",
+    mandarin: "الصينية",
+    requestingFromDj: "طلب أغنية من الـ DJ",
+    liveNow: "مباشر الآن 🟢",
+    offline: "غير متصل 🔴",
+    requestsClosed: "تم إغلاق الطلبات",
+    yourName: "اسمك",
+    songName: "اسم الأغنية",
+    artist: "الفنان",
+    boostYourRequest: "عزز طلبك 🔥",
+    payAndRequest: "ادفع واطلب",
+    processingPayment: "جاري معالجة الدفع...",
+    liveRequests: "الطلبات المباشرة",
+    vipPriority: "أولوية VIP",
+    upNext: "التالي ⏭️",
+    nowPlaying: "يتم التشغيل الآن 🎵",
+    estimatedWait: "وقت الانتظار المتوقع",
+    higherTips: "الإكراميات الأعلى ترفع طلبك للأعلى 🔥",
+    boostingDisclaimer:
+      "تعزيز الطلب يزيد الأولوية في قائمة DJ لكنه لا يضمن تشغيل الأغنية أو قبولها.",
+    pay: "ادفع",
+    andRequest: "واطلب",
+    requestedBy: "طلب بواسطة",
+    topTip: "أعلى إكرامية",
+    vipRequest: "🔥 طلب VIP",
+    accepted: "تم القبول ✅",
+    rejected: "تم الرفض ❌",
+    played: "تم التشغيل 🎵",
+    pending: "قيد الانتظار ⏳",
+    currencyComingSoon:
+      "الدفع بهذه العملة سيأتي قريبًا. يرجى استخدام GHS حاليًا.",
+    requestInstruction:
+      "اطلب الأغاني. تجاوز الطابور. أعطِ DJ إكرامية.",
+    payRequest: "ادفع GHS 10 واطلب",
+    vipPriorityFull: "أولوية VIP",
+  },
+
 } as const;
