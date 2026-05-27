@@ -77,6 +77,10 @@ export default function AdminPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
 
+  const [language, setLanguage] = useState<Language>("en");
+
+  const t = translations[language];
+
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [accountName, setAccountName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
@@ -502,6 +506,36 @@ export default function AdminPage() {
 
   return (
     <main className="min-h-screen bg-black text-white p-6">
+     <div className="flex justify-end mb-6">
+      <select
+        value={language}
+        onChange={(e) => setLanguage(e.target.value as Language)}
+        className="bg-black border border-zinc-700 rounded-xl px-4 py-2 text-sm"
+      >
+        <option value="en">🇺🇸 English</option>
+        <option value="zh">🇨🇳 中文</option>
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="ko">🇰🇷 한국어</option>
+        <option value="id">🇮🇩 Bahasa Indonesia</option>
+        <option value="ms">🇲🇾 Bahasa Melayu</option>
+        <option value="th">🇹🇭 ไทย</option>
+        <option value="hi">🇮🇳 हिन्दी</option>
+        <option value="ar">🇦🇪 العربية</option>
+        <option value="vi">🇻🇳 Tiếng Việt</option>
+        <option value="tl">🇵🇭 Tagalog</option>
+        <option value="pt">🇧🇷 Português</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="tr">🇹🇷 Türkçe</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="nl">🇳🇱 Nederlands</option>
+        <option value="pl">🇵🇱 Polski</option>
+        <option value="el">🇬🇷 Ελληνικά</option>
+        <option value="uk">🇺🇦 Українська</option>
+      </select>
+    </div>
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between gap-4 mb-10">
           <div>
