@@ -9,7 +9,8 @@ export type Language =
   | "hi"
   | "ar"
   | "vi"
-  | "tl";
+  | "tl"
+  | "pt";
 
 export const translations = {
   en: {
@@ -432,6 +433,45 @@ export const translations = {
       "Humiling ng kanta. Lampasan ang pila. Mag-tip sa DJ.",
     payRequest: "Magbayad ng GHS 10 at Mag-request",
     vipPriorityFull: "VIP PRIORITY",
+  },
+
+  pt: {
+    language: "Idioma",
+    english: "Inglês",
+    mandarin: "Mandarim",
+    requestingFromDj: "Solicitando música ao DJ",
+    liveNow: "AO VIVO 🟢",
+    offline: "OFFLINE 🔴",
+    requestsClosed: "Pedidos Encerrados",
+    yourName: "Seu Nome",
+    songName: "Nome da Música",
+    artist: "Artista",
+    boostYourRequest: "Impulsione seu Pedido 🔥",
+    payAndRequest: "Pagar & Pedir Música",
+    processingPayment: "Processando Pagamento...",
+    liveRequests: "Pedidos ao Vivo",
+    vipPriority: "Prioridade VIP",
+    upNext: "PRÓXIMA ⏭️",
+    nowPlaying: "TOCANDO AGORA 🎵",
+    estimatedWait: "Tempo estimado de espera",
+    higherTips: "Gorjetas maiores colocam seu pedido no topo 🔥",
+    boostingDisclaimer:
+      "Impulsionar um pedido aumenta sua prioridade na fila do DJ, mas não garante que a música será tocada ou aceita.",
+    pay: "Pagar",
+    andRequest: "& Pedir Música",
+    requestedBy: "Pedido por",
+    topTip: "MAIOR GORJETA",
+    vipRequest: "🔥 PEDIDO VIP",
+    accepted: "ACEITO ✅",
+    rejected: "REJEITADO ❌",
+    played: "TOCADA 🎵",
+    pending: "PENDENTE ⏳",
+    currencyComingSoon:
+      "Pagamentos nesta moeda estarão disponíveis em breve. Use GHS por enquanto.",
+    requestInstruction:
+      "Peça músicas. Pule a fila. Dê gorjeta ao DJ.",
+    payRequest: "Pagar GHS 10 & Pedir Música",
+    vipPriorityFull: "PRIORIDADE VIP",
   },
 
 } as const;
