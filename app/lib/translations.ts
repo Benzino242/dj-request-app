@@ -12,7 +12,8 @@ export type Language =
   | "tl"
   | "pt"
   | "es"
-  | "fr";
+  | "fr"
+  | "de";
 
 export const translations = {
   en: {
@@ -553,6 +554,46 @@ export const translations = {
       "Demandez des chansons. Passez la file. Donnez un pourboire au DJ.",
     payRequest: "Payer GHS 10 et Demander",
     vipPriorityFull: "PRIORITÉ VIP",
+  },
+
+  de: {
+    language: "Sprache",
+    english: "Englisch",
+    mandarin: "Mandarin",
+    requestingFromDj: "Song beim DJ anfragen",
+    liveNow: "LIVE 🟢",
+    offline: "OFFLINE 🔴",
+    requestsClosed: "Anfragen Geschlossen",
+    yourName: "Dein Name",
+    songName: "Songname",
+    artist: "Künstler",
+    boostYourRequest: "Deine Anfrage boosten 🔥",
+    payAndRequest: "Bezahlen & Anfragen",
+    processingPayment: "Zahlung wird verarbeitet...",
+    liveRequests: "Live-Anfragen",
+    vipPriority: "VIP-Priorität",
+    upNext: "ALS NÄCHSTES ⏭️",
+    nowPlaying: "JETZT SPIELT 🎵",
+    estimatedWait: "Geschätzte Wartezeit",
+    higherTips:
+      "Höhere Trinkgelder bringen deine Anfrage weiter nach oben 🔥",
+    boostingDisclaimer:
+      "Das Boosten einer Anfrage erhöht ihre Priorität in der DJ-Warteschlange, garantiert aber nicht, dass sie gespielt oder akzeptiert wird.",
+    pay: "Bezahlen",
+    andRequest: "und Anfragen",
+    requestedBy: "Angefragt von",
+    topTip: "HÖCHSTES TRINKGELD",
+    vipRequest: "🔥 VIP-ANFRAGE",
+    accepted: "AKZEPTIERT ✅",
+    rejected: "ABGELEHNT ❌",
+    played: "GESPIELT 🎵",
+    pending: "AUSSTEHEND ⏳",
+    currencyComingSoon:
+      "Zahlungen in dieser Währung kommen bald. Bitte verwende vorerst GHS.",
+    requestInstruction:
+      "Songs anfragen. Die Warteschlange überspringen. Dem DJ Trinkgeld geben.",
+    payRequest: "GHS 10 bezahlen & anfragen",
+    vipPriorityFull: "VIP-PRIORITÄT",
   },
 
 
