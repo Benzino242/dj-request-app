@@ -5,7 +5,8 @@ export type Language =
   | "ko"
   | "id"
   | "ms"
-  | "th";
+  | "th"
+  | "hi";
 
 export const translations = {
   en: {
@@ -272,5 +273,44 @@ export const translations = {
       "ขอเพลง ข้ามคิว และให้ทิป DJ",
     payRequest: "ชำระ GHS 10 และขอเพลง",
     vipPriorityFull: "สิทธิ์ VIP",
+  },
+
+  hi: {
+    language: "भाषा",
+    english: "अंग्रेज़ी",
+    mandarin: "मंदारिन",
+    requestingFromDj: "DJ से गाना अनुरोध करें",
+    liveNow: "लाइव 🟢",
+    offline: "ऑफलाइन 🔴",
+    requestsClosed: "अनुरोध बंद हैं",
+    yourName: "आपका नाम",
+    songName: "गाने का नाम",
+    artist: "कलाकार",
+    boostYourRequest: "अपने अनुरोध को बूस्ट करें 🔥",
+    payAndRequest: "भुगतान करें और अनुरोध करें",
+    processingPayment: "भुगतान प्रोसेस हो रहा है...",
+    liveRequests: "लाइव अनुरोध",
+    vipPriority: "VIP प्राथमिकता",
+    upNext: "अगला ⏭️",
+    nowPlaying: "अभी चल रहा है 🎵",
+    estimatedWait: "अनुमानित प्रतीक्षा समय",
+    higherTips: "अधिक टिप आपके अनुरोध को ऊपर लाती है 🔥",
+    boostingDisclaimer:
+      "अनुरोध को बूस्ट करने से DJ कतार में प्राथमिकता बढ़ती है लेकिन गाना बजने या स्वीकार होने की गारंटी नहीं है।",
+    pay: "भुगतान करें",
+    andRequest: "और अनुरोध करें",
+    requestedBy: "अनुरोध किया",
+    topTip: "सबसे बड़ी टिप",
+    vipRequest: "🔥 VIP अनुरोध",
+    accepted: "स्वीकृत ✅",
+    rejected: "अस्वीकृत ❌",
+    played: "चलाया गया 🎵",
+    pending: "प्रतीक्षारत ⏳",
+    currencyComingSoon:
+      "यह मुद्रा भुगतान जल्द आ रहा है। अभी GHS का उपयोग करें।",
+    requestInstruction:
+      "गाने का अनुरोध करें। कतार छोड़ें। DJ को टिप दें।",
+    payRequest: "GHS 10 भुगतान करें और अनुरोध करें",
+    vipPriorityFull: "VIP प्राथमिकता",
   },
 } as const;
