@@ -313,4 +313,5 @@ export const translations = {
     payRequest: "GHS 10 भुगतान करें और अनुरोध करें",
     vipPriorityFull: "VIP प्राथमिकता",
   },
+  
 } as const;
