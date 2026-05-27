@@ -2,7 +2,8 @@ export type Language =
   | "en"
   | "zh"
   | "ja"
-  | "ko";
+  | "ko"
+  | "id";
 
 export const translations = {
   en: {
@@ -152,5 +153,44 @@ export const translations = {
     requestInstruction: "곡을 신청하고, 대기열을 건너뛰고, DJ에게 팁을 주세요.",
     payRequest: "GHS 10 결제하고 신청",
     vipPriorityFull: "VIP 우선",
+  },
+
+  id: {
+    language: "Bahasa",
+    english: "Inggris",
+    mandarin: "Mandarin",
+    requestingFromDj: "Meminta lagu dari DJ",
+    liveNow: "SEDANG LIVE 🟢",
+    offline: "OFFLINE 🔴",
+    requestsClosed: "Permintaan Ditutup",
+    yourName: "Nama Anda",
+    songName: "Nama Lagu",
+    artist: "Artis",
+    boostYourRequest: "Boost Permintaan Anda 🔥",
+    payAndRequest: "Bayar & Minta Lagu",
+    processingPayment: "Memproses Pembayaran...",
+    liveRequests: "Permintaan Live",
+    vipPriority: "Prioritas VIP",
+    upNext: "BERIKUTNYA ⏭️",
+    nowPlaying: "SEDANG DIPUTAR 🎵",
+    estimatedWait: "Perkiraan waktu tunggu",
+    higherTips: "Tip lebih tinggi membuat lagu Anda naik ke atas 🔥",
+    boostingDisclaimer:
+      "Boost permintaan meningkatkan prioritas di antrean DJ tetapi tidak menjamin lagu diputar atau diterima DJ.",
+    pay: "Bayar",
+    andRequest: "& Minta Lagu",
+    requestedBy: "Diminta oleh",
+    topTip: "TIP TERATAS",
+    vipRequest: "🔥 PERMINTAAN VIP",
+    accepted: "DITERIMA ✅",
+    rejected: "DITOLAK ❌",
+    played: "DIPUTAR 🎵",
+    pending: "MENUNGGU ⏳",
+    currencyComingSoon:
+      "Pembayaran mata uang ini segera hadir. Gunakan GHS untuk sekarang.",
+    requestInstruction:
+      "Minta lagu. Lewati antrean. Beri tip ke DJ.",
+    payRequest: "Bayar GHS 10 & Minta Lagu",
+    vipPriorityFull: "PRIORITAS VIP",
   },
 } as const;
