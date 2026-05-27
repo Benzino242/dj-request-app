@@ -16,7 +16,8 @@ export type Language =
   | "de"
   | "ru"
   | "tr"
-  | "it";
+  | "it"
+  | "nl";
 
 export const translations = {
   en: {
@@ -717,6 +718,46 @@ export const translations = {
       "Richiedi canzoni. Salta la fila. Lascia una mancia al DJ.",
     payRequest: "Paga GHS 10 e Richiedi",
     vipPriorityFull: "PRIORITÀ VIP",
+  },
+
+  nl: {
+    language: "Taal",
+    english: "Engels",
+    mandarin: "Mandarijn",
+    requestingFromDj: "Vraag een nummer aan bij de DJ",
+    liveNow: "LIVE 🟢",
+    offline: "OFFLINE 🔴",
+    requestsClosed: "Verzoeken Gesloten",
+    yourName: "Jouw Naam",
+    songName: "Naam van het Nummer",
+    artist: "Artiest",
+    boostYourRequest: "Boost Je Verzoek 🔥",
+    payAndRequest: "Betaal & Vraag Aan",
+    processingPayment: "Betaling verwerken...",
+    liveRequests: "Live Verzoeken",
+    vipPriority: "VIP Prioriteit",
+    upNext: "VOLGENDE ⏭️",
+    nowPlaying: "NU AAN HET SPELEN 🎵",
+    estimatedWait: "Geschatte wachttijd",
+    higherTips:
+      "Hogere fooien brengen je verzoek hoger in de lijst 🔥",
+    boostingDisclaimer:
+      "Het boosten van een verzoek verhoogt de prioriteit in de DJ-wachtrij maar garandeert niet dat het nummer wordt afgespeeld of geaccepteerd.",
+    pay: "Betaal",
+    andRequest: "& Vraag Aan",
+    requestedBy: "Aangevraagd door",
+    topTip: "HOOGSTE FOOI",
+    vipRequest: "🔥 VIP VERZOEK",
+    accepted: "GEACCEPTEERD ✅",
+    rejected: "AFGEWEZEN ❌",
+    played: "AFGESPEELD 🎵",
+    pending: "IN AFWACHTING ⏳",
+    currencyComingSoon:
+      "Betalingen in deze valuta komen binnenkort. Gebruik voorlopig GHS.",
+    requestInstruction:
+      "Vraag nummers aan. Sla de wachtrij over. Geef de DJ een fooi.",
+    payRequest: "Betaal GHS 10 & Vraag Aan",
+    vipPriorityFull: "VIP PRIORITEIT",
   },
 
 
