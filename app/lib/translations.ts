@@ -474,4 +474,6 @@ export const translations = {
     vipPriorityFull: "PRIORIDADE VIP",
   },
 
+  
+
 } as const;
