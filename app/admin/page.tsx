@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import QRCodeBox from "../components/QRCodeBox";
+import { translations, Language } from "../lib/translations";
 
 type RequestStatus =
   | "pending"
