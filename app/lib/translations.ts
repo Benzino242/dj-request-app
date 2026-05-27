@@ -59,6 +59,10 @@ export const translations = {
     payRequest: "Pay GHS 10 & Request",
     vipPriorityFull: "VIP PRIORITY",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   zh: {
@@ -97,6 +101,10 @@ export const translations = {
     payRequest: "支付 GHS 10 并点歌",
     vipPriorityFull: "VIP 优先",
     adminSubtitle: "实时高级点歌管理",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   ja: {
@@ -136,6 +144,10 @@ export const translations = {
     payRequest: "GHS 10 を支払ってリクエスト",
     vipPriorityFull: "VIP 優先",
     adminSubtitle: "ライブ高級リクエスト管理",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   ko: {
@@ -174,6 +186,10 @@ export const translations = {
     payRequest: "GHS 10 결제하고 신청",
     vipPriorityFull: "VIP 우선",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   id: {
@@ -214,6 +230,10 @@ export const translations = {
     payRequest: "Bayar GHS 10 & Minta Lagu",
     vipPriorityFull: "PRIORITAS VIP",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   ms: {
@@ -254,6 +274,10 @@ export const translations = {
     payRequest: "Bayar GHS 10 & Minta Lagu",
     vipPriorityFull: "KEUTAMAAN VIP",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   th: {
@@ -294,6 +318,10 @@ export const translations = {
     payRequest: "ชำระ GHS 10 และขอเพลง",
     vipPriorityFull: "สิทธิ์ VIP",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   hi: {
@@ -334,6 +362,10 @@ export const translations = {
     payRequest: "GHS 10 भुगतान करें और अनुरोध करें",
     vipPriorityFull: "VIP प्राथमिकता",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   ar: {
@@ -374,6 +406,10 @@ export const translations = {
     payRequest: "ادفع GHS 10 واطلب",
     vipPriorityFull: "أولوية VIP",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   vi: {
@@ -414,6 +450,10 @@ export const translations = {
     payRequest: "Thanh toán GHS 10 & Yêu cầu",
     vipPriorityFull: "ƯU TIÊN VIP",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   tl: {
@@ -454,6 +494,10 @@ export const translations = {
     payRequest: "Magbayad ng GHS 10 at Mag-request",
     vipPriorityFull: "VIP PRIORITY",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   pt: {
@@ -494,6 +538,10 @@ export const translations = {
     payRequest: "Pagar GHS 10 & Pedir Música",
     vipPriorityFull: "PRIORIDADE VIP",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   es: {
@@ -534,6 +582,10 @@ export const translations = {
     payRequest: "Pagar GHS 10 y Solicitar",
     vipPriorityFull: "PRIORIDAD VIP",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   fr: {
@@ -575,6 +627,10 @@ export const translations = {
     payRequest: "Payer GHS 10 et Demander",
     vipPriorityFull: "PRIORITÉ VIP",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   de: {
@@ -616,6 +672,10 @@ export const translations = {
     payRequest: "GHS 10 bezahlen & anfragen",
     vipPriorityFull: "VIP-PRIORITÄT",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   ru: {
@@ -657,6 +717,10 @@ export const translations = {
     payRequest: "Оплатить GHS 10 и Запросить",
     vipPriorityFull: "VIP ПРИОРИТЕТ",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   tr: {
@@ -698,6 +762,10 @@ export const translations = {
     payRequest: "GHS 10 Öde ve İstek Gönder",
     vipPriorityFull: "VIP ÖNCELİK",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   it: {
@@ -739,6 +807,10 @@ export const translations = {
     payRequest: "Paga GHS 10 e Richiedi",
     vipPriorityFull: "PRIORITÀ VIP",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   nl: {
@@ -780,6 +852,10 @@ export const translations = {
     payRequest: "Betaal GHS 10 & Vraag Aan",
     vipPriorityFull: "VIP PRIORITEIT",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   pl: {
@@ -821,6 +897,10 @@ export const translations = {
     payRequest: "Zapłać GHS 10 i Poproś",
     vipPriorityFull: "PRIORYTET VIP",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   el: {
@@ -862,6 +942,10 @@ export const translations = {
     payRequest: "Πληρώστε GHS 10 & Ζητήστε",
     vipPriorityFull: "VIP ΠΡΟΤΕΡΑΙΟΤΗΤΑ",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
   uk: {
@@ -903,6 +987,10 @@ export const translations = {
     payRequest: "Оплатити GHS 10 та Замовити",
     vipPriorityFull: "VIP ПРІОРИТЕТ",
     adminSubtitle: "Live premium request management",
+    totalRequests: "Total Requests",
+    vipRequests: "VIP Requests",
+    pendingQueue: "Pending Queue",
+    paidTransactions: "Paid Transactions",
   },
 
 

@@ -554,10 +554,10 @@ export default function AdminPage() {
         </div>
 
         <div className="grid md:grid-cols-4 gap-4 mb-10">
-          <StatCard title="Total Requests" value={requests.length} />
-          <StatCard title="VIP Requests" value={vipRequests} color="text-purple-400" />
-          <StatCard title="Pending Queue" value={grouped.pending.length} color="text-yellow-400" />
-          <StatCard title="Paid Transactions" value={payments.length} color="text-green-400" />
+          <StatCard title={t.totalRequests} value={requests.length} />
+          <StatCard title={t.vipRequests} value={vipRequests} color="text-purple-400" />
+          <StatCard title={t.pendingQueue} value={grouped.pending.length} color="text-yellow-400" />
+          <StatCard title={t.paidTransactions} value={payments.length} color="text-green-400" />
         </div>
 
         <div
