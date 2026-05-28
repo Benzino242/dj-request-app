@@ -111,6 +111,12 @@ export const translations = {
     nextUp: "NEXT UP",
     vip: "VIP",
     updating: "Updating...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   zh: {
@@ -201,6 +207,12 @@ export const translations = {
     nextUp: "下一首",
     vip: "VIP",
     updating: "正在更新...",
+    eventNamePlaceholder: "活动名称，例如 Friday Night @ Garage Lounge",
+    venuePlaceholder: "场地，例如 Garage Lounge, Accra",
+    cityPlaceholder: "城市，例如 Accra, Ghana",
+    instagramPlaceholder: "Instagram 用户名，例如 @djbenzino",
+    profileImageUrlPlaceholder: "头像图片 URL",
+    djBioPlaceholder: "简短 DJ 简介 / 音乐风格",
   },
 
   ja: {
@@ -292,6 +304,12 @@ export const translations = {
     nextUp: "次",
     vip: "VIP",
     updating: "更新中...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
  },
 
   ko: {
@@ -382,6 +400,12 @@ export const translations = {
     nextUp: "다음",
     vip: "VIP",
     updating: "업데이트 중...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   id: {
@@ -474,6 +498,12 @@ export const translations = {
     nextUp: "Berikutnya",
     vip: "VIP",
     updating: "Memperbarui...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   ms: {
@@ -566,6 +596,12 @@ export const translations = {
     nextUp: "Seterusnya",
     vip: "VIP",
     updating: "Mengemas Kini...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   th: {
@@ -658,6 +694,12 @@ export const translations = {
     nextUp: "ถัดไป",
     vip: "VIP",
     updating: "กำลังอัปเดต...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   hi: {
@@ -750,6 +792,12 @@ export const translations = {
     nextUp: "अगला",
     vip: "VIP",
     updating: "अपडेट हो रहा है...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   ar: {
@@ -842,6 +890,12 @@ export const translations = {
     nextUp: "التالي",
     vip: "VIP",
     updating: "جارٍ التحديث...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   vi: {
@@ -934,6 +988,12 @@ export const translations = {
     nextUp: "Tiếp theo",
     vip: "VIP",
     updating: "Đang cập nhật...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   tl: {
@@ -1026,6 +1086,12 @@ export const translations = {
     nextUp: "Susunod",
     vip: "VIP",
     updating: "Ina-update...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   pt: {
@@ -1118,6 +1184,12 @@ export const translations = {
     nextUp: "Próxima",
     vip: "VIP",
     updating: "Atualizando...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   es: {
@@ -1210,6 +1282,12 @@ export const translations = {
     nextUp: "Siguiente",
     vip: "VIP",
     updating: "Actualizando...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   fr: {
@@ -1303,6 +1381,12 @@ export const translations = {
     nextUp: "Suivante",
     vip: "VIP",
     updating: "Mise à jour...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   de: {
@@ -1396,6 +1480,12 @@ export const translations = {
     nextUp: "Als Nächstes",
     vip: "VIP",
     updating: "Wird aktualisiert...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   ru: {
@@ -1489,6 +1579,12 @@ export const translations = {
     nextUp: "Следующий",
     vip: "VIP",
     updating: "Обновление...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   tr: {
@@ -1582,6 +1678,12 @@ export const translations = {
     nextUp: "Sıradaki",
     vip: "VIP",
     updating: "Güncelleniyor...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   it: {
@@ -1675,6 +1777,12 @@ export const translations = {
     nextUp: "Successiva",
     vip: "VIP",
     updating: "Aggiornamento...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   nl: {
@@ -1768,6 +1876,12 @@ export const translations = {
     nextUp: "Volgende",
     vip: "VIP",
     updating: "Bijwerken...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   pl: {
@@ -1861,6 +1975,12 @@ export const translations = {
     nextUp: "Następny",
     vip: "VIP",
     updating: "Aktualizowanie...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   el: {
@@ -1954,6 +2074,12 @@ export const translations = {
     nextUp: "Επόμενο",
     vip: "VIP",
     updating: "Ενημέρωση...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
   uk: {
@@ -2047,6 +2173,12 @@ export const translations = {
     nextUp: "Наступна",
     vip: "VIP",
     updating: "Оновлення...",
+    eventNamePlaceholder: "Event name e.g. Friday Night @ Garage Lounge",
+    venuePlaceholder: "Venue e.g. Garage Lounge, Accra",
+    cityPlaceholder: "City e.g. Accra, Ghana",
+    instagramPlaceholder: "Instagram handle e.g. @djbenzino",
+    profileImageUrlPlaceholder: "Profile image URL",
+    djBioPlaceholder: "Short DJ bio / music style",
   },
 
 } as const;

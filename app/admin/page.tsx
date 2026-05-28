@@ -649,7 +649,7 @@ export default function AdminPage() {
  <div className="grid md:grid-cols-2 gap-4">
  <input
  type="text"
- placeholder="Event name e.g. Friday Night @ Garage Lounge"
+ placeholder={t.eventNamePlaceholder}
  value={eventName}
  onChange={(e) => setEventName(e.target.value)}
  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
@@ -657,7 +657,7 @@ export default function AdminPage() {
 
  <input
  type="text"
- placeholder="Venue e.g. Garage Lounge, Accra"
+ placeholder={t.venuePlaceholder}
  value={venue}
  onChange={(e) => setVenue(e.target.value)}
  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
@@ -667,7 +667,7 @@ export default function AdminPage() {
  <div className="grid md:grid-cols-2 gap-4">
  <input
  type="text"
- placeholder="City e.g. Accra, Ghana"
+ placeholder={t.cityPlaceholder}
  value={city}
  onChange={(e) => setCity(e.target.value)}
  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
@@ -675,7 +675,7 @@ export default function AdminPage() {
 
  <input
  type="text"
- placeholder="Instagram handle e.g. @djbenzino"
+ placeholder={t.instagramPlaceholder}
  value={instagram}
  onChange={(e) => setInstagram(e.target.value)}
  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
@@ -684,14 +684,14 @@ export default function AdminPage() {
 
  <input
  type="text"
- placeholder="Profile image URL"
+ placeholder={t.profileImageUrlPlaceholder}
  value={profileImage}
  onChange={(e) => setProfileImage(e.target.value)}
  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
  />
 
  <textarea
- placeholder="Short DJ bio / music style"
+ placeholder={t.djBioPlaceholder}
  value={bio}
  onChange={(e) => setBio(e.target.value)}
  rows={5}
