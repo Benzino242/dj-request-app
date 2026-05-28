@@ -574,7 +574,7 @@ export default function AdminPage() {
                   dj.is_live ? "text-green-400" : "text-zinc-300"
                 }`}
               >
-                {dj.is_live ? "LIVE NOW 🟢" : "OFFLINE 🔴"}
+                {dj.is_live ? t.liveNow : t.offline}
               </h2>
 
               <p className="text-zinc-400 mt-2">
@@ -598,7 +598,7 @@ export default function AdminPage() {
               onClick={endDJSet}
               className="bg-red-600 hover:bg-red-700 px-6 py-4 rounded-xl font-bold text-lg ml-4"
             >
-              t.endDjSet
+              {t.endDjSet}
             </button>
           </div>
         </div>
