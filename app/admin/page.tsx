@@ -750,18 +750,18 @@ export default function AdminPage() {
 
         <div className="mb-10">
           <h2 className="text-3xl font-bold mb-4 text-cyan-400">
-            Withdrawal Activity
+          {t.withdrawalActivity}
           </h2>
 
           <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 mb-8">
             <h3 className="text-2xl font-bold text-white mb-5">
-              Request Withdrawal
+            {t.requestWithdrawalTitle}
             </h3>
 
             <div className="grid md:grid-cols-2 gap-4 mb-4">
               <input
                 type="number"
-                placeholder="Withdrawal Amount"
+                placeholder={t.withdrawalAmount}
                 value={withdrawAmount}
                 onChange={(e) => setWithdrawAmount(e.target.value)}
                 className="w-full p-4 rounded-xl bg-black border border-zinc-700"
@@ -781,7 +781,7 @@ export default function AdminPage() {
             <div className="grid md:grid-cols-2 gap-4 mb-4">
               <input
                 type="text"
-                placeholder="Account Name"
+                placeholder={t.accountName}
                 value={accountName}
                 onChange={(e) => setAccountName(e.target.value)}
                 className="w-full p-4 rounded-xl bg-black border border-zinc-700"
@@ -789,7 +789,7 @@ export default function AdminPage() {
 
               <input
                 type="text"
-                placeholder="Mobile Money Number"
+                placeholder={t.mobileMoneyNumber}
                 value={accountNumber}
                 onChange={(e) => setAccountNumber(e.target.value)}
                 className="w-full p-4 rounded-xl bg-black border border-zinc-700"
@@ -798,7 +798,7 @@ export default function AdminPage() {
 
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <p className="text-zinc-400 text-sm">Available Balance</p>
+                <p className="text-zinc-400 text-sm">{t.availableBalance}</p>
 
                 <h4 className="text-3xl font-bold text-green-400">
                   {currency} {(netEarnings - totalWithdrawals).toFixed(2)}
@@ -810,16 +810,16 @@ export default function AdminPage() {
                 disabled={withdrawLoading}
                 className="bg-cyan-600 hover:bg-cyan-700 px-8 py-4 rounded-xl font-bold text-lg disabled:opacity-50"
               >
-                {withdrawLoading ? "Submitting..." : "Request Payout"}
+                {withdrawLoading ? "Submitting..." : t.requestPayout}
               </button>
             </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-4 mb-6">
-            <StatCard title="Withdrawal Requests" value={withdrawals.length} color="text-cyan-400" />
-            <StatCard title="Total Withdrawals" value={`${currency} ${totalWithdrawals.toFixed(2)}`} color="text-green-400" />
+            <StatCard title={t.withdrawalRequests} value={withdrawals.length} color="text-cyan-400" />
+            <StatCard title={t.totalWithdrawals} value={`${currency} ${totalWithdrawals.toFixed(2)}`} color="text-green-400" />
             <StatCard
-              title="Pending Withdrawals"
+              title={t.pendingWithdrawals}
               value={withdrawals.filter((w) => w.status === "pending").length}
               color="text-yellow-400"
             />
