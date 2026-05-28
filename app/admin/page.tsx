@@ -851,7 +851,7 @@ export default function AdminPage() {
                     </div>
 
                     <p className="text-sm text-yellow-400 mt-2 uppercase">
-                      {withdrawal.status}
+                      {withdrawal.status === "pending" ? t.pending : withdrawal.status}
                     </p>
                   </div>
                 </div>
@@ -861,7 +861,7 @@ export default function AdminPage() {
         </div>
 
         <div className="mb-12">
-          <QRCodeBox stageName={dj.stage_name} />
+        <QRCodeBox stageName={dj.stage_name} t={t} />
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">

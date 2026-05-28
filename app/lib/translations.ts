@@ -92,6 +92,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   zh: {
@@ -163,6 +165,8 @@ export const translations = {
     withdrawalRequests: "提现申请",
     totalWithdrawals: "提现总额",
     pendingWithdrawals: "待处理提现",
+    yourDjQrCode: "你的 DJ 二维码",
+    qrInstruction: "客人可以扫描此二维码点歌",
   },
 
   ja: {
@@ -235,6 +239,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
 
@@ -307,6 +313,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   id: {
@@ -380,6 +388,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   ms: {
@@ -453,6 +463,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   th: {
@@ -526,6 +538,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   hi: {
@@ -599,6 +613,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   ar: {
@@ -672,6 +688,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   vi: {
@@ -745,6 +763,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   tl: {
@@ -818,6 +838,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   pt: {
@@ -891,6 +913,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   es: {
@@ -964,6 +988,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   fr: {
@@ -1038,6 +1064,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   de: {
@@ -1112,6 +1140,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   ru: {
@@ -1186,6 +1216,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   tr: {
@@ -1260,6 +1292,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   it: {
@@ -1334,6 +1368,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   nl: {
@@ -1408,6 +1444,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   pl: {
@@ -1482,6 +1520,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   el: {
@@ -1556,6 +1596,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
   uk: {
@@ -1630,6 +1672,8 @@ export const translations = {
     withdrawalRequests: "Withdrawal Requests",
     totalWithdrawals: "Total Withdrawals",
     pendingWithdrawals: "Pending Withdrawals",
+    yourDjQrCode: "Your DJ QR Code",
+    qrInstruction: "Guests can scan this to request songs",
   },
 
 } as const;
