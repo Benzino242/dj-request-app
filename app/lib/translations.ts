@@ -69,6 +69,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   zh: {
@@ -117,6 +124,13 @@ export const translations = {
     goOffline: "下线",
     goLive: "上线",
     endDjSet: "结束 DJ 演出",
+    djProfileSettings: "DJ 个人资料设置",
+    uploadProfilePhoto: "上传头像",
+    removePhoto: "删除照片",
+    saveProfile: "保存资料",
+    saving: "正在保存...",
+    noImage: "没有照片",
+    profileUpdated: "资料更新成功。",
   },
 
   ja: {
@@ -166,6 +180,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   ko: {
@@ -214,6 +235,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   id: {
@@ -264,6 +292,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   ms: {
@@ -314,6 +349,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   th: {
@@ -364,6 +406,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   hi: {
@@ -414,6 +463,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   ar: {
@@ -464,6 +520,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   vi: {
@@ -514,6 +577,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   tl: {
@@ -564,6 +634,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   pt: {
@@ -614,6 +691,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   es: {
@@ -664,6 +748,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   fr: {
@@ -715,6 +806,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   de: {
@@ -766,6 +864,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   ru: {
@@ -817,6 +922,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   tr: {
@@ -868,6 +980,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   it: {
@@ -919,6 +1038,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   nl: {
@@ -970,6 +1096,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   pl: {
@@ -1021,6 +1154,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   el: {
@@ -1072,6 +1212,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
   uk: {
@@ -1123,6 +1270,13 @@ export const translations = {
     goOffline: "Go Offline",
     goLive: "Go Live",
     endDjSet: "End DJ Set",
+    djProfileSettings: "DJ Profile Settings",
+    uploadProfilePhoto: "Upload Profile Photo",
+    removePhoto: "Remove Photo",
+    saveProfile: "Save Profile",
+    saving: "Saving...",
+    noImage: "No Image",
+    profileUpdated: "Profile updated successfully.",
   },
 
 } as const;

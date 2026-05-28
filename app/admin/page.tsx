@@ -605,7 +605,7 @@ export default function AdminPage() {
 
         <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
           <h2 className="text-4xl font-bold text-purple-400 mb-8">
-            DJ Profile Settings
+          {t.djProfileSettings}
           </h2>
 
           <div className="space-y-6">
@@ -618,7 +618,7 @@ export default function AdminPage() {
                 />
               ) : (
                 <div className="w-32 h-32 rounded-full bg-zinc-800 border-4 border-zinc-700 flex items-center justify-center text-zinc-500 mb-4">
-                  No Image
+                  {t.noImage}
                 </div>
               )}
 
@@ -641,7 +641,7 @@ export default function AdminPage() {
                   onClick={() => setProfileImage("")}
                   className="mt-3 bg-zinc-700 hover:bg-zinc-600 px-5 py-3 rounded-xl font-semibold"
                 >
-                  Remove Photo
+                  {t.removePhoto}
                 </button>
               )}
             </div>
@@ -703,7 +703,7 @@ export default function AdminPage() {
               disabled={savingProfile}
               className="bg-purple-600 hover:bg-purple-700 px-8 py-4 rounded-xl font-bold text-lg disabled:opacity-50"
             >
-              {savingProfile ? "Saving..." : "Save Profile"}
+              {savingProfile ? t.saving : t.saveProfile}
             </button>
 
             {profileMessage && (
