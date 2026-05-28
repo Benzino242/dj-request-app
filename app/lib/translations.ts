@@ -76,6 +76,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   zh: {
@@ -131,6 +137,12 @@ export const translations = {
     saving: "正在保存...",
     noImage: "没有照片",
     profileUpdated: "资料更新成功。",
+    earningsOverview: "收入概览",
+    grossRevenue: "总收入",
+    djEarnings: "DJ 收入",
+    platformRevenue: "平台收入",
+    pendingPayouts: "待处理付款",
+    platformRevenueNote: "平台收入显示在这里用于会计和对账。",
   },
 
   ja: {
@@ -187,6 +199,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   ko: {
@@ -242,6 +260,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   id: {
@@ -299,6 +323,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   ms: {
@@ -356,6 +386,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   th: {
@@ -413,6 +449,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   hi: {
@@ -470,6 +512,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   ar: {
@@ -527,6 +575,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   vi: {
@@ -584,6 +638,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   tl: {
@@ -641,6 +701,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   pt: {
@@ -698,6 +764,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   es: {
@@ -755,6 +827,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   fr: {
@@ -813,6 +891,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   de: {
@@ -871,6 +955,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   ru: {
@@ -929,6 +1019,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   tr: {
@@ -987,6 +1083,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   it: {
@@ -1045,6 +1147,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   nl: {
@@ -1103,6 +1211,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   pl: {
@@ -1161,6 +1275,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   el: {
@@ -1219,6 +1339,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
   uk: {
@@ -1277,6 +1403,12 @@ export const translations = {
     saving: "Saving...",
     noImage: "No Image",
     profileUpdated: "Profile updated successfully.",
+    earningsOverview: "Earnings Overview",
+    grossRevenue: "Gross Revenue",
+    djEarnings: "DJ Earnings",
+    platformRevenue: "Platform Revenue",
+    pendingPayouts: "Pending Payouts",
+    platformRevenueNote: "Platform revenue is shown here for accounting and reconciliation.",
   },
 
 } as const;

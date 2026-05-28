@@ -623,7 +623,7 @@ export default function AdminPage() {
               )}
 
               <label className="bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-xl cursor-pointer font-semibold">
-                Upload Profile Photo
+              {t.uploadProfilePhoto}
                 <input
                   type="file"
                   accept="image/*"
@@ -714,19 +714,38 @@ export default function AdminPage() {
 
         <div className="mb-10">
           <h2 className="text-3xl font-bold mb-4 text-green-400">
-            Earnings Overview
+          {t.earningsOverview}
           </h2>
 
           <div className="grid md:grid-cols-4 gap-4">
-            <StatCard title="Gross Revenue" value={`${currency} ${grossRevenue.toFixed(2)}`} color="text-green-400" />
-            <StatCard title="DJ Earnings" value={`${currency} ${netEarnings.toFixed(2)}`} color="text-cyan-400" />
-            <StatCard title="Platform Revenue" value={`${currency} ${serviceFees.toFixed(2)}`} color="text-zinc-300" />
-            <StatCard title="Pending Payouts" value={pendingPayouts} color="text-yellow-400" />
+          <StatCard
+  title={t.grossRevenue}
+  value={`${currency} ${grossRevenue.toFixed(2)}`}
+  color="text-green-400"
+/>
+
+<StatCard
+  title={t.djEarnings}
+  value={`${currency} ${netEarnings.toFixed(2)}`}
+  color="text-cyan-400"
+/>
+
+<StatCard
+  title={t.platformRevenue}
+  value={`${currency} ${serviceFees.toFixed(2)}`}
+  color="text-zinc-300"
+/>
+
+<StatCard
+  title={t.pendingPayouts}
+  value={pendingPayouts}
+  color="text-yellow-400"
+/>
           </div>
 
           <p className="text-xs text-zinc-500 mt-3">
-            Platform revenue is shown here for accounting and reconciliation.
-          </p>
+  {t.platformRevenueNote}
+</p>
         </div>
 
         <div className="mb-10">
