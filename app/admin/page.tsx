@@ -672,6 +672,7 @@ setAuthLoading(false);
  )}
  </div>
 
+
  <div className="grid md:grid-cols-2 gap-4">
  <input
  type="text"
@@ -708,6 +709,16 @@ setAuthLoading(false);
  />
  </div>
 
+ <div className="border-t border-zinc-800 pt-6">
+  <h3 className="text-2xl font-bold text-cyan-400 mb-2">
+    Marketplace Payout Setup
+  </h3>
+
+  <p className="text-zinc-400 text-sm mb-4">
+    Add your payout details so Blackline can prepare your account for future automatic payments.
+  </p>
+</div>
+
  <div className="grid md:grid-cols-2 gap-4">
   <input
     type="text"
@@ -716,6 +727,7 @@ setAuthLoading(false);
     onChange={(e) => setCountry(e.target.value)}
     className="w-full p-4 rounded-xl bg-black border border-zinc-700"
   />
+
 
   <select
     value={preferredCurrency}
