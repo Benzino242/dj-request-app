@@ -47,31 +47,41 @@ type Withdrawal = {
 };
 
 type DJ = {
- id: number;
- stage_name: string;
- email: string | null;
- user_id: string;
- bio?: string | null;
- city?: string | null;
- instagram?: string | null;
- profile_image?: string | null;
- is_live?: boolean | null;
- event_name?: string | null;
- venue?: string | null; 
-};
+    id: number;
+    stage_name: string;
+    email: string | null;
+    user_id: string;
+    bio?: string | null;
+    city?: string | null;
+    instagram?: string | null;
+    profile_image?: string | null;
+    is_live?: boolean | null;
+    event_name?: string | null;
+    venue?: string | null;
+    country?: string | null;
+    preferred_currency?: string | null;
+    payout_email?: string | null;
+    payout_method?: string | null;
+  };
 
 export default function AdminPage() {
  const [dj, setDj] = useState<DJ | null>(null);
  const [authLoading, setAuthLoading] = useState(true);
 
  const [bio, setBio] = useState("");
- const [city, setCity] = useState("");
- const [instagram, setInstagram] = useState("");
- const [eventName, setEventName] = useState("");
- const [venue, setVenue] = useState("");
- const [profileImage, setProfileImage] = useState("");
- const [savingProfile, setSavingProfile] = useState(false);
- const [profileMessage, setProfileMessage] = useState("");
+const [city, setCity] = useState("");
+const [instagram, setInstagram] = useState("");
+const [eventName, setEventName] = useState("");
+const [venue, setVenue] = useState("");
+const [profileImage, setProfileImage] = useState("");
+
+const [country, setCountry] = useState("");
+const [preferredCurrency, setPreferredCurrency] = useState("GHS");
+const [payoutEmail, setPayoutEmail] = useState("");
+const [payoutMethod, setPayoutMethod] = useState("Mobile Money");
+
+const [savingProfile, setSavingProfile] = useState(false);
+const [profileMessage, setProfileMessage] = useState("");
 
  const [requests, setRequests] = useState<SongRequest[]>([]);
  const [payments, setPayments] = useState<Payment[]>([]);
@@ -119,13 +129,20 @@ export default function AdminPage() {
  }
 
  setDj(data as DJ);
- setBio(data.bio || "");
- setCity(data.city || "");
- setInstagram(data.instagram || "");
- setProfileImage(data.profile_image || "");
- setEventName(data.event_name || "");
- setVenue(data.venue || "");
- setAuthLoading(false);
+
+setBio(data.bio || "");
+setCity(data.city || "");
+setInstagram(data.instagram || "");
+setProfileImage(data.profile_image || "");
+setEventName(data.event_name || "");
+setVenue(data.venue || "");
+
+setCountry(data.country || "");
+setPreferredCurrency(data.preferred_currency || "GHS");
+setPayoutEmail(data.payout_email || "");
+setPayoutMethod(data.payout_method || "Mobile Money");
+
+setAuthLoading(false);
  }
 
  useEffect(() => {
@@ -218,6 +235,11 @@ export default function AdminPage() {
  profile_image: profileImage,
  event_name: eventName,
  venue,
+
+ country,
+  preferred_currency: preferredCurrency,
+  payout_email: payoutEmail,
+  payout_method: payoutMethod,
  })
  .eq("id", dj.id)
  .select()
@@ -681,6 +703,52 @@ export default function AdminPage() {
  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
  />
  </div>
+
+ <div className="grid md:grid-cols-2 gap-4">
+  <input
+    type="text"
+    placeholder="Country"
+    value={country}
+    onChange={(e) => setCountry(e.target.value)}
+    className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+  />
+
+  <select
+    value={preferredCurrency}
+    onChange={(e) => setPreferredCurrency(e.target.value)}
+    className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+  >
+    <option value="GHS">🇬🇭 GHS</option>
+    <option value="USD">🇺🇸 USD</option>
+    <option value="EUR">🇪🇺 EUR</option>
+    <option value="GBP">🇬🇧 GBP</option>
+    <option value="JPY">🇯🇵 JPY</option>
+    <option value="CNY">🇨🇳 CNY</option>
+    <option value="KRW">🇰🇷 KRW</option>
+    <option value="SGD">🇸🇬 SGD</option>
+  </select>
+</div>
+
+<div className="grid md:grid-cols-2 gap-4">
+  <input
+    type="email"
+    placeholder="Payout Email"
+    value={payoutEmail}
+    onChange={(e) => setPayoutEmail(e.target.value)}
+    className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+  />
+
+  <select
+    value={payoutMethod}
+    onChange={(e) => setPayoutMethod(e.target.value)}
+    className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+  >
+    <option value="Bank Transfer">Bank Transfer</option>
+    <option value="PayPal">PayPal</option>
+    <option value="Mobile Money">Mobile Money</option>
+    <option value="Stripe Connect">Stripe Connect</option>
+  </select>
+</div>
 
  <input
  type="text"
