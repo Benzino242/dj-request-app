@@ -62,6 +62,7 @@ type DJ = {
     preferred_currency?: string | null;
     payout_email?: string | null;
     payout_method?: string | null;
+    payout_status?: string | null;
   };
 
 export default function AdminPage() {
@@ -79,6 +80,7 @@ const [country, setCountry] = useState("");
 const [preferredCurrency, setPreferredCurrency] = useState("GHS");
 const [payoutEmail, setPayoutEmail] = useState("");
 const [payoutMethod, setPayoutMethod] = useState("Mobile Money");
+const [payoutStatus, setPayoutStatus] = useState("Not Connected");
 
 const [savingProfile, setSavingProfile] = useState(false);
 const [profileMessage, setProfileMessage] = useState("");
@@ -141,6 +143,7 @@ setCountry(data.country || "");
 setPreferredCurrency(data.preferred_currency || "GHS");
 setPayoutEmail(data.payout_email || "");
 setPayoutMethod(data.payout_method || "Mobile Money");
+setPayoutStatus(data.payout_status || "Not Connected");
 
 setAuthLoading(false);
  }
@@ -240,6 +243,7 @@ setAuthLoading(false);
   preferred_currency: preferredCurrency,
   payout_email: payoutEmail,
   payout_method: payoutMethod,
+  payout_status: payoutStatus,
  })
  .eq("id", dj.id)
  .select()
@@ -748,6 +752,29 @@ setAuthLoading(false);
     <option value="Mobile Money">Mobile Money</option>
     <option value="Stripe Connect">Stripe Connect</option>
   </select>
+</div>
+
+<div className="bg-zinc-800 border border-zinc-700 rounded-xl p-4">
+  <p className="text-zinc-400 text-sm">Payout Status</p>
+
+  <p
+    className={`font-bold mt-1 ${
+      payoutStatus === "Active"
+        ? "text-green-400"
+        : payoutStatus === "Pending Verification"
+        ? "text-yellow-400"
+        : "text-red-400"
+    }`}
+  >
+    {payoutStatus}
+  </p>
+
+  <button
+    type="button"
+    className="mt-3 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700"
+  >
+    Connect Account
+  </button>
 </div>
 
  <input
