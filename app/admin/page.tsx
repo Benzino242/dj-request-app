@@ -93,6 +93,48 @@ const [profileMessage, setProfileMessage] = useState("");
 
  const t = translations[language];
 
+ function getCurrencyForCountry(selectedCountry: string) {
+    const countryCurrencyMap: Record<string, string> = {
+      Ghana: "GHS",
+  
+      "United Kingdom": "GBP",
+      "United States": "USD",
+      Canada: "CAD",
+      Mexico: "MXN",
+      Brazil: "BRL",
+  
+      Germany: "EUR",
+      France: "EUR",
+      Spain: "EUR",
+      Italy: "EUR",
+      Netherlands: "EUR",
+      Poland: "PLN",
+      Greece: "EUR",
+      Ukraine: "UAH",
+      Turkey: "TRY",
+  
+      UAE: "AED",
+      Qatar: "QAR",
+      "Saudi Arabia": "SAR",
+  
+      Singapore: "SGD",
+      Malaysia: "MYR",
+      Indonesia: "IDR",
+      Thailand: "THB",
+      Philippines: "PHP",
+      Vietnam: "VND",
+      China: "CNY",
+      Japan: "JPY",
+      "South Korea": "KRW",
+      India: "INR",
+  
+      Australia: "AUD",
+      "New Zealand": "NZD",
+    };
+  
+    return countryCurrencyMap[selectedCountry] || "USD";
+  }
+
  const [withdrawAmount, setWithdrawAmount] = useState("");
  const [accountName, setAccountName] = useState("");
  const [accountNumber, setAccountNumber] = useState("");
@@ -720,11 +762,15 @@ setAuthLoading(false);
 </div>
 
  <div className="grid md:grid-cols-2 gap-4">
-    <select
-    value={country}
-    onChange={(e) => setCountry(e.target.value)}
-    className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-  >
+ <select
+  value={country}
+  onChange={(e) => {
+    const selectedCountry = e.target.value;
+    setCountry(selectedCountry);
+    setPreferredCurrency(getCurrencyForCountry(selectedCountry));
+  }}
+  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+>
     <option value="">🌍 Select Country</option>
   
     <option value="Ghana">🇬🇭 Ghana</option>
