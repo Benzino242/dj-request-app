@@ -720,13 +720,50 @@ setAuthLoading(false);
 </div>
 
  <div className="grid md:grid-cols-2 gap-4">
-  <input
-    type="text"
-    placeholder="Country"
+    <select
     value={country}
     onChange={(e) => setCountry(e.target.value)}
     className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-  />
+  >
+    <option value="">🌍 Select Country</option>
+  
+    <option value="Ghana">🇬🇭 Ghana</option>
+    <option value="United Kingdom">🇬🇧 United Kingdom</option>
+    <option value="United States">🇺🇸 United States</option>
+    <option value="Canada">🇨🇦 Canada</option>
+  
+    <option value="Germany">🇩🇪 Germany</option>
+    <option value="France">🇫🇷 France</option>
+    <option value="Spain">🇪🇸 Spain</option>
+    <option value="Italy">🇮🇹 Italy</option>
+    <option value="Netherlands">🇳🇱 Netherlands</option>
+    <option value="Poland">🇵🇱 Poland</option>
+    <option value="Greece">🇬🇷 Greece</option>
+    <option value="Ukraine">🇺🇦 Ukraine</option>
+    <option value="Turkey">🇹🇷 Turkey</option>
+  
+    <option value="UAE">🇦🇪 UAE</option>
+    <option value="Qatar">🇶🇦 Qatar</option>
+    <option value="Saudi Arabia">🇸🇦 Saudi Arabia</option>
+  
+    <option value="Singapore">🇸🇬 Singapore</option>
+    <option value="Malaysia">🇲🇾 Malaysia</option>
+    <option value="Indonesia">🇮🇩 Indonesia</option>
+    <option value="Thailand">🇹🇭 Thailand</option>
+    <option value="Philippines">🇵🇭 Philippines</option>
+    <option value="Vietnam">🇻🇳 Vietnam</option>
+    <option value="China">🇨🇳 China</option>
+    <option value="Japan">🇯🇵 Japan</option>
+    <option value="South Korea">🇰🇷 South Korea</option>
+    <option value="India">🇮🇳 India</option>
+  
+    <option value="Australia">🇦🇺 Australia</option>
+    <option value="New Zealand">🇳🇿 New Zealand</option>
+  
+    <option value="Brazil">🇧🇷 Brazil</option>
+    <option value="Mexico">🇲🇽 Mexico</option>
+  </select>
+  
 
 
   <select
@@ -735,13 +772,38 @@ setAuthLoading(false);
     className="w-full p-4 rounded-xl bg-black border border-zinc-700"
   >
     <option value="GHS">🇬🇭 GHS</option>
-    <option value="USD">🇺🇸 USD</option>
-    <option value="EUR">🇪🇺 EUR</option>
-    <option value="GBP">🇬🇧 GBP</option>
-    <option value="JPY">🇯🇵 JPY</option>
-    <option value="CNY">🇨🇳 CNY</option>
-    <option value="KRW">🇰🇷 KRW</option>
-    <option value="SGD">🇸🇬 SGD</option>
+<option value="NGN">🇳🇬 NGN</option>
+<option value="KES">🇰🇪 KES</option>
+<option value="ZAR">🇿🇦 ZAR</option>
+
+<option value="USD">🇺🇸 USD</option>
+<option value="CAD">🇨🇦 CAD</option>
+<option value="MXN">🇲🇽 MXN</option>
+<option value="BRL">🇧🇷 BRL</option>
+
+<option value="EUR">🇪🇺 EUR</option>
+<option value="GBP">🇬🇧 GBP</option>
+<option value="PLN">🇵🇱 PLN</option>
+<option value="UAH">🇺🇦 UAH</option>
+<option value="TRY">🇹🇷 TRY</option>
+
+<option value="AED">🇦🇪 AED</option>
+<option value="QAR">🇶🇦 QAR</option>
+<option value="SAR">🇸🇦 SAR</option>
+
+<option value="SGD">🇸🇬 SGD</option>
+<option value="MYR">🇲🇾 MYR</option>
+<option value="IDR">🇮🇩 IDR</option>
+<option value="THB">🇹🇭 THB</option>
+<option value="PHP">🇵🇭 PHP</option>
+<option value="VND">🇻🇳 VND</option>
+<option value="CNY">🇨🇳 CNY</option>
+<option value="JPY">🇯🇵 JPY</option>
+<option value="KRW">🇰🇷 KRW</option>
+<option value="INR">🇮🇳 INR</option>
+
+<option value="AUD">🇦🇺 AUD</option>
+<option value="NZD">🇳🇿 NZD</option>
   </select>
 </div>
 
