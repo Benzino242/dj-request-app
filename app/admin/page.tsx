@@ -753,25 +753,25 @@ setAuthLoading(false);
 
  <div className="border-t border-zinc-800 pt-6">
   <h3 className="text-2xl font-bold text-cyan-400 mb-2">
-    Marketplace Payout Setup
+    {t.marketplacePayoutSetup}
   </h3>
 
   <p className="text-zinc-400 text-sm mb-4">
-    Add your payout details so Blackline can prepare your account for future automatic payments.
+    {t.marketplacePayoutDescription}
   </p>
 </div>
 
- <div className="grid md:grid-cols-2 gap-4">
- <select
-  value={country}
-  onChange={(e) => {
-    const selectedCountry = e.target.value;
-    setCountry(selectedCountry);
-    setPreferredCurrency(getCurrencyForCountry(selectedCountry));
-  }}
-  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
->
-    <option value="">🌍 Select Country</option>
+<div className="grid md:grid-cols-2 gap-4">
+  <select
+    value={country}
+    onChange={(e) => {
+      const selectedCountry = e.target.value;
+      setCountry(selectedCountry);
+      setPreferredCurrency(getCurrencyForCountry(selectedCountry));
+    }}
+    className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+  >
+    <option value="">{t.selectCountry}</option>
   
     <option value="Ghana">🇬🇭 Ghana</option>
     <option value="United Kingdom">🇬🇧 United Kingdom</option>
@@ -854,9 +854,9 @@ setAuthLoading(false);
 </div>
 
 <div className="grid md:grid-cols-2 gap-4">
-  <input
+<input
     type="email"
-    placeholder="Payout Email"
+    placeholder={t.payoutEmail}       
     value={payoutEmail}
     onChange={(e) => setPayoutEmail(e.target.value)}
     className="w-full p-4 rounded-xl bg-black border border-zinc-700"
@@ -867,15 +867,15 @@ setAuthLoading(false);
     onChange={(e) => setPayoutMethod(e.target.value)}
     className="w-full p-4 rounded-xl bg-black border border-zinc-700"
   >
-    <option value="Bank Transfer">Bank Transfer</option>
-    <option value="PayPal">PayPal</option>
-    <option value="Mobile Money">Mobile Money</option>
-    <option value="Stripe Connect">Stripe Connect</option>
+    <option value="Bank Transfer">{t.bankTransfer}</option>
+    <option value="PayPal">{t.paypal}</option>
+    <option value="Mobile Money">{t.mobileMoney}</option>
+    <option value="Stripe Connect">{t.stripeConnect}</option>
   </select>
 </div>
 
 <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-4">
-  <p className="text-zinc-400 text-sm">Payout Status</p>
+  <p className="text-zinc-400 text-sm">{t.payoutStatus}</p>
 
   <p
     className={`font-bold mt-1 ${
@@ -893,7 +893,7 @@ setAuthLoading(false);
     type="button"
     className="mt-3 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700"
   >
-    Connect Account
+    {t.connectAccount}
   </button>
 </div>
 

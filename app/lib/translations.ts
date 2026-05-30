@@ -117,6 +117,28 @@ export const translations = {
     instagramPlaceholder: "Instagram handle e.g. @djbenzino",
     profileImageUrlPlaceholder: "Profile image URL",
     djBioPlaceholder: "Short DJ bio / music style",
+    marketplacePayoutSetup: "Marketplace Payout Setup",
+
+    marketplacePayoutDescription:
+      "Add your payout details so Blackline can prepare your account for future automatic payments.",
+
+    selectCountry: "🌍 Select Country",
+
+    payoutEmail: "Payout Email",
+
+    payoutStatus: "Payout Status",
+
+    notConnected: "Not Connected",
+
+    connectAccount: "Connect Account",
+
+    bankTransfer: "Bank Transfer",
+
+    paypal: "PayPal",
+
+    mobileMoney: "Mobile Money",
+
+    stripeConnect: "Stripe Connect",
   },
 
   zh: {
@@ -213,6 +235,28 @@ export const translations = {
     instagramPlaceholder: "Instagram 用户名，例如 @djbenzino",
     profileImageUrlPlaceholder: "头像图片 URL",
     djBioPlaceholder: "简短 DJ 简介 / 音乐风格",
+    marketplacePayoutSetup: "市场收款设置",
+
+    marketplacePayoutDescription:
+      "添加您的收款信息，以便 Blackline 为未来自动付款做好准备。",
+    
+    selectCountry: "🌍 选择国家",
+    
+    payoutEmail: "收款邮箱",
+    
+    payoutStatus: "收款状态",
+    
+    notConnected: "未连接",
+    
+    connectAccount: "连接账户",
+    
+    bankTransfer: "银行转账",
+    
+    paypal: "PayPal",
+    
+    mobileMoney: "移动支付",
+    
+    stripeConnect: "Stripe Connect",
   },
 
   ja: {
@@ -310,6 +354,18 @@ export const translations = {
     instagramPlaceholder: "Instagram ユーザー名 例: @djbenzino",
     profileImageUrlPlaceholder: "プロフィール画像URL",
     djBioPlaceholder: "DJプロフィール / 音楽スタイル",
+    marketplacePayoutSetup: "マーケットプレイス支払い設定",
+    marketplacePayoutDescription:
+      "将来の自動支払いに備えて、Blackline がアカウントを準備できるよう支払い情報を追加してください。",
+    selectCountry: "🌍 国を選択",
+    payoutEmail: "支払い用メールアドレス",
+    payoutStatus: "支払い状況",
+    notConnected: "未接続",
+    connectAccount: "アカウントを接続",
+    bankTransfer: "銀行振込",
+    paypal: "PayPal",
+    mobileMoney: "モバイルマネー",
+    stripeConnect: "Stripe Connect",
  },
 
   ko: {
@@ -406,6 +462,18 @@ export const translations = {
     instagramPlaceholder: "인스타그램 계정 예: @djbenzino",
     profileImageUrlPlaceholder: "프로필 이미지 URL",
     djBioPlaceholder: "DJ 소개 / 음악 스타일",
+    marketplacePayoutSetup: "마켓플레이스 지급 설정",
+    marketplacePayoutDescription:
+      "Blackline이 향후 자동 지급을 준비할 수 있도록 지급 정보를 추가해 주세요.",
+    selectCountry: "🌍 국가 선택",
+    payoutEmail: "지급 이메일",
+    payoutStatus: "지급 상태",
+    notConnected: "연결되지 않음",
+    connectAccount: "계정 연결",
+    bankTransfer: "은행 송금",
+    paypal: "PayPal",
+    mobileMoney: "모바일 머니",
+    stripeConnect: "Stripe Connect",
   },
 
   id: {
@@ -504,6 +572,18 @@ export const translations = {
     instagramPlaceholder: "Akun Instagram mis. @djbenzino",
     profileImageUrlPlaceholder: "URL gambar profil",
     djBioPlaceholder: "Bio DJ singkat / gaya musik",
+    marketplacePayoutSetup: "Pengaturan Pembayaran Marketplace",
+    marketplacePayoutDescription:
+      "Tambahkan detail pembayaran Anda agar Blackline dapat menyiapkan akun Anda untuk pembayaran otomatis di masa depan.",
+    selectCountry: "🌍 Pilih Negara",
+    payoutEmail: "Email Pembayaran",
+    payoutStatus: "Status Pembayaran",
+    notConnected: "Belum Terhubung",
+    connectAccount: "Hubungkan Akun",
+    bankTransfer: "Transfer Bank",
+    paypal: "PayPal",
+    mobileMoney: "Uang Seluler",
+    stripeConnect: "Stripe Connect",
   },
 
   ms: {
@@ -602,6 +682,18 @@ export const translations = {
     instagramPlaceholder: "Nama Instagram cth. @djbenzino",
     profileImageUrlPlaceholder: "URL gambar profil",
     djBioPlaceholder: "Bio DJ ringkas / gaya muzik",
+    marketplacePayoutSetup: "Tetapan Pembayaran Marketplace",
+    marketplacePayoutDescription:
+      "Tambah butiran pembayaran anda supaya Blackline boleh menyediakan akaun anda untuk pembayaran automatik pada masa hadapan.",
+    selectCountry: "🌍 Pilih Negara",
+    payoutEmail: "Emel Pembayaran",
+    payoutStatus: "Status Pembayaran",
+    notConnected: "Belum Disambungkan",
+    connectAccount: "Sambungkan Akaun",
+    bankTransfer: "Pindahan Bank",
+    paypal: "PayPal",
+    mobileMoney: "Wang Mudah Alih",
+    stripeConnect: "Stripe Connect",
   },
 
   th: {
@@ -700,6 +792,18 @@ export const translations = {
     instagramPlaceholder: "ชื่อ Instagram เช่น @djbenzino",
     profileImageUrlPlaceholder: "URL รูปโปรไฟล์",
     djBioPlaceholder: "ประวัติ DJ / แนวดนตรี",
+    marketplacePayoutSetup: "การตั้งค่าการรับเงินของ Marketplace",
+    marketplacePayoutDescription:
+      "เพิ่มรายละเอียดการรับเงินของคุณ เพื่อให้ Blackline เตรียมบัญชีของคุณสำหรับการชำระเงินอัตโนมัติในอนาคต",
+    selectCountry: "🌍 เลือกประเทศ",
+    payoutEmail: "อีเมลรับเงิน",
+    payoutStatus: "สถานะการรับเงิน",
+    notConnected: "ยังไม่ได้เชื่อมต่อ",
+    connectAccount: "เชื่อมต่อบัญชี",
+    bankTransfer: "โอนผ่านธนาคาร",
+    paypal: "PayPal",
+    mobileMoney: "เงินมือถือ",
+    stripeConnect: "Stripe Connect",
   },
 
   hi: {
@@ -798,6 +902,18 @@ export const translations = {
     instagramPlaceholder: "Instagram हैंडल जैसे @djbenzino",
     profileImageUrlPlaceholder: "प्रोफ़ाइल चित्र URL",
     djBioPlaceholder: "संक्षिप्त DJ परिचय / संगीत शैली",
+    marketplacePayoutSetup: "मार्केटप्लेस भुगतान सेटअप",
+    marketplacePayoutDescription:
+      "अपने भुगतान विवरण जोड़ें ताकि Blackline भविष्य के स्वचालित भुगतानों के लिए आपके खाते को तैयार कर सके।",
+    selectCountry: "🌍 देश चुनें",
+    payoutEmail: "भुगतान ईमेल",
+    payoutStatus: "भुगतान स्थिति",
+    notConnected: "कनेक्ट नहीं है",
+    connectAccount: "खाता कनेक्ट करें",
+    bankTransfer: "बैंक ट्रांसफर",
+    paypal: "PayPal",
+    mobileMoney: "मोबाइल मनी",
+    stripeConnect: "Stripe Connect",
   },
 
   ar: {
@@ -896,6 +1012,18 @@ export const translations = {
     instagramPlaceholder: "حساب إنستغرام مثال: @djbenzino",
     profileImageUrlPlaceholder: "رابط صورة الملف الشخصي",
     djBioPlaceholder: "نبذة قصيرة عن الـ DJ / نوع الموسيقى",
+    marketplacePayoutSetup: "إعداد مدفوعات السوق",
+    marketplacePayoutDescription:
+      "أضف تفاصيل الدفع الخاصة بك حتى يتمكن Blackline من إعداد حسابك للمدفوعات التلقائية المستقبلية.",
+    selectCountry: "🌍 اختر الدولة",
+    payoutEmail: "البريد الإلكتروني للدفع",
+    payoutStatus: "حالة الدفع",
+    notConnected: "غير متصل",
+    connectAccount: "ربط الحساب",
+    bankTransfer: "تحويل بنكي",
+    paypal: "PayPal",
+    mobileMoney: "الأموال المحمولة",
+    stripeConnect: "Stripe Connect",
   },
 
   vi: {
@@ -994,6 +1122,18 @@ export const translations = {
     instagramPlaceholder: "Tài khoản Instagram ví dụ: @djbenzino",
     profileImageUrlPlaceholder: "URL ảnh hồ sơ",
     djBioPlaceholder: "Tiểu sử DJ / phong cách âm nhạc",
+    marketplacePayoutSetup: "Thiết lập Thanh toán Marketplace",
+    marketplacePayoutDescription:
+      "Thêm thông tin thanh toán của bạn để Blackline có thể chuẩn bị tài khoản cho các khoản thanh toán tự động trong tương lai.",
+    selectCountry: "🌍 Chọn Quốc Gia",
+    payoutEmail: "Email Thanh Toán",
+    payoutStatus: "Trạng Thái Thanh Toán",
+    notConnected: "Chưa Kết Nối",
+    connectAccount: "Kết Nối Tài Khoản",
+    bankTransfer: "Chuyển Khoản Ngân Hàng",
+    paypal: "PayPal",
+    mobileMoney: "Tiền Di Động",
+    stripeConnect: "Stripe Connect",
   },
 
   tl: {
@@ -1092,6 +1232,18 @@ export const translations = {
     instagramPlaceholder: "Instagram handle hal. @djbenzino",
     profileImageUrlPlaceholder: "URL ng larawan ng profile",
     djBioPlaceholder: "Maikling bio ng DJ / estilo ng musika",
+    marketplacePayoutSetup: "Setup ng Marketplace Payout",
+    marketplacePayoutDescription:
+      "Idagdag ang iyong mga detalye sa payout upang maihanda ng Blackline ang iyong account para sa mga awtomatikong bayad sa hinaharap.",
+    selectCountry: "🌍 Pumili ng Bansa",
+    payoutEmail: "Email para sa Payout",
+    payoutStatus: "Katayuan ng Payout",
+    notConnected: "Hindi Nakakonekta",
+    connectAccount: "Ikonekta ang Account",
+    bankTransfer: "Bank Transfer",
+    paypal: "PayPal",
+    mobileMoney: "Mobile Money",
+    stripeConnect: "Stripe Connect",
   },
 
   pt: {
@@ -1190,6 +1342,18 @@ export const translations = {
     instagramPlaceholder: "Instagram ex. @djbenzino",
     profileImageUrlPlaceholder: "URL da foto de perfil",
     djBioPlaceholder: "Biografia curta do DJ / estilo musical",
+    marketplacePayoutSetup: "Configuração de Pagamentos do Marketplace",
+    marketplacePayoutDescription:
+      "Adicione seus dados de pagamento para que a Blackline possa preparar sua conta para futuros pagamentos automáticos.",
+    selectCountry: "🌍 Selecionar País",
+    payoutEmail: "Email de Pagamento",
+    payoutStatus: "Status do Pagamento",
+    notConnected: "Não Conectado",
+    connectAccount: "Conectar Conta",
+    bankTransfer: "Transferência Bancária",
+    paypal: "PayPal",
+    mobileMoney: "Dinheiro Móvel",
+    stripeConnect: "Stripe Connect",
   },
 
   es: {
@@ -1288,6 +1452,18 @@ export const translations = {
     instagramPlaceholder: "Usuario de Instagram ej. @djbenzino",
     profileImageUrlPlaceholder: "URL de la imagen de perfil",
     djBioPlaceholder: "Biografía corta del DJ / estilo musical",
+    marketplacePayoutSetup: "Configuración de Pagos del Marketplace",
+    marketplacePayoutDescription:
+      "Añade tus datos de pago para que Blackline pueda preparar tu cuenta para futuros pagos automáticos.",
+    selectCountry: "🌍 Seleccionar País",
+    payoutEmail: "Correo de Pago",
+    payoutStatus: "Estado del Pago",
+    notConnected: "No Conectado",
+    connectAccount: "Conectar Cuenta",
+    bankTransfer: "Transferencia Bancaria",
+    paypal: "PayPal",
+    mobileMoney: "Dinero Móvil",
+    stripeConnect: "Stripe Connect",
   },
 
   fr: {
@@ -1387,6 +1563,18 @@ export const translations = {
     instagramPlaceholder: "Compte Instagram ex. @djbenzino",
     profileImageUrlPlaceholder: "URL de l'image de profil",
     djBioPlaceholder: "Courte bio du DJ / style musical",
+    marketplacePayoutSetup: "Configuration des Paiements Marketplace",
+    marketplacePayoutDescription:
+      "Ajoutez vos informations de paiement afin que Blackline puisse préparer votre compte pour les futurs paiements automatiques.",
+    selectCountry: "🌍 Sélectionner un Pays",
+    payoutEmail: "Email de Paiement",
+    payoutStatus: "Statut du Paiement",
+    notConnected: "Non Connecté",
+    connectAccount: "Connecter le Compte",
+    bankTransfer: "Virement Bancaire",
+    paypal: "PayPal",
+    mobileMoney: "Argent Mobile",
+    stripeConnect: "Stripe Connect",
   },
 
   de: {
@@ -1486,6 +1674,18 @@ export const translations = {
     instagramPlaceholder: "Instagram-Name z. B. @djbenzino",
     profileImageUrlPlaceholder: "Profilbild-URL",
     djBioPlaceholder: "Kurze DJ-Bio / Musikstil",
+    marketplacePayoutSetup: "Marketplace-Auszahlungseinstellungen",
+    marketplacePayoutDescription:
+      "Fügen Sie Ihre Auszahlungsdaten hinzu, damit Blackline Ihr Konto für zukünftige automatische Auszahlungen vorbereiten kann.",
+    selectCountry: "🌍 Land Auswählen",
+    payoutEmail: "Auszahlungs-E-Mail",
+    payoutStatus: "Auszahlungsstatus",
+    notConnected: "Nicht Verbunden",
+    connectAccount: "Konto Verbinden",
+    bankTransfer: "Banküberweisung",
+    paypal: "PayPal",
+    mobileMoney: "Mobiles Geld",
+    stripeConnect: "Stripe Connect",
   },
 
   ru: {
@@ -1585,6 +1785,18 @@ export const translations = {
     instagramPlaceholder: "Instagram аккаунт, например @djbenzino",
     profileImageUrlPlaceholder: "URL изображения профиля",
     djBioPlaceholder: "Краткая биография DJ / музыкальный стиль",
+    marketplacePayoutSetup: "Настройка Выплат Marketplace",
+    marketplacePayoutDescription:
+      "Добавьте свои платежные данные, чтобы Blackline мог подготовить ваш аккаунт для будущих автоматических выплат.",
+    selectCountry: "🌍 Выберите Страну",
+    payoutEmail: "Электронная Почта для Выплат",
+    payoutStatus: "Статус Выплат",
+    notConnected: "Не Подключено",
+    connectAccount: "Подключить Аккаунт",
+    bankTransfer: "Банковский Перевод",
+    paypal: "PayPal",
+    mobileMoney: "Мобильные Деньги",
+    stripeConnect: "Stripe Connect",
   },
 
   tr: {
@@ -1684,6 +1896,18 @@ export const translations = {
     instagramPlaceholder: "Instagram hesabı örn. @djbenzino",
     profileImageUrlPlaceholder: "Profil resmi URL'si",
     djBioPlaceholder: "Kısa DJ biyografisi / müzik tarzı",
+    marketplacePayoutSetup: "Pazar Yeri Ödeme Ayarları",
+    marketplacePayoutDescription:
+      "Blackline'ın hesabınızı gelecekteki otomatik ödemeler için hazırlayabilmesi adına ödeme bilgilerinizi ekleyin.",
+    selectCountry: "🌍 Ülke Seç",
+    payoutEmail: "Ödeme E-postası",
+    payoutStatus: "Ödeme Durumu",
+    notConnected: "Bağlı Değil",
+    connectAccount: "Hesabı Bağla",
+    bankTransfer: "Banka Havalesi",
+    paypal: "PayPal",
+    mobileMoney: "Mobil Para",
+    stripeConnect: "Stripe Connect",
   },
 
   it: {
@@ -1783,6 +2007,18 @@ export const translations = {
     instagramPlaceholder: "Account Instagram es. @djbenzino",
     profileImageUrlPlaceholder: "URL immagine profilo",
     djBioPlaceholder: "Breve biografia DJ / stile musicale",
+    marketplacePayoutSetup: "Configurazione Pagamenti Marketplace",
+    marketplacePayoutDescription:
+      "Aggiungi i tuoi dati di pagamento affinché Blackline possa preparare il tuo account per futuri pagamenti automatici.",
+    selectCountry: "🌍 Seleziona Paese",
+    payoutEmail: "Email di Pagamento",
+    payoutStatus: "Stato del Pagamento",
+    notConnected: "Non Connesso",
+    connectAccount: "Collega Account",
+    bankTransfer: "Bonifico Bancario",
+    paypal: "PayPal",
+    mobileMoney: "Denaro Mobile",
+    stripeConnect: "Stripe Connect",
   },
 
   nl: {
@@ -1882,6 +2118,18 @@ export const translations = {
     instagramPlaceholder: "Instagram-account bijv. @djbenzino",
     profileImageUrlPlaceholder: "URL van profielfoto",
     djBioPlaceholder: "Korte DJ-biografie / muziekstijl",
+    marketplacePayoutSetup: "Marketplace Uitbetalingsinstellingen",
+    marketplacePayoutDescription:
+      "Voeg je uitbetalingsgegevens toe zodat Blackline je account kan voorbereiden op toekomstige automatische uitbetalingen.",
+    selectCountry: "🌍 Selecteer Land",
+    payoutEmail: "Uitbetalings-E-mail",
+    payoutStatus: "Uitbetalingsstatus",
+    notConnected: "Niet Verbonden",
+    connectAccount: "Account Verbinden",
+    bankTransfer: "Bankoverschrijving",
+    paypal: "PayPal",
+    mobileMoney: "Mobiel Geld",
+    stripeConnect: "Stripe Connect",
   },
 
   pl: {
@@ -1981,6 +2229,18 @@ export const translations = {
     instagramPlaceholder: "Nazwa Instagram np. @djbenzino",
     profileImageUrlPlaceholder: "URL zdjęcia profilowego",
     djBioPlaceholder: "Krótka biografia DJ-a / styl muzyczny",
+    marketplacePayoutSetup: "Ustawienia Wypłat Marketplace",
+    marketplacePayoutDescription:
+      "Dodaj swoje dane płatnicze, aby Blackline mógł przygotować Twoje konto do przyszłych automatycznych wypłat.",
+    selectCountry: "🌍 Wybierz Kraj",
+    payoutEmail: "E-mail do Wypłat",
+    payoutStatus: "Status Wypłaty",
+    notConnected: "Nie Połączono",
+    connectAccount: "Połącz Konto",
+    bankTransfer: "Przelew Bankowy",
+    paypal: "PayPal",
+    mobileMoney: "Pieniądze Mobilne",
+    stripeConnect: "Stripe Connect",
   },
 
   el: {
@@ -2080,6 +2340,18 @@ export const translations = {
     instagramPlaceholder: "Λογαριασμός Instagram π.χ. @djbenzino",
     profileImageUrlPlaceholder: "URL εικόνας προφίλ",
     djBioPlaceholder: "Σύντομο βιογραφικό DJ / μουσικό στυλ",
+    marketplacePayoutSetup: "Ρυθμίσεις Πληρωμών Marketplace",
+    marketplacePayoutDescription:
+      "Προσθέστε τα στοιχεία πληρωμής σας ώστε η Blackline να προετοιμάσει τον λογαριασμό σας για μελλοντικές αυτόματες πληρωμές.",
+    selectCountry: "🌍 Επιλέξτε Χώρα",
+    payoutEmail: "Email Πληρωμών",
+    payoutStatus: "Κατάσταση Πληρωμών",
+    notConnected: "Δεν Έχει Συνδεθεί",
+    connectAccount: "Σύνδεση Λογαριασμού",
+    bankTransfer: "Τραπεζική Μεταφορά",
+    paypal: "PayPal",
+    mobileMoney: "Κινητό Χρήμα",
+    stripeConnect: "Stripe Connect",
   },
 
   uk: {
@@ -2179,6 +2451,18 @@ export const translations = {
     instagramPlaceholder: "Instagram акаунт, наприклад @djbenzino",
     profileImageUrlPlaceholder: "URL зображення профілю",
     djBioPlaceholder: "Коротка біографія DJ / музичний стиль",
+    marketplacePayoutSetup: "Налаштування Виплат Marketplace",
+    marketplacePayoutDescription:
+      "Додайте свої платіжні дані, щоб Blackline міг підготувати ваш обліковий запис для майбутніх автоматичних виплат.",
+    selectCountry: "🌍 Виберіть Країну",
+    payoutEmail: "Електронна Пошта для Виплат",
+    payoutStatus: "Статус Виплат",
+    notConnected: "Не Підключено",
+    connectAccount: "Підключити Обліковий Запис",
+    bankTransfer: "Банківський Переказ",
+    paypal: "PayPal",
+    mobileMoney: "Мобільні Гроші",
+    stripeConnect: "Stripe Connect",
   },
 
 } as const;
