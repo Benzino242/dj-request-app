@@ -574,26 +574,13 @@ export default function StageRequestPage() {
                 </button>
               ))}
             </div>
-          </div>
-
-          {tipCurrency !== "GHS" && (
-  <div className="bg-yellow-950 border border-yellow-600 text-yellow-300 p-4 rounded-2xl text-sm text-center">
-    {tipCurrency} payments are coming soon.
-    Please use GHS for now.
-  </div>
-)}
-
-<button
+            <button
   onClick={handlePayment}
-  disabled={
-    submitting || !dj.is_live || tipCurrency !== "GHS"
-  }
+  disabled={submitting || !dj.is_live}
   className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
 >
   {!dj.is_live
     ? t.requestsClosed
-    : tipCurrency !== "GHS"
-    ? `${tipCurrency} ${t.currencyComingSoon}`
     : submitting
     ? t.processingPayment
     : `${t.pay} ${tipCurrency} ${tipAmount || 0} ${t.andRequest}`}
