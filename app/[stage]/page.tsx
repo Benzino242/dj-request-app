@@ -595,13 +595,84 @@ export default function StageRequestPage() {
   </div>
 )}
 
-          <input
-            className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            placeholder={t.artist}
-            value={artist}
-            onChange={(e) => setArtist(e.target.value)}
-            disabled={!dj.is_live}
-          />
+<div className="relative">
+  <input
+    className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+    placeholder={t.artist}
+    value={artist}
+    onChange={async (e) => {
+      const value = e.target.value;
+
+      setArtist(value);
+
+      if (!song.trim() && value.length >= 3) {
+        try {
+          setSongSearchLoading(true);
+
+          const response = await fetch(
+            `/api/apple-search?q=${encodeURIComponent(value)}`
+          );
+
+          const data = await response.json();
+
+          setSongResults(data.tracks || []);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setSongSearchLoading(false);
+        }
+      }
+    }}
+    disabled={!dj.is_live}
+  />
+
+  {!song.trim() && artist.trim() && songResults.length > 0 && (
+    <div className="absolute z-50 w-full mt-2 bg-zinc-900 border border-zinc-700 rounded-xl overflow-hidden shadow-xl max-h-96 overflow-y-auto">
+      <div className="p-3 text-xs text-purple-300 font-bold bg-black border-b border-zinc-800">
+        Popular songs by {artist}
+      </div>
+
+      {songResults.map((track) => (
+        <button
+          key={track.id}
+          type="button"
+          className="w-full text-left p-3 hover:bg-zinc-800 transition border-b border-zinc-800"
+          onClick={() => {
+            setSong(track.song);
+            setArtist(track.artist);
+            setSongResults([]);
+          }}
+        >
+          <div className="flex items-center gap-3">
+            {track.image && (
+              <img
+                src={track.image}
+                alt={track.song}
+                className="w-14 h-14 rounded-lg object-cover"
+              />
+            )}
+
+            <div className="flex-1">
+              <div className="font-semibold text-white">
+                {track.song}
+              </div>
+
+              <div className="text-sm text-zinc-400">
+                {track.artist}
+              </div>
+
+              {track.album && (
+                <div className="text-xs text-zinc-500 mt-1">
+                  {track.album}
+                </div>
+              )}
+            </div>
+          </div>
+        </button>
+      ))}
+    </div>
+  )}
+</div>
 
           <div className="grid grid-cols-2 gap-4">
             <select
