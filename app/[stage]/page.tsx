@@ -536,7 +536,7 @@ export default function StageRequestPage() {
   />
 
 {songResults.length > 0 && (
-  <div className="absolute z-50 w-full mt-2 bg-zinc-900 border border-zinc-700 rounded-xl overflow-hidden shadow-xl max-h-[520px] overflow-y-auto">
+  <div className="absolute z-50 w-full mt-2 bg-zinc-900 border border-zinc-700 rounded-xl overflow-hidden shadow-xl max-h-80 overflow-y-auto">
     {songResults.map((track) => (
       <button
       key={track.id}
