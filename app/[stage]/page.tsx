@@ -556,7 +556,7 @@ export default function StageRequestPage() {
 
           <div className="bg-black border border-purple-800 rounded-2xl p-4 mt-4">
             <p className="text-sm text-zinc-400 mb-3">
-            {t.boostYourRequest}
+              {t.boostYourRequest}
             </p>
 
             <div className="grid grid-cols-4 gap-2">
@@ -574,127 +574,130 @@ export default function StageRequestPage() {
                 </button>
               ))}
             </div>
-            <button
-  onClick={handlePayment}
-  disabled={submitting || !dj.is_live}
-  className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
->
-  {!dj.is_live
-    ? t.requestsClosed
-    : submitting
-    ? t.processingPayment
-    : `${t.pay} ${tipCurrency} ${tipAmount || 0} ${t.andRequest}`}
-</button>
-
-          <p className="text-xs text-zinc-500 text-center mt-4 leading-relaxed">
-          {t.boostingDisclaimer}
-          </p>
-        </div>
-      </div>
-
-      {requests.find((request) => request.status === "accepted") && (
-  <div className="mt-10 w-full max-w-md">
-    <div className="bg-zinc-900 border border-cyan-500 p-5 rounded-3xl text-center shadow-[0_0_25px_rgba(34,211,238,0.3)] mb-6">
-      <p className="text-xs tracking-[0.3em] text-cyan-400 font-bold mb-2">
-      {t.upNext}
-      </p>
-
-      <h2 className="text-2xl font-black text-white">
-        {requests.find((request) => request.status === "accepted")?.song}
-      </h2>
-
-      <p className="text-zinc-300 mt-2">
-        {requests.find((request) => request.status === "accepted")?.artist}
-      </p>
-
-      <p className="text-cyan-400 text-sm mt-3">
-      {t.requestedBy}{" "}
-        {requests.find((request) => request.status === "accepted")?.name}
-      </p>
-    </div>
-  </div>
-)}
-
-<div className="mt-10 w-full max-w-md">
-        <div className="flex items-center justify-between mb-4">
-        <h2 className="text-3xl font-bold">{t.liveRequests}</h2>
-
-          <span className="bg-purple-600 px-3 py-1 rounded-full text-sm font-bold">
-          {t.vipPriorityFull}
-          </span>
-        </div>
-
-        <div className="space-y-4">
-          {requests
-            .filter((request) => request.status !== "finished")
-            .map((request, index) => (
-              <div
-                key={request.id}
-                className={`rounded-xl p-4 transition-all duration-300 ${
-                  isVIPRequest(request.tip_amount)
-                    ? "bg-zinc-900 border-2 border-yellow-400 shadow-[0_0_25px_rgba(250,204,21,0.45)] scale-[1.02]"
-                    : index === 0
-                    ? "bg-zinc-900 border border-yellow-500"
-                    : "bg-zinc-900 border border-zinc-800"
-                }`}
-              >
-                {isVIPRequest(request.tip_amount) && (
-                  <div className="mb-2 inline-block bg-yellow-500 text-black text-xs font-black px-3 py-1 rounded-full">
-                    {t.vipRequest}
-                  </div>
-                )}
-
-                <div className="flex items-center justify-between mb-2">
-                  <p className="font-bold text-lg">{request.song}</p>
-
-                  <div className="flex gap-2 items-center">
-                    {index === 0 && (
-                      <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
-                        {t.topTip}
-                      </span>
-                    )}
-
-                    <span
-                      className={`text-xs px-3 py-1 rounded-full font-bold ${
-                        request.status === "accepted"
-                          ? "bg-green-600 text-white"
-                          : request.status === "rejected"
-                          ? "bg-red-600 text-white"
-                          : request.status === "played"
-                          ? "bg-blue-600 text-white"
-                          : "bg-yellow-500 text-black"
-                      }`}
-                    >
-                      {request.status === "accepted"
-                        ? t.accepted
-                        : request.status === "rejected"
-                        ? t.rejected
-                        : request.status === "played"
-                        ? t.played
-                        : t.pending}
-                    </span>
-
-                    <span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
-                      {request.tip_currency} {request.tip_amount}
-                    </span>
-                  </div>
-                </div>
-
-                <p className="text-zinc-400">{request.artist}</p>
-
-                <p className="text-sm text-purple-400 mt-2">
-                {t.requestedBy} {request.name}
-                </p>
-
-                {request.status !== "played" && request.status !== "finished" && (
-                  <p className="text-xs text-cyan-400 mt-2">
-                    {t.estimatedWait}: ~{getEstimatedWait(index)} mins
-                  </p>
-                )}
-              </div>
-            ))}
-        </div>
-      </div>
-    </main>
-  );
-}
+          </div>
+                
+                          <button
+                            onClick={handlePayment}
+                            disabled={submitting || !dj.is_live}
+                            className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
+                          >
+                            {!dj.is_live
+                              ? t.requestsClosed
+                              : submitting
+                              ? t.processingPayment
+                              : `${t.pay} ${tipCurrency} ${tipAmount || 0} ${t.andRequest}`}
+                          </button>
+                
+                          <p className="text-xs text-zinc-500 text-center mt-4 leading-relaxed">
+                            {t.boostingDisclaimer}
+                          </p>
+                        </div>
+                      </div>
+                
+                      {requests.find((request) => request.status === "accepted") && (
+                        <div className="mt-10 w-full max-w-md">
+                          <div className="bg-zinc-900 border border-cyan-500 p-5 rounded-3xl text-center shadow-[0_0_25px_rgba(34,211,238,0.3)] mb-6">
+                            <p className="text-xs tracking-[0.3em] text-cyan-400 font-bold mb-2">
+                              {t.upNext}
+                            </p>
+                
+                            <h2 className="text-2xl font-black text-white">
+                              {requests.find((request) => request.status === "accepted")?.song}
+                            </h2>
+                
+                            <p className="text-zinc-300 mt-2">
+                              {requests.find((request) => request.status === "accepted")?.artist}
+                            </p>
+                
+                            <p className="text-cyan-400 text-sm mt-3">
+                              {t.requestedBy}{" "}
+                              {requests.find((request) => request.status === "accepted")?.name}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                
+                      <div className="mt-10 w-full max-w-md">
+                        <div className="flex items-center justify-between mb-4">
+                          <h2 className="text-3xl font-bold">{t.liveRequests}</h2>
+                
+                          <span className="bg-purple-600 px-3 py-1 rounded-full text-sm font-bold">
+                            {t.vipPriorityFull}
+                          </span>
+                        </div>
+                
+                        <div className="space-y-4">
+                          {requests
+                            .filter((request) => request.status !== "finished")
+                            .map((request, index) => (
+                              <div
+                                key={request.id}
+                                className={`rounded-xl p-4 transition-all duration-300 ${
+                                  isVIPRequest(request.tip_amount)
+                                    ? "bg-zinc-900 border-2 border-yellow-400 shadow-[0_0_25px_rgba(250,204,21,0.45)] scale-[1.02]"
+                                    : index === 0
+                                    ? "bg-zinc-900 border border-yellow-500"
+                                    : "bg-zinc-900 border border-zinc-800"
+                                }`}
+                              >
+                                {isVIPRequest(request.tip_amount) && (
+                                  <div className="mb-2 inline-block bg-yellow-500 text-black text-xs font-black px-3 py-1 rounded-full">
+                                    {t.vipRequest}
+                                  </div>
+                                )}
+                
+                                <div className="flex items-center justify-between mb-2">
+                                  <p className="font-bold text-lg">{request.song}</p>
+                
+                                  <div className="flex gap-2 items-center">
+                                    {index === 0 && (
+                                      <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
+                                        {t.topTip}
+                                      </span>
+                                    )}
+                
+                                    <span
+                                      className={`text-xs px-3 py-1 rounded-full font-bold ${
+                                        request.status === "accepted"
+                                          ? "bg-green-600 text-white"
+                                          : request.status === "rejected"
+                                          ? "bg-red-600 text-white"
+                                          : request.status === "played"
+                                          ? "bg-blue-600 text-white"
+                                          : "bg-yellow-500 text-black"
+                                      }`}
+                                    >
+                                      {request.status === "accepted"
+                                        ? t.accepted
+                                        : request.status === "rejected"
+                                        ? t.rejected
+                                        : request.status === "played"
+                                        ? t.played
+                                        : t.pending}
+                                    </span>
+                
+                                    <span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
+                                      {request.tip_currency} {request.tip_amount}
+                                    </span>
+                                  </div>
+                                </div>
+                
+                                <p className="text-zinc-400">{request.artist}</p>
+                
+                                <p className="text-sm text-purple-400 mt-2">
+                                  {t.requestedBy} {request.name}
+                                </p>
+                
+                                {request.status !== "played" &&
+                                  request.status !== "finished" && (
+                                    <p className="text-xs text-cyan-400 mt-2">
+                                      {t.estimatedWait}: ~{getEstimatedWait(index)} mins
+                                    </p>
+                                  )}
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    </main>
+                  );
+                }
