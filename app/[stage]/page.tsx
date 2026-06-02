@@ -576,17 +576,19 @@ export default function StageRequestPage() {
             </div>
           </div>
                 
-                          <button
-                            onClick={handlePayment}
-                            disabled={submitting || !dj.is_live}
-                            className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
-                          >
-                            {!dj.is_live
-                              ? t.requestsClosed
-                              : submitting
-                              ? t.processingPayment
-                              : `${t.pay} ${tipCurrency} ${tipAmount || 0} ${t.andRequest}`}
-                          </button>
+          <button
+              onClick={handlePayment}
+              disabled={submitting || !dj.is_live || tipCurrency !== "GHS"}
+              className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
+            >
+              {!dj.is_live
+                ? t.requestsClosed
+                : tipCurrency !== "GHS"
+                ? `${tipCurrency} payments are coming soon. Please use GHS for now.`
+                : submitting
+                ? t.processingPayment
+                : `${t.pay} ${tipCurrency} ${tipAmount || 0} ${t.andRequest}`}
+            </button>
                 
                           <p className="text-xs text-zinc-500 text-center mt-4 leading-relaxed">
                             {t.boostingDisclaimer}
