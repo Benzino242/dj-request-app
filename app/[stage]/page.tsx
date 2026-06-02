@@ -57,7 +57,7 @@ export default function StageRequestPage() {
   const [tipAmount, setTipAmount] = useState(10);
   const [tipCurrency, setTipCurrency] = useState("GHS");
   const [requests, setRequests] = useState<Request[]>([]);
-  const [duplicateWarning, setDuplicateWarning] = useState("");
+  const [duplicateRequest, setDuplicateRequest] = useState<Request | null>(null);
   const [language, setLanguage] = useState<Language>("en");
   const [submitting, setSubmitting] = useState(false);
 
@@ -225,11 +225,6 @@ export default function StageRequestPage() {
 
     if (!name.trim() || !song.trim() || !artist.trim()) {
       alert("Please fill all fields");
-      return;
-    }
-    
-    if (duplicateWarning) {
-      alert("This song is already in the queue. Please choose another song.");
       return;
     }
 
@@ -529,11 +524,9 @@ export default function StageRequestPage() {
       );
 
       if (existingRequest) {
-        setDuplicateWarning(
-          `⚠️ "${value}" is already in the queue`
-        );
+        setDuplicateRequest(existingRequest);
       } else {
-        setDuplicateWarning("");
+        setDuplicateRequest(null);
       }
 
       if (value.length < 3) {
@@ -614,9 +607,50 @@ export default function StageRequestPage() {
 )}
 </div>
 
-{duplicateWarning && (
-  <div className="bg-yellow-950 border border-yellow-600 text-yellow-300 p-3 rounded-xl text-sm">
-    {duplicateWarning}
+{duplicateRequest && (
+  <div className="bg-yellow-950 border border-yellow-600 p-4 rounded-2xl">
+    <div className="text-yellow-300 font-bold text-lg mb-2">
+      🔥 Song Already Requested
+    </div>
+
+    <p className="text-white font-semibold">
+      {duplicateRequest.song}
+    </p>
+
+    <p className="text-zinc-400 text-sm">
+      Requested by {duplicateRequest.name}
+    </p>
+
+    <div className="mt-3">
+      <p className="text-yellow-300 text-sm font-semibold">
+        Current Boost
+      </p>
+
+      <p className="text-2xl font-black text-white">
+        {duplicateRequest.tip_currency}{" "}
+        {duplicateRequest.tip_amount}
+      </p>
+    </div>
+
+    <p className="text-zinc-300 text-sm mt-3">
+      This song is already in the queue.
+      Add a boost to help move it higher.
+    </p>
+
+    <div className="grid grid-cols-3 gap-2 mt-4">
+      {[10, 20, 50].map((amount) => (
+        <button
+          key={amount}
+          type="button"
+          className="bg-purple-600 hover:bg-purple-700 rounded-xl py-2 font-bold"
+          onClick={() => {
+            setTipAmount(amount);
+          }}
+        >
+          +{amount}
+        </button>
+      ))}
+    </div>
   </div>
 )}
 
