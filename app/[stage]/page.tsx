@@ -39,6 +39,21 @@ export default function StageRequestPage() {
   const [name, setName] = useState("");
   const [song, setSong] = useState("");
   const [artist, setArtist] = useState("");
+
+  type AppleTrack = {
+    id: number;
+    song: string;
+    artist: string;
+    album?: string;
+    image?: string;
+    appleUrl?: string;
+    previewUrl?: string;
+  };
+
+  const [songSearch, setSongSearch] = useState("");
+  const [songResults, setSongResults] = useState<AppleTrack[]>([]);
+  const [songSearchLoading, setSongSearchLoading] = useState(false);
+
   const [tipAmount, setTipAmount] = useState(10);
   const [tipCurrency, setTipCurrency] = useState("GHS");
   const [requests, setRequests] = useState<Request[]>([]);
@@ -471,31 +486,81 @@ export default function StageRequestPage() {
             disabled={!dj.is_live}
           />
 
-<input
-  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-  placeholder={t.songName}
-  value={song}
-  onChange={(e) => {
-    const value = e.target.value;
+<div className="relative">
+  <input
+    className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+    placeholder={t.songName}
+    value={song}
+    onChange={async (e) => {
+      const value = e.target.value;
 
-    setSong(value);
+      setSong(value);
+      setSongSearch(value);
 
-    const existingRequest = requests.find(
-      (request) =>
-        request.song.toLowerCase().trim() ===
-        value.toLowerCase().trim()
-    );
-
-    if (existingRequest) {
-      setDuplicateWarning(
-        `⚠️ "${value}" is already in the queue`
+      const existingRequest = requests.find(
+        (request) =>
+          request.song.toLowerCase().trim() ===
+          value.toLowerCase().trim()
       );
-    } else {
-      setDuplicateWarning("");
-    }
-  }}
-  disabled={!dj.is_live}
-/>
+
+      if (existingRequest) {
+        setDuplicateWarning(
+          `⚠️ "${value}" is already in the queue`
+        );
+      } else {
+        setDuplicateWarning("");
+      }
+
+      if (value.length < 2) {
+        setSongResults([]);
+        return;
+      }
+
+      try {
+        setSongSearchLoading(true);
+
+        const response = await fetch(
+          `/api/apple-search?q=${encodeURIComponent(value)}`
+        );
+
+        const data = await response.json();
+
+        setSongResults(data.tracks || []);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setSongSearchLoading(false);
+      }
+    }}
+    disabled={!dj.is_live}
+  />
+
+  {songResults.length > 0 && (
+    <div className="absolute z-50 w-full mt-2 bg-zinc-900 border border-zinc-700 rounded-xl overflow-hidden shadow-xl">
+      {songResults.map((track) => (
+        <button
+          key={track.id}
+          type="button"
+          className="w-full text-left p-3 hover:bg-zinc-800 transition border-b border-zinc-800"
+          onClick={() => {
+            setSong(track.song);
+            setArtist(track.artist);
+            setSongResults([]);
+          }}
+        >
+          <div className="font-semibold text-white">
+            {track.song}
+          </div>
+
+          <div className="text-sm text-zinc-400">
+            {track.artist}
+          </div>
+        </button>
+      ))}
+    </div>
+  )}
+</div>
+
 {duplicateWarning && (
   <div className="bg-yellow-950 border border-yellow-600 text-yellow-300 p-3 rounded-xl text-sm">
     {duplicateWarning}
