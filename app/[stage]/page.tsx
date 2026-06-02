@@ -535,30 +535,40 @@ export default function StageRequestPage() {
     disabled={!dj.is_live}
   />
 
-  {songResults.length > 0 && (
-    <div className="absolute z-50 w-full mt-2 bg-zinc-900 border border-zinc-700 rounded-xl overflow-hidden shadow-xl">
-      {songResults.map((track) => (
-        <button
-          key={track.id}
-          type="button"
-          className="w-full text-left p-3 hover:bg-zinc-800 transition border-b border-zinc-800"
-          onClick={() => {
-            setSong(track.song);
-            setArtist(track.artist);
-            setSongResults([]);
-          }}
-        >
-          <div className="font-semibold text-white">
-            {track.song}
-          </div>
+{songResults.length > 0 && (
+  <div className="absolute z-50 w-full mt-2 bg-zinc-900 border border-zinc-700 rounded-xl overflow-hidden shadow-xl max-h-72 overflow-y-auto">
+    {songResults.map((track) => (
+      <button
+        key={track.id}
+        type="button"
+        className="w-full text-left p-3 hover:bg-zinc-800 transition border-b border-zinc-800"
+        onClick={() => {
+          setSong(track.song);
+          setArtist(track.artist);
+          setSongResults([]);
+        }}
+      >
+        <div className="font-semibold text-white">
+          {track.song}
+        </div>
 
-          <div className="text-sm text-zinc-400">
-            {track.artist}
-          </div>
-        </button>
-      ))}
-    </div>
-  )}
+        <div className="text-sm text-zinc-400">
+          {track.artist}
+        </div>
+      </button>
+    ))}
+
+    <button
+      type="button"
+      className="w-full text-left p-3 bg-black hover:bg-zinc-800 transition text-purple-300 font-semibold"
+      onClick={() => {
+        setSongResults([]);
+      }}
+    >
+      Use "{song}" and enter artist manually
+    </button>
+  </div>
+)}
 </div>
 
 {duplicateWarning && (
