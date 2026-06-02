@@ -66,7 +66,10 @@ export default function StageRequestPage() {
   const [nowPlaying, setNowPlaying] = useState<Request | null>(null);
   const [upNext, setUpNext] = useState<Request | null>(null);
   const [flashAlert, setFlashAlert] = useState(false);
+
   const previousNowPlayingId = useRef<number | null>(null);
+  const songSearchBoxRef = useRef<HTMLDivElement | null>(null);
+
   function isVIPRequest(tip: number) {
     return tip >= 50;
   }
@@ -74,6 +77,25 @@ export default function StageRequestPage() {
     const minutesPerSong = 4;
     return (index + 1) * minutesPerSong;
   }
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent | TouchEvent) {
+      if (
+        songSearchBoxRef.current &&
+        !songSearchBoxRef.current.contains(event.target as Node)
+      ) {
+        setSongResults([]);
+      }
+    }
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+  
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
 
   async function fetchDJ() {
     if (!stage) return;
@@ -486,7 +508,10 @@ export default function StageRequestPage() {
             disabled={!dj.is_live}
           />
 
-<div className="relative">
+<div
+  ref={songSearchBoxRef}
+  className="relative"
+>
   <input
     className="w-full p-4 rounded-xl bg-black border border-zinc-700"
     placeholder={t.songName}
