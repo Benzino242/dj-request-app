@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   const response = await fetch(
     `https://itunes.apple.com/search?term=${encodeURIComponent(
       q
-    )}&media=music&entity=song&limit=6`
+    )}&media=music&entity=song&limit=12`
   );
 
   const data = await response.json();
