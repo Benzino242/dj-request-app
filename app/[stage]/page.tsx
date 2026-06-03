@@ -544,8 +544,8 @@ export default function StageRequestPage() {
 
       const existingRequest = requests.find(
         (request) =>
-          request.song.toLowerCase().trim() ===
-          value.toLowerCase().trim()
+          request.song.toLowerCase().trim() === value.toLowerCase().trim() &&
+          request.artist.toLowerCase().trim() === artist.toLowerCase().trim()
       );
 
       if (existingRequest) {
@@ -680,35 +680,47 @@ export default function StageRequestPage() {
 )}
 
 <div className="relative">
-  <input
-    className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-    placeholder={t.artist}
-    value={artist}
-    onChange={async (e) => {
-      const value = e.target.value;
+<input
+  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+  placeholder={t.artist}
+  value={artist}
+  onChange={async (e) => {
+    const value = e.target.value;
 
-      setArtist(value);
+    setArtist(value);
 
-      if (!song.trim() && value.length >= 3) {
-        try {
-          setSongSearchLoading(true);
+    const existingRequest = requests.find(
+      (request) =>
+        request.song.toLowerCase().trim() === song.toLowerCase().trim() &&
+        request.artist.toLowerCase().trim() === value.toLowerCase().trim()
+    );
 
-          const response = await fetch(
-            `/api/apple-search?q=${encodeURIComponent(value)}`
-          );
+    if (existingRequest) {
+      setDuplicateRequest(existingRequest);
+    } else {
+      setDuplicateRequest(null);
+    }
 
-          const data = await response.json();
+    if (!song.trim() && value.length >= 3) {
+      try {
+        setSongSearchLoading(true);
 
-          setSongResults(data.tracks || []);
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setSongSearchLoading(false);
-        }
+        const response = await fetch(
+          `/api/apple-search?q=${encodeURIComponent(value)}`
+        );
+
+        const data = await response.json();
+
+        setSongResults(data.tracks || []);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setSongSearchLoading(false);
       }
-    }}
-    disabled={!dj.is_live}
-  />
+    }
+  }}
+  disabled={!dj.is_live}
+/>
 
   {!song.trim() && artist.trim() && songResults.length > 0 && (
     <div className="absolute z-50 w-full mt-2 bg-zinc-900 border border-zinc-700 rounded-xl overflow-hidden shadow-xl max-h-96 overflow-y-auto">
