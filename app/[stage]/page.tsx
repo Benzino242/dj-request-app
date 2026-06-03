@@ -544,8 +544,7 @@ export default function StageRequestPage() {
 
       const existingRequest = requests.find(
         (request) =>
-          request.song.toLowerCase().trim() === value.toLowerCase().trim() &&
-          request.artist.toLowerCase().trim() === artist.toLowerCase().trim()
+          request.song.toLowerCase().trim() === value.toLowerCase().trim()
       );
 
       if (existingRequest) {
@@ -688,18 +687,6 @@ export default function StageRequestPage() {
     const value = e.target.value;
 
     setArtist(value);
-
-    const existingRequest = requests.find(
-      (request) =>
-        request.song.toLowerCase().trim() === song.toLowerCase().trim() &&
-        request.artist.toLowerCase().trim() === value.toLowerCase().trim()
-    );
-
-    if (existingRequest) {
-      setDuplicateRequest(existingRequest);
-    } else {
-      setDuplicateRequest(null);
-    }
 
     if (!song.trim() && value.length >= 3) {
       try {
