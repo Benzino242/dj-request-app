@@ -648,7 +648,7 @@ export default function StageRequestPage() {
 
     <div className="mt-3">
       <p className="text-yellow-300 text-sm font-semibold">
-        Current Boost
+      Current Total Boost
       </p>
 
       <p className="text-2xl font-black text-white">
@@ -662,8 +662,8 @@ export default function StageRequestPage() {
       Add a boost to help move it higher.
     </p>
 
-    <div className="grid grid-cols-3 gap-2 mt-4">
-      {[10, 20, 50].map((amount) => (
+    <div className="grid grid-cols-4 gap-2 mt-4">
+    {[10, 20, 50, 100].map((amount) => (
         <button
           key={amount}
           type="button"
