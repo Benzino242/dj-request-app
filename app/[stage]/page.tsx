@@ -266,21 +266,45 @@ export default function StageRequestPage() {
 
       onSuccess: async (transaction: any) => {
         try {
-          const { data: requestData, error } = await supabase
-            .from("requests")
-            .insert([
-              {
-                dj_id: dj.id,
-                name: name.trim(),
-                song: song.trim(),
-                artist: artist.trim(),
-                status: "pending",
-                tip_amount: tipAmount,
-                tip_currency: tipCurrency,
-              },
-            ])
-            .select()
-            .single();
+          let requestData;
+          let error;
+
+          if (duplicateRequest) {
+            const newTipTotal =
+              Number(duplicateRequest.tip_amount || 0) +
+              Number(tipAmount || 0);
+
+            const result = await supabase
+              .from("requests")
+              .update({
+                tip_amount: newTipTotal,
+              })
+              .eq("id", duplicateRequest.id)
+              .select()
+              .single();
+
+            requestData = result.data;
+            error = result.error;
+          } else {
+            const result = await supabase
+              .from("requests")
+              .insert([
+                {
+                  dj_id: dj.id,
+                  name: name.trim(),
+                  song: song.trim(),
+                  artist: artist.trim(),
+                  status: "pending",
+                  tip_amount: tipAmount,
+                  tip_currency: tipCurrency,
+                },
+              ])
+              .select()
+              .single();
+
+            requestData = result.data;
+            error = result.error;
+          }
 
           if (error) {
             console.error(error);
@@ -316,6 +340,7 @@ export default function StageRequestPage() {
           setSong("");
           setArtist("");
           setTipAmount(10);
+          setDuplicateRequest(null);
 
           alert("Payment successful & request submitted!");
         } catch (err) {
