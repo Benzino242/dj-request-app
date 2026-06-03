@@ -579,26 +579,38 @@ export default function StageRequestPage() {
 
 {songResults.length > 0 && (
   <div className="absolute z-50 w-full mt-2 bg-zinc-900 border border-zinc-700 rounded-xl overflow-hidden shadow-xl max-h-80 overflow-y-auto">
+
     {songResults.map((track) => (
       <button
-      key={track.id}
-      type="button"
-      className="w-full text-left p-3 hover:bg-zinc-800 transition border-b border-zinc-800"
-      onClick={() => {
-        setSong(track.song);
-        setArtist(track.artist);
-        setSongResults([]);
-      }}
+        key={track.id}
+        type="button"
+        className="w-full text-left p-3 hover:bg-zinc-800 transition border-b border-zinc-800"
+        onClick={() => {
+          setSong(track.song);
+          setArtist(track.artist);
+          setSongResults([]);
+
+          const existingRequest = requests.find(
+            (request) =>
+              request.song.toLowerCase().trim() ===
+              track.song.toLowerCase().trim()
+          );
+
+          if (existingRequest) {
+            setDuplicateRequest(existingRequest);
+          } else {
+            setDuplicateRequest(null);
+          }
+        }}
       >
-        <div className="flex items-center gap-3">
-          {track.image && (
-            <img
-              src={track.image}
-              alt={track.song}
-              className="w-14 h-14 rounded-lg object-cover"
-            />
-          )}
-      
+      <div className="flex items-center gap-3">
+  {track.image && (
+    <img
+      src={track.image}
+      alt={track.song}
+      className="w-14 h-14 rounded-lg object-cover"
+    />
+  )}
           <div className="flex-1">
             <div className="font-semibold text-white">
               {track.song}
@@ -724,6 +736,18 @@ export default function StageRequestPage() {
             setSong(track.song);
             setArtist(track.artist);
             setSongResults([]);
+
+            const existingRequest = requests.find(
+              (request) =>
+                request.song.toLowerCase().trim() ===
+                track.song.toLowerCase().trim()
+            );
+
+            if (existingRequest) {
+              setDuplicateRequest(existingRequest);
+            } else {
+              setDuplicateRequest(null);
+            }
           }}
         >
           <div className="flex items-center gap-3">
