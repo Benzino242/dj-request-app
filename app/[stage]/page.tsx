@@ -10,6 +10,10 @@ type Request = {
   name: string;
   song: string;
   artist: string;
+
+  artwork?: string | null;
+  album?: string | null;
+
   status: string;
   created_at: string;
   tip_amount: number;
@@ -39,6 +43,9 @@ export default function StageRequestPage() {
   const [name, setName] = useState("");
   const [song, setSong] = useState("");
   const [artist, setArtist] = useState("");
+
+  const [selectedArtwork, setSelectedArtwork] = useState("");
+  const [selectedAlbum, setSelectedAlbum] = useState("");
 
   type AppleTrack = {
     id: number;
@@ -232,6 +239,25 @@ export default function StageRequestPage() {
       alert("Please enter a valid tip amount");
       return;
     }
+    
+    let finalArtwork = selectedArtwork;
+    let finalAlbum = selectedAlbum;
+    
+    if (!finalArtwork || !finalAlbum) {
+      try {
+        const response = await fetch(
+          `/api/apple-search?q=${encodeURIComponent(`${song} ${artist}`)}`
+        );
+    
+        const data = await response.json();
+        const firstTrack = data.tracks?.[0];
+    
+        finalArtwork = firstTrack?.image || "";
+        finalAlbum = firstTrack?.album || "";
+      } catch (error) {
+        console.error("Artwork lookup failed:", error);
+      }
+    }
 
     setSubmitting(true);
 
@@ -240,7 +266,7 @@ export default function StageRequestPage() {
 
     paystack.newTransaction({
       key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!,
-      email: `${name.replace(/\s/g, "")}@blackline.app`,
+      email: `${name.replace(/\s/g, "").toLowerCase()}@blackline.app`,
       amount: tipAmount * 100,
       currency: tipCurrency,
 
@@ -273,19 +299,22 @@ export default function StageRequestPage() {
             const newTipTotal =
               Number(duplicateRequest.tip_amount || 0) +
               Number(tipAmount || 0);
-
+          
             const result = await supabase
               .from("requests")
               .update({
                 tip_amount: newTipTotal,
+                artwork: duplicateRequest.artwork || finalArtwork,
+                album: duplicateRequest.album || finalAlbum,
               })
               .eq("id", duplicateRequest.id)
               .select()
               .single();
-
+          
             requestData = result.data;
             error = result.error;
           } else {
+            
             const result = await supabase
               .from("requests")
               .insert([
@@ -294,6 +323,10 @@ export default function StageRequestPage() {
                   name: name.trim(),
                   song: song.trim(),
                   artist: artist.trim(),
+              
+                  artwork: finalArtwork,
+                  album: finalAlbum,
+              
                   status: "pending",
                   tip_amount: tipAmount,
                   tip_currency: tipCurrency,
@@ -588,14 +621,18 @@ export default function StageRequestPage() {
         onClick={() => {
           setSong(track.song);
           setArtist(track.artist);
+        
+          setSelectedArtwork(track.image || "");
+          setSelectedAlbum(track.album || "");
+        
           setSongResults([]);
-
+        
           const existingRequest = requests.find(
             (request) =>
               request.song.toLowerCase().trim() ===
               track.song.toLowerCase().trim()
           );
-
+        
           if (existingRequest) {
             setDuplicateRequest(existingRequest);
           } else {
@@ -735,14 +772,18 @@ export default function StageRequestPage() {
           onClick={() => {
             setSong(track.song);
             setArtist(track.artist);
+          
+            setSelectedArtwork(track.image || "");
+            setSelectedAlbum(track.album || "");
+          
             setSongResults([]);
-
+          
             const existingRequest = requests.find(
               (request) =>
                 request.song.toLowerCase().trim() ===
                 track.song.toLowerCase().trim()
             );
-
+          
             if (existingRequest) {
               setDuplicateRequest(existingRequest);
             } else {
@@ -919,54 +960,76 @@ export default function StageRequestPage() {
                                   </div>
                                 )}
                 
-                                <div className="flex items-center justify-between mb-2">
-                                  <p className="font-bold text-lg">{request.song}</p>
-                
-                                  <div className="flex gap-2 items-center">
-                                    {index === 0 && (
-                                      <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
-                                        {t.topTip}
-                                      </span>
-                                    )}
-                
-                                    <span
-                                      className={`text-xs px-3 py-1 rounded-full font-bold ${
-                                        request.status === "accepted"
-                                          ? "bg-green-600 text-white"
+                                    <div className="flex items-start justify-between gap-3 mb-2">
+                                    <div className="flex items-center gap-3 min-w-0">
+                                      {request.artwork && (
+                                        <img
+                                          src={request.artwork}
+                                          alt={request.song}
+                                          className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
+                                        />
+                                      )}
+
+                                      <div className="min-w-0">
+                                        <p className="font-bold text-lg leading-tight break-words">
+                                          {request.song}
+                                        </p>
+
+                                        <p className="text-zinc-400 text-sm">
+                                          {request.artist}
+                                        </p>
+
+                                        {request.album && (
+                                          <p className="text-xs text-zinc-500 mt-1">
+                                            {request.album}
+                                          </p>
+                                        )}
+                                      </div>
+                                    </div>
+
+                                    <div className="flex flex-col gap-2 items-end flex-shrink-0">
+                                      {index === 0 && (
+                                        <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
+                                          {t.topTip}
+                                        </span>
+                                      )}
+
+                                      <span
+                                        className={`text-xs px-3 py-1 rounded-full font-bold ${
+                                          request.status === "accepted"
+                                            ? "bg-green-600 text-white"
+                                            : request.status === "rejected"
+                                            ? "bg-red-600 text-white"
+                                            : request.status === "played"
+                                            ? "bg-blue-600 text-white"
+                                            : "bg-yellow-500 text-black"
+                                        }`}
+                                      >
+                                        {request.status === "accepted"
+                                          ? t.accepted
                                           : request.status === "rejected"
-                                          ? "bg-red-600 text-white"
+                                          ? t.rejected
                                           : request.status === "played"
-                                          ? "bg-blue-600 text-white"
-                                          : "bg-yellow-500 text-black"
-                                      }`}
-                                    >
-                                      {request.status === "accepted"
-                                        ? t.accepted
-                                        : request.status === "rejected"
-                                        ? t.rejected
-                                        : request.status === "played"
-                                        ? t.played
-                                        : t.pending}
-                                    </span>
-                
-                                    <span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
-                                      {request.tip_currency} {request.tip_amount}
-                                    </span>
+                                          ? t.played
+                                          : t.pending}
+                                      </span>
+
+                                      <span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
+                                        {request.tip_currency} {request.tip_amount}
+                                      </span>
+                                    </div>
                                   </div>
-                                </div>
-                
-                                <p className="text-zinc-400">{request.artist}</p>
-                
-                                <p className="text-sm text-purple-400 mt-2">
-                                  {t.requestedBy} {request.name}
-                                </p>
-                
-                                {request.status !== "played" &&
-                                  request.status !== "finished" && (
-                                    <p className="text-xs text-cyan-400 mt-2">
-                                      {t.estimatedWait}: ~{getEstimatedWait(index)} mins
-                                    </p>
-                                  )}
+
+                                  <p className="text-sm text-purple-400 mt-2">
+                                    {t.requestedBy} {request.name}
+                                  </p>
+
+                                  {request.status !== "played" &&
+                                    request.status !== "finished" && (
+                                      <p className="text-xs text-cyan-400 mt-2">
+                                        {t.estimatedWait}: ~{getEstimatedWait(index)} mins
+                                      </p>
+                                    )}
                               </div>
                             ))}
                         </div>
