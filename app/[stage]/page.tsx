@@ -446,11 +446,31 @@ export default function StageRequestPage() {
           />
         )}
 
-        <p className="text-sm font-bold tracking-[0.3em] text-white mb-2">
-          NOW PLAYING 🎵
-        </p>
+            <p className="text-sm font-bold tracking-[0.3em] text-white mb-2">
+              NOW PLAYING 🎵
+            </p>
 
-        <h1
+            <div className="flex justify-center items-end gap-1 mb-4">
+              <div className="w-1 h-3 bg-white/80 rounded animate-pulse"></div>
+              <div
+                className="w-1 h-5 bg-white/80 rounded animate-pulse"
+                style={{ animationDelay: "0.2s" }}
+              ></div>
+              <div
+                className="w-1 h-7 bg-white/80 rounded animate-pulse"
+                style={{ animationDelay: "0.4s" }}
+              ></div>
+              <div
+                className="w-1 h-4 bg-white/80 rounded animate-pulse"
+                style={{ animationDelay: "0.6s" }}
+              ></div>
+              <div
+                className="w-1 h-6 bg-white/80 rounded animate-pulse"
+                style={{ animationDelay: "0.8s" }}
+              ></div>
+            </div>
+
+            <h1
           className="text-2xl md:text-3xl font-black text-white leading-tight"
           style={{
             display: "-webkit-box",
