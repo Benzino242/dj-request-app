@@ -450,7 +450,15 @@ export default function StageRequestPage() {
           NOW PLAYING 🎵
         </p>
 
-        <h1 className="text-2xl md:text-3xl font-black text-white leading-tight">
+        <h1
+          className="text-2xl md:text-3xl font-black text-white leading-tight"
+          style={{
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
           {nowPlaying.song}
         </h1>
 
