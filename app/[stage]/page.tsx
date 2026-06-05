@@ -603,6 +603,7 @@ export default function StageRequestPage() {
 
       const existingRequest = requests.find(
         (request) =>
+          ["pending", "accepted"].includes(request.status) &&
           request.song.toLowerCase().trim() === value.toLowerCase().trim() &&
           request.artist.toLowerCase().trim() === artist.toLowerCase().trim()
       );
@@ -656,6 +657,7 @@ export default function StageRequestPage() {
         
           const existingRequest = requests.find(
             (request) =>
+              ["pending", "accepted"].includes(request.status) &&
               request.song.toLowerCase().trim() ===
                 track.song.toLowerCase().trim() &&
               request.artist.toLowerCase().trim() ===
@@ -809,6 +811,7 @@ export default function StageRequestPage() {
           
             const existingRequest = requests.find(
               (request) =>
+                ["pending", "accepted"].includes(request.status) &&
                 request.song.toLowerCase().trim() ===
                   track.song.toLowerCase().trim() &&
                 request.artist.toLowerCase().trim() ===
