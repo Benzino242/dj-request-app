@@ -929,28 +929,43 @@ export default function StageRequestPage() {
                         </div>
                       </div>
                 
-                      {requests.find((request) => request.status === "accepted") && (
-                        <div className="mt-10 w-full max-w-md">
-                          <div className="bg-zinc-900 border border-cyan-500 p-5 rounded-3xl text-center shadow-[0_0_25px_rgba(34,211,238,0.3)] mb-6">
-                            <p className="text-xs tracking-[0.3em] text-cyan-400 font-bold mb-2">
-                              {t.upNext}
+                      {upNext && (
+                      <div className="mt-10 w-full max-w-md">
+                        <div className="bg-zinc-900 border border-cyan-500 p-5 rounded-3xl text-center shadow-[0_0_25px_rgba(34,211,238,0.3)] mb-6">
+
+                          {upNext.artwork && (
+                            <img
+                              src={upNext.artwork}
+                              alt={upNext.song}
+                              className="w-24 h-24 mx-auto rounded-2xl object-cover mb-4 shadow-lg"
+                            />
+                          )}
+
+                          <p className="text-xs tracking-[0.3em] text-cyan-400 font-bold mb-2">
+                            {t.upNext}
+                          </p>
+
+                          <h2 className="text-2xl font-black text-white">
+                            {upNext.song}
+                          </h2>
+
+                          <p className="text-zinc-300 mt-2">
+                            {upNext.artist}
+                          </p>
+
+                          {upNext.album && (
+                            <p className="text-xs text-zinc-500 mt-2">
+                              {upNext.album}
                             </p>
-                
-                            <h2 className="text-2xl font-black text-white">
-                              {requests.find((request) => request.status === "accepted")?.song}
-                            </h2>
-                
-                            <p className="text-zinc-300 mt-2">
-                              {requests.find((request) => request.status === "accepted")?.artist}
-                            </p>
-                
-                            <p className="text-cyan-400 text-sm mt-3">
-                              {t.requestedBy}{" "}
-                              {requests.find((request) => request.status === "accepted")?.name}
-                            </p>
-                          </div>
+                          )}
+
+                          <p className="text-cyan-400 text-sm mt-3">
+                            {t.requestedBy} {upNext.name}
+                          </p>
+
                         </div>
-                      )}
+                      </div>
+                    )}
                 
                       <div className="mt-10 w-full max-w-md">
                         <div className="flex items-center justify-between mb-4">
