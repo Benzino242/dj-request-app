@@ -436,8 +436,7 @@ export default function StageRequestPage() {
         backgroundPosition: "center",
       }}
     >
-      <div className="absolute inset-0 bg-black/75 backdrop-blur-md" />
-
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-xl" />
       <div className="relative z-10">
         {nowPlaying.artwork && (
           <img
