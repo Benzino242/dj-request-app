@@ -577,7 +577,8 @@ export default function StageRequestPage() {
 
       const existingRequest = requests.find(
         (request) =>
-          request.song.toLowerCase().trim() === value.toLowerCase().trim()
+          request.song.toLowerCase().trim() === value.toLowerCase().trim() &&
+          request.artist.toLowerCase().trim() === artist.toLowerCase().trim()
       );
 
       if (existingRequest) {
@@ -630,7 +631,9 @@ export default function StageRequestPage() {
           const existingRequest = requests.find(
             (request) =>
               request.song.toLowerCase().trim() ===
-              track.song.toLowerCase().trim()
+                track.song.toLowerCase().trim() &&
+              request.artist.toLowerCase().trim() ===
+                track.artist.toLowerCase().trim()
           );
         
           if (existingRequest) {
@@ -781,7 +784,9 @@ export default function StageRequestPage() {
             const existingRequest = requests.find(
               (request) =>
                 request.song.toLowerCase().trim() ===
-                track.song.toLowerCase().trim()
+                  track.song.toLowerCase().trim() &&
+                request.artist.toLowerCase().trim() ===
+                  track.artist.toLowerCase().trim()
             );
           
             if (existingRequest) {
