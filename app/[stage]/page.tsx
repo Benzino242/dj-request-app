@@ -424,27 +424,43 @@ export default function StageRequestPage() {
         <div className="fixed inset-0 bg-purple-600/30 z-50 pointer-events-none animate-pulse" />
       )}
 
-      {nowPlaying && (
-        <div className="w-full max-w-md mb-8 animate-pulse">
-          <div className="bg-gradient-to-r from-purple-700 to-pink-600 p-6 rounded-3xl shadow-[0_0_40px_rgba(168,85,247,0.7)] border border-purple-300 text-center">
-            <p className="text-sm font-bold tracking-[0.3em] text-white mb-2">
-              NOW PLAYING 🎵
-            </p>
+{nowPlaying && (
+  <div className="w-full max-w-md mb-8 animate-pulse">
+    <div className="bg-gradient-to-r from-purple-700 to-pink-600 p-6 rounded-3xl shadow-[0_0_40px_rgba(168,85,247,0.7)] border border-purple-300 text-center">
 
-            <h1 className="text-3xl font-black text-white">
-              {nowPlaying.song}
-            </h1>
-
-            <p className="text-white/80 text-lg mt-2">
-              {nowPlaying.artist}
-            </p>
-
-            <p className="text-xs text-white/70 mt-4">
-            {t.requestedBy} {nowPlaying.name}
-            </p>
-          </div>
-        </div>
+      {nowPlaying.artwork && (
+        <img
+          src={nowPlaying.artwork}
+          alt={nowPlaying.song}
+          className="w-28 h-28 mx-auto rounded-2xl object-cover mb-4 shadow-lg"
+        />
       )}
+
+      <p className="text-sm font-bold tracking-[0.3em] text-white mb-2">
+        NOW PLAYING 🎵
+      </p>
+
+      <h1 className="text-3xl font-black text-white">
+        {nowPlaying.song}
+      </h1>
+
+      <p className="text-white/80 text-lg mt-2">
+        {nowPlaying.artist}
+      </p>
+
+      {nowPlaying.album && (
+        <p className="text-xs text-white/60 mt-2">
+          {nowPlaying.album}
+        </p>
+      )}
+
+      <p className="text-xs text-white/70 mt-4">
+        {t.requestedBy} {nowPlaying.name}
+      </p>
+
+    </div>
+  </div>
+)}
 
 
       <div className="bg-zinc-900 p-8 rounded-3xl shadow-2xl w-full max-w-md border border-zinc-800">
