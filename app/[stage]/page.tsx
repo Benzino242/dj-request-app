@@ -426,38 +426,49 @@ export default function StageRequestPage() {
 
 {nowPlaying && (
   <div className="w-full max-w-md mb-8 animate-pulse">
-    <div className="bg-gradient-to-r from-purple-700 to-pink-600 p-6 rounded-3xl shadow-[0_0_40px_rgba(168,85,247,0.7)] border border-purple-300 text-center">
+    <div
+      className="relative overflow-hidden p-6 rounded-3xl shadow-[0_0_40px_rgba(168,85,247,0.7)] border border-purple-300 text-center"
+      style={{
+        backgroundImage: nowPlaying.artwork
+          ? `url(${nowPlaying.artwork})`
+          : undefined,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="absolute inset-0 bg-black/75 backdrop-blur-md" />
 
-      {nowPlaying.artwork && (
-        <img
-          src={nowPlaying.artwork}
-          alt={nowPlaying.song}
-          className="w-28 h-28 mx-auto rounded-2xl object-cover mb-4 shadow-lg"
-        />
-      )}
+      <div className="relative z-10">
+        {nowPlaying.artwork && (
+          <img
+            src={nowPlaying.artwork}
+            alt={nowPlaying.song}
+            className="w-28 h-28 mx-auto rounded-2xl object-cover mb-4 shadow-lg"
+          />
+        )}
 
-      <p className="text-sm font-bold tracking-[0.3em] text-white mb-2">
-        NOW PLAYING 🎵
-      </p>
-
-      <h1 className="text-3xl font-black text-white">
-        {nowPlaying.song}
-      </h1>
-
-      <p className="text-white/80 text-lg mt-2">
-        {nowPlaying.artist}
-      </p>
-
-      {nowPlaying.album && (
-        <p className="text-xs text-white/60 mt-2">
-          {nowPlaying.album}
+        <p className="text-sm font-bold tracking-[0.3em] text-white mb-2">
+          NOW PLAYING 🎵
         </p>
-      )}
 
-      <p className="text-xs text-white/70 mt-4">
-        {t.requestedBy} {nowPlaying.name}
-      </p>
+        <h1 className="text-3xl font-black text-white">
+          {nowPlaying.song}
+        </h1>
 
+        <p className="text-white/80 text-lg mt-2">
+          {nowPlaying.artist}
+        </p>
+
+        {nowPlaying.album && (
+          <p className="text-xs text-white/60 mt-2">
+            {nowPlaying.album}
+          </p>
+        )}
+
+        <p className="text-xs text-white/70 mt-4">
+          {t.requestedBy} {nowPlaying.name}
+        </p>
+      </div>
     </div>
   </div>
 )}
