@@ -13,17 +13,19 @@ type RequestStatus =
  | "finished";
 
  type SongRequest = {
- id: number;
- dj_id: number;
- name: string;
- song: string;
- artist: string;
- status: RequestStatus;
- tip_amount: number;
- tip_currency: string;
- queue_position?: number | null;
- created_at?: string;
- };
+  id: number;
+  dj_id: number;
+  name: string;
+  song: string;
+  artist: string;
+  artwork?: string | null;
+  album?: string | null;
+  status: RequestStatus;
+  tip_amount: number;
+  tip_currency: string;
+  queue_position?: number | null;
+  created_at?: string;
+};
  
  type Payment = {
  id: number;
@@ -346,8 +348,9 @@ setAuthLoading(false);
 
  const { data: withdrawalsData } = await supabase
  .from("withdrawals")
- .select("*")
- .order("created_at", { ascending: false });
+.select("*")
+.eq("dj_id", dj.id)
+.order("created_at", { ascending: false });
 
  setRequests((requestsData || []) as SongRequest[]);
  setPayments((paymentsData || []) as Payment[]);
@@ -1285,26 +1288,42 @@ function RequestColumn({
  className={`bg-zinc-900 border ${borderColor} p-5 rounded-2xl`}
  >
  <div className="flex justify-between items-start gap-3">
- <div>
- <h3 className="text-2xl font-bold">
- {showQueueNumber
- ? `#${index + 1} — ${request.song}`
- : request.song}
- </h3>
+  <div className="flex items-start gap-3">
+    {request.artwork && (
+      <img
+        src={request.artwork}
+        alt={request.song}
+        className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+      />
+    )}
 
- <p className="text-zinc-400 mt-1">{request.artist}</p>
+    <div>
+      <h3 className="text-2xl font-bold">
+        {showQueueNumber
+          ? `#${index + 1} — ${request.song}`
+          : request.song}
+      </h3>
 
- <p className="text-purple-400 mt-2">
- {t.requestedBy} {request.name}
- </p>
- </div>
+      <p className="text-zinc-400 mt-1">{request.artist}</p>
 
- <div className="flex flex-col items-end gap-2">
- {showQueueNumber && index === 0 && (
- <span className="bg-purple-600 px-3 py-1 rounded-full text-xs font-bold">
- {t.nextUp}
- </span>
- )}
+      {request.album && (
+        <p className="text-xs text-zinc-500 mt-1">
+          {request.album}
+        </p>
+      )}
+
+      <p className="text-purple-400 mt-2">
+        {t.requestedBy} {request.name}
+      </p>
+    </div>
+  </div>
+
+  <div className="flex flex-col items-end gap-2">
+    {showQueueNumber && index === 0 && (
+      <span className="bg-purple-600 px-3 py-1 rounded-full text-xs font-bold">
+        {t.nextUp}
+      </span>
+    )}
 
  {request.tip_amount >= 50 && (
  <span className="bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold">
