@@ -442,7 +442,7 @@ export default function StageRequestPage() {
           <img
             src={nowPlaying.artwork}
             alt={nowPlaying.song}
-            className="w-28 h-28 mx-auto rounded-2xl object-cover mb-4 shadow-lg"
+            className="w-32 h-32 mx-auto rounded-2xl object-cover mb-4 shadow-lg"
           />
         )}
 
@@ -450,7 +450,7 @@ export default function StageRequestPage() {
           NOW PLAYING 🎵
         </p>
 
-        <h1 className="text-3xl font-black text-white">
+        <h1 className="text-2xl md:text-3xl font-black text-white leading-tight">
           {nowPlaying.song}
         </h1>
 
