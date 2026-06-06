@@ -543,9 +543,9 @@ export default function StageRequestPage() {
 
 
 
-          <h1 className="text-5xl font-bold mb-3 text-purple-500 uppercase">
-            {dj.stage_name}
-          </h1>
+<h1 className="text-5xl font-black mb-3 text-purple-400 uppercase tracking-wide drop-shadow-[0_0_18px_rgba(168,85,247,0.45)]">
+  {dj.stage_name}
+</h1>
 
           <div
             className={`inline-block px-4 py-2 rounded-full text-sm font-bold mb-4 ${
