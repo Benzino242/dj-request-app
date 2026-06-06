@@ -984,9 +984,7 @@ export default function StageRequestPage() {
           </div>
 
           <div className="bg-black border border-purple-800 rounded-2xl p-4 mt-4">
-            <p className="text-sm text-zinc-400 mb-3">
-              {t.boostYourRequest}
-            </p>
+            
 
             <div className="grid grid-cols-4 gap-2">
               {[10, 20, 50, 100].map((boost) => (
