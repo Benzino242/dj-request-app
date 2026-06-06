@@ -605,7 +605,7 @@ export default function StageRequestPage() {
 
   <div className="relative z-10">
     <p className="text-purple-200 text-xs font-black uppercase tracking-[0.2em] mb-2">
-      🔥 Skip the Queue
+    🔥 {t.skipTheQueue}
     </p>
 
     <p className="text-white text-base font-semibold leading-snug">
