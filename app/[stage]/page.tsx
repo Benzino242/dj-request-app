@@ -556,12 +556,14 @@ export default function StageRequestPage() {
           </div>
 
           {dj.event_name && (
-         <div className="mb-3">
-      <p className="text-purple-400 font-bold text-lg">
+  <div className="mb-3">
+    <p className="text-purple-400 font-bold text-lg">
       {dj.event_name}
     </p>
+  </div>
+)}
 
-    <div className="flex flex-wrap justify-center gap-2 mt-3 mb-3">
+<div className="flex flex-wrap justify-center gap-2 mt-3 mb-3">
   {dj.venue && (
     <span className="bg-white/5 border border-white/10 text-white text-sm px-3 py-2 rounded-full">
       📍 {dj.venue}
