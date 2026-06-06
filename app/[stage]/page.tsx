@@ -741,7 +741,7 @@ export default function StageRequestPage() {
 
 {duplicateRequest && (
   <div className="bg-yellow-950 border border-yellow-600 p-4 rounded-2xl mt-4">
-    <div className="text-yellow-300 font-bold text-lg mb-4">
+    <div className="text-yellow-300 font-bold mb-4">
       🔥 Song Already Requested
     </div>
 
@@ -750,7 +750,7 @@ export default function StageRequestPage() {
         <img
           src={duplicateRequest.artwork}
           alt={duplicateRequest.song}
-          className="w-20 h-20 rounded-xl object-cover shadow-lg"
+          className="w-16 h-16 rounded-xl object-cover shadow-lg"
         />
       )}
 
@@ -766,7 +766,7 @@ export default function StageRequestPage() {
         )}
 
         {duplicateRequest.album && (
-          <p className="text-zinc-500 text-xs mt-1">
+          <p className="text-zinc-600 text-xs mt-1 truncate">
             {duplicateRequest.album}
           </p>
         )}
