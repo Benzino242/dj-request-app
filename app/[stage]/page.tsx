@@ -820,9 +820,9 @@ export default function StageRequestPage() {
             setTipAmount(amount);
           }}
         >
-          <span className="text-xs opacity-80">
-            +{duplicateRequest.tip_currency}
-          </span>
+         <span className="text-xs opacity-80">
+  +{tipCurrency}
+</span>
 
           <span className="text-lg font-black">
             {amount}
