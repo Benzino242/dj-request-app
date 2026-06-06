@@ -44,7 +44,7 @@ export const translations = {
     estimatedWait: "Estimated wait",
     higherTips: "Higher tips move your request closer to the top 🔥",
     boostingDisclaimer:
-      "Boosting a request increases priority in the DJ queue but does not guarantee playback or acceptance by the DJ.",
+     "Boosts increase queue priority but do not guarantee playback.",
     pay: "Pay",
     andRequest: "& Request",
     requestedBy: "Requested by",
