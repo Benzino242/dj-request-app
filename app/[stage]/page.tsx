@@ -541,9 +541,7 @@ export default function StageRequestPage() {
             />
           )}
 
-<p className="text-zinc-500 text-sm mb-2">
-  {t.requestingFromDj}
-</p>
+
 
           <h1 className="text-5xl font-bold mb-3 text-purple-500 uppercase">
             {dj.stage_name}
