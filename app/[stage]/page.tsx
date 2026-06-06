@@ -608,7 +608,7 @@ export default function StageRequestPage() {
       🔥 Skip the Queue
     </p>
 
-    <p className="text-white text-lg font-semibold leading-snug">
+    <p className="text-white text-base font-semibold leading-snug">
       {t.higherTips}
     </p>
   </div>
