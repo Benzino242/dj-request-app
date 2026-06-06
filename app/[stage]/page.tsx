@@ -573,11 +573,7 @@ export default function StageRequestPage() {
             <p className="text-zinc-400 text-sm mb-2">📍 {dj.city}</p>
           )}
 
-          {dj.bio && (
-            <p className="text-zinc-300 text-sm leading-relaxed mb-3">
-              {dj.bio}
-            </p>
-          )}
+          
 
           {dj.instagram && (
             <p className="text-purple-400 text-sm font-semibold">
