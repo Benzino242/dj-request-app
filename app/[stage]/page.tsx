@@ -600,11 +600,19 @@ export default function StageRequestPage() {
         {t.requestInstruction}
         </p>
 
-        <div className="bg-purple-950 border border-purple-700 p-4 rounded-2xl mb-6">
-          <p className="text-sm text-purple-200">
-          {t.higherTips}
-          </p>
-        </div>
+        <div className="relative overflow-hidden bg-gradient-to-br from-purple-950 via-purple-900 to-black border border-purple-500/60 p-5 rounded-3xl mb-6 shadow-[0_0_30px_rgba(168,85,247,0.22)]">
+  <div className="absolute -top-10 -right-10 w-28 h-28 bg-purple-500/20 rounded-full blur-2xl" />
+
+  <div className="relative z-10">
+    <p className="text-purple-200 text-xs font-black uppercase tracking-[0.2em] mb-2">
+      🔥 Skip the Queue
+    </p>
+
+    <p className="text-white text-lg font-semibold leading-snug">
+      {t.higherTips}
+    </p>
+  </div>
+</div>
 
         <div className="space-y-4">
           <input
