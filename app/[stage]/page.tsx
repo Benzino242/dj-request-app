@@ -740,46 +740,93 @@ export default function StageRequestPage() {
 </div>
 
 {duplicateRequest && (
-  <div className="bg-yellow-950 border border-yellow-600 p-4 rounded-2xl">
-    <div className="text-yellow-300 font-bold text-lg mb-2">
+  <div className="bg-yellow-950 border border-yellow-600 p-4 rounded-2xl mt-4">
+    <div className="text-yellow-300 font-bold text-lg mb-4">
       🔥 Song Already Requested
     </div>
 
-    <p className="text-white font-semibold">
-      {duplicateRequest.song}
-    </p>
+    <div className="flex gap-4">
+      {duplicateRequest.artwork && (
+        <img
+          src={duplicateRequest.artwork}
+          alt={duplicateRequest.song}
+          className="w-20 h-20 rounded-xl object-cover shadow-lg"
+        />
+      )}
 
-    <p className="text-zinc-400 text-sm">
-      Requested by {duplicateRequest.name}
-    </p>
+      <div className="flex-1 min-w-0">
+        <p className="text-white font-bold text-lg leading-tight">
+          {duplicateRequest.song}
+        </p>
 
-    <div className="mt-3">
-      <p className="text-yellow-300 text-sm font-semibold">
-      Current Total Boost
-      </p>
+        {duplicateRequest.artist && (
+          <p className="text-zinc-300 text-sm mt-1">
+            {duplicateRequest.artist}
+          </p>
+        )}
 
-      <p className="text-2xl font-black text-white">
-        {duplicateRequest.tip_currency}{" "}
-        {duplicateRequest.tip_amount}
-      </p>
+        {duplicateRequest.album && (
+          <p className="text-zinc-500 text-xs mt-1">
+            {duplicateRequest.album}
+          </p>
+        )}
+
+        <p className="text-zinc-400 text-sm mt-2">
+          Requested by {duplicateRequest.name}
+        </p>
+      </div>
     </div>
 
-    <p className="text-zinc-300 text-sm mt-3">
+    <div className="grid grid-cols-2 gap-3 mt-4">
+      <div className="bg-black/20 rounded-xl p-3">
+        <p className="text-yellow-300 text-xs font-semibold uppercase tracking-wide">
+          Current Position
+        </p>
+
+        <p className="text-2xl font-black text-white">
+          #
+          {requests
+            .filter((request) => request.status !== "finished")
+            .findIndex(
+              (request) => request.id === duplicateRequest.id
+            ) + 1}
+        </p>
+      </div>
+
+      <div className="bg-black/20 rounded-xl p-3">
+        <p className="text-yellow-300 text-xs font-semibold uppercase tracking-wide">
+          Current Boost
+        </p>
+
+        <p className="text-2xl font-black text-white">
+          {duplicateRequest.tip_currency}{" "}
+          {duplicateRequest.tip_amount}
+        </p>
+      </div>
+    </div>
+
+    <p className="text-zinc-300 text-sm mt-4">
       This song is already in the queue.
       Add a boost to help move it higher.
     </p>
 
     <div className="grid grid-cols-4 gap-2 mt-4">
-    {[10, 20, 50, 100].map((amount) => (
+      {[10, 20, 50, 100].map((amount) => (
         <button
           key={amount}
           type="button"
-          className="bg-purple-600 hover:bg-purple-700 rounded-xl py-2 font-bold"
+          className="bg-purple-600 hover:bg-purple-700 rounded-xl py-3 font-bold flex flex-col items-center justify-center"
           onClick={() => {
             setTipAmount(amount);
           }}
         >
-          +{amount}
+          <span className="text-xs opacity-80">
+            +{duplicateRequest.tip_currency}
+          </span>
+
+          <span className="text-lg font-black">
+            {amount}
+          </span>
         </button>
       ))}
     </div>
