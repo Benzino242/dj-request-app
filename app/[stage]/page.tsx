@@ -788,7 +788,7 @@ export default function StageRequestPage() {
     <div className="grid grid-cols-2 gap-3 mt-4">
       <div className="bg-black/20 rounded-xl p-3">
         <p className="text-yellow-300 text-xs font-semibold uppercase tracking-wide">
-        {t.currentPosition}
+        CURRENT POSITION
         </p>
 
         <p className="text-2xl font-black text-white">
@@ -803,7 +803,7 @@ export default function StageRequestPage() {
 
       <div className="bg-black/20 rounded-xl p-3">
         <p className="text-yellow-300 text-xs font-semibold uppercase tracking-wide">
-        {t.currentBoost}
+        CURRENT BOOST
         </p>
 
         <p className="text-2xl font-black text-white">
@@ -814,9 +814,9 @@ export default function StageRequestPage() {
     </div>
 
     <p className="text-zinc-300 text-sm mt-4">
-  {t.songAlreadyInQueue}
+    THIS SONG IS ALREADY IN THE QUEUE.
   <br />
-  {t.boostToMoveHigher}
+  ADD A BOOST TO HELP MOVE IT HIGHER.
 </p>
 
     <div className="grid grid-cols-4 gap-2 mt-4">
