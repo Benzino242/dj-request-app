@@ -561,17 +561,19 @@ export default function StageRequestPage() {
       {dj.event_name}
     </p>
 
-    {dj.venue && (
-      <p className="text-white text-sm mt-1">
-        📍 {dj.venue}
-      </p>
-    )}
-  </div>
-)}
+    <div className="flex flex-wrap justify-center gap-2 mt-3 mb-3">
+  {dj.venue && (
+    <span className="bg-white/5 border border-white/10 text-white text-sm px-3 py-2 rounded-full">
+      📍 {dj.venue}
+    </span>
+  )}
 
-          {dj.city && (
-            <p className="text-zinc-400 text-sm mb-2">📍 {dj.city}</p>
-          )}
+  {dj.city && (
+    <span className="bg-white/5 border border-white/10 text-zinc-300 text-sm px-3 py-2 rounded-full">
+      🌴 {dj.city}
+    </span>
+  )}
+</div>
 
           
 
