@@ -575,11 +575,13 @@ export default function StageRequestPage() {
 
           
 
-          {dj.instagram && (
-            <p className="text-purple-400 text-sm font-semibold">
-              Instagram: {dj.instagram}
-            </p>
-          )}
+{dj.instagram && (
+  <div className="mt-4">
+    <span className="inline-block bg-purple-500/15 border border-purple-500/30 text-purple-300 text-sm font-bold px-4 py-2 rounded-full">
+      📸 {dj.instagram}
+    </span>
+  </div>
+)}
         </div>
 
         {!dj.is_live && (
