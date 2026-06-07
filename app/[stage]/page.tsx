@@ -533,17 +533,17 @@ export default function StageRequestPage() {
    </select>
     </div>
     <div className="text-center mb-6">
-  {dj.profile_image && (
-    <img
-      src={dj.profile_image}
-      alt={dj.stage_name}
-      className={`w-28 h-28 rounded-full object-cover mx-auto mb-4 border-4 ${
-        dj.is_live
-          ? "border-green-500 shadow-[0_0_35px_rgba(34,197,94,0.45)]"
-          : "border-purple-600"
-      }`}
-    />
-  )}
+    {dj.profile_image && (
+  <img
+    src={dj.profile_image}
+    alt={dj.stage_name}
+    className={`w-28 h-28 rounded-full object-cover mx-auto mb-4 border-4 ${
+      dj.is_live
+        ? "border-purple-500 shadow-[0_0_40px_rgba(168,85,247,0.55)]"
+        : "border-purple-600"
+    }`}
+  />
+)}
             
 
 <h1 className="text-5xl font-black mb-3 text-purple-400 uppercase tracking-wide drop-shadow-[0_0_18px_rgba(168,85,247,0.45)]">
