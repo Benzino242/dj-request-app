@@ -605,9 +605,11 @@ export default function StageRequestPage() {
           </div>
         )}
 
-        <p className="text-center text-zinc-400 mb-8">
-        {t.requestInstruction}
-        </p>
+<div className="text-center mb-8">
+  <p className="text-zinc-400 text-sm uppercase tracking-[0.2em]">
+    {t.requestInstruction}
+  </p>
+</div>
 
         <div className="relative overflow-hidden bg-gradient-to-br from-purple-950 via-purple-900 to-black border border-purple-500/60 p-5 rounded-3xl mb-6 shadow-[0_0_30px_rgba(168,85,247,0.22)]">
   <div className="absolute -top-10 -right-10 w-28 h-28 bg-purple-500/20 rounded-full blur-2xl" />
