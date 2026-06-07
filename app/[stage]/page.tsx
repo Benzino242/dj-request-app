@@ -581,9 +581,14 @@ export default function StageRequestPage() {
 
 {dj.instagram && (
   <div className="mt-4">
-    <span className="inline-block bg-purple-500/15 border border-purple-500/30 text-purple-300 text-sm font-bold px-4 py-2 rounded-full">
+    <a
+      href={`https://instagram.com/${dj.instagram.replace("@", "")}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-block bg-purple-500/15 border border-purple-500/30 text-purple-300 text-sm font-bold px-4 py-2 rounded-full hover:bg-purple-500/25 transition"
+    >
       📸 {dj.instagram}
-    </span>
+    </a>
   </div>
 )}
         </div>
