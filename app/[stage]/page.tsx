@@ -564,17 +564,18 @@ export default function StageRequestPage() {
 )}
 
 <div className="flex flex-wrap justify-center gap-2 mt-3 mb-3">
-  {dj.venue && (
-    <span className="bg-white/5 border border-white/10 text-white text-sm px-3 py-2 rounded-full">
-      📍 {dj.venue}
-    </span>
-  )}
-
-  {dj.city && (
-    <span className="bg-white/5 border border-white/10 text-zinc-300 text-sm px-3 py-2 rounded-full">
-      🌴 {dj.city}
-    </span>
-  )}
+{dj.venue && (
+  <a
+    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      dj.venue
+    )}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block text-white text-sm mt-1 hover:text-purple-300 transition"
+  >
+    📍 {dj.venue}
+  </a>
+)}
 </div>
 
           
