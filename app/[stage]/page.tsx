@@ -571,7 +571,7 @@ export default function StageRequestPage() {
     )}`}
     target="_blank"
     rel="noopener noreferrer"
-    className="inline-block text-white text-sm mt-1 hover:text-purple-300 transition"
+    className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/5 border border-white/10 text-white text-sm hover:border-purple-500/50 hover:text-purple-300 transition"
   >
     📍 {dj.venue}
   </a>
