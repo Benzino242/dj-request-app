@@ -763,9 +763,9 @@ export default function StageRequestPage() {
     <div className="absolute -top-12 -right-12 w-32 h-32 bg-yellow-500/20 rounded-full blur-3xl" />
 
     <div className="relative z-10">
-      <div className="text-yellow-300 font-black mb-4 tracking-wide">
-        🔥 {t.songAlreadyRequested}
-      </div>
+    <div className="text-yellow-300 font-black text-xl mb-4">
+  {t.songAlreadyRequested}
+</div>
 
       <div className="flex gap-4">
         {duplicateRequest.artwork && (
@@ -793,9 +793,9 @@ export default function StageRequestPage() {
             </p>
           )}
 
-          <p className="text-zinc-400 text-sm mt-2">
-            {t.requestedBy} {duplicateRequest.name}
-          </p>
+<p className="text-yellow-200 text-sm mt-2 font-semibold">
+  {t.requestedBy} {duplicateRequest.name}
+</p>
         </div>
       </div>
 
