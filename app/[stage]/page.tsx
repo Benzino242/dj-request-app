@@ -787,11 +787,11 @@ export default function StageRequestPage() {
             </p>
           )}
 
-          {duplicateRequest.album && (
-            <p className="text-zinc-500 text-xs mt-1 truncate">
-              {duplicateRequest.album}
-            </p>
-          )}
+{duplicateRequest.album && (
+  <p className="text-zinc-500 text-xs mt-1 truncate">
+    Album: {duplicateRequest.album}
+  </p>
+)}
 
 <p className="text-yellow-200 text-sm mt-2 font-semibold">
   {t.requestedBy} {duplicateRequest.name}
