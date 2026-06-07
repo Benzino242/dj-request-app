@@ -983,25 +983,38 @@ export default function StageRequestPage() {
             />
           </div>
 
-          <div className="bg-black border border-purple-800 rounded-2xl p-4 mt-4">
-            
+          <div className="bg-black border border-purple-800 rounded-2xl p-5 mt-4 relative overflow-hidden">
+  <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-transparent pointer-events-none" />
 
-            <div className="grid grid-cols-4 gap-2">
-              {[10, 20, 50, 100].map((boost) => (
-                <button
-                  key={boost}
-                  type="button"
-                  onClick={() =>
-                    setTipAmount((current) => Number(current || 0) + boost)
-                  }
-                  disabled={!dj.is_live}
-                  className="bg-purple-700 hover:bg-purple-600 px-3 py-3 rounded-xl font-bold text-sm disabled:opacity-40"
-                >
-                  +{tipCurrency} {boost}
-                </button>
-              ))}
-            </div>
+  <div className="relative z-10">
+    <p className="text-purple-200 text-xs font-black uppercase tracking-[0.2em] mb-2">
+      ⚡ {t.boostYourRequest}
+    </p>
+
+    <p className="text-zinc-400 text-sm mb-4">
+      {t.higherTips}
+    </p>
+
+    <div className="grid grid-cols-4 gap-2">
+      {[10, 20, 50, 100].map((boost) => (
+        <button
+          key={boost}
+          type="button"
+          onClick={() =>
+            setTipAmount((current) => Number(current || 0) + boost)
+          }
+          disabled={!dj.is_live}
+          className="bg-purple-700 hover:bg-purple-600 px-3 py-3 rounded-xl font-bold text-sm disabled:opacity-40 transition-all hover:scale-105"
+        >
+          +{tipCurrency}
+          <div className="text-lg font-black">
+            {boost}
           </div>
+        </button>
+      ))}
+    </div>
+  </div>
+</div>
                 
           <button
               onClick={handlePayment}
