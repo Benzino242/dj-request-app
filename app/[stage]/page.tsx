@@ -605,7 +605,7 @@ export default function StageRequestPage() {
 
   <div className="relative z-10">
     <p className="text-purple-200 text-xs font-black uppercase tracking-[0.2em] mb-2">
-    🔥 SKIP THE QUEUE
+    🔥 {t.skipTheQueue}
     </p>
 
     <p className="text-white text-base font-semibold leading-snug">
@@ -750,7 +750,7 @@ export default function StageRequestPage() {
 {duplicateRequest && (
   <div className="bg-yellow-950 border border-yellow-600 p-4 rounded-2xl mt-4">
     <div className="text-yellow-300 font-bold mb-4">
-      🔥 Song Already Requested
+    🔥 {t.songAlreadyRequested}
     </div>
 
     <div className="flex gap-4">
@@ -788,7 +788,7 @@ export default function StageRequestPage() {
     <div className="grid grid-cols-2 gap-3 mt-4">
       <div className="bg-black/20 rounded-xl p-3">
         <p className="text-yellow-300 text-xs font-semibold uppercase tracking-wide">
-        CURRENT POSITION
+        {t.currentPosition}
         </p>
 
         <p className="text-2xl font-black text-white">
@@ -803,7 +803,7 @@ export default function StageRequestPage() {
 
       <div className="bg-black/20 rounded-xl p-3">
         <p className="text-yellow-300 text-xs font-semibold uppercase tracking-wide">
-        CURRENT BOOST
+        {t.currentBoost}
         </p>
 
         <p className="text-2xl font-black text-white">
@@ -814,9 +814,9 @@ export default function StageRequestPage() {
     </div>
 
     <p className="text-zinc-300 text-sm mt-4">
-    THIS SONG IS ALREADY IN THE QUEUE.
+    {t.songAlreadyInQueue}
   <br />
-  ADD A BOOST TO HELP MOVE IT HIGHER.
+  {t.boostToMoveHigher}
 </p>
 
     <div className="grid grid-cols-4 gap-2 mt-4">
