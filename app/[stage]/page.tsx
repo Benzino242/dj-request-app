@@ -759,95 +759,101 @@ export default function StageRequestPage() {
 </div>
 
 {duplicateRequest && (
-  <div className="bg-yellow-950 border border-yellow-600 p-4 rounded-2xl mt-4">
-    <div className="text-yellow-300 font-bold mb-4">
-    🔥 {t.songAlreadyRequested}
-    </div>
+  <div className="relative overflow-hidden bg-gradient-to-br from-yellow-950 via-orange-950 to-black border border-yellow-500/70 p-4 rounded-3xl mt-4 shadow-[0_0_35px_rgba(234,179,8,0.18)]">
+    <div className="absolute -top-12 -right-12 w-32 h-32 bg-yellow-500/20 rounded-full blur-3xl" />
 
-    <div className="flex gap-4">
-      {duplicateRequest.artwork && (
-        <img
-          src={duplicateRequest.artwork}
-          alt={duplicateRequest.song}
-          className="w-16 h-16 rounded-xl object-cover shadow-lg"
-        />
-      )}
+    <div className="relative z-10">
+      <div className="text-yellow-300 font-black mb-4 tracking-wide">
+        🔥 {t.songAlreadyRequested}
+      </div>
 
-      <div className="flex-1 min-w-0">
-        <p className="text-white font-bold text-lg leading-tight">
-          {duplicateRequest.song}
-        </p>
-
-        {duplicateRequest.artist && (
-          <p className="text-zinc-300 text-sm mt-1">
-            {duplicateRequest.artist}
-          </p>
+      <div className="flex gap-4">
+        {duplicateRequest.artwork && (
+          <img
+            src={duplicateRequest.artwork}
+            alt={duplicateRequest.song}
+            className="w-16 h-16 rounded-xl object-cover shadow-lg border border-yellow-500/30"
+          />
         )}
 
-        {duplicateRequest.album && (
-          <p className="text-zinc-600 text-xs mt-1 truncate">
-            {duplicateRequest.album}
+        <div className="flex-1 min-w-0">
+          <p className="text-white font-black text-xl leading-tight truncate">
+            {duplicateRequest.song}
           </p>
-        )}
 
-<p className="text-zinc-400 text-sm mt-2">
-  {t.requestedBy} {duplicateRequest.name}
-</p>
-      </div>
-    </div>
+          {duplicateRequest.artist && (
+            <p className="text-zinc-300 text-sm mt-1 truncate">
+              {duplicateRequest.artist}
+            </p>
+          )}
 
-    <div className="grid grid-cols-2 gap-3 mt-4">
-      <div className="bg-black/20 rounded-xl p-3">
-        <p className="text-yellow-300 text-xs font-semibold uppercase tracking-wide">
-        {t.currentPosition}
-        </p>
+          {duplicateRequest.album && (
+            <p className="text-zinc-500 text-xs mt-1 truncate">
+              {duplicateRequest.album}
+            </p>
+          )}
 
-        <p className="text-2xl font-black text-white">
-          #
-          {requests
-            .filter((request) => request.status !== "finished")
-            .findIndex(
-              (request) => request.id === duplicateRequest.id
-            ) + 1}
-        </p>
+          <p className="text-zinc-400 text-sm mt-2">
+            {t.requestedBy} {duplicateRequest.name}
+          </p>
+        </div>
       </div>
 
-      <div className="bg-black/20 rounded-xl p-3">
-        <p className="text-yellow-300 text-xs font-semibold uppercase tracking-wide">
-        {t.currentBoost}
-        </p>
+      <div className="grid grid-cols-2 gap-3 mt-4">
+        <div className="bg-black/30 border border-yellow-500/10 rounded-2xl p-3">
+          <p className="text-yellow-300 text-xs font-black uppercase tracking-wide">
+            {t.currentPosition}
+          </p>
 
-        <p className="text-2xl font-black text-white">
-  {tipCurrency} {duplicateRequest.tip_amount}
-</p>
+          <p className="text-3xl font-black text-white mt-1">
+            #
+            {requests
+              .filter((request) => request.status !== "finished")
+              .findIndex((request) => request.id === duplicateRequest.id) + 1}
+          </p>
+        </div>
+
+        <div className="bg-black/30 border border-yellow-500/10 rounded-2xl p-3">
+          <p className="text-yellow-300 text-xs font-black uppercase tracking-wide">
+            {t.currentBoost}
+          </p>
+
+          <p className="text-3xl font-black text-white mt-1">
+            {tipCurrency}
+          </p>
+
+          <p className="text-3xl font-black text-white leading-none">
+            {duplicateRequest.tip_amount}
+          </p>
+        </div>
       </div>
-    </div>
 
-    <p className="text-zinc-300 text-sm mt-4">
-    {t.songAlreadyInQueue}
-  <br />
-  {t.boostToMoveHigher}
-</p>
+      <p className="text-zinc-300 text-sm mt-4 leading-relaxed">
+        {t.songAlreadyInQueue}
+        <br />
+        {t.boostToMoveHigher}
+      </p>
 
-    <div className="grid grid-cols-4 gap-2 mt-4">
-      {[10, 20, 50, 100].map((amount) => (
-        <button
-          key={amount}
-          type="button"
-          className="bg-purple-600 hover:bg-purple-700 rounded-xl py-3 font-bold flex flex-col items-center justify-center"
-          onClick={() => {
-            setTipAmount(amount);
-          }}
-        >
-         <span className="text-xs opacity-80">
-  +{tipCurrency}
-</span>
+      <div className="grid grid-cols-4 gap-2 mt-4">
+        {[10, 20, 50, 100].map((amount) => (
+          <button
+            key={amount}
+            type="button"
+            className="bg-purple-600 hover:bg-purple-700 rounded-xl py-3 font-bold flex flex-col items-center justify-center transition-all hover:scale-105"
+            onClick={() => {
+              setTipAmount(amount);
+            }}
+          >
+            <span className="text-xs opacity-80">
+              +{tipCurrency}
+            </span>
 
-          <span className="text-lg font-black">
-            {amount}
-          </span>
-        </button>
-      ))}
+            <span className="text-lg font-black">
+              {amount}
+            </span>
+          </button>
+        ))}
+      </div>
     </div>
   </div>
 )}
