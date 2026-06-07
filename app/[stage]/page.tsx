@@ -987,9 +987,9 @@ export default function StageRequestPage() {
   <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-transparent pointer-events-none" />
 
   <div className="relative z-10">
-    <p className="text-purple-200 text-xs font-black uppercase tracking-[0.2em] mb-2">
-      ⚡ {t.boostYourRequest}
-    </p>
+  <p className="text-purple-200 text-xs font-black uppercase tracking-[0.2em] mb-2">
+  {t.boostYourRequest}
+</p>
 
   
 
