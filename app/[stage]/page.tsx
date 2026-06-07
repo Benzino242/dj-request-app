@@ -814,19 +814,14 @@ export default function StageRequestPage() {
         </div>
 
         <div className="bg-black/30 border border-yellow-500/10 rounded-2xl p-3">
-          <p className="text-yellow-300 text-xs font-black uppercase tracking-wide">
-            {t.currentBoost}
-          </p>
+  <p className="text-yellow-300 text-xs font-black uppercase tracking-wide">
+    {t.currentBoost}
+  </p>
 
-          <p className="text-3xl font-black text-white mt-1">
-            {tipCurrency}
-          </p>
-
-          <p className="text-3xl font-black text-white leading-none">
-            {duplicateRequest.tip_amount}
-          </p>
-        </div>
-      </div>
+  <p className="text-4xl font-black text-white mt-1">
+    {tipCurrency} {duplicateRequest.tip_amount}
+  </p>
+</div>
 
       <p className="text-zinc-300 text-sm mt-4 leading-relaxed">
         {t.songAlreadyInQueue}

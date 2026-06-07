@@ -57,7 +57,7 @@ export const translations = {
     currencyComingSoon: "payments are coming soon. Please use GHS for now.",
     requestInstruction: "Request songs. Skip the queue. Tip the DJ.",
     skipTheQueue: "SKIP THE QUEUE",
-    songAlreadyRequested: "Song Already Requested",
+    songAlreadyRequested: "Song In Queue",
     currentPosition: "CURRENT POSITION",
     currentBoost: "CURRENT BOOST",
     songAlreadyInQueue: "This song is already in the queue.",
