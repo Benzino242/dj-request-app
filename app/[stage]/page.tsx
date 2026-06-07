@@ -763,9 +763,9 @@ export default function StageRequestPage() {
     <div className="absolute -top-12 -right-12 w-32 h-32 bg-yellow-500/20 rounded-full blur-3xl" />
 
     <div className="relative z-10">
-    <div className="text-yellow-300 font-black text-xl mb-4">
-  {t.songAlreadyRequested}
-</div>
+      <div className="text-yellow-300 font-black text-xl mb-4">
+        {t.songAlreadyRequested}
+      </div>
 
       <div className="flex gap-4">
         {duplicateRequest.artwork && (
@@ -787,15 +787,15 @@ export default function StageRequestPage() {
             </p>
           )}
 
-{duplicateRequest.album && (
-  <p className="text-zinc-500 text-xs mt-1 truncate">
-    Album: {duplicateRequest.album}
-  </p>
-)}
+          {duplicateRequest.album && (
+            <p className="text-zinc-500 text-xs mt-1 truncate">
+              Album: {duplicateRequest.album}
+            </p>
+          )}
 
-<p className="text-yellow-200 text-sm mt-2 font-semibold">
-  {t.requestedBy} {duplicateRequest.name}
-</p>
+          <p className="text-yellow-200 text-sm mt-2 font-semibold">
+            {t.requestedBy} {duplicateRequest.name}
+          </p>
         </div>
       </div>
 
@@ -809,19 +809,22 @@ export default function StageRequestPage() {
             #
             {requests
               .filter((request) => request.status !== "finished")
-              .findIndex((request) => request.id === duplicateRequest.id) + 1}
+              .findIndex(
+                (request) => request.id === duplicateRequest.id
+              ) + 1}
           </p>
         </div>
 
         <div className="bg-black/30 border border-yellow-500/10 rounded-2xl p-3">
-  <p className="text-yellow-300 text-xs font-black uppercase tracking-wide">
-    {t.currentBoost}
-  </p>
+          <p className="text-yellow-300 text-xs font-black uppercase tracking-wide">
+            {t.currentBoost}
+          </p>
 
-  <p className="text-4xl font-black text-white mt-1">
-    {tipCurrency} {duplicateRequest.tip_amount}
-  </p>
-</div>
+          <p className="text-4xl font-black text-white mt-1">
+            {tipCurrency} {duplicateRequest.tip_amount}
+          </p>
+        </div>
+      </div>
 
       <p className="text-zinc-300 text-sm mt-4 leading-relaxed">
         {t.songAlreadyInQueue}
