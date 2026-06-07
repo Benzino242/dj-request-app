@@ -779,9 +779,9 @@ export default function StageRequestPage() {
           </p>
         )}
 
-        <p className="text-zinc-400 text-sm mt-2">
-          Requested by {duplicateRequest.name}
-        </p>
+<p className="text-zinc-400 text-sm mt-2">
+  {t.requestedBy} {duplicateRequest.name}
+</p>
       </div>
     </div>
 
