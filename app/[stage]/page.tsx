@@ -807,9 +807,8 @@ export default function StageRequestPage() {
         </p>
 
         <p className="text-2xl font-black text-white">
-          {duplicateRequest.tip_currency}{" "}
-          {duplicateRequest.tip_amount}
-        </p>
+  {tipCurrency} {duplicateRequest.tip_amount}
+</p>
       </div>
     </div>
 
