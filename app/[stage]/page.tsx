@@ -991,9 +991,7 @@ export default function StageRequestPage() {
       ⚡ {t.boostYourRequest}
     </p>
 
-    <p className="text-zinc-400 text-sm mb-4">
-      {t.higherTips}
-    </p>
+  
 
     <div className="grid grid-cols-4 gap-2">
       {[10, 20, 50, 100].map((boost) => (
