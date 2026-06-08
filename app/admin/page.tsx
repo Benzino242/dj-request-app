@@ -580,7 +580,7 @@ setAuthLoading(false);
   <div className="flex items-center justify-between mb-6">
     <button
       onClick={handleLogout}
-      className="bg-zinc-800 hover:bg-zinc-700 px-4 py-2 rounded-xl text-sm font-semibold"
+      className="bg-zinc-800 hover:bg-zinc-700 px-5 py-3 rounded-xl text-sm font-semibold"
     >
       {t.logout}
     </button>
