@@ -632,52 +632,53 @@ setAuthLoading(false);
  </div>
 
  <div
- className={`border rounded-3xl p-6 mb-10 ${
- dj.is_live
- ? "bg-green-950 border-green-700"
- : "bg-zinc-900 border-zinc-800"
- }`}
- >
- <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
- <div>
- <h2
- className={`text-3xl font-bold ${
- dj.is_live ? "text-green-400" : "text-zinc-300"
- }`}
- >
- {dj.is_live ? t.liveNow : t.offline}
- </h2>
+  className={`border rounded-3xl p-4 md:p-6 mb-10 ${
+    dj.is_live
+      ? "bg-green-950 border-green-700"
+      : "bg-zinc-900 border-zinc-800"
+  }`}
+>
+  <div className="flex flex-col gap-4">
+    <div>
+      <h2
+        className={`text-2xl md:text-3xl font-bold ${
+          dj.is_live ? "text-green-400" : "text-zinc-300"
+        }`}
+      >
+        {dj.is_live ? t.liveNow : t.offline}
+      </h2>
 
- <p className="text-zinc-400 mt-2">
- {dj.is_live
- ? t.liveGuestsMessage
- : t.offlineGuestsMessage}
- </p>
- </div>
+      <p className="text-zinc-400 mt-2 text-sm md:text-base">
+        {dj.is_live ? t.liveGuestsMessage : t.offlineGuestsMessage}
+      </p>
+    </div>
 
- <button
- onClick={toggleLiveStatus}
- className={`px-6 py-4 rounded-xl font-bold text-lg ${
- dj.is_live
- ? "bg-red-600 hover:bg-red-700"
- : "bg-green-600 hover:bg-green-700"
- }`}
- >
- {dj.is_live ? t.goOffline : t.goLive}
- </button>
- <button
- onClick={endDJSet}
- className="bg-red-600 hover:bg-red-700 px-6 py-4 rounded-xl font-bold text-lg ml-4"
- >
- {t.endDjSet}
- </button>
- </div>
- </div>
+    <div className="grid grid-cols-2 gap-3">
+      <button
+        onClick={toggleLiveStatus}
+        className={`w-full px-3 md:px-6 py-4 rounded-xl font-bold text-sm md:text-lg whitespace-nowrap ${
+          dj.is_live
+            ? "bg-red-600 hover:bg-red-700"
+            : "bg-green-600 hover:bg-green-700"
+        }`}
+      >
+        {dj.is_live ? t.goOffline : t.goLive}
+      </button>
+
+      <button
+        onClick={endDJSet}
+        className="w-full bg-red-600 hover:bg-red-700 px-3 md:px-6 py-4 rounded-xl font-bold text-sm md:text-lg whitespace-nowrap"
+      >
+        {t.endDjSet}
+      </button>
+    </div>
+  </div>
+</div>
 
  <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
- <h2 className="text-4xl font-bold text-purple-400 mb-8">
- {t.djProfileSettings}
- </h2>
+ <h2 className="text-3xl md:text-5xl font-black text-purple-400 mb-8 whitespace-nowrap">
+  {t.djProfileSettings}
+</h2>
 
  <div className="space-y-6">
  <div className="flex flex-col items-center">
