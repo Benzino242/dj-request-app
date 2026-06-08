@@ -1079,10 +1079,10 @@ setAuthLoading(false);
  </div>
 
  <div className="mb-12">
- <div className="grid md:grid-cols-2 gap-8">
- </div>
+  <QRCodeBox stageName={dj.stage_name} t={t} />
+</div>
 
- <div className="grid md:grid-cols-2 gap-8">
+<div className="grid md:grid-cols-2 gap-8">
  <RequestColumn
  title={`${t.pendingRequests} (${grouped.pending.length})`}
  titleColor="text-yellow-400"
