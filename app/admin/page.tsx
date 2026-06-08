@@ -1219,27 +1219,27 @@ setAuthLoading(false);
  )}
  />
 
- <RequestColumn
- title={`${t.playedHistory} (${grouped.finished.length})`}
- titleColor="text-blue-400"
- requests={grouped.finished}
- borderColor="border-blue-700"
- actionLoadingId={actionLoadingId}
- t={t}
- buttons={(request) => (
- <button
- disabled={actionLoadingId === request.id}
- onClick={() => deleteRequest(request.id)}
- className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:bg-zinc-800"
- >
- {t.delete}
- </button>
- )}
+<RequestColumn
+   title={`${t.playedHistory} (${grouped.finished.length})`}
+   titleColor="text-blue-400"
+   requests={grouped.finished}
+   borderColor="border-blue-700"
+   actionLoadingId={actionLoadingId}
+   t={t}
+   buttons={(request) => (
+     <button
+       disabled={actionLoadingId === request.id}
+       onClick={() => deleteRequest(request.id)}
+       className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:bg-zinc-800"
+     >
+       {t.delete}
+     </button>
+   )}
  />
- </div>
- </div>
- </main>
- );
+
+</div>
+</main>
+);
 }
 
 function StatCard({
