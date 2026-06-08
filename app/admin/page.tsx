@@ -614,18 +614,23 @@ setAuthLoading(false);
 <option value="uk">🇺🇦 Українська</option>
  </select>
  </div>
- <div className="max-w-7xl mx-auto">
-  <div className="text-center mb-10">
-    <h1 className="text-4xl md:text-6xl font-black text-purple-500 leading-tight">
+ <div className="text-center md:text-left mb-10">
+  <h1 className="text-4xl md:text-6xl font-black text-purple-500 leading-tight">
+    <span className="md:hidden">
       {dj.stage_name?.toUpperCase()}
       <br />
       Dashboard
-    </h1>
+    </span>
 
-    <p className="text-zinc-400 mt-3 text-lg">
-      {t.adminSubtitle}
-    </p>
-  </div>
+    <span className="hidden md:inline">
+      {dj.stage_name?.toUpperCase()} Dashboard
+    </span>
+  </h1>
+
+  <p className="text-zinc-400 mt-3 text-lg">
+    {t.adminSubtitle}
+  </p>
+</div>
 
   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
  <StatCard title={t.totalRequests} value={requests.length} />
