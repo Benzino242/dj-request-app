@@ -610,18 +610,24 @@ setAuthLoading(false);
  <div className="max-w-7xl mx-auto">
  <div className="flex flex-col md:flex-row justify-between gap-4 mb-10">
  <div>
- <h1 className="text-3xl md:text-5xl font-bold text-purple-500 mb-2 break-words">
- {dj.stage_name.toUpperCase()} Dashboard
- </h1>
- <p className="text-zinc-400">{t.adminSubtitle}</p>
- </div>
+ <div className="text-center">
+  <h1 className="text-4xl md:text-6xl font-black text-purple-500 leading-tight">
+    {dj.stage_name?.toUpperCase()}
+    <br />
+    Dashboard
+  </h1>
 
- <button
- onClick={handleLogout}
- className="bg-zinc-800 hover:bg-zinc-700 px-5 py-3 rounded-xl"
- >
- {t.logout}
- </button>
+  <p className="text-zinc-400 mt-3 text-lg">
+    {t.adminSubtitle}
+  </p>
+</div>
+
+<button
+  onClick={handleLogout}
+  className="bg-zinc-800 hover:bg-zinc-700 px-5 py-3 rounded-xl"
+>
+  {t.logout}
+</button>
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
@@ -676,7 +682,7 @@ setAuthLoading(false);
 </div>
 
  <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
- <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-purple-400 mb-8 whitespace-nowrap">
+ <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-purple-400 mb-8 text-center">
   {t.djProfileSettings}
 </h2>
 
