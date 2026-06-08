@@ -682,6 +682,11 @@ setAuthLoading(false);
   </div>
 </div>
 
+<div className="mb-12">
+  <QRCodeBox stageName={dj.stage_name} t={t} />
+</div>
+
+
  <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
  <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-purple-400 mb-8 text-center">
   {t.djProfileSettings}
@@ -1086,9 +1091,7 @@ setAuthLoading(false);
  </div>
  </div>
 
- <div className="mb-12">
-  <QRCodeBox stageName={dj.stage_name} t={t} />
-</div>
+ 
 
 <div className="grid md:grid-cols-2 gap-8">
  <RequestColumn
