@@ -1239,6 +1239,7 @@ setAuthLoading(false);
  />
 
 </div>
+</div>
 </main>
 );
 }
