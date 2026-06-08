@@ -576,8 +576,8 @@ setAuthLoading(false);
  }
 
  return (
- <main className="min-h-screen bg-black text-white p-6">
- <div className="flex justify-end mb-6">
+  <main className="min-h-screen bg-black text-white p-3 md:p-6">
+ <div className="flex justify-center md:justify-end mb-6">
  <select
  value={language}
  onChange={(e) => setLanguage(e.target.value as Language)}
@@ -610,7 +610,7 @@ setAuthLoading(false);
  <div className="max-w-7xl mx-auto">
  <div className="flex flex-col md:flex-row justify-between gap-4 mb-10">
  <div>
- <h1 className="text-5xl font-bold text-purple-500 mb-2">
+ <h1 className="text-3xl md:text-5xl font-bold text-purple-500 mb-2 break-words">
  {dj.stage_name.toUpperCase()} Dashboard
  </h1>
  <p className="text-zinc-400">{t.adminSubtitle}</p>
@@ -624,7 +624,7 @@ setAuthLoading(false);
  </button>
  </div>
 
- <div className="grid md:grid-cols-4 gap-4 mb-10">
+ <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
  <StatCard title={t.totalRequests} value={requests.length} />
  <StatCard title={t.vipRequests} value={vipRequests} color="text-purple-400" />
  <StatCard title={t.pendingQueue} value={grouped.pending.length} color="text-yellow-400" />
@@ -935,7 +935,7 @@ setAuthLoading(false);
  {t.earningsOverview}
  </h2>
 
- <div className="grid md:grid-cols-4 gap-4">
+ <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  <StatCard
  title={t.grossRevenue}
  value={`${currency} ${grossRevenue.toFixed(2)}`}
@@ -1079,7 +1079,7 @@ setAuthLoading(false);
  </div>
 
  <div className="mb-12">
- <QRCodeBox stageName={dj.stage_name} t={t} />
+ <div className="grid md:grid-cols-2 gap-8">
  </div>
 
  <div className="grid md:grid-cols-2 gap-8">
