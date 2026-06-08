@@ -1331,9 +1331,9 @@ function RequestColumn({
  </span>
  )}
 
- <div className="bg-green-700 px-4 py-2 rounded-xl font-bold">
- {request.tip_currency} {request.tip_amount}
- </div>
+<div className="bg-green-700 px-4 py-2 rounded-xl font-bold whitespace-nowrap text-sm md:text-base">
+  {request.tip_currency} {request.tip_amount}
+</div>
  </div>
  </div>
 
