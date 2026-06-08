@@ -676,7 +676,7 @@ setAuthLoading(false);
 </div>
 
  <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
- <h2 className="text-3xl md:text-5xl font-black text-purple-400 mb-8 whitespace-nowrap">
+ <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-purple-400 mb-8 whitespace-nowrap">
   {t.djProfileSettings}
 </h2>
 
