@@ -577,12 +577,19 @@ setAuthLoading(false);
 
  return (
   <main className="min-h-screen bg-black text-white p-3 md:p-6">
- <div className="flex justify-center md:justify-end mb-6">
- <select
- value={language}
- onChange={(e) => setLanguage(e.target.value as Language)}
- className="bg-black border border-zinc-700 rounded-xl px-4 py-2 text-sm"
- >
+  <div className="flex items-center justify-between mb-6">
+    <button
+      onClick={handleLogout}
+      className="bg-zinc-800 hover:bg-zinc-700 px-4 py-2 rounded-xl text-sm font-semibold"
+    >
+      {t.logout}
+    </button>
+
+    <select
+      value={language}
+      onChange={(e) => setLanguage(e.target.value as Language)}
+      className="bg-black border border-zinc-700 rounded-xl px-4 py-2 text-sm"
+    >
  <option value="en">🇺🇸 English</option>
 <option value="zh">🇨🇳 中文</option>
 <option value="ja">🇯🇵 日本語</option>
@@ -608,30 +615,19 @@ setAuthLoading(false);
  </select>
  </div>
  <div className="max-w-7xl mx-auto">
- <div className="flex flex-col md:flex-row justify-between gap-4 mb-10">
- <div>
- <div className="text-center">
-  <h1 className="text-4xl md:text-6xl font-black text-purple-500 leading-tight">
-    {dj.stage_name?.toUpperCase()}
-    <br />
-    Dashboard
-  </h1>
+  <div className="text-center mb-10">
+    <h1 className="text-4xl md:text-6xl font-black text-purple-500 leading-tight">
+      {dj.stage_name?.toUpperCase()}
+      <br />
+      Dashboard
+    </h1>
 
-  <p className="text-zinc-400 mt-3 text-lg">
-    {t.adminSubtitle}
-  </p>
-</div>
+    <p className="text-zinc-400 mt-3 text-lg">
+      {t.adminSubtitle}
+    </p>
+  </div>
 
-<button
-  onClick={handleLogout}
-  className="bg-zinc-800 hover:bg-zinc-700 px-5 py-3 rounded-xl"
->
-  {t.logout}
-</button>
- </div>
- </div>
-
- <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
  <StatCard title={t.totalRequests} value={requests.length} />
  <StatCard title={t.vipRequests} value={vipRequests} color="text-purple-400" />
  <StatCard title={t.pendingQueue} value={grouped.pending.length} color="text-yellow-400" />
