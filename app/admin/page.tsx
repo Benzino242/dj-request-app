@@ -1211,7 +1211,7 @@ setAuthLoading(false);
  <div className="space-y-4">
  {withdrawals.length === 0 && (
  <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
- <p className="text-zinc-500">No withdrawal requests yet.</p>
+ <p className="text-zinc-500">{t.noWithdrawalRequestsYet}</p>
  </div>
  )}
 
