@@ -1083,13 +1083,13 @@ setAuthLoading(false);
         : "text-zinc-300"
     }`}
   >
-    {verificationStatus === "verified"
-      ? `🟢 ${t.verified}`
-      : verificationStatus === "pending"
-      ? `🟡 ${t.pendingVerification}`
-      : verificationStatus === "rejected"
-      ? `🔴 ${t.rejectedVerification}`
-      : `⚪ ${t.notStarted}`
+   {verificationStatus === "verified"
+  ? "🟢 " + t.verified
+  : verificationStatus === "pending"
+  ? "🟡 " + t.pendingVerification
+  : verificationStatus === "rejected"
+  ? "🔴 " + t.rejectedVerification
+  : "⚪ " + t.notStarted}
   </p>
 
   <button
