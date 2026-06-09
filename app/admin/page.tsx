@@ -687,6 +687,157 @@ setAuthLoading(false);
   <QRCodeBox stageName={dj.stage_name} t={t} />
 </div>
 
+<div className="grid md:grid-cols-2 gap-8 mb-10">
+ <RequestColumn
+ title={`${t.pendingRequests} (${grouped.pending.length})`}
+ titleColor="text-yellow-400"
+ requests={grouped.pending}
+ borderColor="border-zinc-800"
+ actionLoadingId={actionLoadingId}
+ t={t}
+ buttons={(request) => (
+ <>
+ <button
+ disabled={actionLoadingId === request.id}
+ onClick={() => updateStatus(request.id, "accepted")}
+ className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl disabled:bg-zinc-700"
+ >
+ {t.accept}
+ </button>
+
+ <button
+ disabled={actionLoadingId === request.id}
+ onClick={() => updateStatus(request.id, "rejected")}
+ className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl disabled:bg-zinc-700"
+ >
+ {t.reject}
+ </button>
+ </>
+ )}
+ />
+
+ <RequestColumn
+ title={`${t.acceptedQueue} (${grouped.accepted.length})`}
+ titleColor="text-green-400"
+ requests={grouped.accepted}
+ borderColor="border-green-700"
+ showQueueNumber
+ actionLoadingId={actionLoadingId}
+ t={t}
+ buttons={(request) => (
+ <>
+ <button
+ disabled={actionLoadingId === request.id}
+ onClick={() => moveRequest(request.id, "up")}
+ className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl"
+ >
+  {t.up}
+ </button>
+ 
+ <button
+ disabled={actionLoadingId === request.id}
+ onClick={() => moveRequest(request.id, "down")}
+ className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl"
+ >
+  {t.down}
+ </button>
+ 
+ <button
+ disabled={actionLoadingId === request.id}
+ onClick={() => updateStatus(request.id, "played")}
+ className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl disabled:bg-zinc-700"
+ >
+ {t.markPlayed}
+ </button>
+ 
+ <button
+ disabled={actionLoadingId === request.id}
+ onClick={() => deleteRequest(request.id)}
+ className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:bg-zinc-800"
+ >
+ {t.delete}
+ </button>
+ </>
+ )}
+ />
+
+ <RequestColumn
+ title={`${t.rejectedRequests} (${grouped.rejected.length})`}
+ titleColor="text-red-400"
+ requests={grouped.rejected}
+ borderColor="border-red-700"
+ actionLoadingId={actionLoadingId}
+ t={t}
+ buttons={(request) => (
+ <>
+ <button
+ disabled={actionLoadingId === request.id}
+ onClick={() => updateStatus(request.id, "pending")}
+ className="bg-yellow-500 text-black hover:bg-yellow-600 px-4 py-2 rounded-xl disabled:bg-zinc-700 disabled:text-white"
+ >
+ {t.restore}
+ </button>
+
+ <button
+ disabled={actionLoadingId === request.id}
+ onClick={() => deleteRequest(request.id)}
+ className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:bg-zinc-800"
+ >
+ {t.delete}
+ </button>
+ </>
+ )}
+ />
+
+ <RequestColumn
+ title={`${t.nowPlayingAdmin} (${grouped.played.length})`}
+ titleColor="text-purple-400"
+ requests={grouped.played}
+ borderColor="border-purple-700"
+ actionLoadingId={actionLoadingId}
+ t={t}
+ buttons={(request) => (
+ <>
+ <button
+ disabled={actionLoadingId === request.id}
+ onClick={() => updateStatus(request.id, "finished")}
+ className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-xl disabled:bg-zinc-800"
+ >
+ {t.clearNowPlaying}
+ </button>
+
+ <button
+ disabled={actionLoadingId === request.id}
+ onClick={() => deleteRequest(request.id)}
+ className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:bg-zinc-800"
+ >
+ {t.delete}
+ </button>
+ </>
+ )}
+ />
+
+<RequestColumn
+   title={`${t.playedHistory} (${grouped.finished.length})`}
+   titleColor="text-blue-400"
+   requests={grouped.finished}
+   borderColor="border-blue-700"
+   actionLoadingId={actionLoadingId}
+   t={t}
+   buttons={(request) => (
+     <button
+       disabled={actionLoadingId === request.id}
+       onClick={() => deleteRequest(request.id)}
+       className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:bg-zinc-800"
+     >
+       {t.delete}
+     </button>
+   )}
+ />
+
+</div>
+
+
 
  <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
  <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-purple-400 mb-8 text-center">
@@ -1094,155 +1245,7 @@ setAuthLoading(false);
 
  
 
-<div className="grid md:grid-cols-2 gap-8">
- <RequestColumn
- title={`${t.pendingRequests} (${grouped.pending.length})`}
- titleColor="text-yellow-400"
- requests={grouped.pending}
- borderColor="border-zinc-800"
- actionLoadingId={actionLoadingId}
- t={t}
- buttons={(request) => (
- <>
- <button
- disabled={actionLoadingId === request.id}
- onClick={() => updateStatus(request.id, "accepted")}
- className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl disabled:bg-zinc-700"
- >
- {t.accept}
- </button>
 
- <button
- disabled={actionLoadingId === request.id}
- onClick={() => updateStatus(request.id, "rejected")}
- className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl disabled:bg-zinc-700"
- >
- {t.reject}
- </button>
- </>
- )}
- />
-
- <RequestColumn
- title={`${t.acceptedQueue} (${grouped.accepted.length})`}
- titleColor="text-green-400"
- requests={grouped.accepted}
- borderColor="border-green-700"
- showQueueNumber
- actionLoadingId={actionLoadingId}
- t={t}
- buttons={(request) => (
- <>
- <button
- disabled={actionLoadingId === request.id}
- onClick={() => moveRequest(request.id, "up")}
- className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl"
- >
-  {t.up}
- </button>
- 
- <button
- disabled={actionLoadingId === request.id}
- onClick={() => moveRequest(request.id, "down")}
- className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl"
- >
-  {t.down}
- </button>
- 
- <button
- disabled={actionLoadingId === request.id}
- onClick={() => updateStatus(request.id, "played")}
- className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl disabled:bg-zinc-700"
- >
- {t.markPlayed}
- </button>
- 
- <button
- disabled={actionLoadingId === request.id}
- onClick={() => deleteRequest(request.id)}
- className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:bg-zinc-800"
- >
- {t.delete}
- </button>
- </>
- )}
- />
-
- <RequestColumn
- title={`${t.rejectedRequests} (${grouped.rejected.length})`}
- titleColor="text-red-400"
- requests={grouped.rejected}
- borderColor="border-red-700"
- actionLoadingId={actionLoadingId}
- t={t}
- buttons={(request) => (
- <>
- <button
- disabled={actionLoadingId === request.id}
- onClick={() => updateStatus(request.id, "pending")}
- className="bg-yellow-500 text-black hover:bg-yellow-600 px-4 py-2 rounded-xl disabled:bg-zinc-700 disabled:text-white"
- >
- {t.restore}
- </button>
-
- <button
- disabled={actionLoadingId === request.id}
- onClick={() => deleteRequest(request.id)}
- className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:bg-zinc-800"
- >
- {t.delete}
- </button>
- </>
- )}
- />
-
- <RequestColumn
- title={`${t.nowPlayingAdmin} (${grouped.played.length})`}
- titleColor="text-purple-400"
- requests={grouped.played}
- borderColor="border-purple-700"
- actionLoadingId={actionLoadingId}
- t={t}
- buttons={(request) => (
- <>
- <button
- disabled={actionLoadingId === request.id}
- onClick={() => updateStatus(request.id, "finished")}
- className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-xl disabled:bg-zinc-800"
- >
- {t.clearNowPlaying}
- </button>
-
- <button
- disabled={actionLoadingId === request.id}
- onClick={() => deleteRequest(request.id)}
- className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:bg-zinc-800"
- >
- {t.delete}
- </button>
- </>
- )}
- />
-
-<RequestColumn
-   title={`${t.playedHistory} (${grouped.finished.length})`}
-   titleColor="text-blue-400"
-   requests={grouped.finished}
-   borderColor="border-blue-700"
-   actionLoadingId={actionLoadingId}
-   t={t}
-   buttons={(request) => (
-     <button
-       disabled={actionLoadingId === request.id}
-       onClick={() => deleteRequest(request.id)}
-       className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:bg-zinc-800"
-     >
-       {t.delete}
-     </button>
-   )}
- />
-
-</div>
 </main>
 );
 }
