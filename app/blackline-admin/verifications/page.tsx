@@ -107,21 +107,27 @@ export default function VerificationAdminPage() {
                 </p>
 
                 <p className="mt-3 font-bold">
-                  Status:{" "}
-                  <span
-                    className={
-                      dj.verification_status === "verified"
-                        ? "text-green-400"
-                        : dj.verification_status === "pending"
-                        ? "text-yellow-400"
-                        : dj.verification_status === "rejected"
-                        ? "text-red-400"
-                        : "text-zinc-400"
-                    }
-                  >
-                    {dj.verification_status || "not_started"}
-                  </span>
-                </p>
+  Status:{" "}
+  <span
+    className={
+      dj.verification_status === "verified"
+        ? "text-green-400"
+        : dj.verification_status === "pending"
+        ? "text-yellow-400"
+        : dj.verification_status === "rejected"
+        ? "text-red-400"
+        : "text-zinc-400"
+    }
+  >
+    {dj.verification_status === "verified"
+      ? "🟢 Verified"
+      : dj.verification_status === "pending"
+      ? "🟡 Pending Verification"
+      : dj.verification_status === "rejected"
+      ? "🔴 Rejected"
+      : "⚪ Not Started"}
+  </span>
+</p>
               </div>
 
               <div className="flex flex-wrap gap-3">
