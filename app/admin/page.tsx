@@ -1084,12 +1084,12 @@ setAuthLoading(false);
     }`}
   >
    {verificationStatus === "verified"
-  ? "🟢 " + t.verified
+  ? "🟢 Verified"
   : verificationStatus === "pending"
-  ? "🟡 " + t.pendingVerification
+  ? "🟡 Pending Verification"
   : verificationStatus === "rejected"
-  ? "🔴 " + t.rejectedVerification
-  : "⚪ " + t.notStarted}
+  ? "🔴 Rejected"
+  : "⚪ Not Started"}
   </p>
 
   <button
@@ -1097,7 +1097,7 @@ setAuthLoading(false);
     onClick={() => setVerificationStatus("pending")}
     className="mt-3 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700"
   >
-    {t.submitVerification}
+    Submit Verification
   </button>
 </div>
 
