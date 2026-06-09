@@ -1070,7 +1070,7 @@ setAuthLoading(false);
 </div>
 
 <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-4">
-<p className="text-zinc-400 text-sm">{t.verificationStatus}</p>
+<p className="text-zinc-400 text-sm">Verification Status</p>
 
   <p
     className={`font-bold mt-1 ${
