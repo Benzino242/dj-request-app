@@ -139,6 +139,13 @@ export const translations = {
 
     connectAccount: "Connect Account",
 
+    verificationStatus: "Verification Status",
+verified: "Verified",
+pendingVerification: "Pending Verification",
+rejectedVerification: "Rejected",
+notStarted: "Not Started",
+submitVerification: "Submit Verification",
+
     bankTransfer: "Bank Transfer",
 
     paypal: "PayPal",
