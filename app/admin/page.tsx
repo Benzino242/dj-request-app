@@ -1092,6 +1092,7 @@ setAuthLoading(false);
   : "⚪ Not Started"}
   </p>
 
+  {verificationStatus === "not_started" && (
   <button
     type="button"
     onClick={() => setVerificationStatus("pending")}
@@ -1099,6 +1100,7 @@ setAuthLoading(false);
   >
     Submit Verification
   </button>
+)}
 </div>
 
  <input
