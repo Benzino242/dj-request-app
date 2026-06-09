@@ -65,6 +65,7 @@ type DJ = {
     payout_email?: string | null;
     payout_method?: string | null;
     payout_status?: string | null;
+    verification_status?: string | null;
   };
 
 export default function AdminPage() {
@@ -83,6 +84,7 @@ const [preferredCurrency, setPreferredCurrency] = useState("GHS");
 const [payoutEmail, setPayoutEmail] = useState("");
 const [payoutMethod, setPayoutMethod] = useState("Mobile Money");
 const [payoutStatus, setPayoutStatus] = useState("Not Connected");
+const [verificationStatus, setVerificationStatus] = useState("not_started");
 
 const [savingProfile, setSavingProfile] = useState(false);
 const [profileMessage, setProfileMessage] = useState("");
@@ -188,6 +190,7 @@ setPreferredCurrency(data.preferred_currency || "GHS");
 setPayoutEmail(data.payout_email || "");
 setPayoutMethod(data.payout_method || "Mobile Money");
 setPayoutStatus(data.payout_status || "Not Connected");
+setVerificationStatus(data.verification_status || "not_started");
 
 setAuthLoading(false);
  }
@@ -288,6 +291,7 @@ setAuthLoading(false);
   payout_email: payoutEmail,
   payout_method: payoutMethod,
   payout_status: payoutStatus,
+  verification_status: verificationStatus,
  })
  .eq("id", dj.id)
  .select()
