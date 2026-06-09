@@ -1092,6 +1092,34 @@ setAuthLoading(false);
   : "⚪ Not Started"}
   </p>
 
+  {verificationStatus === "pending" && (
+  <p className="mt-3 text-sm text-zinc-400">
+    Your verification request is under review.
+  </p>
+)}
+
+{verificationStatus === "verified" && (
+  <p className="mt-3 text-sm text-green-400">
+    Your account has been verified and is eligible for payouts.
+  </p>
+)}
+
+{verificationStatus === "rejected" && (
+  <>
+    <p className="mt-3 text-sm text-red-400">
+      Your verification was rejected. Please review your details and resubmit.
+    </p>
+
+    <button
+      type="button"
+      onClick={() => setVerificationStatus("pending")}
+      className="mt-3 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700"
+    >
+      Resubmit Verification
+    </button>
+  </>
+)}
+
   {verificationStatus === "not_started" && (
   <button
     type="button"
