@@ -458,7 +458,7 @@ setAuthLoading(false);
     alert("Verification required before withdrawals can be requested.");
     return;
   }
-  
+
  const amount = Number(withdrawAmount);
 
  if (!amount || amount <= 0) {
@@ -1280,6 +1280,7 @@ setAuthLoading(false);
       ? "Verification Required"
       : t.requestPayout}
   </button>
+</div>
 </div>
 
  <div className="grid md:grid-cols-3 gap-4 mb-6">
