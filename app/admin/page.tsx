@@ -1266,19 +1266,20 @@ setAuthLoading(false);
     </div>
   )}
 
-  <button
-    onClick={requestWithdrawal}
-    disabled={
-      withdrawLoading ||
-      verificationStatus !== "verified"
-    }
-    className="bg-cyan-600 hover:bg-cyan-700 px-8 py-4 rounded-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
-  >
-   {withdrawLoading
-  ? "Submitting..."
-  : verificationStatus !== "verified"
-  ? t.verificationRequired
-  : t.requestPayout}
+<button
+  onClick={requestWithdrawal}
+  disabled={
+    withdrawLoading ||
+    verificationStatus !== "verified"
+  }
+  className="bg-cyan-600 hover:bg-cyan-700 px-8 py-4 rounded-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  {withdrawLoading
+    ? "Submitting..."
+    : verificationStatus !== "verified"
+    ? t.verificationRequired
+    : t.requestPayout}
+</button>
 </div>
 </div>
 
