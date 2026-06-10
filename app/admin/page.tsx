@@ -189,7 +189,7 @@ setCountry(data.country || "");
 setPreferredCurrency(data.preferred_currency || "GHS");
 setPayoutEmail(data.payout_email || "");
 setPayoutMethod(data.payout_method || "Mobile Money");
-setPayoutStatus(data.payout_status || "Not Connected");
+setPayoutStatus(data.payout_status || "not_connected");
 setVerificationStatus(data.verification_status || "not_started");
 
 setAuthLoading(false);
@@ -1055,23 +1055,27 @@ setAuthLoading(false);
   <p className="text-zinc-400 text-sm">{t.payoutStatus}</p>
 
   <p
-    className={`font-bold mt-1 ${
-      payoutStatus === "Active"
-        ? "text-green-400"
-        : payoutStatus === "Pending Verification"
-        ? "text-yellow-400"
-        : "text-red-400"
-    }`}
-  >
-    {payoutStatus}
-  </p>
+  className={`font-bold mt-1 ${
+    payoutStatus === "Active"
+      ? "text-green-400"
+      : payoutStatus === "Pending Verification"
+      ? "text-yellow-400"
+      : "text-red-400"
+  }`}
+>
+  {payoutStatus === "not_connected" ||
+  payoutStatus === "Not Connected" ||
+  !payoutStatus
+    ? t.notConnected
+    : payoutStatus}
+</p>
 
-  <button
-    type="button"
-    className="mt-3 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700"
-  >
-    {t.connectAccount}
-  </button>
+<button
+  type="button"
+  className="mt-3 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700"
+>
+  {t.connectAccount}
+</button>
 </div>
 
 <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-4">
