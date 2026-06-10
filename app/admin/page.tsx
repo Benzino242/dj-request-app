@@ -1075,12 +1075,12 @@ setAuthLoading(false);
 </div>
 
 <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-4">
-<p className="text-zinc-400 text-sm">
-  {t.verificationStatus}
-</p>
+  <p className="text-zinc-400 text-sm">
+    {t.verificationStatus}
+  </p>
 
   <p
-    className={`font-bold mt-1 ${
+    className={`font-bold mt-3 ${
       verificationStatus === "verified"
         ? "text-green-400"
         : verificationStatus === "pending"
@@ -1090,53 +1090,52 @@ setAuthLoading(false);
         : "text-zinc-300"
     }`}
   >
- <p className="mt-3 font-bold">
-  {verificationStatus === "verified"
-    ? `🟢 ${t.verified}`
-    : verificationStatus === "pending"
-    ? `🟡 ${t.pendingVerification}`
-    : verificationStatus === "rejected"
-    ? `🔴 ${t.rejectedVerification}`
-    : `⚪ ${t.notStarted}`}
-</p>
-
-{verificationStatus === "pending" && (
-  <p className="mt-3 text-sm text-zinc-400">
-    {t.pendingVerificationMessage}
+    {verificationStatus === "verified"
+      ? `🟢 ${t.verified}`
+      : verificationStatus === "pending"
+      ? `🟡 ${t.pendingVerification}`
+      : verificationStatus === "rejected"
+      ? `🔴 ${t.rejectedVerification}`
+      : `⚪ ${t.notStarted}`}
   </p>
-)}
 
-{verificationStatus === "verified" && (
-  <p className="mt-3 text-sm text-green-400">
-    {t.verifiedMessage}
-  </p>
-)}
-
-{verificationStatus === "rejected" && (
-  <div>
-    <p className="mt-3 text-sm text-red-400">
-      {t.rejectedVerificationMessage}
+  {verificationStatus === "pending" && (
+    <p className="mt-3 text-sm text-zinc-400">
+      {t.pendingVerificationMessage}
     </p>
+  )}
 
+  {verificationStatus === "verified" && (
+    <p className="mt-3 text-sm text-green-400">
+      {t.verifiedMessage}
+    </p>
+  )}
+
+  {verificationStatus === "rejected" && (
+    <div>
+      <p className="mt-3 text-sm text-red-400">
+        {t.rejectedVerificationMessage}
+      </p>
+
+      <button
+        type="button"
+        onClick={() => setVerificationStatus("pending")}
+        className="mt-3 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700"
+      >
+        {t.resubmitVerification}
+      </button>
+    </div>
+  )}
+
+  {verificationStatus === "not_started" && (
     <button
       type="button"
       onClick={() => setVerificationStatus("pending")}
-      className="mt-3 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700"
+      className="mt-3 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700"
     >
-      {t.resubmitVerification}
+      {t.submitVerification}
     </button>
-  </div>
-)}
-
-{verificationStatus === "not_started" && (
-  <button
-    type="button"
-    onClick={() => setVerificationStatus("pending")}
-    className="mt-3 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700"
-  >
-    {t.submitVerification}
-  </button>
-)}
+  )}
 </div>
 
 <input
