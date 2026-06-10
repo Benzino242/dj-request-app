@@ -13,6 +13,7 @@ type DJ = {
   payout_method?: string | null;
   payout_status?: string | null;
   verification_status?: string | null;
+  profile_image?: string | null;
 };
 
 export default function VerificationAdminPage() {
@@ -137,44 +138,62 @@ export default function VerificationAdminPage() {
             className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
-              <div>
-                <h2 className="text-2xl font-bold">{dj.stage_name}</h2>
+            <div className="flex items-start gap-4">
+  {dj.profile_image ? (
+    <img
+      src={dj.profile_image}
+      alt={dj.stage_name}
+      className="w-20 h-20 rounded-full object-cover border-2 border-purple-600"
+    />
+  ) : (
+    <div className="w-20 h-20 rounded-full bg-zinc-800 border-2 border-zinc-700 flex items-center justify-center text-zinc-500">
+      No Image
+    </div>
+  )}
 
-                <p className="text-zinc-400 mt-1">{dj.email || "No email"}</p>
+  <div>
+    <h2 className="text-2xl font-bold">
+      {dj.stage_name}
+    </h2>
 
-                <p className="text-sm text-zinc-500 mt-2">
-                  {dj.country || "No country"} •{" "}
-                  {dj.preferred_currency || "No currency"} •{" "}
-                  {dj.payout_method || "No payout method"}
-                </p>
+    <p className="text-zinc-400 mt-1">
+      {dj.email || "No email"}
+    </p>
 
-                <p className="text-sm text-zinc-500 mt-1">
-                  Payout email: {dj.payout_email || "Not provided"}
-                </p>
+    <p className="text-sm text-zinc-500 mt-2">
+      {dj.country || "No country"} •{" "}
+      {dj.preferred_currency || "No currency"} •{" "}
+      {dj.payout_method || "No payout method"}
+    </p>
 
-                <p className="mt-3 font-bold">
-                  Status:{" "}
-                  <span
-                    className={
-                      dj.verification_status === "verified"
-                        ? "text-green-400"
-                        : dj.verification_status === "pending"
-                        ? "text-yellow-400"
-                        : dj.verification_status === "rejected"
-                        ? "text-red-400"
-                        : "text-zinc-400"
-                    }
-                  >
-                    {dj.verification_status === "verified"
-                      ? "🟢 Verified"
-                      : dj.verification_status === "pending"
-                      ? "🟡 Pending Verification"
-                      : dj.verification_status === "rejected"
-                      ? "🔴 Rejected"
-                      : "⚪ Not Started"}
-                  </span>
-                </p>
-              </div>
+    <p className="text-sm text-zinc-500 mt-1">
+      Payout email: {dj.payout_email || "Not provided"}
+    </p>
+
+    <p className="mt-3 font-bold">
+      Status:{" "}
+      <span
+        className={
+          dj.verification_status === "verified"
+            ? "text-green-400"
+            : dj.verification_status === "pending"
+            ? "text-yellow-400"
+            : dj.verification_status === "rejected"
+            ? "text-red-400"
+            : "text-zinc-400"
+        }
+      >
+        {dj.verification_status === "verified"
+          ? "🟢 Verified"
+          : dj.verification_status === "pending"
+          ? "🟡 Pending Verification"
+          : dj.verification_status === "rejected"
+          ? "🔴 Rejected"
+          : "⚪ Not Started"}
+      </span>
+    </p>
+  </div>
+</div>
 
               <div className="flex flex-wrap gap-3">
                 <button
