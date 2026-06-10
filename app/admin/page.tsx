@@ -1075,7 +1075,9 @@ setAuthLoading(false);
 </div>
 
 <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-4">
-<p className="text-zinc-400 text-sm">Verification Status</p>
+<p className="text-zinc-400 text-sm">
+  {t.verificationStatus}
+</p>
 
   <p
     className={`font-bold mt-1 ${
@@ -1088,31 +1090,32 @@ setAuthLoading(false);
         : "text-zinc-300"
     }`}
   >
-   {verificationStatus === "verified"
-  ? "🟢 Verified"
-  : verificationStatus === "pending"
-  ? "🟡 Pending Verification"
-  : verificationStatus === "rejected"
-  ? "🔴 Rejected"
-  : "⚪ Not Started"}
-  </p>
+  <p className="mt-3 font-bold">
+  {verificationStatus === "verified"
+    ? `🟢 ${t.verified}`
+    : verificationStatus === "pending"
+    ? `🟡 ${t.pendingVerification}`
+    : verificationStatus === "rejected"
+    ? `🔴 ${t.rejectedVerification}`
+    : `⚪ ${t.notStarted}`}
+</p>
 
-  {verificationStatus === "pending" && (
+{verificationStatus === "pending" && (
   <p className="mt-3 text-sm text-zinc-400">
-    Your verification request is under review.
+    {t.pendingVerificationMessage}
   </p>
 )}
 
 {verificationStatus === "verified" && (
   <p className="mt-3 text-sm text-green-400">
-    Your account has been verified and is eligible for payouts.
+{t.verifiedMessage}
   </p>
 )}
 
 {verificationStatus === "rejected" && (
   <>
     <p className="mt-3 text-sm text-red-400">
-      Your verification was rejected. Please review your details and resubmit.
+    {t.rejectedVerificationMessage}
     </p>
 
     <button
