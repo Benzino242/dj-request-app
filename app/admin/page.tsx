@@ -1090,7 +1090,7 @@ setAuthLoading(false);
         : "text-zinc-300"
     }`}
   >
-  <p className="mt-3 font-bold">
+ <p className="mt-3 font-bold">
   {verificationStatus === "verified"
     ? `🟢 ${t.verified}`
     : verificationStatus === "pending"
@@ -1108,14 +1108,14 @@ setAuthLoading(false);
 
 {verificationStatus === "verified" && (
   <p className="mt-3 text-sm text-green-400">
-{t.verifiedMessage}
+    {t.verifiedMessage}
   </p>
 )}
 
 {verificationStatus === "rejected" && (
-  <>
+  <div>
     <p className="mt-3 text-sm text-red-400">
-    {t.rejectedVerificationMessage}
+      {t.rejectedVerificationMessage}
     </p>
 
     <button
@@ -1123,37 +1123,37 @@ setAuthLoading(false);
       onClick={() => setVerificationStatus("pending")}
       className="mt-3 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700"
     >
-      Resubmit Verification
+      {t.resubmitVerification}
     </button>
-  </>
+  </div>
 )}
 
-  {verificationStatus === "not_started" && (
+{verificationStatus === "not_started" && (
   <button
     type="button"
     onClick={() => setVerificationStatus("pending")}
     className="mt-3 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700"
   >
-    Submit Verification
+    {t.submitVerification}
   </button>
 )}
 </div>
 
- <input
- type="text"
- placeholder={t.profileImageUrlPlaceholder}
- value={profileImage}
- onChange={(e) => setProfileImage(e.target.value)}
- className="w-full p-4 rounded-xl bg-black border border-zinc-700"
- />
+<input
+  type="text"
+  placeholder={t.profileImageUrlPlaceholder}
+  value={profileImage}
+  onChange={(e) => setProfileImage(e.target.value)}
+  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+/>
 
- <textarea
- placeholder={t.djBioPlaceholder}
- value={bio}
- onChange={(e) => setBio(e.target.value)}
- rows={5}
- className="w-full p-4 rounded-xl bg-black border border-zinc-700"
- />
+<textarea
+  placeholder={t.djBioPlaceholder}
+  value={bio}
+  onChange={(e) => setBio(e.target.value)}
+  rows={5}
+  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+/>
 
  <button
  onClick={saveProfile}
