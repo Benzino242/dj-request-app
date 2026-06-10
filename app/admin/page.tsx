@@ -1262,7 +1262,7 @@ setAuthLoading(false);
  <div className="space-y-3">
   {verificationStatus !== "verified" && (
     <div className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 rounded-xl p-4 text-sm">
-      Verification required before withdrawals can be requested.
+      {t.verificationRequiredMessage}
     </div>
   )}
 
@@ -1274,12 +1274,11 @@ setAuthLoading(false);
     }
     className="bg-cyan-600 hover:bg-cyan-700 px-8 py-4 rounded-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
   >
-    {withdrawLoading
-      ? "Submitting..."
-      : verificationStatus !== "verified"
-      ? "Verification Required"
-      : t.requestPayout}
-  </button>
+   {withdrawLoading
+  ? "Submitting..."
+  : verificationStatus !== "verified"
+  ? t.verificationRequired
+  : t.requestPayout}
 </div>
 </div>
 
