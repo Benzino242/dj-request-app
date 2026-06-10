@@ -40,6 +40,34 @@ export default function VerificationAdminPage() {
     fetchDJs();
   }, []);
 
+  const pendingCount = djs.filter(
+    (dj) => dj.verification_status === "pending"
+  ).length;
+
+  const verifiedCount = djs.filter(
+    (dj) => dj.verification_status === "verified"
+  ).length;
+
+  const rejectedCount = djs.filter(
+    (dj) => dj.verification_status === "rejected"
+  ).length;
+
+  const totalCount = djs.length;
+
+  const sortedDjs = [...djs].sort((a, b) => {
+    const priority: Record<string, number> = {
+      pending: 1,
+      rejected: 2,
+      verified: 3,
+      not_started: 4,
+    };
+
+    return (
+      (priority[a.verification_status || "not_started"] || 5) -
+      (priority[b.verification_status || "not_started"] || 5)
+    );
+  });
+
   async function updateVerificationStatus(
     djId: number,
     status: "verified" | "rejected" | "pending" | "not_started"
@@ -80,21 +108,39 @@ export default function VerificationAdminPage() {
         Review DJ payout verification statuses.
       </p>
 
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+          <p className="text-zinc-400 text-sm">Pending DJs</p>
+          <p className="text-2xl font-black text-yellow-400">{pendingCount}</p>
+        </div>
+
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+          <p className="text-zinc-400 text-sm">Verified DJs</p>
+          <p className="text-2xl font-black text-green-400">{verifiedCount}</p>
+        </div>
+
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+          <p className="text-zinc-400 text-sm">Rejected DJs</p>
+          <p className="text-2xl font-black text-red-400">{rejectedCount}</p>
+        </div>
+
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+          <p className="text-zinc-400 text-sm">Total DJs</p>
+          <p className="text-2xl font-black text-white">{totalCount}</p>
+        </div>
+      </div>
+
       <div className="space-y-5">
-        {djs.map((dj) => (
+        {sortedDjs.map((dj) => (
           <div
             key={dj.id}
             className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
               <div>
-                <h2 className="text-2xl font-bold">
-                  {dj.stage_name}
-                </h2>
+                <h2 className="text-2xl font-bold">{dj.stage_name}</h2>
 
-                <p className="text-zinc-400 mt-1">
-                  {dj.email || "No email"}
-                </p>
+                <p className="text-zinc-400 mt-1">{dj.email || "No email"}</p>
 
                 <p className="text-sm text-zinc-500 mt-2">
                   {dj.country || "No country"} •{" "}
@@ -107,27 +153,27 @@ export default function VerificationAdminPage() {
                 </p>
 
                 <p className="mt-3 font-bold">
-  Status:{" "}
-  <span
-    className={
-      dj.verification_status === "verified"
-        ? "text-green-400"
-        : dj.verification_status === "pending"
-        ? "text-yellow-400"
-        : dj.verification_status === "rejected"
-        ? "text-red-400"
-        : "text-zinc-400"
-    }
-  >
-    {dj.verification_status === "verified"
-      ? "🟢 Verified"
-      : dj.verification_status === "pending"
-      ? "🟡 Pending Verification"
-      : dj.verification_status === "rejected"
-      ? "🔴 Rejected"
-      : "⚪ Not Started"}
-  </span>
-</p>
+                  Status:{" "}
+                  <span
+                    className={
+                      dj.verification_status === "verified"
+                        ? "text-green-400"
+                        : dj.verification_status === "pending"
+                        ? "text-yellow-400"
+                        : dj.verification_status === "rejected"
+                        ? "text-red-400"
+                        : "text-zinc-400"
+                    }
+                  >
+                    {dj.verification_status === "verified"
+                      ? "🟢 Verified"
+                      : dj.verification_status === "pending"
+                      ? "🟡 Pending Verification"
+                      : dj.verification_status === "rejected"
+                      ? "🔴 Rejected"
+                      : "⚪ Not Started"}
+                  </span>
+                </p>
               </div>
 
               <div className="flex flex-wrap gap-3">
