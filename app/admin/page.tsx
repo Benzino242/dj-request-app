@@ -452,8 +452,13 @@ setAuthLoading(false);
  }
 
  async function requestWithdrawal() {
- if (!dj) return;
+  if (!dj) return;
 
+  if (verificationStatus !== "verified") {
+    alert("Verification required before withdrawals can be requested.");
+    return;
+  }
+  
  const amount = Number(withdrawAmount);
 
  if (!amount || amount <= 0) {
@@ -1254,15 +1259,28 @@ setAuthLoading(false);
  </h4>
  </div>
 
- <button
- onClick={requestWithdrawal}
- disabled={withdrawLoading}
- className="bg-cyan-600 hover:bg-cyan-700 px-8 py-4 rounded-xl font-bold text-lg disabled:opacity-50"
- >
- {withdrawLoading ? "Submitting..." : t.requestPayout}
- </button>
- </div>
- </div>
+ <div className="space-y-3">
+  {verificationStatus !== "verified" && (
+    <div className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 rounded-xl p-4 text-sm">
+      Verification required before withdrawals can be requested.
+    </div>
+  )}
+
+  <button
+    onClick={requestWithdrawal}
+    disabled={
+      withdrawLoading ||
+      verificationStatus !== "verified"
+    }
+    className="bg-cyan-600 hover:bg-cyan-700 px-8 py-4 rounded-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    {withdrawLoading
+      ? "Submitting..."
+      : verificationStatus !== "verified"
+      ? "Verification Required"
+      : t.requestPayout}
+  </button>
+</div>
 
  <div className="grid md:grid-cols-3 gap-4 mb-6">
  <StatCard title={t.withdrawalRequests} value={withdrawals.length} color="text-cyan-400" />
