@@ -66,6 +66,14 @@ export default function VerificationDashboardClient() {
 
   useEffect(() => {
     fetchDashboardData();
+  
+    const interval = window.setInterval(() => {
+      fetchDashboardData();
+    }, 5000);
+  
+    return () => {
+      window.clearInterval(interval);
+    };
   }, []);
 
   const pendingCount = djs.filter(
