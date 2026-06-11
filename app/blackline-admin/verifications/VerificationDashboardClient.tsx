@@ -17,17 +17,18 @@ type DJ = {
 };
 
 type Withdrawal = {
-  id: number;
-  dj_id?: number | null;
-  dj_name?: string | null;
-  amount: number;
-  currency?: string | null;
-  payout_method?: string | null;
-  account_name?: string | null;
-  account_number?: string | null;
-  status?: string | null;
-  created_at?: string | null;
-};
+    id: number;
+    dj_id?: number | null;
+    dj_name?: string | null;
+    amount: number;
+    currency?: string | null;
+    payout_method?: string | null;
+    account_name?: string | null;
+    account_number?: string | null;
+    provider?: string | null;
+    status?: string | null;
+    created_at?: string | null;
+  };
 
 export default function VerificationAdminPage() {
   const [djs, setDjs] = useState<DJ[]>([]);
@@ -377,6 +378,10 @@ export default function VerificationAdminPage() {
                   <p className="text-sm text-zinc-500 mt-2">
                     Method: {withdrawal.payout_method || "Not provided"}
                   </p>
+
+                  <p className="text-sm text-zinc-500 mt-1">
+                    Provider: {withdrawal.provider || "Not provided"}
+                 </p>
 
                   <p className="text-sm text-zinc-500 mt-1">
                     Account name: {withdrawal.account_name || "Not provided"}
