@@ -551,10 +551,12 @@ setAuthLoading(false);
 
  const vipRequests = requests.filter((r) => r.tip_amount >= 50).length;
 
- const totalWithdrawals = withdrawals.reduce(
- (sum, item) => sum + Number(item.amount || 0),
- 0
- );
+ const totalWithdrawals = withdrawals
+  .filter((item) =>
+    ["pending", "approved", "paid"].includes(item.status)
+  )
+  .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
 
  if (authLoading) {
  return (
