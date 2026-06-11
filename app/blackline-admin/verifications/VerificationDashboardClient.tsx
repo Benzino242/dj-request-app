@@ -420,52 +420,68 @@ export default function VerificationDashboardClient() {
                 </div>
 
                 <div className="flex flex-wrap gap-3">
-  {withdrawal.status !== "approved" && (
-    <button
-      disabled={withdrawalActionLoadingId === withdrawal.id}
-      onClick={() =>
-        updateWithdrawalStatus(withdrawal.id, "approved")
-      }
-      className="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded-xl disabled:opacity-50"
-    >
-      Approve
-    </button>
-  )}
+  {withdrawal.status === "pending" && (
+    <>
+      <button
+        disabled={withdrawalActionLoadingId === withdrawal.id}
+        onClick={() => updateWithdrawalStatus(withdrawal.id, "approved")}
+        className="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded-xl disabled:opacity-50"
+      >
+        Approve
+      </button>
 
-  {withdrawal.status !== "rejected" && (
-    <button
-      disabled={withdrawalActionLoadingId === withdrawal.id}
-      onClick={() =>
-        updateWithdrawalStatus(withdrawal.id, "rejected")
-      }
-      className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl disabled:opacity-50"
-    >
-      Reject
-    </button>
+      <button
+        disabled={withdrawalActionLoadingId === withdrawal.id}
+        onClick={() => updateWithdrawalStatus(withdrawal.id, "rejected")}
+        className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl disabled:opacity-50"
+      >
+        Reject
+      </button>
+    </>
   )}
 
   {withdrawal.status === "approved" && (
-    <button
-      disabled={withdrawalActionLoadingId === withdrawal.id}
-      onClick={() =>
-        updateWithdrawalStatus(withdrawal.id, "paid")
-      }
-      className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl disabled:opacity-50"
-    >
-      Mark Paid
-    </button>
+    <>
+      <button
+        disabled={withdrawalActionLoadingId === withdrawal.id}
+        onClick={() => updateWithdrawalStatus(withdrawal.id, "paid")}
+        className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl disabled:opacity-50"
+      >
+        Mark Paid
+      </button>
+
+      <button
+        disabled={withdrawalActionLoadingId === withdrawal.id}
+        onClick={() => updateWithdrawalStatus(withdrawal.id, "rejected")}
+        className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl disabled:opacity-50"
+      >
+        Reject
+      </button>
+
+      <button
+        disabled={withdrawalActionLoadingId === withdrawal.id}
+        onClick={() => updateWithdrawalStatus(withdrawal.id, "pending")}
+        className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:opacity-50"
+      >
+        Mark Pending
+      </button>
+    </>
   )}
 
-  {withdrawal.status !== "pending" && (
+  {withdrawal.status === "rejected" && (
     <button
       disabled={withdrawalActionLoadingId === withdrawal.id}
-      onClick={() =>
-        updateWithdrawalStatus(withdrawal.id, "pending")
-      }
+      onClick={() => updateWithdrawalStatus(withdrawal.id, "pending")}
       className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:opacity-50"
     >
       Mark Pending
     </button>
+  )}
+
+  {withdrawal.status === "paid" && (
+    <span className="px-4 py-2 rounded-xl bg-green-900/40 text-green-400 font-bold">
+      Completed
+    </span>
   )}
 </div>
               </div>
