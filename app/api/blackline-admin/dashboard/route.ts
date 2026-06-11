@@ -38,3 +38,52 @@ export async function GET() {
     withdrawals: withdrawals || [],
   });
 }
+
+export async function PATCH(request: Request) {
+    if (!supabaseUrl || !serviceRoleKey) {
+      return NextResponse.json(
+        { error: "Missing Supabase admin environment variables" },
+        { status: 500 }
+      );
+    }
+  
+    const body = await request.json();
+    const { type, id, status } = body;
+  
+    if (!type || !id || !status) {
+      return NextResponse.json(
+        { error: "Missing type, id, or status" },
+        { status: 400 }
+      );
+    }
+  
+    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
+  
+    if (type === "withdrawal") {
+      const { error } = await supabaseAdmin
+        .from("withdrawals")
+        .update({ status })
+        .eq("id", id);
+  
+      if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+      }
+  
+      return NextResponse.json({ success: true });
+    }
+  
+    if (type === "dj") {
+      const { error } = await supabaseAdmin
+        .from("djs")
+        .update({ verification_status: status })
+        .eq("id", id);
+  
+      if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+      }
+  
+      return NextResponse.json({ success: true });
+    }
+  
+    return NextResponse.json({ error: "Invalid update type" }, { status: 400 });
+  }

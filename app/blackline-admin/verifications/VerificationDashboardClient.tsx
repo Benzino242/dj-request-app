@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "../../../lib/supabase";
 
 type DJ = {
   id: number;
@@ -17,20 +16,20 @@ type DJ = {
 };
 
 type Withdrawal = {
-    id: number;
-    dj_id?: number | null;
-    dj_name?: string | null;
-    amount: number;
-    currency?: string | null;
-    payout_method?: string | null;
-    account_name?: string | null;
-    account_number?: string | null;
-    provider?: string | null;
-    status?: string | null;
-    created_at?: string | null;
-  };
+  id: number;
+  dj_id?: number | null;
+  dj_name?: string | null;
+  amount: number;
+  currency?: string | null;
+  payout_method?: string | null;
+  account_name?: string | null;
+  account_number?: string | null;
+  provider?: string | null;
+  status?: string | null;
+  created_at?: string | null;
+};
 
-export default function VerificationAdminPage() {
+export default function VerificationDashboardClient() {
   const [djs, setDjs] = useState<DJ[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,32 +37,32 @@ export default function VerificationAdminPage() {
   const [withdrawalActionLoadingId, setWithdrawalActionLoadingId] =
     useState<number | null>(null);
 
-    async function fetchDashboardData() {
-        setLoading(true);
-      
-        try {
-          const response = await fetch("/api/blackline-admin/dashboard", {
-            cache: "no-store",
-          });
-      
-          const result = await response.json();
-      
-          if (!response.ok) {
-            console.error("BLACKLINE DASHBOARD API ERROR:", result);
-            alert(result.error || "Failed to load Blackline dashboard data");
-            setLoading(false);
-            return;
-          }
-      
-          setDjs((result.djs || []) as DJ[]);
-          setWithdrawals((result.withdrawals || []) as Withdrawal[]);
-        } catch (error) {
-          console.error("BLACKLINE DASHBOARD FETCH ERROR:", error);
-          alert("Failed to connect to Blackline dashboard API");
-        }
-      
+  async function fetchDashboardData() {
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/blackline-admin/dashboard", {
+        cache: "no-store",
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error("BLACKLINE DASHBOARD API ERROR:", result);
+        alert(result.error || "Failed to load Blackline dashboard data");
         setLoading(false);
+        return;
       }
+
+      setDjs((result.djs || []) as DJ[]);
+      setWithdrawals((result.withdrawals || []) as Withdrawal[]);
+    } catch (error) {
+      console.error("BLACKLINE DASHBOARD FETCH ERROR:", error);
+      alert("Failed to connect to Blackline dashboard API");
+    }
+
+    setLoading(false);
+  }
 
   useEffect(() => {
     fetchDashboardData();
@@ -133,14 +132,23 @@ export default function VerificationAdminPage() {
   ) {
     setActionLoadingId(djId);
 
-    const { error } = await supabase
-      .from("djs")
-      .update({ verification_status: status })
-      .eq("id", djId);
+    const response = await fetch("/api/blackline-admin/dashboard", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type: "dj",
+        id: djId,
+        status,
+      }),
+    });
 
-    if (error) {
-      console.error(error);
-      alert("Failed to update verification status");
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.error("DJ VERIFICATION UPDATE ERROR:", result);
+      alert(result.error || "Failed to update verification status");
       setActionLoadingId(null);
       return;
     }
@@ -155,14 +163,23 @@ export default function VerificationAdminPage() {
   ) {
     setWithdrawalActionLoadingId(withdrawalId);
 
-    const { error } = await supabase
-      .from("withdrawals")
-      .update({ status })
-      .eq("id", withdrawalId);
+    const response = await fetch("/api/blackline-admin/dashboard", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type: "withdrawal",
+        id: withdrawalId,
+        status,
+      }),
+    });
 
-    if (error) {
-      console.error(error);
-      alert("Failed to update withdrawal status");
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.error("WITHDRAWAL UPDATE ERROR:", result);
+      alert(result.error || "Failed to update withdrawal status");
       setWithdrawalActionLoadingId(null);
       return;
     }
@@ -382,7 +399,7 @@ export default function VerificationAdminPage() {
 
                   <p className="text-sm text-zinc-500 mt-1">
                     Provider: {withdrawal.provider || "Not provided"}
-                 </p>
+                  </p>
 
                   <p className="text-sm text-zinc-500 mt-1">
                     Account name: {withdrawal.account_name || "Not provided"}
