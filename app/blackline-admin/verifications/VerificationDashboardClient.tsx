@@ -38,31 +38,32 @@ export default function VerificationAdminPage() {
   const [withdrawalActionLoadingId, setWithdrawalActionLoadingId] =
     useState<number | null>(null);
 
-  async function fetchDashboardData() {
-    setLoading(true);
-
-    const { data: djData, error: djError } = await supabase
-      .from("djs")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    const { data: withdrawalData, error: withdrawalError } = await supabase
-      .from("withdrawals")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (djError) {
-      console.error(djError);
-    }
-
-    if (withdrawalError) {
-      console.error(withdrawalError);
-    }
-
-    setDjs((djData || []) as DJ[]);
-    setWithdrawals((withdrawalData || []) as Withdrawal[]);
-    setLoading(false);
-  }
+    async function fetchDashboardData() {
+        setLoading(true);
+      
+        try {
+          const response = await fetch("/api/blackline-admin/dashboard", {
+            cache: "no-store",
+          });
+      
+          const result = await response.json();
+      
+          if (!response.ok) {
+            console.error("BLACKLINE DASHBOARD API ERROR:", result);
+            alert(result.error || "Failed to load Blackline dashboard data");
+            setLoading(false);
+            return;
+          }
+      
+          setDjs((result.djs || []) as DJ[]);
+          setWithdrawals((result.withdrawals || []) as Withdrawal[]);
+        } catch (error) {
+          console.error("BLACKLINE DASHBOARD FETCH ERROR:", error);
+          alert("Failed to connect to Blackline dashboard API");
+        }
+      
+        setLoading(false);
+      }
 
   useEffect(() => {
     fetchDashboardData();
