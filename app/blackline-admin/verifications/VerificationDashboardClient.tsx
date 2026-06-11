@@ -67,12 +67,14 @@ export default function VerificationDashboardClient() {
   useEffect(() => {
     fetchDashboardData();
   
-    const interval = window.setInterval(() => {
+    const handleFocus = () => {
       fetchDashboardData();
-    }, 5000);
+    };
+  
+    window.addEventListener("focus", handleFocus);
   
     return () => {
-      window.clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
     };
   }, []);
 
