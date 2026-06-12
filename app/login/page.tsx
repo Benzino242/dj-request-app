@@ -118,14 +118,23 @@ export default function LoginPage() {
             </p>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-bold disabled:opacity-50"
-          >
-            {loading ? "Signing In..." : "Login"}
-          </button>
-        </form>
+<button
+  type="submit"
+  disabled={loading}
+  className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-bold disabled:opacity-50"
+>
+  {loading ? "Signing In..." : "Login"}
+</button>
+
+<div className="text-center">
+  <Link
+    href="/reset-password"
+    className="text-sm text-zinc-400 hover:text-purple-400 font-semibold"
+  >
+    Forgot your password?
+  </Link>
+</div>
+</form>
 
         <div className="mt-6 text-center">
           <p className="text-zinc-500">
