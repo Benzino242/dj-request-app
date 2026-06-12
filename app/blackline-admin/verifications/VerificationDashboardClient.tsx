@@ -157,6 +157,28 @@ export default function VerificationDashboardClient() {
     (withdrawal) => withdrawal.status === "rejected"
   ).length;
 
+  const totalGrossRevenue = djEarnings.reduce(
+    (sum, item) => sum + Number(item.grossRevenue || 0),
+    0
+  );
+  
+  const totalPlatformRevenue = djEarnings.reduce(
+    (sum, item) => sum + Number(item.platformRevenue || 0),
+    0
+  );
+  
+  const totalDjRevenue = djEarnings.reduce(
+    (sum, item) => sum + Number(item.djRevenue || 0),
+    0
+  );
+  
+  const totalAvailableBalance = djEarnings.reduce(
+    (sum, item) => sum + Number(item.availableBalance || 0),
+    0
+  );
+  
+  const dashboardCurrency = djEarnings[0]?.currency || "GHS";
+
   const sortedDjs = [...djs].sort((a, b) => {
     const priority: Record<string, number> = {
       pending: 1,
@@ -300,6 +322,36 @@ export default function VerificationDashboardClient() {
           <p className="text-2xl font-black text-white">{totalCount}</p>
         </div>
       </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+  <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+    <p className="text-zinc-400 text-sm">Total Gross Revenue</p>
+    <p className="text-2xl font-black text-green-400">
+      {dashboardCurrency} {totalGrossRevenue.toFixed(2)}
+    </p>
+  </div>
+
+  <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+    <p className="text-zinc-400 text-sm">Platform Revenue</p>
+    <p className="text-2xl font-black text-purple-400">
+      {dashboardCurrency} {totalPlatformRevenue.toFixed(2)}
+    </p>
+  </div>
+
+  <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+    <p className="text-zinc-400 text-sm">DJ Earnings</p>
+    <p className="text-2xl font-black text-cyan-400">
+      {dashboardCurrency} {totalDjRevenue.toFixed(2)}
+    </p>
+  </div>
+
+  <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+    <p className="text-zinc-400 text-sm">Available Balances</p>
+    <p className="text-2xl font-black text-yellow-400">
+      {dashboardCurrency} {totalAvailableBalance.toFixed(2)}
+    </p>
+  </div>
+</div>
 
       <section className="mb-14">
         <h2 className="text-3xl font-black mb-5">DJ Verification Management</h2>
