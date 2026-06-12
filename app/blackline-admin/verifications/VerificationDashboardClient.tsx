@@ -283,6 +283,58 @@ export default function VerificationDashboardClient() {
     return "🟡 Pending";
   }
 
+  function exportWithdrawalsCSV() {
+    const headers = [
+      "DJ Name",
+      "Amount",
+      "Currency",
+      "Payout Method",
+      "Provider",
+      "Account Name",
+      "Account Number",
+      "Status",
+      "Requested At",
+    ];
+  
+    const rows = sortedWithdrawals.map((withdrawal) => [
+      withdrawal.dj_name || "",
+      withdrawal.amount,
+      withdrawal.currency || "",
+      withdrawal.payout_method || "",
+      withdrawal.provider || "",
+      withdrawal.account_name || "",
+      withdrawal.account_number || "",
+      withdrawal.status || "",
+      withdrawal.created_at
+        ? new Date(withdrawal.created_at).toLocaleString()
+        : "",
+    ]);
+  
+    const csvContent = [headers, ...rows]
+      .map((row) =>
+        row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(",")
+      )
+      .join("\n");
+  
+    const blob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+  
+    const url = URL.createObjectURL(blob);
+  
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `blackline-withdrawals-${new Date()
+      .toISOString()
+      .split("T")[0]}.csv`;
+  
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  
+    URL.revokeObjectURL(url);
+  }
+
   if (loading) {
     return (
       <main className="min-h-screen bg-black text-white flex items-center justify-center">
@@ -510,8 +562,19 @@ export default function VerificationDashboardClient() {
         </div>
       </section>
 
-      <section>
-        <h2 className="text-3xl font-black mb-5">Withdrawal Requests</h2>
+        <section>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
+          <h2 className="text-3xl font-black">
+            Withdrawal Requests
+          </h2>
+
+          <button
+            onClick={exportWithdrawalsCSV}
+            className="bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-xl font-bold"
+          >
+            Export CSV
+          </button>
+        </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
