@@ -363,48 +363,58 @@ setAuthLoading(false);
  }
 
  useEffect(() => {
- if (!dj) return;
+  if (!dj) return;
 
- fetchDashboardData();
+  fetchDashboardData();
 
- const refreshInterval = setInterval(() => {
- fetchDashboardData();
- }, 3000);
+  const requestsChannel = supabase
+    .channel(`admin-live-requests-${dj.id}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "requests",
+        filter: `dj_id=eq.${dj.id}`,
+      },
+      () => fetchDashboardData()
+    )
+    .subscribe();
 
- const requestsChannel = supabase
- .channel(`admin-live-requests-${dj.id}`)
- .on(
- "postgres_changes",
- {
- event: "*",
- schema: "public",
- table: "requests",
- filter: `dj_id=eq.${dj.id}`,
- },
- () => fetchDashboardData()
- )
- .subscribe();
+  const paymentsChannel = supabase
+    .channel(`admin-live-payments-${dj.id}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "payments",
+        filter: `dj_id=eq.${dj.id}`,
+      },
+      () => fetchDashboardData()
+    )
+    .subscribe();
 
- const paymentsChannel = supabase
- .channel(`admin-live-payments-${dj.id}`)
- .on(
- "postgres_changes",
- {
- event: "*",
- schema: "public",
- table: "payments",
- filter: `dj_id=eq.${dj.id}`,
- },
- () => fetchDashboardData()
- )
- .subscribe();
+  const withdrawalsChannel = supabase
+    .channel(`admin-live-withdrawals-${dj.id}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "withdrawals",
+        filter: `dj_id=eq.${dj.id}`,
+      },
+      () => fetchDashboardData()
+    )
+    .subscribe();
 
- return () => {
- clearInterval(refreshInterval);
- supabase.removeChannel(requestsChannel);
- supabase.removeChannel(paymentsChannel);
- };
- }, [dj]);
+  return () => {
+    supabase.removeChannel(requestsChannel);
+    supabase.removeChannel(paymentsChannel);
+    supabase.removeChannel(withdrawalsChannel);
+  };
+}, [dj]);
 
  async function updateStatus(id: number, status: RequestStatus) {
  setActionLoadingId(id);
