@@ -658,26 +658,21 @@ export default function VerificationDashboardClient() {
                     </>
                   )}
 
-                  {withdrawal.status === "rejected" && (
-                    <button
-                      disabled={withdrawalActionLoadingId === withdrawal.id}
-                      onClick={() =>
-                        updateWithdrawalStatus(withdrawal.id, "pending")
-                      }
-                      className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:opacity-50"
-                    >
-                      Mark Pending
-                    </button>
-                  )}
+{withdrawal.status === "rejected" && (
+  <button
+    disabled={withdrawalActionLoadingId === withdrawal.id}
+    onClick={() =>
+      updateWithdrawalStatus(withdrawal.id, "pending")
+    }
+    className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:opacity-50"
+  >
+    Mark Pending
+  </button>
+)}
 
-                  {withdrawal.status === "paid" && (
-                    <span className="px-4 py-2 rounded-xl bg-green-900/40 text-green-400 font-bold">
-                      Completed
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
+</div>
+</div>
+</div>
           ))}
         </div>
       </section>
