@@ -619,7 +619,7 @@ export default function VerificationDashboardClient() {
   placeholder="Search DJ withdrawals..."
   value={withdrawalSearch}
   onChange={(e) => setWithdrawalSearch(e.target.value)}
-  className="w-full p-4 rounded-xl bg-zinc-900 border border-zinc-800 mb-6"
+  className="w-full p-4 rounded-2xl bg-zinc-800 border-2 border-purple-500 text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500 mb-6"
 />
 
         <div className="space-y-5">
