@@ -132,6 +132,79 @@ export async function PATCH(request: Request) {
   const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 
   if (type === "withdrawal") {
+    if (status === "approved") {
+      const { data: withdrawal, error: withdrawalFetchError } =
+        await supabaseAdmin
+          .from("withdrawals")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+      if (withdrawalFetchError || !withdrawal) {
+        return NextResponse.json(
+          {
+            error:
+              withdrawalFetchError?.message || "Withdrawal request not found",
+          },
+          { status: 404 }
+        );
+      }
+
+      const { data: requests, error: requestError } = await supabaseAdmin
+        .from("requests")
+        .select("id, dj_id, tip_amount, tip_currency, status")
+        .eq("dj_id", withdrawal.dj_id);
+
+      const { data: djWithdrawals, error: withdrawalError } =
+        await supabaseAdmin
+          .from("withdrawals")
+          .select("*")
+          .eq("dj_id", withdrawal.dj_id);
+
+      if (requestError || withdrawalError) {
+        return NextResponse.json(
+          {
+            error: requestError?.message || withdrawalError?.message,
+          },
+          { status: 500 }
+        );
+      }
+
+      const grossRevenue = (requests || []).reduce(
+        (sum, request) => sum + Number(request.tip_amount || 0),
+        0
+      );
+
+      const platformRevenue = grossRevenue * (PLATFORM_FEE_PERCENT / 100);
+      const djRevenue = grossRevenue - platformRevenue;
+
+      const activeWithdrawals = (djWithdrawals || []).filter(
+        (item) =>
+          item.id !== withdrawal.id &&
+          ["pending", "approved", "paid"].includes(item.status || "")
+      );
+
+      const totalWithdrawals = activeWithdrawals.reduce(
+        (sum, item) => sum + Number(item.amount || 0),
+        0
+      );
+
+      const availableBalance = djRevenue - totalWithdrawals;
+
+      if (Number(withdrawal.amount || 0) > availableBalance) {
+        return NextResponse.json(
+          {
+            error: `Insufficient DJ balance. Available balance is ${availableBalance.toFixed(
+              2
+            )}, but withdrawal request is ${Number(
+              withdrawal.amount || 0
+            ).toFixed(2)}.`,
+          },
+          { status: 400 }
+        );
+      }
+    }
+
     const { error } = await supabaseAdmin
       .from("withdrawals")
       .update({ status })
