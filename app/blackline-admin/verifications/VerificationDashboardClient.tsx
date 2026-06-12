@@ -54,6 +54,8 @@ export default function VerificationDashboardClient() {
   const [withdrawalActionLoadingId, setWithdrawalActionLoadingId] =
     useState<number | null>(null);
 
+  const [withdrawalSearch, setWithdrawalSearch] = useState("");
+
   async function fetchDashboardData() {
     setLoading(true);
 
@@ -193,7 +195,13 @@ export default function VerificationDashboardClient() {
     );
   });
 
-  const sortedWithdrawals = [...withdrawals].sort((a, b) => {
+  const sortedWithdrawals = withdrawals
+  .filter((withdrawal) =>
+    (withdrawal.dj_name || "")
+      .toLowerCase()
+      .includes(withdrawalSearch.toLowerCase())
+  )
+  .sort((a, b) => {
     const priority: Record<string, number> = {
       pending: 1,
       approved: 2,
@@ -605,6 +613,14 @@ export default function VerificationDashboardClient() {
             </p>
           </div>
         </div>
+
+        <input
+  type="text"
+  placeholder="Search DJ withdrawals..."
+  value={withdrawalSearch}
+  onChange={(e) => setWithdrawalSearch(e.target.value)}
+  className="w-full p-4 rounded-xl bg-zinc-900 border border-zinc-800 mb-6"
+/>
 
         <div className="space-y-5">
           {sortedWithdrawals.length === 0 && (
