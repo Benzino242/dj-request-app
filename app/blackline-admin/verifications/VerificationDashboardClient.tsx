@@ -45,6 +45,26 @@ type DjEarning = {
   availableBalance: number;
 };
 
+type ConfirmAction =
+  | {
+      kind: "dj";
+      id: number;
+      status: "verified" | "rejected" | "pending" | "not_started";
+      title: string;
+      message: string;
+      confirmText: string;
+      buttonClass: string;
+    }
+  | {
+      kind: "withdrawal";
+      id: number;
+      status: "approved" | "rejected" | "paid" | "pending";
+      title: string;
+      message: string;
+      confirmText: string;
+      buttonClass: string;
+    };
+
 export default function VerificationDashboardClient() {
   const [djs, setDjs] = useState<DJ[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
@@ -55,6 +75,8 @@ export default function VerificationDashboardClient() {
     useState<number | null>(null);
 
   const [withdrawalSearch, setWithdrawalSearch] = useState("");
+  const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
   async function fetchDashboardData() {
     setLoading(true);
@@ -277,6 +299,23 @@ export default function VerificationDashboardClient() {
     setWithdrawalActionLoadingId(null);
   }
 
+  async function handleConfirmAction() {
+    if (!confirmAction) return;
+
+    setConfirmLoading(true);
+
+    if (confirmAction.kind === "dj") {
+      await updateVerificationStatus(confirmAction.id, confirmAction.status);
+    }
+
+    if (confirmAction.kind === "withdrawal") {
+      await updateWithdrawalStatus(confirmAction.id, confirmAction.status);
+    }
+
+    setConfirmLoading(false);
+    setConfirmAction(null);
+  }
+
   function withdrawalStatusColor(status?: string | null) {
     if (status === "paid") return "text-green-400";
     if (status === "approved") return "text-cyan-400";
@@ -487,7 +526,15 @@ export default function VerificationDashboardClient() {
                         <button
                           disabled={actionLoadingId === dj.id}
                           onClick={() =>
-                            updateVerificationStatus(dj.id, "verified")
+                            setConfirmAction({
+                              kind: "dj",
+                              id: dj.id,
+                              status: "verified",
+                              title: "Verify DJ",
+                              message: `Are you sure you want to verify ${dj.stage_name}?`,
+                              confirmText: "Verify DJ",
+                              buttonClass: "bg-green-600 hover:bg-green-700",
+                            })
                           }
                           className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl disabled:opacity-50"
                         >
@@ -499,7 +546,15 @@ export default function VerificationDashboardClient() {
                         <button
                           disabled={actionLoadingId === dj.id}
                           onClick={() =>
-                            updateVerificationStatus(dj.id, "rejected")
+                            setConfirmAction({
+                              kind: "dj",
+                              id: dj.id,
+                              status: "rejected",
+                              title: "Reject DJ",
+                              message: `Are you sure you want to reject ${dj.stage_name}?`,
+                              confirmText: "Reject DJ",
+                              buttonClass: "bg-red-600 hover:bg-red-700",
+                            })
                           }
                           className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl disabled:opacity-50"
                         >
@@ -512,7 +567,16 @@ export default function VerificationDashboardClient() {
                           <button
                             disabled={actionLoadingId === dj.id}
                             onClick={() =>
-                              updateVerificationStatus(dj.id, "pending")
+                              setConfirmAction({
+                                kind: "dj",
+                                id: dj.id,
+                                status: "pending",
+                                title: "Mark DJ as Pending",
+                                message: `Are you sure you want to mark ${dj.stage_name} as pending verification?`,
+                                confirmText: "Mark Pending",
+                                buttonClass:
+                                  "bg-yellow-500 hover:bg-yellow-600 text-black",
+                              })
                             }
                             className="bg-yellow-500 text-black hover:bg-yellow-600 px-4 py-2 rounded-xl disabled:opacity-50"
                           >
@@ -684,7 +748,15 @@ export default function VerificationDashboardClient() {
                       <button
                         disabled={withdrawalActionLoadingId === withdrawal.id}
                         onClick={() =>
-                          updateWithdrawalStatus(withdrawal.id, "approved")
+                          setConfirmAction({
+                            kind: "withdrawal",
+                            id: withdrawal.id,
+                            status: "approved",
+                            title: "Approve Withdrawal",
+                            message: `Approve ${withdrawal.currency || "GHS"} ${withdrawal.amount} withdrawal for ${withdrawal.dj_name || "this DJ"}?`,
+                            confirmText: "Approve Withdrawal",
+                            buttonClass: "bg-cyan-600 hover:bg-cyan-700",
+                          })
                         }
                         className="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded-xl disabled:opacity-50"
                       >
@@ -694,7 +766,15 @@ export default function VerificationDashboardClient() {
                       <button
                         disabled={withdrawalActionLoadingId === withdrawal.id}
                         onClick={() =>
-                          updateWithdrawalStatus(withdrawal.id, "rejected")
+                          setConfirmAction({
+                            kind: "withdrawal",
+                            id: withdrawal.id,
+                            status: "rejected",
+                            title: "Reject Withdrawal",
+                            message: `Are you sure you want to reject this withdrawal request from ${withdrawal.dj_name || "this DJ"}?`,
+                            confirmText: "Reject Withdrawal",
+                            buttonClass: "bg-red-600 hover:bg-red-700",
+                          })
                         }
                         className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl disabled:opacity-50"
                       >
@@ -708,7 +788,15 @@ export default function VerificationDashboardClient() {
                       <button
                         disabled={withdrawalActionLoadingId === withdrawal.id}
                         onClick={() =>
-                          updateWithdrawalStatus(withdrawal.id, "paid")
+                          setConfirmAction({
+                            kind: "withdrawal",
+                            id: withdrawal.id,
+                            status: "paid",
+                            title: "Mark Withdrawal as Paid",
+                            message: `Only mark this as paid after ${withdrawal.dj_name || "the DJ"} has actually received ${withdrawal.currency || "GHS"} ${withdrawal.amount}.`,
+                            confirmText: "Mark Paid",
+                            buttonClass: "bg-green-600 hover:bg-green-700",
+                          })
                         }
                         className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl disabled:opacity-50"
                       >
@@ -718,7 +806,15 @@ export default function VerificationDashboardClient() {
                       <button
                         disabled={withdrawalActionLoadingId === withdrawal.id}
                         onClick={() =>
-                          updateWithdrawalStatus(withdrawal.id, "rejected")
+                          setConfirmAction({
+                            kind: "withdrawal",
+                            id: withdrawal.id,
+                            status: "rejected",
+                            title: "Reject Withdrawal",
+                            message: `Are you sure you want to reject this withdrawal request from ${withdrawal.dj_name || "this DJ"}?`,
+                            confirmText: "Reject Withdrawal",
+                            buttonClass: "bg-red-600 hover:bg-red-700",
+                          })
                         }
                         className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl disabled:opacity-50"
                       >
@@ -728,7 +824,15 @@ export default function VerificationDashboardClient() {
                       <button
                         disabled={withdrawalActionLoadingId === withdrawal.id}
                         onClick={() =>
-                          updateWithdrawalStatus(withdrawal.id, "pending")
+                          setConfirmAction({
+                            kind: "withdrawal",
+                            id: withdrawal.id,
+                            status: "pending",
+                            title: "Mark Withdrawal as Pending",
+                            message: `Are you sure you want to move this withdrawal request back to pending?`,
+                            confirmText: "Mark Pending",
+                            buttonClass: "bg-zinc-700 hover:bg-zinc-600",
+                          })
                         }
                         className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:opacity-50"
                       >
@@ -741,7 +845,15 @@ export default function VerificationDashboardClient() {
   <button
     disabled={withdrawalActionLoadingId === withdrawal.id}
     onClick={() =>
-      updateWithdrawalStatus(withdrawal.id, "pending")
+      setConfirmAction({
+        kind: "withdrawal",
+        id: withdrawal.id,
+        status: "pending",
+        title: "Mark Withdrawal as Pending",
+        message: `Are you sure you want to move this withdrawal request back to pending?`,
+        confirmText: "Mark Pending",
+        buttonClass: "bg-zinc-700 hover:bg-zinc-600",
+      })
     }
     className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:opacity-50"
   >
@@ -755,6 +867,40 @@ export default function VerificationDashboardClient() {
           ))}
         </div>
       </section>
+
+      {confirmAction && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+          <div className="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 w-full max-w-md">
+            <h2 className="text-2xl font-black text-white mb-3">
+              {confirmAction.title}
+            </h2>
+
+            <p className="text-zinc-400 mb-6 leading-relaxed">
+              {confirmAction.message}
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
+              <button
+                type="button"
+                disabled={confirmLoading}
+                onClick={() => setConfirmAction(null)}
+                className="px-5 py-3 rounded-xl bg-zinc-700 hover:bg-zinc-600 font-bold disabled:opacity-50"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                disabled={confirmLoading}
+                onClick={handleConfirmAction}
+                className={`px-5 py-3 rounded-xl font-bold disabled:opacity-50 ${confirmAction.buttonClass}`}
+              >
+                {confirmLoading ? "Processing..." : confirmAction.confirmText}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
