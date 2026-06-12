@@ -581,6 +581,14 @@ export default function VerificationDashboardClient() {
                     Account number:{" "}
                     {withdrawal.account_number || "Not provided"}
                   </p>
+                   
+                  <p className="text-sm text-zinc-500 mt-1">
+                      Requested:
+                      {" "}
+                      {withdrawal.created_at
+                        ? new Date(withdrawal.created_at).toLocaleString()
+                        : "Unknown"}
+                  </p>
 
                   <p
                     className={`mt-3 font-bold ${withdrawalStatusColor(
