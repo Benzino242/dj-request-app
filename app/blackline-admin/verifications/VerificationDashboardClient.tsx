@@ -272,12 +272,12 @@ export default function VerificationDashboardClient() {
   return (
     <main className="min-h-screen bg-black text-white p-6">
       <h1 className="text-5xl font-black text-purple-500 mb-3">
-        Blackline Verification Panel
-      </h1>
+  Blackline Admin Dashboard
+</h1>
 
-      <p className="text-zinc-400 mb-10">
-        Review DJ payout verification statuses and withdrawal requests.
-      </p>
+<p className="text-zinc-400 mb-10">
+  Manage DJ verification, earnings, payouts, and withdrawal activity.
+</p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
