@@ -71,8 +71,16 @@ type DJ = {
   payout_provider?: string | null;
   payout_account_name?: string | null;
   payout_account_number?: string | null;
+  payout_bank_code?: string | null;
   paystack_recipient_code?: string | null;
   verification_status?: string | null;
+};
+
+type PaystackBank = {
+  name: string;
+  code: string;
+  slug?: string;
+  type?: string;
 };
 
 export default function AdminPage() {
@@ -94,6 +102,10 @@ export default function AdminPage() {
   const [payoutProvider, setPayoutProvider] = useState("MTN");
   const [payoutAccountName, setPayoutAccountName] = useState("");
   const [payoutAccountNumber, setPayoutAccountNumber] = useState("");
+  const [payoutBankCode, setPayoutBankCode] = useState("");
+  const [paystackRecipientCode, setPaystackRecipientCode] = useState("");
+  const [paystackBanks, setPaystackBanks] = useState<PaystackBank[]>([]);
+  const [banksLoading, setBanksLoading] = useState(false);
   const [connectingPayout, setConnectingPayout] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState("not_started");
 
@@ -111,6 +123,9 @@ export default function AdminPage() {
   function getCurrencyForCountry(selectedCountry: string) {
     const countryCurrencyMap: Record<string, string> = {
       Ghana: "GHS",
+      Nigeria: "NGN",
+      Kenya: "KES",
+      "South Africa": "ZAR",
 
       "United Kingdom": "GBP",
       "United States": "USD",
@@ -155,6 +170,31 @@ export default function AdminPage() {
 
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
+
+  async function loadPaystackBanks(currencyCode: string) {
+    if (!currencyCode) return;
+
+    setBanksLoading(true);
+
+    try {
+      const response = await fetch(`/api/paystack/banks?currency=${currencyCode}`);
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error("PAYSTACK BANKS ERROR:", result);
+        setPaystackBanks([]);
+        setBanksLoading(false);
+        return;
+      }
+
+      setPaystackBanks((result.banks || []) as PaystackBank[]);
+    } catch (error) {
+      console.error("PAYSTACK BANKS FETCH ERROR:", error);
+      setPaystackBanks([]);
+    }
+
+    setBanksLoading(false);
+  }
 
   async function loadLoggedInDJ() {
     setAuthLoading(true);
@@ -201,6 +241,8 @@ export default function AdminPage() {
     setPayoutProvider(data.payout_provider || "MTN");
     setPayoutAccountName(data.payout_account_name || "");
     setPayoutAccountNumber(data.payout_account_number || "");
+    setPayoutBankCode(data.payout_bank_code || "");
+    setPaystackRecipientCode(data.paystack_recipient_code || "");
     setVerificationStatus(data.verification_status || "not_started");
 
     setAuthLoading(false);
@@ -219,6 +261,12 @@ export default function AdminPage() {
       subscription.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (payoutMethod === "Bank Transfer") {
+      loadPaystackBanks(preferredCurrency);
+    }
+  }, [payoutMethod, preferredCurrency]);
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -300,7 +348,7 @@ export default function AdminPage() {
     }
 
     if (!payoutProvider.trim()) {
-      alert("Please enter your payout provider.");
+      alert("Please enter/select your payout provider.");
       return;
     }
 
@@ -314,36 +362,52 @@ export default function AdminPage() {
       return;
     }
 
-    setConnectingPayout(true);
-
-    const { data, error } = await supabase
-      .from("djs")
-      .update({
-        country,
-        preferred_currency: preferredCurrency,
-        payout_email: payoutEmail,
-        payout_method: payoutMethod,
-        payout_provider: payoutProvider,
-        payout_account_name: payoutAccountName,
-        payout_account_number: payoutAccountNumber,
-        payout_status: "Active",
-      })
-      .eq("id", dj.id)
-      .select()
-      .single();
-
-    if (error) {
-      console.error("PAYOUT CONNECT ERROR:", error);
-      alert(error.message || "Failed to connect payout account.");
-      setConnectingPayout(false);
+    if (payoutMethod === "Bank Transfer" && !payoutBankCode) {
+      alert("Please select your bank.");
       return;
     }
 
-    setDj(data as DJ);
-    setPayoutStatus("Active");
-    setConnectingPayout(false);
+    setConnectingPayout(true);
 
-    alert("Payout account connected successfully.");
+    try {
+      const response = await fetch("/api/paystack/create-recipient", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          djId: dj.id,
+          country,
+          currency: preferredCurrency,
+          payoutMethod,
+          payoutProvider,
+          payoutAccountName,
+          payoutAccountNumber,
+          payoutBankCode,
+          payoutEmail,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error("CREATE RECIPIENT ERROR:", result);
+        alert(result.error || "Failed to connect payout account.");
+        setConnectingPayout(false);
+        return;
+      }
+
+      setDj(result.dj as DJ);
+      setPayoutStatus("Active");
+      setPaystackRecipientCode(result.recipientCode || "");
+      setConnectingPayout(false);
+
+      alert(`Payout account connected. Recipient code: ${result.recipientCode}`);
+    } catch (error) {
+      console.error("CONNECT PAYOUT ERROR:", error);
+      alert("Failed to connect payout account.");
+      setConnectingPayout(false);
+    }
   }
 
   async function saveProfile() {
@@ -370,6 +434,7 @@ export default function AdminPage() {
         payout_provider: payoutProvider,
         payout_account_name: payoutAccountName,
         payout_account_number: payoutAccountNumber,
+        payout_bank_code: payoutBankCode || null,
         verification_status: verificationStatus,
       })
       .eq("id", dj.id)
@@ -553,7 +618,8 @@ export default function AdminPage() {
       !payoutMethod ||
       !payoutProvider ||
       !payoutAccountName ||
-      !payoutAccountNumber
+      !payoutAccountNumber ||
+      !paystackRecipientCode
     ) {
       alert("Please connect your payout account before requesting a withdrawal.");
       return;
@@ -1036,14 +1102,26 @@ export default function AdminPage() {
               value={country}
               onChange={(e) => {
                 const selectedCountry = e.target.value;
+                const nextCurrency = getCurrencyForCountry(selectedCountry);
+
                 setCountry(selectedCountry);
-                setPreferredCurrency(getCurrencyForCountry(selectedCountry));
+                setPreferredCurrency(nextCurrency);
+                setPayoutBankCode("");
+                setPaystackBanks([]);
+
+                if (payoutMethod === "Bank Transfer") {
+                  loadPaystackBanks(nextCurrency);
+                }
               }}
               className="w-full p-4 rounded-xl bg-black border border-zinc-700"
             >
               <option value="">{t.selectCountry}</option>
 
               <option value="Ghana">🇬🇭 Ghana</option>
+              <option value="Nigeria">🇳🇬 Nigeria</option>
+              <option value="Kenya">🇰🇪 Kenya</option>
+              <option value="South Africa">🇿🇦 South Africa</option>
+
               <option value="United Kingdom">🇬🇧 United Kingdom</option>
               <option value="United States">🇺🇸 United States</option>
               <option value="Canada">🇨🇦 Canada</option>
@@ -1082,7 +1160,16 @@ export default function AdminPage() {
 
             <select
               value={preferredCurrency}
-              onChange={(e) => setPreferredCurrency(e.target.value)}
+              onChange={(e) => {
+                const nextCurrency = e.target.value;
+                setPreferredCurrency(nextCurrency);
+                setPayoutBankCode("");
+                setPaystackBanks([]);
+
+                if (payoutMethod === "Bank Transfer") {
+                  loadPaystackBanks(nextCurrency);
+                }
+              }}
               className="w-full p-4 rounded-xl bg-black border border-zinc-700"
             >
               <option value="GHS">🇬🇭 GHS</option>
@@ -1135,6 +1222,7 @@ export default function AdminPage() {
               onChange={(e) => {
                 const nextMethod = e.target.value;
                 setPayoutMethod(nextMethod);
+                setPayoutBankCode("");
 
                 if (nextMethod === "Mobile Money") {
                   setPayoutProvider("MTN");
@@ -1142,6 +1230,7 @@ export default function AdminPage() {
 
                 if (nextMethod === "Bank Transfer") {
                   setPayoutProvider("");
+                  loadPaystackBanks(preferredCurrency);
                 }
               }}
               className="w-full p-4 rounded-xl bg-black border border-zinc-700"
@@ -1183,13 +1272,35 @@ export default function AdminPage() {
                   <option value="Telecel">Telecel Cash</option>
                   <option value="AirtelTigo">AirtelTigo Money</option>
                 </select>
+              ) : payoutMethod === "Bank Transfer" ? (
+                <select
+                  value={payoutBankCode}
+                  onChange={(e) => {
+                    const selectedCode = e.target.value;
+                    const selectedBank = paystackBanks.find(
+                      (bank) => bank.code === selectedCode
+                    );
+
+                    setPayoutBankCode(selectedCode);
+                    setPayoutProvider(selectedBank?.name || "");
+                  }}
+                  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+                >
+                  <option value="">
+                    {banksLoading ? "Loading banks..." : "Select bank"}
+                  </option>
+
+                  {paystackBanks.map((bank) => (
+                    <option key={bank.code} value={bank.code}>
+                      {bank.name}
+                    </option>
+                  ))}
+                </select>
               ) : (
                 <input
                   type="text"
                   placeholder={
-                    payoutMethod === "Bank Transfer"
-                      ? "Bank name"
-                      : payoutMethod === "PayPal"
+                    payoutMethod === "PayPal"
                       ? "PayPal email or provider"
                       : "Payout provider"
                   }
@@ -1230,6 +1341,13 @@ export default function AdminPage() {
                 <p className="text-sm text-zinc-400 mt-2">
                   {payoutMethod} • {payoutProvider} • {payoutAccountName}
                 </p>
+
+                <p className="text-xs text-zinc-500 mt-2">
+                  Recipient Code:{" "}
+                  <span className="text-zinc-300">
+                    {paystackRecipientCode || "Not created yet"}
+                  </span>
+                </p>
               </div>
             )}
 
@@ -1239,7 +1357,9 @@ export default function AdminPage() {
               disabled={connectingPayout}
               className="mt-5 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-50"
             >
-              {connectingPayout ? "Connecting..." : t.connectAccount}
+              {connectingPayout
+                ? "Connecting to Paystack..."
+                : t.connectAccount}
             </button>
           </div>
 
@@ -1390,7 +1510,7 @@ export default function AdminPage() {
 
             <div className="bg-black border border-zinc-700 rounded-xl p-4">
               <p className="text-zinc-500 text-sm">Payout destination</p>
-              {payoutStatus === "Active" ? (
+              {payoutStatus === "Active" && paystackRecipientCode ? (
                 <p className="text-green-400 font-bold mt-1">
                   {payoutMethod} • {payoutProvider}
                 </p>
@@ -1414,6 +1534,12 @@ export default function AdminPage() {
                   {payoutAccountNumber || "Not provided"}
                 </span>
               </p>
+              <p className="text-sm text-zinc-400 mt-1">
+                Recipient code:{" "}
+                <span className="text-white font-semibold">
+                  {paystackRecipientCode || "Not created yet"}
+                </span>
+              </p>
             </div>
           )}
 
@@ -1433,9 +1559,9 @@ export default function AdminPage() {
                 </div>
               )}
 
-              {payoutStatus !== "Active" && (
+              {(!paystackRecipientCode || payoutStatus !== "Active") && (
                 <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl p-4 text-sm">
-                  Connect your payout account before requesting a withdrawal.
+                  Connect your payout account with Paystack before requesting a withdrawal.
                 </div>
               )}
 
@@ -1444,7 +1570,8 @@ export default function AdminPage() {
                 disabled={
                   withdrawLoading ||
                   verificationStatus !== "verified" ||
-                  payoutStatus !== "Active"
+                  payoutStatus !== "Active" ||
+                  !paystackRecipientCode
                 }
                 className="bg-cyan-600 hover:bg-cyan-700 px-8 py-4 rounded-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -1452,7 +1579,7 @@ export default function AdminPage() {
                   ? "Submitting..."
                   : verificationStatus !== "verified"
                   ? t.verificationRequired
-                  : payoutStatus !== "Active"
+                  : !paystackRecipientCode
                   ? "Connect Payout Account"
                   : t.requestPayout}
               </button>
