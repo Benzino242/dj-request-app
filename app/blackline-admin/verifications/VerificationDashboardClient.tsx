@@ -12,6 +12,10 @@ type DJ = {
   payout_email?: string | null;
   payout_method?: string | null;
   payout_status?: string | null;
+  payout_provider?: string | null;
+  payout_account_name?: string | null;
+  payout_account_number?: string | null;
+  paystack_recipient_code?: string | null;
   verification_status?: string | null;
   profile_image?: string | null;
 };
@@ -574,6 +578,49 @@ export default function VerificationDashboardClient() {
                         <p className="text-sm text-zinc-500 mt-1">
                           Payout email: {dj.payout_email || "Not provided"}
                         </p>
+
+                        <div className="mt-4 grid md:grid-cols-2 gap-3">
+  <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+    <p className="text-xs text-zinc-500">Payout Status</p>
+    <p
+      className={`font-bold ${
+        dj.payout_status === "Active"
+          ? "text-green-400"
+          : "text-red-400"
+      }`}
+    >
+      {dj.payout_status === "Active" ? "🟢 Active" : "🔴 Not Connected"}
+    </p>
+  </div>
+
+  <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+    <p className="text-xs text-zinc-500">Provider</p>
+    <p className="font-bold text-white">
+      {dj.payout_provider || "Not provided"}
+    </p>
+  </div>
+
+  <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+    <p className="text-xs text-zinc-500">Account Name</p>
+    <p className="font-bold text-white">
+      {dj.payout_account_name || "Not provided"}
+    </p>
+  </div>
+
+  <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+    <p className="text-xs text-zinc-500">Account Number</p>
+    <p className="font-bold text-white">
+      {dj.payout_account_number || "Not provided"}
+    </p>
+  </div>
+
+  <div className="bg-black/40 border border-zinc-800 rounded-xl p-3 md:col-span-2">
+    <p className="text-xs text-zinc-500">Paystack Recipient Code</p>
+    <p className="font-bold text-zinc-300">
+      {dj.paystack_recipient_code || "Not created yet"}
+    </p>
+  </div>
+</div>
 
                         <p className="mt-3 font-bold">
                           Status:{" "}
