@@ -32,13 +32,20 @@ export async function GET() {
     .from("requests")
     .select("id, dj_id, tip_amount, tip_currency, status");
 
-  if (djError || withdrawalError || requestError) {
+  const { data: auditLogs, error: auditLogError } = await supabaseAdmin
+    .from("audit_logs")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  if (djError || withdrawalError || requestError || auditLogError) {
     return NextResponse.json(
       {
         error:
           djError?.message ||
           withdrawalError?.message ||
-          requestError?.message,
+          requestError?.message ||
+          auditLogError?.message,
       },
       { status: 500 }
     );
@@ -108,6 +115,7 @@ export async function GET() {
     djs: djs || [],
     withdrawals: withdrawals || [],
     djEarnings,
+    auditLogs: auditLogs || [],
   });
 }
 
@@ -132,34 +140,34 @@ export async function PATCH(request: Request) {
   const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 
   if (type === "withdrawal") {
+    const { data: withdrawalBeforeUpdate, error: withdrawalFetchError } =
+      await supabaseAdmin
+        .from("withdrawals")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+    if (withdrawalFetchError || !withdrawalBeforeUpdate) {
+      return NextResponse.json(
+        {
+          error:
+            withdrawalFetchError?.message || "Withdrawal request not found",
+        },
+        { status: 404 }
+      );
+    }
+
     if (status === "approved") {
-      const { data: withdrawal, error: withdrawalFetchError } =
-        await supabaseAdmin
-          .from("withdrawals")
-          .select("*")
-          .eq("id", id)
-          .single();
-
-      if (withdrawalFetchError || !withdrawal) {
-        return NextResponse.json(
-          {
-            error:
-              withdrawalFetchError?.message || "Withdrawal request not found",
-          },
-          { status: 404 }
-        );
-      }
-
       const { data: requests, error: requestError } = await supabaseAdmin
         .from("requests")
         .select("id, dj_id, tip_amount, tip_currency, status")
-        .eq("dj_id", withdrawal.dj_id);
+        .eq("dj_id", withdrawalBeforeUpdate.dj_id);
 
       const { data: djWithdrawals, error: withdrawalError } =
         await supabaseAdmin
           .from("withdrawals")
           .select("*")
-          .eq("dj_id", withdrawal.dj_id);
+          .eq("dj_id", withdrawalBeforeUpdate.dj_id);
 
       if (requestError || withdrawalError) {
         return NextResponse.json(
@@ -180,7 +188,7 @@ export async function PATCH(request: Request) {
 
       const activeWithdrawals = (djWithdrawals || []).filter(
         (item) =>
-          item.id !== withdrawal.id &&
+          item.id !== withdrawalBeforeUpdate.id &&
           ["pending", "approved", "paid"].includes(item.status || "")
       );
 
@@ -191,13 +199,13 @@ export async function PATCH(request: Request) {
 
       const availableBalance = djRevenue - totalWithdrawals;
 
-      if (Number(withdrawal.amount || 0) > availableBalance) {
+      if (Number(withdrawalBeforeUpdate.amount || 0) > availableBalance) {
         return NextResponse.json(
           {
             error: `Insufficient DJ balance. Available balance is ${availableBalance.toFixed(
               2
             )}, but withdrawal request is ${Number(
-              withdrawal.amount || 0
+              withdrawalBeforeUpdate.amount || 0
             ).toFixed(2)}.`,
           },
           { status: 400 }
@@ -214,10 +222,44 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    await supabaseAdmin.from("audit_logs").insert([
+      {
+        action_type: status,
+        entity_type: "withdrawal",
+        entity_id: id,
+        description: `Withdrawal for ${
+          withdrawalBeforeUpdate.dj_name || "Unknown DJ"
+        } changed from ${
+          withdrawalBeforeUpdate.status || "unknown"
+        } to ${status}`,
+        metadata: {
+          dj_id: withdrawalBeforeUpdate.dj_id,
+          dj_name: withdrawalBeforeUpdate.dj_name,
+          amount: withdrawalBeforeUpdate.amount,
+          currency: withdrawalBeforeUpdate.currency,
+          previous_status: withdrawalBeforeUpdate.status,
+          new_status: status,
+        },
+      },
+    ]);
+
     return NextResponse.json({ success: true });
   }
 
   if (type === "dj") {
+    const { data: djBeforeUpdate, error: djFetchError } = await supabaseAdmin
+      .from("djs")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (djFetchError || !djBeforeUpdate) {
+      return NextResponse.json(
+        { error: djFetchError?.message || "DJ not found" },
+        { status: 404 }
+      );
+    }
+
     const { error } = await supabaseAdmin
       .from("djs")
       .update({ verification_status: status })
@@ -226,6 +268,24 @@ export async function PATCH(request: Request) {
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
+
+    await supabaseAdmin.from("audit_logs").insert([
+      {
+        action_type: status,
+        entity_type: "dj",
+        entity_id: id,
+        description: `DJ ${djBeforeUpdate.stage_name || "Unknown DJ"} verification changed from ${
+          djBeforeUpdate.verification_status || "not_started"
+        } to ${status}`,
+        metadata: {
+          dj_id: djBeforeUpdate.id,
+          stage_name: djBeforeUpdate.stage_name,
+          email: djBeforeUpdate.email,
+          previous_status: djBeforeUpdate.verification_status,
+          new_status: status,
+        },
+      },
+    ]);
 
     return NextResponse.json({ success: true });
   }
