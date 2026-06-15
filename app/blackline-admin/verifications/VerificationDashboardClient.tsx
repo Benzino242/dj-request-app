@@ -954,8 +954,13 @@ export default function VerificationDashboardClient() {
 
           await fetchDashboardData();
         } catch (error) {
-          console.error(error);
-          alert("Failed to send payout.");
+          console.error("PAY NOW BUTTON ERROR:", error);
+        
+          alert(
+            error instanceof Error
+              ? `PAY NOW BUTTON ERROR: ${error.message}`
+              : `PAY NOW BUTTON ERROR: ${JSON.stringify(error)}`
+          );
         } finally {
           setWithdrawalActionLoadingId(null);
         }
