@@ -941,7 +941,10 @@ export default function VerificationDashboardClient() {
           const result = await response.json();
 
           if (!response.ok) {
-            alert(result.error || "Failed to send payout.");
+            console.error("SEND PAYOUT ERROR:", result);
+          
+            alert(JSON.stringify(result, null, 2));
+          
             return;
           }
 
