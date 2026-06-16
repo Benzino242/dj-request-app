@@ -231,17 +231,30 @@ export default function VerificationDashboardClient() {
   const dashboardCurrency = djEarnings[0]?.currency || "GHS";
 
   const sortedDjs = [...djs].sort((a, b) => {
-    const priority: Record<string, number> = {
-      pending: 1,
-      rejected: 2,
-      verified: 3,
-      not_started: 4,
-    };
-
-    return (
-      (priority[a.verification_status || "not_started"] || 5) -
-      (priority[b.verification_status || "not_started"] || 5)
-    );
+    function getDjPriority(dj: DJ) {
+      const djWithdrawals = withdrawals.filter(
+        (withdrawal) => withdrawal.dj_id === dj.id
+      );
+  
+      const hasApprovedWithdrawal = djWithdrawals.some(
+        (withdrawal) => withdrawal.status === "approved"
+      );
+  
+      const hasPendingWithdrawal = djWithdrawals.some(
+        (withdrawal) => withdrawal.status === "pending"
+      );
+  
+      if (dj.verification_status === "pending") return 1;
+      if (hasApprovedWithdrawal) return 2;
+      if (hasPendingWithdrawal) return 3;
+      if (dj.verification_status === "verified") return 4;
+      if (dj.verification_status === "not_started") return 5;
+      if (dj.verification_status === "rejected") return 6;
+  
+      return 7;
+    }
+  
+    return getDjPriority(a) - getDjPriority(b);
   });
 
   const sortedWithdrawals = withdrawals
