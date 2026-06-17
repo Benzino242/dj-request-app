@@ -97,9 +97,12 @@ export default function VerificationDashboardClient() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/blackline-admin/dashboard", {
-        cache: "no-store",
-      });
+      const response = await fetch(
+        `/api/blackline-admin/dashboard?t=${Date.now()}`,
+        {
+          cache: "no-store",
+        }
+      );
 
       const result = await response.json();
 
