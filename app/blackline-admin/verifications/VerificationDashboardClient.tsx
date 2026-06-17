@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "../../../lib/supabase";
 
 type DJ = {
@@ -92,12 +92,19 @@ export default function VerificationDashboardClient() {
   const [withdrawalSearch, setWithdrawalSearch] = useState("");
   const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const isFetchingDashboardRef = useRef(false);
 
   async function fetchDashboardData(showLoader = false) {
+    if (isFetchingDashboardRef.current) {
+      return;
+    }
+
+    isFetchingDashboardRef.current = true;
+
     if (showLoader) {
       setLoading(true);
     }
-  
+
     try {
       const response = await fetch(
         `/api/blackline-admin/dashboard?t=${Date.now()}`,
@@ -111,9 +118,6 @@ export default function VerificationDashboardClient() {
       if (!response.ok) {
         console.error("BLACKLINE DASHBOARD API ERROR:", result);
         alert(result.error || "Failed to load Blackline dashboard data");
-        if (showLoader) {
-          setLoading(false);
-        }
         return;
       }
 
@@ -124,9 +128,15 @@ export default function VerificationDashboardClient() {
     } catch (error) {
       console.error("BLACKLINE DASHBOARD FETCH ERROR:", error);
       alert("Failed to connect to Blackline dashboard API");
-    }
+    } finally {
+      isFetchingDashboardRef.current = false;
 
-    setLoading(false);
+      if (showLoader) {
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
+    }
   }
 
   useEffect(() => {
