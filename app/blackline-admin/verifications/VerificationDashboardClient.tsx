@@ -928,28 +928,75 @@ export default function VerificationDashboardClient() {
 {withdrawal.status === "approved" && (
   <>
     <button
+      disabled
+      title="Automatic Paystack payouts require a Registered Business account."
+      className="bg-zinc-700 text-zinc-400 px-4 py-2 rounded-xl opacity-60 cursor-not-allowed"
+    >
+      💸 Pay Now Coming Soon
+    </button>
+
+    <button
       disabled={withdrawalActionLoadingId === withdrawal.id}
-      onClick={async () => {
-        const confirmed = window.confirm(
-          `Send ${withdrawal.currency || "GHS"} ${
+      onClick={() =>
+        setConfirmAction({
+          kind: "withdrawal",
+          id: withdrawal.id,
+          status: "paid",
+          title: "Mark Withdrawal as Paid",
+          message: `Only mark this as paid after ${
+            withdrawal.dj_name || "the DJ"
+          } has actually received ${withdrawal.currency || "GHS"} ${
             withdrawal.amount
-          } to ${withdrawal.dj_name || "this DJ"} using Paystack test mode?`
-        );
+          } manually.`,
+          confirmText: "Mark Paid Manually",
+          buttonClass: "bg-green-600 hover:bg-green-700",
+        })
+      }
+      className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl disabled:opacity-50"
+    >
+      Mark Paid Manually
+    </button>
 
-        if (!confirmed) return;
+    <button
+      disabled={withdrawalActionLoadingId === withdrawal.id}
+      onClick={() =>
+        setConfirmAction({
+          kind: "withdrawal",
+          id: withdrawal.id,
+          status: "rejected",
+          title: "Reject Withdrawal",
+          message: `Are you sure you want to reject this withdrawal request from ${
+            withdrawal.dj_name || "this DJ"
+          }?`,
+          confirmText: "Reject Withdrawal",
+          buttonClass: "bg-red-600 hover:bg-red-700",
+        })
+      }
+      className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl disabled:opacity-50"
+    >
+      Reject
+    </button>
 
-        try {
-          setWithdrawalActionLoadingId(withdrawal.id);
-
-          const response = await fetch("/api/paystack/send-payout", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              withdrawalId: withdrawal.id,
-            }),
-          });
+    <button
+      disabled={withdrawalActionLoadingId === withdrawal.id}
+      onClick={() =>
+        setConfirmAction({
+          kind: "withdrawal",
+          id: withdrawal.id,
+          status: "pending",
+          title: "Mark Withdrawal as Pending",
+          message:
+            "Are you sure you want to move this withdrawal request back to pending?",
+          confirmText: "Mark Pending",
+          buttonClass: "bg-zinc-700 hover:bg-zinc-600",
+        })
+      }
+      className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:opacity-50"
+    >
+      Mark Pending
+    </button>
+  </>
+)}
 
           const result = await response.json();
 
