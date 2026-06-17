@@ -995,9 +995,13 @@ export default function VerificationDashboardClient() {
     >
       Mark Pending
     </button>
+
+    <p className="mt-3 text-xs text-yellow-400">
+      Automatic payouts require Paystack Registered Business approval.
+      Use "Mark Paid Manually" until Paystack enables transfers.
+    </p>
   </>
 )}
-
 
 {withdrawal.status === "paid" && (
   <span className="bg-green-600/20 text-green-400 px-4 py-2 rounded-xl font-semibold">
