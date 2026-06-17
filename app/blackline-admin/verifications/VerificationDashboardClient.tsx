@@ -375,6 +375,16 @@ export default function VerificationDashboardClient() {
     if (entityType === "dj") return "🎧";
     return "📝";
   }
+  
+  function getWithdrawalAuditLogs(withdrawalId: number) {
+    return auditLogs
+      .filter(
+        (log) =>
+          log.entity_type === "withdrawal" &&
+          log.entity_id === withdrawalId
+      )
+      .slice(0, 3);
+  }
 
   function exportWithdrawalsCSV() {
     const headers = [
@@ -876,6 +886,29 @@ export default function VerificationDashboardClient() {
                   >
                     {withdrawalStatusLabel(withdrawal.status)}
                   </p>
+                  {getWithdrawalAuditLogs(withdrawal.id).length > 0 && (
+  <div className="mt-4 bg-black/40 border border-zinc-800 rounded-xl p-3">
+    <p className="text-xs text-zinc-500 mb-2">
+      Withdrawal Audit Trail
+    </p>
+
+    <div className="space-y-2">
+      {getWithdrawalAuditLogs(withdrawal.id).map((log) => (
+        <div key={log.id}>
+          <p className="text-sm text-zinc-300">
+            {log.description}
+          </p>
+
+          <p className="text-xs text-zinc-600">
+            {log.created_at
+              ? new Date(log.created_at).toLocaleString()
+              : "Unknown time"}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
                 </div>
 
                 <div className="flex flex-wrap gap-3">
