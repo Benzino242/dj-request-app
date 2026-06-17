@@ -93,9 +93,11 @@ export default function VerificationDashboardClient() {
   const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
-  async function fetchDashboardData() {
-    setLoading(true);
-
+  async function fetchDashboardData(showLoader = false) {
+    if (showLoader) {
+      setLoading(true);
+    }
+  
     try {
       const response = await fetch(
         `/api/blackline-admin/dashboard?t=${Date.now()}`,
@@ -109,7 +111,9 @@ export default function VerificationDashboardClient() {
       if (!response.ok) {
         console.error("BLACKLINE DASHBOARD API ERROR:", result);
         alert(result.error || "Failed to load Blackline dashboard data");
-        setLoading(false);
+        if (showLoader) {
+          setLoading(false);
+        }
         return;
       }
 
@@ -126,7 +130,7 @@ export default function VerificationDashboardClient() {
   }
 
   useEffect(() => {
-    fetchDashboardData();
+    fetchDashboardData(true);
   
     const refreshInterval = setInterval(() => {
       fetchDashboardData();
