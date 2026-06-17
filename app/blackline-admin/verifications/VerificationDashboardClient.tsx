@@ -124,7 +124,11 @@ export default function VerificationDashboardClient() {
 
   useEffect(() => {
     fetchDashboardData();
-
+  
+    const refreshInterval = setInterval(() => {
+      fetchDashboardData();
+    }, 10000);
+  
     const channel = supabase
       .channel("blackline-verification-dashboard")
       .on(
@@ -172,8 +176,9 @@ export default function VerificationDashboardClient() {
         }
       )
       .subscribe();
-
+  
     return () => {
+      clearInterval(refreshInterval);
       supabase.removeChannel(channel);
     };
   }, []);
