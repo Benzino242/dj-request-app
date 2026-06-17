@@ -363,19 +363,29 @@ export default function VerificationDashboardClient() {
 
   async function handleConfirmAction() {
     if (!confirmAction) return;
-
+  
+    const currentScrollY =
+      typeof window !== "undefined" ? window.scrollY : 0;
+  
     setConfirmLoading(true);
-
+  
     if (confirmAction.kind === "dj") {
       await updateVerificationStatus(confirmAction.id, confirmAction.status);
     }
-
+  
     if (confirmAction.kind === "withdrawal") {
       await updateWithdrawalStatus(confirmAction.id, confirmAction.status);
     }
-
+  
     setConfirmLoading(false);
     setConfirmAction(null);
+  
+    setTimeout(() => {
+      window.scrollTo({
+        top: currentScrollY,
+        behavior: "instant",
+      });
+    }, 50);
   }
 
   function withdrawalStatusColor(status?: string | null) {
