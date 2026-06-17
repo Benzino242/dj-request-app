@@ -887,7 +887,7 @@ export default function VerificationDashboardClient() {
                     {withdrawalStatusLabel(withdrawal.status)}
                   </p>
                   {getWithdrawalAuditLogs(withdrawal.id).length > 0 && (
-  <div className="mt-4 bg-black/40 border border-zinc-800 rounded-xl p-3">
+  <div className="mt-4 w-full bg-black/40 border border-zinc-800 rounded-xl p-3">
     <p className="text-xs text-zinc-500 mb-2">
       Withdrawal Audit Trail
     </p>

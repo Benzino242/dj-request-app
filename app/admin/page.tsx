@@ -608,6 +608,13 @@ export default function AdminPage() {
   async function requestWithdrawal() {
     if (!dj) return;
 
+    if (hasOpenWithdrawal) {
+      alert(
+        "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one."
+      );
+      return;
+    }
+
     if (verificationStatus !== "verified") {
       alert("Verification required before withdrawals can be requested.");
       return;
@@ -707,6 +714,12 @@ export default function AdminPage() {
   const totalWithdrawals = withdrawals
     .filter((item) => ["pending", "approved", "paid"].includes(item.status))
     .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+    const hasOpenWithdrawal = withdrawals.some(
+      (withdrawal) =>
+        withdrawal.status === "pending" ||
+        withdrawal.status === "approved"
+    );
 
   if (authLoading) {
     return (
@@ -1565,13 +1578,19 @@ export default function AdminPage() {
                 </div>
               )}
 
+{hasOpenWithdrawal && (
+  <div className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 rounded-xl p-4 text-sm">
+    You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.
+  </div>
+)}
               <button
                 onClick={requestWithdrawal}
                 disabled={
                   withdrawLoading ||
                   verificationStatus !== "verified" ||
                   payoutStatus !== "Active" ||
-                  !paystackRecipientCode
+                  !paystackRecipientCode ||
+                  hasOpenWithdrawal
                 }
                 className="bg-cyan-600 hover:bg-cyan-700 px-8 py-4 rounded-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
