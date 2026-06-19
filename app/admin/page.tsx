@@ -188,6 +188,8 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const isFetchingDashboardRef = useRef(false);
+  const requestQueueRef = useRef<HTMLDivElement | null>(null);
+const previousRequestCountRef = useRef(0);
   const lastScrollYRef = useRef(0);
   const scrollStorageKey = "blackline-dj-admin-scroll-y";
 
@@ -672,17 +674,34 @@ export default function AdminPage() {
     document.addEventListener("visibilitychange", handleVisibleRefresh);
 
     const requestsChannel = supabase
-      .channel(`admin-live-requests-${activeDj.id}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "requests",
-          filter: `dj_id=eq.${activeDj.id}`,
-        },
-        () => refreshDashboardIfVisible()
-      )
+    .channel(`admin-live-requests-${activeDj.id}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "requests",
+        filter: `dj_id=eq.${activeDj.id}`,
+      },
+      async () => {
+        await refreshDashboardIfVisible();
+  
+        requestQueueRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    )
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "requests",
+        filter: `dj_id=eq.${activeDj.id}`,
+      },
+      () => refreshDashboardIfVisible()
+    )
       .subscribe();
 
     const paymentsChannel = supabase
@@ -1045,7 +1064,10 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8 mb-10">
+      <div
+  ref={requestQueueRef}
+  className="grid md:grid-cols-2 gap-8 mb-10"
+>
         <RequestColumn
           title={`${t.pendingRequests} (${grouped.pending.length})`}
           titleColor="text-yellow-400"
