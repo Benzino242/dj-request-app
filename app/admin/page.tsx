@@ -477,6 +477,18 @@ export default function AdminPage() {
     setProfileImage(data.publicUrl);
   }
 
+
+  function restoreScrollPosition(scrollY: number) {
+    if (typeof window === "undefined") return;
+
+    window.requestAnimationFrame(() => {
+      window.scrollTo({
+        top: scrollY,
+        behavior: "auto",
+      });
+    });
+  }
+
   async function fetchDashboardData() {
     if (!dj) return;
 
@@ -560,22 +572,33 @@ export default function AdminPage() {
   }, [dj]);
 
   async function updateStatus(id: number, status: RequestStatus) {
+    const currentScrollY =
+      typeof window !== "undefined" ? window.scrollY : 0;
+
     setActionLoadingId(id);
     await supabase.from("requests").update({ status }).eq("id", id);
     await fetchDashboardData();
     setActionLoadingId(null);
+    restoreScrollPosition(currentScrollY);
   }
 
   async function deleteRequest(id: number) {
     if (!window.confirm("Delete this request?")) return;
 
+    const currentScrollY =
+      typeof window !== "undefined" ? window.scrollY : 0;
+
     setActionLoadingId(id);
     await supabase.from("requests").delete().eq("id", id);
     await fetchDashboardData();
     setActionLoadingId(null);
+    restoreScrollPosition(currentScrollY);
   }
 
   async function moveRequest(requestId: number, direction: "up" | "down") {
+    const currentScrollY =
+      typeof window !== "undefined" ? window.scrollY : 0;
+
     const currentIndex = grouped.accepted.findIndex(
       (request) => request.id === requestId
     );
@@ -603,10 +626,14 @@ export default function AdminPage() {
     await fetchDashboardData();
 
     setActionLoadingId(null);
+    restoreScrollPosition(currentScrollY);
   }
 
   async function requestWithdrawal() {
     if (!dj) return;
+
+    const currentScrollY =
+      typeof window !== "undefined" ? window.scrollY : 0;
 
     if (hasOpenWithdrawal) {
       alert(
@@ -676,6 +703,7 @@ export default function AdminPage() {
     await fetchDashboardData();
 
     setWithdrawLoading(false);
+    restoreScrollPosition(currentScrollY);
   }
 
   const grouped = useMemo(() => {
