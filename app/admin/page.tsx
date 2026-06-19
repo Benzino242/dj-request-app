@@ -85,6 +85,9 @@ type PaystackBank = {
 
 export default function AdminPage() {
   const [dj, setDj] = useState<DJ | null>(null);
+  useEffect(() => {
+    console.log("DJ CHANGED", dj?.id, new Date().toISOString());
+  }, [dj]);
   const [authLoading, setAuthLoading] = useState(true);
    
   useEffect(() => {
