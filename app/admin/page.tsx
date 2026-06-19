@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import QRCodeBox from "../components/QRCodeBox";
 import { translations, Language } from "../lib/translations";
@@ -120,6 +120,7 @@ export default function AdminPage() {
 
   const t = translations[language];
 
+  const [scrollReady, setScrollReady] = useState(false);
   const scrollRestoreTimeoutsRef = useRef<number[]>([]);
   const scrollKey = dj?.id
     ? `blackline-dj-dashboard-scroll-${dj.id}`
@@ -132,20 +133,25 @@ export default function AdminPage() {
   }
 
   function restoreScrollPosition(forcedScrollY?: number) {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") return false;
 
     const savedScroll =
       typeof forcedScrollY === "number"
         ? forcedScrollY
         : Number(sessionStorage.getItem(scrollKey) || 0);
 
-    if (!Number.isFinite(savedScroll) || savedScroll <= 0) return;
+    if (!Number.isFinite(savedScroll) || savedScroll <= 0) return false;
 
     scrollRestoreTimeoutsRef.current.forEach((timeoutId) => {
       window.clearTimeout(timeoutId);
     });
 
-    scrollRestoreTimeoutsRef.current = [0, 50, 150, 300, 600].map((delay) =>
+    window.scrollTo({
+      top: savedScroll,
+      behavior: "auto",
+    });
+
+    scrollRestoreTimeoutsRef.current = [0, 25, 75, 150, 300].map((delay) =>
       window.setTimeout(() => {
         window.scrollTo({
           top: savedScroll,
@@ -153,9 +159,11 @@ export default function AdminPage() {
         });
       }, delay)
     );
+
+    return true;
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (typeof window === "undefined") return;
 
     const previousScrollRestoration = window.history.scrollRestoration;
@@ -171,7 +179,13 @@ export default function AdminPage() {
       }
 
       if (document.visibilityState === "visible") {
+        setScrollReady(false);
         restoreScrollPosition();
+
+        window.setTimeout(() => {
+          restoreScrollPosition();
+          setScrollReady(true);
+        }, 80);
       }
     };
 
@@ -181,7 +195,13 @@ export default function AdminPage() {
 
     restoreScrollPosition();
 
+    const initialReadyTimeout = window.setTimeout(() => {
+      restoreScrollPosition();
+      setScrollReady(true);
+    }, 80);
+
     return () => {
+      window.clearTimeout(initialReadyTimeout);
       window.history.scrollRestoration = previousScrollRestoration;
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("beforeunload", saveScrollPosition);
@@ -844,7 +864,10 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white p-3 md:p-6">
+    <main
+      className="min-h-screen bg-black text-white p-3 md:p-6"
+      style={{ opacity: scrollReady ? 1 : 0 }}
+    >
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={handleLogout}
