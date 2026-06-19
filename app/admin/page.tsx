@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import QRCodeBox from "../components/QRCodeBox";
 import { translations, Language } from "../lib/translations";
@@ -85,28 +85,11 @@ type PaystackBank = {
 
 export default function AdminPage() {
   const [dj, setDj] = useState<DJ | null>(null);
-  useEffect(() => {
-    console.log("DJ CHANGED", dj?.id, new Date().toISOString());
-  }, [dj]);
+  const djRef = useRef<DJ | null>(null);
+  const lastScrollYRef = useRef(0);
+  const initialDashboardLoadRef = useRef(true);
+
   const [authLoading, setAuthLoading] = useState(true);
-   
-  useEffect(() => {
-    fetchDashboardData();
-  
-    const refreshInterval = setInterval(() => {
-      console.log(
-        "REFRESHING DASHBOARD",
-        window.scrollY,
-        new Date().toISOString()
-      );
-  
-      fetchDashboardData();
-    }, 10000);
-  
-    return () => {
-      clearInterval(refreshInterval);
-    };
-  }, []);
 
   const [bio, setBio] = useState("");
   const [city, setCity] = useState("");
@@ -148,6 +131,11 @@ export default function AdminPage() {
 
   function restoreScrollPosition(scrollY: number) {
     if (typeof window === "undefined") return;
+    if (!scrollY || scrollY < 1) return;
+
+    lastScrollYRef.current = scrollY;
+
+    window.scrollTo({ top: scrollY, behavior: "auto" });
 
     window.requestAnimationFrame(() => {
       window.scrollTo({ top: scrollY, behavior: "auto" });
@@ -156,6 +144,10 @@ export default function AdminPage() {
     window.setTimeout(() => {
       window.scrollTo({ top: scrollY, behavior: "auto" });
     }, 50);
+
+    window.setTimeout(() => {
+      window.scrollTo({ top: scrollY, behavior: "auto" });
+    }, 150);
   }
 
   function getCurrencyForCountry(selectedCountry: string) {
@@ -208,6 +200,47 @@ export default function AdminPage() {
 
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
+
+  useEffect(() => {
+    djRef.current = dj;
+  }, [dj]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const saveScrollPosition = () => {
+      lastScrollYRef.current = window.scrollY;
+    };
+
+    const restoreAfterTabReturn = () => {
+      if (document.visibilityState === "hidden") {
+        saveScrollPosition();
+        return;
+      }
+
+      restoreScrollPosition(lastScrollYRef.current);
+    };
+
+    const restoreOnFocus = () => {
+      restoreScrollPosition(lastScrollYRef.current);
+    };
+
+    saveScrollPosition();
+
+    window.addEventListener("scroll", saveScrollPosition, { passive: true });
+    window.addEventListener("pagehide", saveScrollPosition);
+    window.addEventListener("blur", saveScrollPosition);
+    window.addEventListener("focus", restoreOnFocus);
+    document.addEventListener("visibilitychange", restoreAfterTabReturn);
+
+    return () => {
+      window.removeEventListener("scroll", saveScrollPosition);
+      window.removeEventListener("pagehide", saveScrollPosition);
+      window.removeEventListener("blur", saveScrollPosition);
+      window.removeEventListener("focus", restoreOnFocus);
+      document.removeEventListener("visibilitychange", restoreAfterTabReturn);
+    };
+  }, []);
 
   async function loadPaystackBanks(currencyCode: string) {
     if (!currencyCode) return;
@@ -359,7 +392,7 @@ export default function AdminPage() {
       .eq("dj_id", dj.id)
       .in("status", ["accepted", "played"]);
 
-    await fetchDashboardData();
+    await fetchDashboardData(dj);
 
     setDj({
       ...dj,
@@ -525,94 +558,117 @@ export default function AdminPage() {
     setProfileImage(data.publicUrl);
   }
 
-  async function fetchDashboardData() {
-    if (!dj) return;
+  async function fetchDashboardData(targetDj?: DJ | null) {
+    const activeDj = targetDj || djRef.current;
+
+    if (!activeDj) {
+      setLoading(false);
+      return;
+    }
+
+    const scrollBeforeFetch = getCurrentScrollY();
 
     const { data: requestsData } = await supabase
       .from("requests")
       .select("*")
-      .eq("dj_id", dj.id)
+      .eq("dj_id", activeDj.id)
       .order("queue_position", { ascending: true })
       .order("tip_amount", { ascending: false });
 
     const { data: paymentsData } = await supabase
       .from("payments")
       .select("*")
-      .eq("dj_id", dj.id)
+      .eq("dj_id", activeDj.id)
       .order("created_at", { ascending: false });
 
     const { data: withdrawalsData } = await supabase
       .from("withdrawals")
       .select("*")
-      .eq("dj_id", dj.id)
+      .eq("dj_id", activeDj.id)
       .order("created_at", { ascending: false });
 
     setRequests((requestsData || []) as SongRequest[]);
     setPayments((paymentsData || []) as Payment[]);
     setWithdrawals((withdrawalsData || []) as Withdrawal[]);
     setLoading(false);
+
+    if (initialDashboardLoadRef.current) {
+      initialDashboardLoadRef.current = false;
+      return;
+    }
+
+    if (scrollBeforeFetch > 0) {
+      restoreScrollPosition(scrollBeforeFetch);
+    }
   }
 
   useEffect(() => {
     if (!dj) return;
 
-    fetchDashboardData();
+    const activeDj = dj;
+
+    fetchDashboardData(activeDj);
+
+    const refreshInterval = window.setInterval(() => {
+      fetchDashboardData(activeDj);
+    }, 15000);
 
     const requestsChannel = supabase
-      .channel(`admin-live-requests-${dj.id}`)
+      .channel(`admin-live-requests-${activeDj.id}`)
       .on(
         "postgres_changes",
         {
           event: "*",
           schema: "public",
           table: "requests",
-          filter: `dj_id=eq.${dj.id}`,
+          filter: `dj_id=eq.${activeDj.id}`,
         },
-        () => fetchDashboardData()
+        () => fetchDashboardData(activeDj)
       )
       .subscribe();
 
     const paymentsChannel = supabase
-      .channel(`admin-live-payments-${dj.id}`)
+      .channel(`admin-live-payments-${activeDj.id}`)
       .on(
         "postgres_changes",
         {
           event: "*",
           schema: "public",
           table: "payments",
-          filter: `dj_id=eq.${dj.id}`,
+          filter: `dj_id=eq.${activeDj.id}`,
         },
-        () => fetchDashboardData()
+        () => fetchDashboardData(activeDj)
       )
       .subscribe();
 
     const withdrawalsChannel = supabase
-      .channel(`admin-live-withdrawals-${dj.id}`)
+      .channel(`admin-live-withdrawals-${activeDj.id}`)
       .on(
         "postgres_changes",
         {
           event: "*",
           schema: "public",
           table: "withdrawals",
-          filter: `dj_id=eq.${dj.id}`,
+          filter: `dj_id=eq.${activeDj.id}`,
         },
-        () => fetchDashboardData()
+        () => fetchDashboardData(activeDj)
       )
       .subscribe();
 
     return () => {
+      window.clearInterval(refreshInterval);
       supabase.removeChannel(requestsChannel);
       supabase.removeChannel(paymentsChannel);
       supabase.removeChannel(withdrawalsChannel);
     };
-  }, [dj]);
+  }, [dj?.id]);
 
   async function updateStatus(id: number, status: RequestStatus) {
     const currentScrollY = getCurrentScrollY();
 
     setActionLoadingId(id);
     await supabase.from("requests").update({ status }).eq("id", id);
-    await fetchDashboardData();
+    await fetchDashboardData(dj);
     setActionLoadingId(null);
 
     restoreScrollPosition(currentScrollY);
@@ -625,7 +681,7 @@ export default function AdminPage() {
 
     setActionLoadingId(id);
     await supabase.from("requests").delete().eq("id", id);
-    await fetchDashboardData();
+    await fetchDashboardData(dj);
     setActionLoadingId(null);
 
     restoreScrollPosition(currentScrollY);
@@ -658,7 +714,7 @@ export default function AdminPage() {
         .eq("id", reordered[index].id);
     }
 
-    await fetchDashboardData();
+    await fetchDashboardData(dj);
 
     setActionLoadingId(null);
     restoreScrollPosition(currentScrollY);
@@ -734,7 +790,7 @@ export default function AdminPage() {
 
     setWithdrawAmount("");
 
-    await fetchDashboardData();
+    await fetchDashboardData(dj);
 
     setWithdrawLoading(false);
     restoreScrollPosition(currentScrollY);
@@ -777,11 +833,11 @@ export default function AdminPage() {
     .filter((item) => ["pending", "approved", "paid"].includes(item.status))
     .reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
-    const hasOpenWithdrawal = withdrawals.some(
-      (withdrawal) =>
-        withdrawal.status === "pending" ||
-        withdrawal.status === "approved"
-    );
+  const hasOpenWithdrawal = withdrawals.some(
+    (withdrawal) =>
+      withdrawal.status === "pending" ||
+      withdrawal.status === "approved"
+  );
 
   if (authLoading) {
     return (
