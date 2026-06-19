@@ -85,10 +85,6 @@ type PaystackBank = {
 
 export default function AdminPage() {
   const [dj, setDj] = useState<DJ | null>(null);
-  const djRef = useRef<DJ | null>(null);
-  const lastScrollYRef = useRef(0);
-  const initialDashboardLoadRef = useRef(true);
-
   const [authLoading, setAuthLoading] = useState(true);
 
   const [bio, setBio] = useState("");
@@ -131,11 +127,6 @@ export default function AdminPage() {
 
   function restoreScrollPosition(scrollY: number) {
     if (typeof window === "undefined") return;
-    if (!scrollY || scrollY < 1) return;
-
-    lastScrollYRef.current = scrollY;
-
-    window.scrollTo({ top: scrollY, behavior: "auto" });
 
     window.requestAnimationFrame(() => {
       window.scrollTo({ top: scrollY, behavior: "auto" });
@@ -144,10 +135,6 @@ export default function AdminPage() {
     window.setTimeout(() => {
       window.scrollTo({ top: scrollY, behavior: "auto" });
     }, 50);
-
-    window.setTimeout(() => {
-      window.scrollTo({ top: scrollY, behavior: "auto" });
-    }, 150);
   }
 
   function getCurrencyForCountry(selectedCountry: string) {
@@ -200,47 +187,7 @@ export default function AdminPage() {
 
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
-
-  useEffect(() => {
-    djRef.current = dj;
-  }, [dj]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const saveScrollPosition = () => {
-      lastScrollYRef.current = window.scrollY;
-    };
-
-    const restoreAfterTabReturn = () => {
-      if (document.visibilityState === "hidden") {
-        saveScrollPosition();
-        return;
-      }
-
-      restoreScrollPosition(lastScrollYRef.current);
-    };
-
-    const restoreOnFocus = () => {
-      restoreScrollPosition(lastScrollYRef.current);
-    };
-
-    saveScrollPosition();
-
-    window.addEventListener("scroll", saveScrollPosition, { passive: true });
-    window.addEventListener("pagehide", saveScrollPosition);
-    window.addEventListener("blur", saveScrollPosition);
-    window.addEventListener("focus", restoreOnFocus);
-    document.addEventListener("visibilitychange", restoreAfterTabReturn);
-
-    return () => {
-      window.removeEventListener("scroll", saveScrollPosition);
-      window.removeEventListener("pagehide", saveScrollPosition);
-      window.removeEventListener("blur", saveScrollPosition);
-      window.removeEventListener("focus", restoreOnFocus);
-      document.removeEventListener("visibilitychange", restoreAfterTabReturn);
-    };
-  }, []);
+  const isFetchingDashboardRef = useRef(false);
 
   async function loadPaystackBanks(currencyCode: string) {
     if (!currencyCode) return;
@@ -392,7 +339,7 @@ export default function AdminPage() {
       .eq("dj_id", dj.id)
       .in("status", ["accepted", "played"]);
 
-    await fetchDashboardData(dj);
+    await fetchDashboardData();
 
     setDj({
       ...dj,
@@ -559,48 +506,50 @@ export default function AdminPage() {
   }
 
   async function fetchDashboardData(targetDj?: DJ | null) {
-    const activeDj = targetDj || djRef.current;
+    if (isFetchingDashboardRef.current) {
+      return;
+    }
+
+    const activeDj = targetDj || dj;
 
     if (!activeDj) {
       setLoading(false);
       return;
     }
 
-    const scrollBeforeFetch = getCurrentScrollY();
+    isFetchingDashboardRef.current = true;
 
-    const { data: requestsData } = await supabase
-      .from("requests")
-      .select("*")
-      .eq("dj_id", activeDj.id)
-      .order("queue_position", { ascending: true })
-      .order("tip_amount", { ascending: false });
+    try {
+      const { data: requestsData } = await supabase
+        .from("requests")
+        .select("*")
+        .eq("dj_id", activeDj.id)
+        .order("queue_position", { ascending: true })
+        .order("tip_amount", { ascending: false });
 
-    const { data: paymentsData } = await supabase
-      .from("payments")
-      .select("*")
-      .eq("dj_id", activeDj.id)
-      .order("created_at", { ascending: false });
+      const { data: paymentsData } = await supabase
+        .from("payments")
+        .select("*")
+        .eq("dj_id", activeDj.id)
+        .order("created_at", { ascending: false });
 
-    const { data: withdrawalsData } = await supabase
-      .from("withdrawals")
-      .select("*")
-      .eq("dj_id", activeDj.id)
-      .order("created_at", { ascending: false });
+      const { data: withdrawalsData } = await supabase
+        .from("withdrawals")
+        .select("*")
+        .eq("dj_id", activeDj.id)
+        .order("created_at", { ascending: false });
 
-    setRequests((requestsData || []) as SongRequest[]);
-    setPayments((paymentsData || []) as Payment[]);
-    setWithdrawals((withdrawalsData || []) as Withdrawal[]);
-    setLoading(false);
-
-    if (initialDashboardLoadRef.current) {
-      initialDashboardLoadRef.current = false;
-      return;
-    }
-
-    if (scrollBeforeFetch > 0) {
-      restoreScrollPosition(scrollBeforeFetch);
+      setRequests((requestsData || []) as SongRequest[]);
+      setPayments((paymentsData || []) as Payment[]);
+      setWithdrawals((withdrawalsData || []) as Withdrawal[]);
+    } catch (error) {
+      console.error("DASHBOARD FETCH ERROR:", error);
+    } finally {
+      isFetchingDashboardRef.current = false;
+      setLoading(false);
     }
   }
+
 
   useEffect(() => {
     if (!dj) return;
@@ -609,9 +558,9 @@ export default function AdminPage() {
 
     fetchDashboardData(activeDj);
 
-    const refreshInterval = window.setInterval(() => {
+    const refreshInterval = setInterval(() => {
       fetchDashboardData(activeDj);
-    }, 15000);
+    }, 10000);
 
     const requestsChannel = supabase
       .channel(`admin-live-requests-${activeDj.id}`)
@@ -656,7 +605,7 @@ export default function AdminPage() {
       .subscribe();
 
     return () => {
-      window.clearInterval(refreshInterval);
+      clearInterval(refreshInterval);
       supabase.removeChannel(requestsChannel);
       supabase.removeChannel(paymentsChannel);
       supabase.removeChannel(withdrawalsChannel);
@@ -668,7 +617,7 @@ export default function AdminPage() {
 
     setActionLoadingId(id);
     await supabase.from("requests").update({ status }).eq("id", id);
-    await fetchDashboardData(dj);
+    await fetchDashboardData();
     setActionLoadingId(null);
 
     restoreScrollPosition(currentScrollY);
@@ -681,7 +630,7 @@ export default function AdminPage() {
 
     setActionLoadingId(id);
     await supabase.from("requests").delete().eq("id", id);
-    await fetchDashboardData(dj);
+    await fetchDashboardData();
     setActionLoadingId(null);
 
     restoreScrollPosition(currentScrollY);
@@ -714,7 +663,7 @@ export default function AdminPage() {
         .eq("id", reordered[index].id);
     }
 
-    await fetchDashboardData(dj);
+    await fetchDashboardData();
 
     setActionLoadingId(null);
     restoreScrollPosition(currentScrollY);
@@ -790,7 +739,7 @@ export default function AdminPage() {
 
     setWithdrawAmount("");
 
-    await fetchDashboardData(dj);
+    await fetchDashboardData();
 
     setWithdrawLoading(false);
     restoreScrollPosition(currentScrollY);
@@ -833,11 +782,11 @@ export default function AdminPage() {
     .filter((item) => ["pending", "approved", "paid"].includes(item.status))
     .reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
-  const hasOpenWithdrawal = withdrawals.some(
-    (withdrawal) =>
-      withdrawal.status === "pending" ||
-      withdrawal.status === "approved"
-  );
+    const hasOpenWithdrawal = withdrawals.some(
+      (withdrawal) =>
+        withdrawal.status === "pending" ||
+        withdrawal.status === "approved"
+    );
 
   if (authLoading) {
     return (
