@@ -86,6 +86,14 @@ type PaystackBank = {
 export default function AdminPage() {
   const [dj, setDj] = useState<DJ | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
+   
+  useEffect(() => {
+    console.log("DJ ADMIN PAGE MOUNTED", new Date().toISOString());
+  
+    return () => {
+      console.log("DJ ADMIN PAGE UNMOUNTED", new Date().toISOString());
+    };
+  }, []);
 
   const [bio, setBio] = useState("");
   const [city, setCity] = useState("");
