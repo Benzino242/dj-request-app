@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import QRCodeBox from "../components/QRCodeBox";
 import { translations, Language } from "../lib/translations";
@@ -188,6 +188,88 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const isFetchingDashboardRef = useRef(false);
+  const lastScrollYRef = useRef(0);
+  const scrollStorageKey = "blackline-dj-admin-scroll-y";
+
+  function saveDashboardScrollPosition() {
+    if (typeof window === "undefined") return;
+
+    lastScrollYRef.current = window.scrollY;
+    window.sessionStorage.setItem(scrollStorageKey, String(window.scrollY));
+  }
+
+  function restoreSavedDashboardScrollPosition() {
+    if (typeof window === "undefined") return;
+
+    const savedScroll = Number(
+      window.sessionStorage.getItem(scrollStorageKey) || lastScrollYRef.current || 0
+    );
+
+    if (!savedScroll || Number.isNaN(savedScroll)) return;
+
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: savedScroll, behavior: "auto" });
+    });
+
+    window.setTimeout(() => {
+      window.scrollTo({ top: savedScroll, behavior: "auto" });
+    }, 50);
+
+    window.setTimeout(() => {
+      window.scrollTo({ top: savedScroll, behavior: "auto" });
+    }, 200);
+
+    window.setTimeout(() => {
+      window.scrollTo({ top: savedScroll, behavior: "auto" });
+    }, 500);
+  }
+
+  useLayoutEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+
+    restoreSavedDashboardScrollPosition();
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleScroll = () => {
+      saveDashboardScrollPosition();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        saveDashboardScrollPosition();
+        return;
+      }
+
+      restoreSavedDashboardScrollPosition();
+    };
+
+    const handleTabReturn = () => {
+      restoreSavedDashboardScrollPosition();
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("focus", handleTabReturn);
+    window.addEventListener("pageshow", handleTabReturn);
+    window.addEventListener("pagehide", saveDashboardScrollPosition);
+    window.addEventListener("beforeunload", saveDashboardScrollPosition);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("focus", handleTabReturn);
+      window.removeEventListener("pageshow", handleTabReturn);
+      window.removeEventListener("pagehide", saveDashboardScrollPosition);
+      window.removeEventListener("beforeunload", saveDashboardScrollPosition);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
 
   async function loadPaystackBanks(currencyCode: string) {
     if (!currencyCode) return;
@@ -556,11 +638,38 @@ export default function AdminPage() {
 
     const activeDj = dj;
 
-    fetchDashboardData(activeDj);
+    const refreshDashboardIfVisible = async () => {
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") {
+        saveDashboardScrollPosition();
+        return;
+      }
+
+      const scrollBeforeRefresh = getCurrentScrollY();
+
+      await fetchDashboardData(activeDj);
+
+      if (scrollBeforeRefresh > 0) {
+        restoreScrollPosition(scrollBeforeRefresh);
+      }
+    };
+
+    refreshDashboardIfVisible();
 
     const refreshInterval = setInterval(() => {
-      fetchDashboardData(activeDj);
+      refreshDashboardIfVisible();
     }, 10000);
+
+    const handleVisibleRefresh = () => {
+      if (document.visibilityState === "hidden") {
+        saveDashboardScrollPosition();
+        return;
+      }
+
+      restoreSavedDashboardScrollPosition();
+      refreshDashboardIfVisible();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibleRefresh);
 
     const requestsChannel = supabase
       .channel(`admin-live-requests-${activeDj.id}`)
@@ -572,7 +681,7 @@ export default function AdminPage() {
           table: "requests",
           filter: `dj_id=eq.${activeDj.id}`,
         },
-        () => fetchDashboardData(activeDj)
+        () => refreshDashboardIfVisible()
       )
       .subscribe();
 
@@ -586,7 +695,7 @@ export default function AdminPage() {
           table: "payments",
           filter: `dj_id=eq.${activeDj.id}`,
         },
-        () => fetchDashboardData(activeDj)
+        () => refreshDashboardIfVisible()
       )
       .subscribe();
 
@@ -600,12 +709,13 @@ export default function AdminPage() {
           table: "withdrawals",
           filter: `dj_id=eq.${activeDj.id}`,
         },
-        () => fetchDashboardData(activeDj)
+        () => refreshDashboardIfVisible()
       )
       .subscribe();
 
     return () => {
       clearInterval(refreshInterval);
+      document.removeEventListener("visibilitychange", handleVisibleRefresh);
       supabase.removeChannel(requestsChannel);
       supabase.removeChannel(paymentsChannel);
       supabase.removeChannel(withdrawalsChannel);
