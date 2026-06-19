@@ -560,52 +560,164 @@ export default function AdminPage() {
 
   async function fetchDashboardData(targetDj?: DJ | null) {
     const activeDj = targetDj || djRef.current;
-  
+
     if (!activeDj) {
       setLoading(false);
       return;
     }
-  
-    const shouldRestoreScroll =
-      typeof document !== "undefined" &&
-      document.visibilityState === "visible";
-  
-    const scrollBeforeFetch = shouldRestoreScroll
-      ? getCurrentScrollY()
-      : 0;
-  
+
+    const scrollBeforeFetch = getCurrentScrollY();
+
     const { data: requestsData } = await supabase
       .from("requests")
       .select("*")
       .eq("dj_id", activeDj.id)
       .order("queue_position", { ascending: true })
       .order("tip_amount", { ascending: false });
-  
+
     const { data: paymentsData } = await supabase
       .from("payments")
       .select("*")
       .eq("dj_id", activeDj.id)
       .order("created_at", { ascending: false });
-  
+
     const { data: withdrawalsData } = await supabase
       .from("withdrawals")
       .select("*")
       .eq("dj_id", activeDj.id)
       .order("created_at", { ascending: false });
-  
+
     setRequests((requestsData || []) as SongRequest[]);
     setPayments((paymentsData || []) as Payment[]);
     setWithdrawals((withdrawalsData || []) as Withdrawal[]);
     setLoading(false);
-  
+
     if (initialDashboardLoadRef.current) {
       initialDashboardLoadRef.current = false;
       return;
     }
-  
-    if (shouldRestoreScroll && scrollBeforeFetch > 0) {
+
+    if (scrollBeforeFetch > 0) {
       restoreScrollPosition(scrollBeforeFetch);
     }
+  }
+
+  useEffect(() => {
+    if (!dj) return;
+
+    const activeDj = dj;
+
+    fetchDashboardData(activeDj);
+
+    const refreshInterval = window.setInterval(() => {
+      fetchDashboardData(activeDj);
+    }, 15000);
+
+    const requestsChannel = supabase
+      .channel(`admin-live-requests-${activeDj.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "requests",
+          filter: `dj_id=eq.${activeDj.id}`,
+        },
+        () => fetchDashboardData(activeDj)
+      )
+      .subscribe();
+
+    const paymentsChannel = supabase
+      .channel(`admin-live-payments-${activeDj.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "payments",
+          filter: `dj_id=eq.${activeDj.id}`,
+        },
+        () => fetchDashboardData(activeDj)
+      )
+      .subscribe();
+
+    const withdrawalsChannel = supabase
+      .channel(`admin-live-withdrawals-${activeDj.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "withdrawals",
+          filter: `dj_id=eq.${activeDj.id}`,
+        },
+        () => fetchDashboardData(activeDj)
+      )
+      .subscribe();
+
+    return () => {
+      window.clearInterval(refreshInterval);
+      supabase.removeChannel(requestsChannel);
+      supabase.removeChannel(paymentsChannel);
+      supabase.removeChannel(withdrawalsChannel);
+    };
+  }, [dj?.id]);
+
+  async function updateStatus(id: number, status: RequestStatus) {
+    const currentScrollY = getCurrentScrollY();
+
+    setActionLoadingId(id);
+    await supabase.from("requests").update({ status }).eq("id", id);
+    await fetchDashboardData(dj);
+    setActionLoadingId(null);
+
+    restoreScrollPosition(currentScrollY);
+  }
+
+  async function deleteRequest(id: number) {
+    if (!window.confirm("Delete this request?")) return;
+
+    const currentScrollY = getCurrentScrollY();
+
+    setActionLoadingId(id);
+    await supabase.from("requests").delete().eq("id", id);
+    await fetchDashboardData(dj);
+    setActionLoadingId(null);
+
+    restoreScrollPosition(currentScrollY);
+  }
+
+  async function moveRequest(requestId: number, direction: "up" | "down") {
+    const currentIndex = grouped.accepted.findIndex(
+      (request) => request.id === requestId
+    );
+
+    if (currentIndex === -1) return;
+
+    const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+
+    if (targetIndex < 0 || targetIndex >= grouped.accepted.length) return;
+
+    const reordered = [...grouped.accepted];
+
+    const [movedItem] = reordered.splice(currentIndex, 1);
+    reordered.splice(targetIndex, 0, movedItem);
+
+    const currentScrollY = getCurrentScrollY();
+
+    setActionLoadingId(requestId);
+
+    for (let index = 0; index < reordered.length; index++) {
+      await supabase
+        .from("requests")
+        .update({ queue_position: index + 1 })
+        .eq("id", reordered[index].id);
+    }
+
+    await fetchDashboardData(dj);
+
+    setActionLoadingId(null);
+    restoreScrollPosition(currentScrollY);
   }
 
   async function requestWithdrawal() {
