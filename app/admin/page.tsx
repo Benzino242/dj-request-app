@@ -120,6 +120,79 @@ export default function AdminPage() {
 
   const t = translations[language];
 
+  const scrollRestoreTimeoutsRef = useRef<number[]>([]);
+  const scrollKey = dj?.id
+    ? `blackline-dj-dashboard-scroll-${dj.id}`
+    : "blackline-dj-dashboard-scroll";
+
+  function saveScrollPosition() {
+    if (typeof window === "undefined") return;
+
+    sessionStorage.setItem(scrollKey, String(window.scrollY));
+  }
+
+  function restoreScrollPosition(forcedScrollY?: number) {
+    if (typeof window === "undefined") return;
+
+    const savedScroll =
+      typeof forcedScrollY === "number"
+        ? forcedScrollY
+        : Number(sessionStorage.getItem(scrollKey) || 0);
+
+    if (!Number.isFinite(savedScroll) || savedScroll <= 0) return;
+
+    scrollRestoreTimeoutsRef.current.forEach((timeoutId) => {
+      window.clearTimeout(timeoutId);
+    });
+
+    scrollRestoreTimeoutsRef.current = [0, 50, 150, 300, 600].map((delay) =>
+      window.setTimeout(() => {
+        window.scrollTo({
+          top: savedScroll,
+          behavior: "auto",
+        });
+      }, delay)
+    );
+  }
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+
+    const handleScroll = () => {
+      saveScrollPosition();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        saveScrollPosition();
+      }
+
+      if (document.visibilityState === "visible") {
+        restoreScrollPosition();
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("beforeunload", saveScrollPosition);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    restoreScrollPosition();
+
+    return () => {
+      window.history.scrollRestoration = previousScrollRestoration;
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("beforeunload", saveScrollPosition);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+
+      scrollRestoreTimeoutsRef.current.forEach((timeoutId) => {
+        window.clearTimeout(timeoutId);
+      });
+    };
+  }, [scrollKey]);
+
   function getCurrencyForCountry(selectedCountry: string) {
     const countryCurrencyMap: Record<string, string> = {
       Ghana: "GHS",
@@ -170,43 +243,6 @@ export default function AdminPage() {
 
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
-  const scrollRestoreTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  function saveScrollPosition() {
-    if (typeof window === "undefined") return;
-
-    sessionStorage.setItem(
-      "blackline-dj-admin-scroll-y",
-      String(window.scrollY)
-    );
-  }
-
-  function restoreScrollPosition(delay = 80) {
-    if (typeof window === "undefined") return;
-
-    if (scrollRestoreTimeoutRef.current) {
-      clearTimeout(scrollRestoreTimeoutRef.current);
-    }
-
-    scrollRestoreTimeoutRef.current = setTimeout(() => {
-      const savedScrollY = Number(
-        sessionStorage.getItem("blackline-dj-admin-scroll-y") || 0
-      );
-
-      if (savedScrollY > 0) {
-        window.scrollTo({
-          top: savedScrollY,
-          behavior: "auto",
-        });
-      }
-    }, delay);
-  }
-
-  async function refreshDashboardWithoutJumping() {
-    saveScrollPosition();
-    await fetchDashboardData();
-    restoreScrollPosition();
-  }
 
   async function loadPaystackBanks(currencyCode: string) {
     if (!currencyCode) return;
@@ -233,8 +269,10 @@ export default function AdminPage() {
     setBanksLoading(false);
   }
 
-  async function loadLoggedInDJ() {
-    setAuthLoading(true);
+  async function loadLoggedInDJ(showLoader = false) {
+    if (showLoader) {
+      setAuthLoading(true);
+    }
 
     const {
       data: { user },
@@ -286,62 +324,20 @@ export default function AdminPage() {
   }
 
   useEffect(() => {
-    loadLoggedInDJ();
+    loadLoggedInDJ(true);
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(() => {
-      loadLoggedInDJ();
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
+        loadLoggedInDJ(true);
+      }
     });
 
     return () => {
       subscription.unsubscribe();
     };
   }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const handleScroll = () => {
-      saveScrollPosition();
-    };
-
-    const handlePageHide = () => {
-      saveScrollPosition();
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "hidden") {
-        saveScrollPosition();
-      }
-
-      if (document.visibilityState === "visible") {
-        restoreScrollPosition(120);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("pagehide", handlePageHide);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    restoreScrollPosition(250);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("pagehide", handlePageHide);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-
-      if (scrollRestoreTimeoutRef.current) {
-        clearTimeout(scrollRestoreTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!authLoading && !loading && dj) {
-      restoreScrollPosition(120);
-    }
-  }, [authLoading, loading, dj, requests.length, withdrawals.length, payments.length]);
 
   useEffect(() => {
     if (payoutMethod === "Bank Transfer") {
@@ -356,8 +352,6 @@ export default function AdminPage() {
 
   async function toggleLiveStatus() {
     if (!dj) return;
-
-    saveScrollPosition();
 
     const nextLiveStatus = !dj.is_live;
 
@@ -376,8 +370,6 @@ export default function AdminPage() {
       ...dj,
       is_live: nextLiveStatus,
     });
-
-    restoreScrollPosition();
   }
 
   async function endDJSet() {
@@ -397,7 +389,7 @@ export default function AdminPage() {
       .eq("dj_id", dj.id)
       .in("status", ["accepted", "played"]);
 
-    await refreshDashboardWithoutJumping();
+    await fetchDashboardData();
 
     setDj({
       ...dj,
@@ -562,8 +554,15 @@ export default function AdminPage() {
     setProfileImage(data.publicUrl);
   }
 
-  async function fetchDashboardData() {
+  async function fetchDashboardData(restoreScroll = true) {
     if (!dj) return;
+
+    const currentScrollY =
+      typeof window !== "undefined" ? window.scrollY : 0;
+
+    if (restoreScroll) {
+      saveScrollPosition();
+    }
 
     const { data: requestsData } = await supabase
       .from("requests")
@@ -588,12 +587,16 @@ export default function AdminPage() {
     setPayments((paymentsData || []) as Payment[]);
     setWithdrawals((withdrawalsData || []) as Withdrawal[]);
     setLoading(false);
+
+    if (restoreScroll) {
+      restoreScrollPosition(currentScrollY);
+    }
   }
 
   useEffect(() => {
     if (!dj) return;
 
-    refreshDashboardWithoutJumping();
+    fetchDashboardData();
 
     const requestsChannel = supabase
       .channel(`admin-live-requests-${dj.id}`)
@@ -605,7 +608,7 @@ export default function AdminPage() {
           table: "requests",
           filter: `dj_id=eq.${dj.id}`,
         },
-        () => refreshDashboardWithoutJumping()
+        () => fetchDashboardData()
       )
       .subscribe();
 
@@ -619,7 +622,7 @@ export default function AdminPage() {
           table: "payments",
           filter: `dj_id=eq.${dj.id}`,
         },
-        () => refreshDashboardWithoutJumping()
+        () => fetchDashboardData()
       )
       .subscribe();
 
@@ -633,7 +636,7 @@ export default function AdminPage() {
           table: "withdrawals",
           filter: `dj_id=eq.${dj.id}`,
         },
-        () => refreshDashboardWithoutJumping()
+        () => fetchDashboardData()
       )
       .subscribe();
 
@@ -648,9 +651,8 @@ export default function AdminPage() {
     saveScrollPosition();
     setActionLoadingId(id);
     await supabase.from("requests").update({ status }).eq("id", id);
-    await refreshDashboardWithoutJumping();
+    await fetchDashboardData();
     setActionLoadingId(null);
-    restoreScrollPosition();
   }
 
   async function deleteRequest(id: number) {
@@ -659,14 +661,11 @@ export default function AdminPage() {
     saveScrollPosition();
     setActionLoadingId(id);
     await supabase.from("requests").delete().eq("id", id);
-    await refreshDashboardWithoutJumping();
+    await fetchDashboardData();
     setActionLoadingId(null);
-    restoreScrollPosition();
   }
 
   async function moveRequest(requestId: number, direction: "up" | "down") {
-    saveScrollPosition();
-
     const currentIndex = grouped.accepted.findIndex(
       (request) => request.id === requestId
     );
@@ -676,6 +675,8 @@ export default function AdminPage() {
     const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
 
     if (targetIndex < 0 || targetIndex >= grouped.accepted.length) return;
+
+    saveScrollPosition();
 
     const reordered = [...grouped.accepted];
 
@@ -691,13 +692,14 @@ export default function AdminPage() {
         .eq("id", reordered[index].id);
     }
 
-    await refreshDashboardWithoutJumping();
+    await fetchDashboardData();
 
     setActionLoadingId(null);
-    restoreScrollPosition();
   }
 
   async function requestWithdrawal() {
+    saveScrollPosition();
+
     if (!dj) return;
 
     if (hasOpenWithdrawal) {
@@ -765,10 +767,9 @@ export default function AdminPage() {
 
     setWithdrawAmount("");
 
-    await refreshDashboardWithoutJumping();
+    await fetchDashboardData();
 
     setWithdrawLoading(false);
-    restoreScrollPosition();
   }
 
   const grouped = useMemo(() => {
