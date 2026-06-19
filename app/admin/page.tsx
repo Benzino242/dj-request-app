@@ -88,7 +88,7 @@ export default function AdminPage() {
   const [authLoading, setAuthLoading] = useState(true);
    
   useEffect(() => {
-    fetchDashboardData(true);
+    fetchDashboardData();
   
     const refreshInterval = setInterval(() => {
       console.log(
