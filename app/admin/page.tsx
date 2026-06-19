@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import QRCodeBox from "../components/QRCodeBox";
 import { translations, Language } from "../lib/translations";
@@ -120,98 +120,22 @@ export default function AdminPage() {
 
   const t = translations[language];
 
-  const [scrollReady, setScrollReady] = useState(false);
-  const scrollRestoreTimeoutsRef = useRef<number[]>([]);
-  const scrollKey = dj?.id
-    ? `blackline-dj-dashboard-scroll-${dj.id}`
-    : "blackline-dj-dashboard-scroll";
-
-  function saveScrollPosition() {
-    if (typeof window === "undefined") return;
-
-    sessionStorage.setItem(scrollKey, String(window.scrollY));
+  function getCurrentScrollY() {
+    if (typeof window === "undefined") return 0;
+    return window.scrollY;
   }
 
-  function restoreScrollPosition(forcedScrollY?: number) {
-    if (typeof window === "undefined") return false;
-
-    const savedScroll =
-      typeof forcedScrollY === "number"
-        ? forcedScrollY
-        : Number(sessionStorage.getItem(scrollKey) || 0);
-
-    if (!Number.isFinite(savedScroll) || savedScroll <= 0) return false;
-
-    scrollRestoreTimeoutsRef.current.forEach((timeoutId) => {
-      window.clearTimeout(timeoutId);
-    });
-
-    window.scrollTo({
-      top: savedScroll,
-      behavior: "auto",
-    });
-
-    scrollRestoreTimeoutsRef.current = [0, 25, 75, 150, 300].map((delay) =>
-      window.setTimeout(() => {
-        window.scrollTo({
-          top: savedScroll,
-          behavior: "auto",
-        });
-      }, delay)
-    );
-
-    return true;
-  }
-
-  useLayoutEffect(() => {
+  function restoreScrollPosition(scrollY: number) {
     if (typeof window === "undefined") return;
 
-    const previousScrollRestoration = window.history.scrollRestoration;
-    window.history.scrollRestoration = "manual";
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: scrollY, behavior: "auto" });
+    });
 
-    const handleScroll = () => {
-      saveScrollPosition();
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "hidden") {
-        saveScrollPosition();
-      }
-
-      if (document.visibilityState === "visible") {
-        setScrollReady(false);
-        restoreScrollPosition();
-
-        window.setTimeout(() => {
-          restoreScrollPosition();
-          setScrollReady(true);
-        }, 80);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("beforeunload", saveScrollPosition);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    restoreScrollPosition();
-
-    const initialReadyTimeout = window.setTimeout(() => {
-      restoreScrollPosition();
-      setScrollReady(true);
-    }, 80);
-
-    return () => {
-      window.clearTimeout(initialReadyTimeout);
-      window.history.scrollRestoration = previousScrollRestoration;
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("beforeunload", saveScrollPosition);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-
-      scrollRestoreTimeoutsRef.current.forEach((timeoutId) => {
-        window.clearTimeout(timeoutId);
-      });
-    };
-  }, [scrollKey]);
+    window.setTimeout(() => {
+      window.scrollTo({ top: scrollY, behavior: "auto" });
+    }, 50);
+  }
 
   function getCurrencyForCountry(selectedCountry: string) {
     const countryCurrencyMap: Record<string, string> = {
@@ -289,10 +213,8 @@ export default function AdminPage() {
     setBanksLoading(false);
   }
 
-  async function loadLoggedInDJ(showLoader = false) {
-    if (showLoader) {
-      setAuthLoading(true);
-    }
+  async function loadLoggedInDJ() {
+    setAuthLoading(true);
 
     const {
       data: { user },
@@ -344,13 +266,18 @@ export default function AdminPage() {
   }
 
   useEffect(() => {
-    loadLoggedInDJ(true);
+    loadLoggedInDJ();
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
-        loadLoggedInDJ(true);
+      if (event === "SIGNED_OUT") {
+        setDj(null);
+        return;
+      }
+
+      if (event === "SIGNED_IN") {
+        loadLoggedInDJ();
       }
     });
 
@@ -399,6 +326,8 @@ export default function AdminPage() {
 
     if (!confirmEnd) return;
 
+    const currentScrollY = getCurrentScrollY();
+
     setLoading(true);
 
     await supabase.from("djs").update({ is_live: false }).eq("id", dj.id);
@@ -417,6 +346,7 @@ export default function AdminPage() {
     });
 
     setLoading(false);
+    restoreScrollPosition(currentScrollY);
 
     alert("DJ set ended successfully");
   }
@@ -574,15 +504,8 @@ export default function AdminPage() {
     setProfileImage(data.publicUrl);
   }
 
-  async function fetchDashboardData(restoreScroll = true) {
+  async function fetchDashboardData() {
     if (!dj) return;
-
-    const currentScrollY =
-      typeof window !== "undefined" ? window.scrollY : 0;
-
-    if (restoreScroll) {
-      saveScrollPosition();
-    }
 
     const { data: requestsData } = await supabase
       .from("requests")
@@ -607,10 +530,6 @@ export default function AdminPage() {
     setPayments((paymentsData || []) as Payment[]);
     setWithdrawals((withdrawalsData || []) as Withdrawal[]);
     setLoading(false);
-
-    if (restoreScroll) {
-      restoreScrollPosition(currentScrollY);
-    }
   }
 
   useEffect(() => {
@@ -668,21 +587,27 @@ export default function AdminPage() {
   }, [dj]);
 
   async function updateStatus(id: number, status: RequestStatus) {
-    saveScrollPosition();
+    const currentScrollY = getCurrentScrollY();
+
     setActionLoadingId(id);
     await supabase.from("requests").update({ status }).eq("id", id);
     await fetchDashboardData();
     setActionLoadingId(null);
+
+    restoreScrollPosition(currentScrollY);
   }
 
   async function deleteRequest(id: number) {
     if (!window.confirm("Delete this request?")) return;
 
-    saveScrollPosition();
+    const currentScrollY = getCurrentScrollY();
+
     setActionLoadingId(id);
     await supabase.from("requests").delete().eq("id", id);
     await fetchDashboardData();
     setActionLoadingId(null);
+
+    restoreScrollPosition(currentScrollY);
   }
 
   async function moveRequest(requestId: number, direction: "up" | "down") {
@@ -696,12 +621,12 @@ export default function AdminPage() {
 
     if (targetIndex < 0 || targetIndex >= grouped.accepted.length) return;
 
-    saveScrollPosition();
-
     const reordered = [...grouped.accepted];
 
     const [movedItem] = reordered.splice(currentIndex, 1);
     reordered.splice(targetIndex, 0, movedItem);
+
+    const currentScrollY = getCurrentScrollY();
 
     setActionLoadingId(requestId);
 
@@ -715,11 +640,10 @@ export default function AdminPage() {
     await fetchDashboardData();
 
     setActionLoadingId(null);
+    restoreScrollPosition(currentScrollY);
   }
 
   async function requestWithdrawal() {
-    saveScrollPosition();
-
     if (!dj) return;
 
     if (hasOpenWithdrawal) {
@@ -760,6 +684,8 @@ export default function AdminPage() {
       return;
     }
 
+    const currentScrollY = getCurrentScrollY();
+
     setWithdrawLoading(true);
 
     const { error } = await supabase.from("withdrawals").insert([
@@ -790,6 +716,7 @@ export default function AdminPage() {
     await fetchDashboardData();
 
     setWithdrawLoading(false);
+    restoreScrollPosition(currentScrollY);
   }
 
   const grouped = useMemo(() => {
@@ -864,10 +791,7 @@ export default function AdminPage() {
   }
 
   return (
-    <main
-      className="min-h-screen bg-black text-white p-3 md:p-6"
-      style={{ opacity: scrollReady ? 1 : 0 }}
-    >
+    <main className="min-h-screen bg-black text-white p-3 md:p-6">
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={handleLogout}
