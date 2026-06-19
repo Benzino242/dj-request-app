@@ -406,33 +406,33 @@ const previousRequestCountRef = useRef(0);
 
   async function endDJSet() {
     if (!dj) return;
-
+  
     const confirmEnd = window.confirm("End DJ set and clear active queue?");
-
+  
     if (!confirmEnd) return;
-
+  
     const currentScrollY = getCurrentScrollY();
-
-    setLoading(true);
-
+  
+    setActionLoadingId(-1);
+  
     await supabase.from("djs").update({ is_live: false }).eq("id", dj.id);
-
+  
     await supabase
       .from("requests")
       .update({ status: "finished" })
       .eq("dj_id", dj.id)
       .in("status", ["accepted", "played"]);
-
+  
     await fetchDashboardData();
-
+  
     setDj({
       ...dj,
       is_live: false,
     });
-
-    setLoading(false);
+  
+    setActionLoadingId(null);
     restoreScrollPosition(currentScrollY);
-
+  
     alert("DJ set ended successfully");
   }
 
@@ -597,7 +597,6 @@ const previousRequestCountRef = useRef(0);
     const activeDj = targetDj || dj;
 
     if (!activeDj) {
-      setLoading(false);
       return;
     }
 
@@ -623,17 +622,19 @@ const previousRequestCountRef = useRef(0);
         .eq("dj_id", activeDj.id)
         .order("created_at", { ascending: false });
 
-      setRequests((requestsData || []) as SongRequest[]);
-      setPayments((paymentsData || []) as Payment[]);
-      setWithdrawals((withdrawalsData || []) as Withdrawal[]);
-    } catch (error) {
-      console.error("DASHBOARD FETCH ERROR:", error);
-    } finally {
-      isFetchingDashboardRef.current = false;
-      setLoading(false);
-    }
-  }
+        setRequests((requestsData || []) as SongRequest[]);
+        setPayments((paymentsData || []) as Payment[]);
+        setWithdrawals((withdrawalsData || []) as Withdrawal[]);
+      } catch (error) {
+        console.error("DASHBOARD FETCH ERROR:", error);
+      } finally {
+        isFetchingDashboardRef.current = false;
 
+        if (loading) {
+          setLoading(false);
+        }
+      }
+    }
 
   useEffect(() => {
     if (!dj) return;
