@@ -88,10 +88,20 @@ export default function AdminPage() {
   const [authLoading, setAuthLoading] = useState(true);
    
   useEffect(() => {
-    console.log("DJ ADMIN PAGE MOUNTED", new Date().toISOString());
+    fetchDashboardData(true);
+  
+    const refreshInterval = setInterval(() => {
+      console.log(
+        "REFRESHING DASHBOARD",
+        window.scrollY,
+        new Date().toISOString()
+      );
+  
+      fetchDashboardData();
+    }, 10000);
   
     return () => {
-      console.log("DJ ADMIN PAGE UNMOUNTED", new Date().toISOString());
+      clearInterval(refreshInterval);
     };
   }, []);
 
