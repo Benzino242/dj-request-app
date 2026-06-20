@@ -639,12 +639,11 @@ export default function AdminPage() {
         .eq("dj_id", activeDj.id)
         .order("created_at", { ascending: false });
 
-      const { data: auditLogsData } = await supabase
+        const { data: auditLogsData } = await supabase
         .from("audit_logs")
         .select("*")
-        .contains("metadata", { dj_id: activeDj.id })
         .order("created_at", { ascending: false })
-        .limit(20);
+        .limit(50);
 
       setRequests((requestsData || []) as SongRequest[]);
       setPayments((paymentsData || []) as Payment[]);
