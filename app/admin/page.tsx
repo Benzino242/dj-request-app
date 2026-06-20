@@ -51,6 +51,22 @@ type Withdrawal = {
   created_at?: string;
 };
 
+type AuditLog = {
+  id: number;
+  action_type: string;
+  entity_type: string;
+  entity_id: number | string;
+  description: string;
+  metadata?: {
+    dj_id?: number;
+    dj_name?: string;
+    amount?: number;
+    currency?: string;
+    status?: string;
+  } | null;
+  created_at?: string;
+};
+
 type DJ = {
   id: number;
   stage_name: string;
@@ -115,6 +131,7 @@ export default function AdminPage() {
   const [requests, setRequests] = useState<SongRequest[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
 
   const [language, setLanguage] = useState<Language>("en");
 
@@ -189,7 +206,7 @@ export default function AdminPage() {
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const isFetchingDashboardRef = useRef(false);
   const requestQueueRef = useRef<HTMLDivElement | null>(null);
-const previousRequestCountRef = useRef(0);
+  const previousRequestCountRef = useRef(0);
   const lastScrollYRef = useRef(0);
   const scrollStorageKey = "blackline-dj-admin-scroll-y";
 
@@ -622,9 +639,17 @@ const previousRequestCountRef = useRef(0);
         .eq("dj_id", activeDj.id)
         .order("created_at", { ascending: false });
 
-        setRequests((requestsData || []) as SongRequest[]);
-        setPayments((paymentsData || []) as Payment[]);
-        setWithdrawals((withdrawalsData || []) as Withdrawal[]);
+      const { data: auditLogsData } = await supabase
+        .from("audit_logs")
+        .select("*")
+        .contains("metadata", { dj_id: activeDj.id })
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      setRequests((requestsData || []) as SongRequest[]);
+      setPayments((paymentsData || []) as Payment[]);
+      setWithdrawals((withdrawalsData || []) as Withdrawal[]);
+      setAuditLogs((auditLogsData || []) as AuditLog[]);
       } catch (error) {
         console.error("DASHBOARD FETCH ERROR:", error);
       } finally {
@@ -733,12 +758,26 @@ const previousRequestCountRef = useRef(0);
       )
       .subscribe();
 
+    const auditLogsChannel = supabase
+      .channel(`admin-live-audit-logs-${activeDj.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "audit_logs",
+        },
+        () => refreshDashboardIfVisible()
+      )
+      .subscribe();
+
     return () => {
       clearInterval(refreshInterval);
       document.removeEventListener("visibilitychange", handleVisibleRefresh);
       supabase.removeChannel(requestsChannel);
       supabase.removeChannel(paymentsChannel);
       supabase.removeChannel(withdrawalsChannel);
+      supabase.removeChannel(auditLogsChannel);
     };
   }, [dj?.id]);
 
@@ -1830,89 +1869,157 @@ const previousRequestCountRef = useRef(0);
               </div>
             )}
 
-{withdrawals.map((withdrawal) => {
-  const statusBadge =
-    withdrawal.status === "pending"
-      ? {
-          label: "🟡 Pending",
-          className:
-            "bg-yellow-500/10 border-yellow-500/30 text-yellow-400",
-        }
-      : withdrawal.status === "approved"
-      ? {
-          label: "🔵 Approved",
-          className:
-            "bg-blue-500/10 border-blue-500/30 text-blue-400",
-        }
-      : withdrawal.status === "paid"
-      ? {
-          label: "🟢 Paid",
-          className:
-            "bg-green-500/10 border-green-500/30 text-green-400",
-        }
-      : withdrawal.status === "rejected"
-      ? {
-          label: "🔴 Rejected",
-          className:
-            "bg-red-500/10 border-red-500/30 text-red-400",
-        }
-      : {
-          label: withdrawal.status,
-          className:
-            "bg-zinc-500/10 border-zinc-500/30 text-zinc-400",
-        };
+            {withdrawals.map((withdrawal) => {
+              const statusBadge =
+                withdrawal.status === "pending"
+                  ? {
+                      label: "🟡 Pending",
+                      className:
+                        "bg-yellow-500/10 border-yellow-500/30 text-yellow-400",
+                    }
+                  : withdrawal.status === "approved"
+                  ? {
+                      label: "🔵 Approved",
+                      className:
+                        "bg-blue-500/10 border-blue-500/30 text-blue-400",
+                    }
+                  : withdrawal.status === "paid"
+                  ? {
+                      label: "🟢 Paid",
+                      className:
+                        "bg-green-500/10 border-green-500/30 text-green-400",
+                    }
+                  : withdrawal.status === "rejected"
+                  ? {
+                      label: "🔴 Rejected",
+                      className:
+                        "bg-red-500/10 border-red-500/30 text-red-400",
+                    }
+                  : {
+                      label: withdrawal.status,
+                      className:
+                        "bg-zinc-500/10 border-zinc-500/30 text-zinc-400",
+                    };
 
-  return (
-    <div
-      key={withdrawal.id}
-      className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl"
-    >
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
-        <div>
-          <div className="flex flex-wrap items-center gap-3">
-            <h3 className="text-xl font-bold">
-              {withdrawal.currency} {Number(withdrawal.amount || 0).toFixed(2)}
-            </h3>
+              return (
+                <div
+                  key={withdrawal.id}
+                  className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl"
+                >
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-3">
+                        <h3 className="text-xl font-bold">
+                          {withdrawal.currency}{" "}
+                          {Number(withdrawal.amount || 0).toFixed(2)}
+                        </h3>
 
-            <span
-              className={`inline-flex items-center border px-3 py-1 rounded-full text-xs font-bold uppercase ${statusBadge.className}`}
-            >
-              {statusBadge.label}
-            </span>
+                        <span
+                          className={`inline-flex items-center border px-3 py-1 rounded-full text-xs font-bold uppercase ${statusBadge.className}`}
+                        >
+                          {statusBadge.label}
+                        </span>
+                      </div>
+
+                      <p className="text-zinc-400 mt-3">
+                        {withdrawal.payout_method || "Bank Transfer"} •{" "}
+                        {withdrawal.provider || "No provider"}
+                      </p>
+
+                      <p className="text-sm text-zinc-500 mt-2">
+                        Account name:{" "}
+                        <span className="text-zinc-300">
+                          {withdrawal.account_name || "No account name"}
+                        </span>
+                      </p>
+
+                      <p className="text-sm text-zinc-500 mt-1">
+                        Account number:{" "}
+                        <span className="text-zinc-300">
+                          {withdrawal.account_number || "No account number"}
+                        </span>
+                      </p>
+                    </div>
+
+                    <div className="md:text-right">
+                      <p className="text-xs text-zinc-500">Requested on</p>
+                      <p className="text-sm text-zinc-300 mt-1">
+                        {withdrawal.created_at
+                          ? new Date(withdrawal.created_at).toLocaleString()
+                          : "No date"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
-          <p className="text-zinc-400 mt-3">
-            {withdrawal.payout_method || "Bank Transfer"} •{" "}
-            {withdrawal.provider || "No provider"}
-          </p>
+          <div className="mt-8 border-t border-zinc-800 pt-6">
+            <h3 className="text-2xl font-bold text-purple-400 mb-4">
+              DJ Activity History
+            </h3>
 
-          <p className="text-sm text-zinc-500 mt-2">
-            Account name:{" "}
-            <span className="text-zinc-300">
-              {withdrawal.account_name || "No account name"}
-            </span>
-          </p>
+            <div className="space-y-3">
+              {auditLogs.length === 0 && (
+                <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
+                  <p className="text-zinc-500">No activity yet.</p>
+                </div>
+              )}
 
-          <p className="text-sm text-zinc-500 mt-1">
-            Account number:{" "}
-            <span className="text-zinc-300">
-              {withdrawal.account_number || "No account number"}
-            </span>
-          </p>
-        </div>
+              {auditLogs.map((log) => {
+                const icon =
+                  log.entity_type === "withdrawal" &&
+                  log.action_type === "pending"
+                    ? "🟡"
+                    : log.entity_type === "withdrawal" &&
+                      log.action_type === "approved"
+                    ? "🔵"
+                    : log.entity_type === "withdrawal" &&
+                      log.action_type === "paid"
+                    ? "🟢"
+                    : log.entity_type === "withdrawal" &&
+                      log.action_type === "rejected"
+                    ? "🔴"
+                    : log.entity_type === "dj" &&
+                      log.action_type === "verified"
+                    ? "✅"
+                    : log.entity_type === "dj" &&
+                      log.action_type === "rejected"
+                    ? "❌"
+                    : "📝";
 
-        <div className="md:text-right">
-          <p className="text-xs text-zinc-500">Requested on</p>
-          <p className="text-sm text-zinc-300 mt-1">
-            {withdrawal.created_at
-              ? new Date(withdrawal.created_at).toLocaleString()
-              : "No date"}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-})}
+                return (
+                  <div
+                    key={log.id}
+                    className="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="text-2xl">{icon}</div>
+
+                      <div className="flex-1">
+                        <p className="text-white font-semibold">
+                          {log.description || "Activity updated"}
+                        </p>
+
+                        {log.metadata?.amount && (
+                          <p className="text-sm text-cyan-400 mt-1">
+                            Amount: {log.metadata.currency || currency}{" "}
+                            {Number(log.metadata.amount).toFixed(2)}
+                          </p>
+                        )}
+
+                        <p className="text-xs text-zinc-500 mt-2">
+                          {log.created_at
+                            ? new Date(log.created_at).toLocaleString()
+                            : "No date"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
