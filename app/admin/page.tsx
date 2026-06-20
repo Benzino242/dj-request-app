@@ -648,6 +648,8 @@ export default function AdminPage() {
       setRequests((requestsData || []) as SongRequest[]);
       setPayments((paymentsData || []) as Payment[]);
       setWithdrawals((withdrawalsData || []) as Withdrawal[]);
+      console.log("AUDIT LOGS DATA:", auditLogsData);
+
       setAuditLogs((auditLogsData || []) as AuditLog[]);
       } catch (error) {
         console.error("DASHBOARD FETCH ERROR:", error);
