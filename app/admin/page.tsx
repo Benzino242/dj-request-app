@@ -645,12 +645,22 @@ export default function AdminPage() {
         .order("created_at", { ascending: false })
         .limit(50);
 
+      const filteredAuditLogs = ((auditLogsData || []) as AuditLog[])
+        .filter((log) => {
+          const metadataDjId = Number(log.metadata?.dj_id || 0);
+          const entityId = Number(log.entity_id || 0);
+
+          return (
+            metadataDjId === activeDj.id ||
+            (log.entity_type === "dj" && entityId === activeDj.id)
+          );
+        })
+        .slice(0, 20);
+
       setRequests((requestsData || []) as SongRequest[]);
       setPayments((paymentsData || []) as Payment[]);
       setWithdrawals((withdrawalsData || []) as Withdrawal[]);
-      console.log("AUDIT LOGS DATA:", auditLogsData);
-
-      setAuditLogs((auditLogsData || []) as AuditLog[]);
+      setAuditLogs(filteredAuditLogs);
       } catch (error) {
         console.error("DASHBOARD FETCH ERROR:", error);
       } finally {
@@ -1863,6 +1873,88 @@ export default function AdminPage() {
             />
           </div>
 
+          <div className="mb-8 border border-purple-500/30 bg-purple-500/5 rounded-3xl p-5">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+              <div>
+                <h3 className="text-2xl font-bold text-purple-400">
+                  DJ Activity History
+                </h3>
+                <p className="text-sm text-zinc-500 mt-1">
+                  Latest withdrawal and verification updates from Blackline Admin.
+                </p>
+              </div>
+
+              <span className="bg-purple-600/20 border border-purple-500/30 text-purple-300 px-3 py-1 rounded-full text-xs font-bold">
+                {auditLogs.length} updates
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              {auditLogs.length === 0 && (
+                <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
+                  <p className="text-zinc-500">No activity yet.</p>
+                </div>
+              )}
+
+              {auditLogs.map((log) => {
+                const icon =
+                  log.entity_type === "withdrawal" &&
+                  log.action_type === "pending"
+                    ? "🟡"
+                    : log.entity_type === "withdrawal" &&
+                      log.action_type === "approved"
+                    ? "🔵"
+                    : log.entity_type === "withdrawal" &&
+                      log.action_type === "paid"
+                    ? "🟢"
+                    : log.entity_type === "withdrawal" &&
+                      log.action_type === "rejected"
+                    ? "🔴"
+                    : log.entity_type === "dj" &&
+                      log.action_type === "verified"
+                    ? "✅"
+                    : log.entity_type === "dj" &&
+                      log.action_type === "rejected"
+                    ? "❌"
+                    : "📝";
+
+                return (
+                  <div
+                    key={log.id}
+                    className="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="text-2xl">{icon}</div>
+
+                      <div className="flex-1">
+                        <p className="text-white font-semibold">
+                          {log.description || "Activity updated"}
+                        </p>
+
+                        {log.metadata?.amount && (
+                          <p className="text-sm text-cyan-400 mt-1">
+                            Amount: {log.metadata.currency || currency}{" "}
+                            {Number(log.metadata.amount).toFixed(2)}
+                          </p>
+                        )}
+
+                        <p className="text-xs text-zinc-500 mt-2">
+                          {log.created_at
+                            ? new Date(log.created_at).toLocaleString()
+                            : "No date"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <h3 className="text-2xl font-bold text-white mb-4">
+            Withdrawal History
+          </h3>
+
           <div className="space-y-4">
             {withdrawals.length === 0 && (
               <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
@@ -1954,73 +2046,6 @@ export default function AdminPage() {
                 </div>
               );
             })}
-          </div>
-
-          <div className="mt-8 border-t border-zinc-800 pt-6">
-            <h3 className="text-2xl font-bold text-purple-400 mb-4">
-              DJ Activity History
-            </h3>
-
-            <div className="space-y-3">
-              {auditLogs.length === 0 && (
-                <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
-                  <p className="text-zinc-500">No activity yet.</p>
-                </div>
-              )}
-
-              {auditLogs.map((log) => {
-                const icon =
-                  log.entity_type === "withdrawal" &&
-                  log.action_type === "pending"
-                    ? "🟡"
-                    : log.entity_type === "withdrawal" &&
-                      log.action_type === "approved"
-                    ? "🔵"
-                    : log.entity_type === "withdrawal" &&
-                      log.action_type === "paid"
-                    ? "🟢"
-                    : log.entity_type === "withdrawal" &&
-                      log.action_type === "rejected"
-                    ? "🔴"
-                    : log.entity_type === "dj" &&
-                      log.action_type === "verified"
-                    ? "✅"
-                    : log.entity_type === "dj" &&
-                      log.action_type === "rejected"
-                    ? "❌"
-                    : "📝";
-
-                return (
-                  <div
-                    key={log.id}
-                    className="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl"
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="text-2xl">{icon}</div>
-
-                      <div className="flex-1">
-                        <p className="text-white font-semibold">
-                          {log.description || "Activity updated"}
-                        </p>
-
-                        {log.metadata?.amount && (
-                          <p className="text-sm text-cyan-400 mt-1">
-                            Amount: {log.metadata.currency || currency}{" "}
-                            {Number(log.metadata.amount).toFixed(2)}
-                          </p>
-                        )}
-
-                        <p className="text-xs text-zinc-500 mt-2">
-                          {log.created_at
-                            ? new Date(log.created_at).toLocaleString()
-                            : "No date"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
           </div>
         </div>
       </div>
