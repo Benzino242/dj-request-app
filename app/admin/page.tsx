@@ -1830,37 +1830,89 @@ const previousRequestCountRef = useRef(0);
               </div>
             )}
 
-            {withdrawals.map((withdrawal) => (
-              <div
-                key={withdrawal.id}
-                className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl"
-              >
-                <div className="flex justify-between items-center gap-4">
-                  <div>
-                    <h3 className="text-xl font-bold">{withdrawal.dj_name}</h3>
-                    <p className="text-zinc-400 mt-1">
-                      {withdrawal.payout_method || "Bank Transfer"}
-                    </p>
-                    <p className="text-xs text-zinc-500 mt-1">
-                      {withdrawal.provider || "No provider"} •{" "}
-                      {withdrawal.account_name || "No account name"}
-                    </p>
-                  </div>
+{withdrawals.map((withdrawal) => {
+  const statusBadge =
+    withdrawal.status === "pending"
+      ? {
+          label: "🟡 Pending",
+          className:
+            "bg-yellow-500/10 border-yellow-500/30 text-yellow-400",
+        }
+      : withdrawal.status === "approved"
+      ? {
+          label: "🔵 Approved",
+          className:
+            "bg-blue-500/10 border-blue-500/30 text-blue-400",
+        }
+      : withdrawal.status === "paid"
+      ? {
+          label: "🟢 Paid",
+          className:
+            "bg-green-500/10 border-green-500/30 text-green-400",
+        }
+      : withdrawal.status === "rejected"
+      ? {
+          label: "🔴 Rejected",
+          className:
+            "bg-red-500/10 border-red-500/30 text-red-400",
+        }
+      : {
+          label: withdrawal.status,
+          className:
+            "bg-zinc-500/10 border-zinc-500/30 text-zinc-400",
+        };
 
-                  <div className="text-right">
-                    <div className="bg-cyan-700 px-4 py-2 rounded-xl font-bold">
-                      {withdrawal.currency} {withdrawal.amount}
-                    </div>
+  return (
+    <div
+      key={withdrawal.id}
+      className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl"
+    >
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
+        <div>
+          <div className="flex flex-wrap items-center gap-3">
+            <h3 className="text-xl font-bold">
+              {withdrawal.currency} {Number(withdrawal.amount || 0).toFixed(2)}
+            </h3>
 
-                    <p className="text-sm text-yellow-400 mt-2 uppercase">
-                      {withdrawal.status === "pending"
-                        ? t.pending
-                        : withdrawal.status}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
+            <span
+              className={`inline-flex items-center border px-3 py-1 rounded-full text-xs font-bold uppercase ${statusBadge.className}`}
+            >
+              {statusBadge.label}
+            </span>
+          </div>
+
+          <p className="text-zinc-400 mt-3">
+            {withdrawal.payout_method || "Bank Transfer"} •{" "}
+            {withdrawal.provider || "No provider"}
+          </p>
+
+          <p className="text-sm text-zinc-500 mt-2">
+            Account name:{" "}
+            <span className="text-zinc-300">
+              {withdrawal.account_name || "No account name"}
+            </span>
+          </p>
+
+          <p className="text-sm text-zinc-500 mt-1">
+            Account number:{" "}
+            <span className="text-zinc-300">
+              {withdrawal.account_number || "No account number"}
+            </span>
+          </p>
+        </div>
+
+        <div className="md:text-right">
+          <p className="text-xs text-zinc-500">Requested on</p>
+          <p className="text-sm text-zinc-300 mt-1">
+            {withdrawal.created_at
+              ? new Date(withdrawal.created_at).toLocaleString()
+              : "No date"}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+})}
           </div>
         </div>
       </div>
