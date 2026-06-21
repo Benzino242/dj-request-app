@@ -98,6 +98,8 @@ export default function VerificationDashboardClient() {
   const [expandedWithdrawalDjKeys, setExpandedWithdrawalDjKeys] = useState<string[]>(
     [],
   );
+  const [expandedWithdrawalTimelineKeys, setExpandedWithdrawalTimelineKeys] =
+    useState<string[]>([]);
   const [expandedDjIds, setExpandedDjIds] = useState<number[]>([]);
   const [collapsedPriorityDjIds, setCollapsedPriorityDjIds] = useState<
     number[]
@@ -634,6 +636,14 @@ export default function VerificationDashboardClient() {
       currentKeys.includes(groupKey)
         ? currentKeys.filter((key) => key !== groupKey)
         : [...currentKeys, groupKey],
+    );
+  }
+
+  function toggleWithdrawalTimeline(timelineKey: string) {
+    setExpandedWithdrawalTimelineKeys((currentKeys) =>
+      currentKeys.includes(timelineKey)
+        ? currentKeys.filter((key) => key !== timelineKey)
+        : [...currentKeys, timelineKey],
     );
   }
 
@@ -1366,6 +1376,11 @@ export default function VerificationDashboardClient() {
                 dj.id === group.djId ||
                 dj.stage_name?.toLowerCase() === group.djName.toLowerCase(),
             );
+            const withdrawalEarnings = djEarnings.find(
+              (item) =>
+                item.dj_id === group.djId ||
+                item.stage_name?.toLowerCase() === group.djName.toLowerCase(),
+            );
 
             return (
               <div
@@ -1387,9 +1402,9 @@ export default function VerificationDashboardClient() {
                     )}
 
                     <div>
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h3 className="text-2xl font-bold">{group.djName}</h3>
+                      <h3 className="text-2xl font-bold">{group.djName}</h3>
 
+                      <div className="flex flex-wrap items-center gap-2 mt-2">
                         {latestWithdrawal && (
                           <span
                             className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${
@@ -1425,6 +1440,13 @@ export default function VerificationDashboardClient() {
                         <span className="bg-purple-500/10 border border-purple-500/30 px-3 py-1 rounded-full text-xs text-purple-300 font-bold">
                           Total requested: {latestCurrency} {group.requestedTotal.toFixed(2)}
                         </span>
+
+                        {withdrawalEarnings && (
+                          <span className="bg-purple-600/10 border border-purple-500/40 px-3 py-1 rounded-full text-xs text-purple-300 font-bold">
+                            Available: {withdrawalEarnings.currency}{" "}
+                            {withdrawalEarnings.availableBalance.toFixed(2)}
+                          </span>
+                        )}
                       </div>
 
                       <p className="text-xs text-zinc-500 mt-3">
@@ -1448,6 +1470,9 @@ export default function VerificationDashboardClient() {
                   <div className="mt-5 border-t border-zinc-800 pt-5 space-y-4">
                     {group.withdrawals.map((withdrawal) => {
                       const auditTrail = getWithdrawalAuditLogs(withdrawal.id);
+                      const timelineKey = `${group.key}-${withdrawal.id}`;
+                      const isTimelineOpen =
+                        expandedWithdrawalTimelineKeys.includes(timelineKey);
 
                       return (
                         <div
@@ -1663,47 +1688,66 @@ export default function VerificationDashboardClient() {
                           </div>
 
                           <div className="mt-4 bg-black/40 border border-zinc-800 rounded-xl p-4">
-                            <p className="text-xs text-zinc-500 mb-3">
-                              Withdrawal Activity Timeline
-                            </p>
+                            <button
+                              type="button"
+                              onClick={() => toggleWithdrawalTimeline(timelineKey)}
+                              className="w-full flex items-center justify-between gap-3 text-left"
+                            >
+                              <span className="text-xs text-zinc-400 font-bold">
+                                Withdrawal Activity Timeline ({auditTrail.length})
+                              </span>
 
-                            {auditTrail.length === 0 ? (
-                              <p className="text-sm text-zinc-500">
-                                No status activity yet.
-                              </p>
-                            ) : (
-                              <div className="max-h-44 overflow-y-auto pr-2">
-                                <div className="relative pl-9 space-y-4">
-                                  <div className="absolute left-3 top-3 bottom-3 w-px bg-zinc-700" />
+                              <span className="text-xs text-zinc-500 font-bold">
+                                {isTimelineOpen ? "Hide ▲" : "Show ▼"}
+                              </span>
+                            </button>
 
-                                  {auditTrail.map((log) => {
-                                    const timelineDetails = getAuditTimelineDetails(log);
+                            {isTimelineOpen && (
+                              <div className="mt-4">
+                                {auditTrail.length === 0 ? (
+                                  <p className="text-sm text-zinc-500">
+                                    No status activity yet.
+                                  </p>
+                                ) : (
+                                  <div className="max-h-44 overflow-y-auto pr-2">
+                                    <div className="relative pl-9 space-y-4">
+                                      <div className="absolute left-3 top-3 bottom-3 w-px bg-zinc-700" />
 
-                                    return (
-                                      <div key={log.id} className="relative">
-                                        <div
-                                          className={`absolute -left-9 top-0 w-7 h-7 rounded-full border flex items-center justify-center text-xs ${timelineDetails.dotClass}`}
-                                        >
-                                          {timelineDetails.icon}
-                                        </div>
+                                      {auditTrail.map((log) => {
+                                        const timelineDetails =
+                                          getAuditTimelineDetails(log);
 
-                                        <p className={`text-sm font-bold ${timelineDetails.textClass}`}>
-                                          {timelineDetails.label}
-                                        </p>
+                                        return (
+                                          <div key={log.id} className="relative">
+                                            <div
+                                              className={`absolute -left-9 top-0 w-7 h-7 rounded-full border flex items-center justify-center text-xs ${timelineDetails.dotClass}`}
+                                            >
+                                              {timelineDetails.icon}
+                                            </div>
 
-                                        <p className="text-sm text-zinc-300 mt-1">
-                                          {log.description}
-                                        </p>
+                                            <p
+                                              className={`text-sm font-bold ${timelineDetails.textClass}`}
+                                            >
+                                              {timelineDetails.label}
+                                            </p>
 
-                                        <p className="text-xs text-zinc-600 mt-1">
-                                          {log.created_at
-                                            ? new Date(log.created_at).toLocaleString()
-                                            : "Unknown time"}
-                                        </p>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
+                                            <p className="text-sm text-zinc-300 mt-1">
+                                              {log.description}
+                                            </p>
+
+                                            <p className="text-xs text-zinc-600 mt-1">
+                                              {log.created_at
+                                                ? new Date(
+                                                    log.created_at,
+                                                  ).toLocaleString()
+                                                : "Unknown time"}
+                                            </p>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             )}
                           </div>
