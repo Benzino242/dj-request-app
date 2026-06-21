@@ -135,7 +135,18 @@ export default function VerificationDashboardClient() {
         return;
       }
 
-      setDjs((result.djs || []) as DJ[]);
+      const dashboardDjs = result.allDjs || result.djs || [];
+      const removedDashboardDjs = result.removedDjs || [];
+
+      const mergedDjs = [
+        ...dashboardDjs,
+        ...removedDashboardDjs.filter(
+          (removedDj: DJ) =>
+            !dashboardDjs.some((dashboardDj: DJ) => dashboardDj.id === removedDj.id),
+        ),
+      ];
+
+      setDjs(mergedDjs as DJ[]);
       setWithdrawals((result.withdrawals || []) as Withdrawal[]);
       setDjEarnings((result.djEarnings || []) as DjEarning[]);
       setAuditLogs((result.auditLogs || []) as AuditLog[]);
@@ -353,10 +364,10 @@ export default function VerificationDashboardClient() {
       );
     });
 
-    async function updateVerificationStatus(
-      djId: number,
-      status: "verified" | "rejected" | "pending" | "not_started" | "removed"
-    ) {
+  async function updateVerificationStatus(
+    djId: number,
+    status: "verified" | "rejected" | "pending" | "not_started" | "removed"
+  ) {
     setActionLoadingId(djId);
 
     const response = await fetch("/api/blackline-admin/dashboard", {
