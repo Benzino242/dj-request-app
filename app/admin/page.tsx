@@ -1879,7 +1879,7 @@ export default function AdminPage() {
                 Withdrawal Audit Trail
               </p>
 
-              <div className="space-y-5">
+              <div className="max-h-72 overflow-y-auto space-y-5 pr-2">
                 {auditLogs.length === 0 && (
                   <p className="text-zinc-500">No activity yet.</p>
                 )}
@@ -1905,7 +1905,7 @@ export default function AdminPage() {
             Withdrawal History
           </h3>
 
-          <div className="space-y-4">
+          <div className="max-h-[600px] overflow-y-auto space-y-4 pr-2">
             {withdrawals.length === 0 && (
               <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
                 <p className="text-zinc-500">{t.noWithdrawalRequestsYet}</p>
