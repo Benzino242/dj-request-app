@@ -55,7 +55,7 @@ export async function GET() {
     (dj) => dj.verification_status !== "removed"
   );
 
-  const djEarnings = djs.map((dj) => {
+  const djEarnings = (allDjs || []).map((dj) => {
     const djRequests = (requests || []).filter(
       (request) => request.dj_id === dj.id
     );
@@ -116,7 +116,7 @@ export async function GET() {
   });
 
   return NextResponse.json({
-    djs,
+    djs: allDjs || [],
     withdrawals: withdrawals || [],
     djEarnings,
     auditLogs: auditLogs || [],
