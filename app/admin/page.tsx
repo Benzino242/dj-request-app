@@ -1897,7 +1897,20 @@ export default function AdminPage() {
                   <div key={log.id}>
                     <p className="text-white text-base leading-relaxed">
                       {log.description || "Activity updated"}
-                    </p          <h3 className="text-2xl font-bold text-white mb-4">
+                    </p>
+
+                    <p className="text-xs text-zinc-500 mt-1">
+                      {log.created_at
+                        ? new Date(log.created_at).toLocaleString()
+                        : "No date"}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <h3 className="text-2xl font-bold text-white mb-4">
             Withdrawal History
           </h3>
 
@@ -1967,15 +1980,14 @@ export default function AdminPage() {
                         </span>
                       </div>
 
-                      <p className="text-xs text-zinc-500 mt-3">
-                        Requested on
-                      </p>
-
-                      <p className="text-sm text-zinc-300 mt-1">
-                        {withdrawal.created_at
-                          ? new Date(withdrawal.created_at).toLocaleString()
-                          : "No date"}
-                      </p>
+                      <div className="mt-3">
+                        <p className="text-xs text-zinc-500">Requested on</p>
+                        <p className="text-sm text-zinc-300 mt-1">
+                          {withdrawal.created_at
+                            ? new Date(withdrawal.created_at).toLocaleString()
+                            : "No date"}
+                        </p>
+                      </div>
 
                       {isExpanded && (
                         <div className="mt-4 bg-black/30 border border-zinc-800 rounded-xl p-4">
@@ -2001,8 +2013,8 @@ export default function AdminPage() {
                       )}
                     </div>
 
-                    <div className="md:text-right flex md:block items-center gap-3">
-                      {!shouldStayOpen && (
+                    {!shouldStayOpen && (
+                      <div className="md:text-right">
                         <button
                           type="button"
                           onClick={() => toggleWithdrawalDetails(withdrawal.id)}
@@ -2010,20 +2022,8 @@ export default function AdminPage() {
                         >
                           {isExpanded ? "Hide Details" : "View Details"}
                         </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
- text-zinc-300 mt-1">
-                        {withdrawal.created_at
-                          ? new Date(withdrawal.created_at).toLocaleString()
-                          : "No date"}
-                      </p>
-                    </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               );
