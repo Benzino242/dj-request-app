@@ -1873,81 +1873,31 @@ export default function AdminPage() {
             />
           </div>
 
-          <div className="mb-8 border border-purple-500/30 bg-purple-500/5 rounded-3xl p-5">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
-              <div>
-                <h3 className="text-2xl font-bold text-purple-400">
-                  DJ Activity History
-                </h3>
-                <p className="text-sm text-zinc-500 mt-1">
-                  Latest withdrawal and verification updates from Blackline Admin.
-                </p>
-              </div>
+          <div className="mb-8 max-w-xl">
+            <div className="bg-black/40 border border-zinc-800 rounded-2xl p-5">
+              <p className="text-zinc-500 text-sm mb-4">
+                Withdrawal Audit Trail
+              </p>
 
-              <span className="bg-purple-600/20 border border-purple-500/30 text-purple-300 px-3 py-1 rounded-full text-xs font-bold">
-                {auditLogs.length} updates
-              </span>
-            </div>
-
-            <div className="space-y-3">
-              {auditLogs.length === 0 && (
-                <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
+              <div className="space-y-5">
+                {auditLogs.length === 0 && (
                   <p className="text-zinc-500">No activity yet.</p>
-                </div>
-              )}
+                )}
 
-              {auditLogs.map((log) => {
-                const icon =
-                  log.entity_type === "withdrawal" &&
-                  log.action_type === "pending"
-                    ? "🟡"
-                    : log.entity_type === "withdrawal" &&
-                      log.action_type === "approved"
-                    ? "🔵"
-                    : log.entity_type === "withdrawal" &&
-                      log.action_type === "paid"
-                    ? "🟢"
-                    : log.entity_type === "withdrawal" &&
-                      log.action_type === "rejected"
-                    ? "🔴"
-                    : log.entity_type === "dj" &&
-                      log.action_type === "verified"
-                    ? "✅"
-                    : log.entity_type === "dj" &&
-                      log.action_type === "rejected"
-                    ? "❌"
-                    : "📝";
+                {auditLogs.map((log) => (
+                  <div key={log.id}>
+                    <p className="text-white text-base leading-relaxed">
+                      {log.description || "Activity updated"}
+                    </p>
 
-                return (
-                  <div
-                    key={log.id}
-                    className="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl"
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="text-2xl">{icon}</div>
-
-                      <div className="flex-1">
-                        <p className="text-white font-semibold">
-                          {log.description || "Activity updated"}
-                        </p>
-
-                        {log.metadata?.amount && (
-                          <p className="text-sm text-cyan-400 mt-1">
-                            Amount: {log.metadata.currency || currency}{" "}
-                            {Number(log.metadata.amount).toFixed(2)}
-                          </p>
-                        )}
-
-                        <p className="text-xs text-zinc-500 mt-2">
-                          {log.created_at
-                            ? new Date(log.created_at).toLocaleString()
-                            : "No date"}
-                        </p>
-                      </div>
-                    </div>
+                    <p className="text-xs text-zinc-500 mt-1">
+                      {log.created_at
+                        ? new Date(log.created_at).toLocaleString()
+                        : "No date"}
+                    </p>
                   </div>
-                );
-              })}
+                ))}
+              </div>
             </div>
           </div>
 
