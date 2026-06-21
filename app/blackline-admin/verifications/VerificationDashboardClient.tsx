@@ -86,13 +86,22 @@ export default function VerificationDashboardClient() {
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
-  const [withdrawalActionLoadingId, setWithdrawalActionLoadingId] =
-    useState<number | null>(null);
+  const [withdrawalActionLoadingId, setWithdrawalActionLoadingId] = useState<
+    number | null
+  >(null);
 
   const [withdrawalSearch, setWithdrawalSearch] = useState("");
-  const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
+  const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(
+    null,
+  );
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [expandedWithdrawalIds, setExpandedWithdrawalIds] = useState<number[]>([]);
+  const [expandedWithdrawalIds, setExpandedWithdrawalIds] = useState<number[]>(
+    [],
+  );
+  const [expandedDjIds, setExpandedDjIds] = useState<number[]>([]);
+  const [collapsedPriorityDjIds, setCollapsedPriorityDjIds] = useState<
+    number[]
+  >([]);
   const isFetchingDashboardRef = useRef(false);
 
   async function fetchDashboardData(showLoader = false) {
@@ -111,7 +120,7 @@ export default function VerificationDashboardClient() {
         `/api/blackline-admin/dashboard?t=${Date.now()}`,
         {
           cache: "no-store",
-        }
+        },
       );
 
       const result = await response.json();
@@ -142,11 +151,11 @@ export default function VerificationDashboardClient() {
 
   useEffect(() => {
     fetchDashboardData(true);
-  
+
     const refreshInterval = setInterval(() => {
       fetchDashboardData();
     }, 10000);
-  
+
     const channel = supabase
       .channel("blackline-verification-dashboard")
       .on(
@@ -158,7 +167,7 @@ export default function VerificationDashboardClient() {
         },
         () => {
           fetchDashboardData();
-        }
+        },
       )
       .on(
         "postgres_changes",
@@ -169,7 +178,7 @@ export default function VerificationDashboardClient() {
         },
         () => {
           fetchDashboardData();
-        }
+        },
       )
       .on(
         "postgres_changes",
@@ -180,7 +189,7 @@ export default function VerificationDashboardClient() {
         },
         () => {
           fetchDashboardData();
-        }
+        },
       )
       .on(
         "postgres_changes",
@@ -191,10 +200,10 @@ export default function VerificationDashboardClient() {
         },
         () => {
           fetchDashboardData();
-        }
+        },
       )
       .subscribe();
-  
+
     return () => {
       clearInterval(refreshInterval);
       supabase.removeChannel(channel);
@@ -202,53 +211,53 @@ export default function VerificationDashboardClient() {
   }, []);
 
   const pendingCount = djs.filter(
-    (dj) => dj.verification_status === "pending"
+    (dj) => dj.verification_status === "pending",
   ).length;
 
   const verifiedCount = djs.filter(
-    (dj) => dj.verification_status === "verified"
+    (dj) => dj.verification_status === "verified",
   ).length;
 
   const rejectedCount = djs.filter(
-    (dj) => dj.verification_status === "rejected"
+    (dj) => dj.verification_status === "rejected",
   ).length;
 
   const totalCount = djs.length;
 
   const pendingWithdrawals = withdrawals.filter(
-    (withdrawal) => withdrawal.status === "pending"
+    (withdrawal) => withdrawal.status === "pending",
   ).length;
 
   const approvedWithdrawals = withdrawals.filter(
-    (withdrawal) => withdrawal.status === "approved"
+    (withdrawal) => withdrawal.status === "approved",
   ).length;
 
   const paidWithdrawals = withdrawals.filter(
-    (withdrawal) => withdrawal.status === "paid"
+    (withdrawal) => withdrawal.status === "paid",
   ).length;
 
   const rejectedWithdrawals = withdrawals.filter(
-    (withdrawal) => withdrawal.status === "rejected"
+    (withdrawal) => withdrawal.status === "rejected",
   ).length;
 
   const totalGrossRevenue = djEarnings.reduce(
     (sum, item) => sum + Number(item.grossRevenue || 0),
-    0
+    0,
   );
 
   const totalPlatformRevenue = djEarnings.reduce(
     (sum, item) => sum + Number(item.platformRevenue || 0),
-    0
+    0,
   );
 
   const totalDjRevenue = djEarnings.reduce(
     (sum, item) => sum + Number(item.djRevenue || 0),
-    0
+    0,
   );
 
   const totalAvailableBalance = djEarnings.reduce(
     (sum, item) => sum + Number(item.availableBalance || 0),
-    0
+    0,
   );
 
   const dashboardCurrency = djEarnings[0]?.currency || "GHS";
@@ -256,27 +265,27 @@ export default function VerificationDashboardClient() {
   const sortedDjs = [...djs].sort((a, b) => {
     function getDjPriority(dj: DJ) {
       const djWithdrawals = withdrawals.filter(
-        (withdrawal) => withdrawal.dj_id === dj.id
+        (withdrawal) => withdrawal.dj_id === dj.id,
       );
-  
+
       const hasApprovedWithdrawal = djWithdrawals.some(
-        (withdrawal) => withdrawal.status === "approved"
+        (withdrawal) => withdrawal.status === "approved",
       );
-  
+
       const hasPendingWithdrawal = djWithdrawals.some(
-        (withdrawal) => withdrawal.status === "pending"
+        (withdrawal) => withdrawal.status === "pending",
       );
-  
+
       if (dj.verification_status === "pending") return 1;
       if (hasApprovedWithdrawal) return 2;
       if (hasPendingWithdrawal) return 3;
       if (dj.verification_status === "verified") return 4;
       if (dj.verification_status === "not_started") return 5;
       if (dj.verification_status === "rejected") return 6;
-  
+
       return 7;
     }
-  
+
     return getDjPriority(a) - getDjPriority(b);
   });
 
@@ -284,7 +293,7 @@ export default function VerificationDashboardClient() {
     .filter((withdrawal) =>
       (withdrawal.dj_name || "")
         .toLowerCase()
-        .includes(withdrawalSearch.toLowerCase())
+        .includes(withdrawalSearch.toLowerCase()),
     )
     .sort((a, b) => {
       const priority: Record<string, number> = {
@@ -302,7 +311,7 @@ export default function VerificationDashboardClient() {
 
   async function updateVerificationStatus(
     djId: number,
-    status: "verified" | "rejected" | "pending" | "not_started"
+    status: "verified" | "rejected" | "pending" | "not_started",
   ) {
     setActionLoadingId(djId);
 
@@ -333,7 +342,7 @@ export default function VerificationDashboardClient() {
 
   async function updateWithdrawalStatus(
     withdrawalId: number,
-    status: "approved" | "rejected" | "paid" | "pending"
+    status: "approved" | "rejected" | "paid" | "pending",
   ) {
     setWithdrawalActionLoadingId(withdrawalId);
 
@@ -364,23 +373,22 @@ export default function VerificationDashboardClient() {
 
   async function handleConfirmAction() {
     if (!confirmAction) return;
-  
-    const currentScrollY =
-      typeof window !== "undefined" ? window.scrollY : 0;
-  
+
+    const currentScrollY = typeof window !== "undefined" ? window.scrollY : 0;
+
     setConfirmLoading(true);
-  
+
     if (confirmAction.kind === "dj") {
       await updateVerificationStatus(confirmAction.id, confirmAction.status);
     }
-  
+
     if (confirmAction.kind === "withdrawal") {
       await updateWithdrawalStatus(confirmAction.id, confirmAction.status);
     }
-  
+
     setConfirmLoading(false);
     setConfirmAction(null);
-  
+
     setTimeout(() => {
       window.scrollTo({
         top: currentScrollY,
@@ -408,13 +416,12 @@ export default function VerificationDashboardClient() {
     if (entityType === "dj") return "🎧";
     return "📝";
   }
-  
+
   function getWithdrawalAuditLogs(withdrawalId: number) {
     return auditLogs
       .filter(
         (log) =>
-          log.entity_type === "withdrawal" &&
-          log.entity_id === withdrawalId
+          log.entity_type === "withdrawal" && log.entity_id === withdrawalId,
       )
       .slice(0, 10);
   }
@@ -423,7 +430,7 @@ export default function VerificationDashboardClient() {
     setExpandedWithdrawalIds((currentIds) =>
       currentIds.includes(withdrawalId)
         ? currentIds.filter((id) => id !== withdrawalId)
-        : [...currentIds, withdrawalId]
+        : [...currentIds, withdrawalId],
     );
   }
 
@@ -433,6 +440,54 @@ export default function VerificationDashboardClient() {
       withdrawal.status === "approved" ||
       expandedWithdrawalIds.includes(withdrawal.id)
     );
+  }
+
+  function toggleDjDetails(djId: number, isExpanded: boolean) {
+    if (isExpanded) {
+      setExpandedDjIds((currentIds) => currentIds.filter((id) => id !== djId));
+
+      setCollapsedPriorityDjIds((currentIds) =>
+        currentIds.includes(djId) ? currentIds : [...currentIds, djId],
+      );
+
+      return;
+    }
+
+    setCollapsedPriorityDjIds((currentIds) =>
+      currentIds.filter((id) => id !== djId),
+    );
+
+    setExpandedDjIds((currentIds) =>
+      currentIds.includes(djId) ? currentIds : [...currentIds, djId],
+    );
+  }
+
+  function getVerificationStatusBadge(status?: string | null) {
+    if (status === "verified") {
+      return {
+        label: "🟢 Verified",
+        className: "bg-green-500/10 border-green-500/30 text-green-400",
+      };
+    }
+
+    if (status === "pending") {
+      return {
+        label: "🟡 Pending Verification",
+        className: "bg-yellow-500/10 border-yellow-500/30 text-yellow-400",
+      };
+    }
+
+    if (status === "rejected") {
+      return {
+        label: "🔴 Rejected",
+        className: "bg-red-500/10 border-red-500/30 text-red-400",
+      };
+    }
+
+    return {
+      label: "⚪ Not Started",
+      className: "bg-zinc-500/10 border-zinc-500/30 text-zinc-400",
+    };
   }
 
   function exportWithdrawalsCSV() {
@@ -464,7 +519,7 @@ export default function VerificationDashboardClient() {
 
     const csvContent = [headers, ...rows]
       .map((row) =>
-        row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(",")
+        row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(","),
       )
       .join("\n");
 
@@ -476,9 +531,9 @@ export default function VerificationDashboardClient() {
 
     const link = document.createElement("a");
     link.href = url;
-    link.download = `blackline-withdrawals-${new Date()
-      .toISOString()
-      .split("T")[0]}.csv`;
+    link.download = `blackline-withdrawals-${
+      new Date().toISOString().split("T")[0]
+    }.csv`;
 
     document.body.appendChild(link);
     link.click();
@@ -610,111 +665,169 @@ export default function VerificationDashboardClient() {
       <section className="mb-14">
         <h2 className="text-3xl font-black mb-5">DJ Verification Management</h2>
 
-        <div className="space-y-5">
+        <div className="space-y-4">
           {sortedDjs.map((dj) => {
             const earnings = djEarnings.find((item) => item.dj_id === dj.id);
+            const djWithdrawals = withdrawals.filter(
+              (withdrawal) => withdrawal.dj_id === dj.id,
+            );
+            const hasPendingWithdrawal = djWithdrawals.some(
+              (withdrawal) => withdrawal.status === "pending",
+            );
+            const hasApprovedWithdrawal = djWithdrawals.some(
+              (withdrawal) => withdrawal.status === "approved",
+            );
+            const shouldAutoExpand =
+              dj.verification_status === "pending" ||
+              hasPendingWithdrawal ||
+              hasApprovedWithdrawal;
+            const isExpanded =
+              expandedDjIds.includes(dj.id) ||
+              (shouldAutoExpand && !collapsedPriorityDjIds.includes(dj.id));
+            const verificationBadge = getVerificationStatusBadge(
+              dj.verification_status,
+            );
 
             return (
               <div
                 key={dj.id}
                 className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
               >
-                <div className="flex flex-col gap-5">
-                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
-                    <div className="flex items-start gap-4">
-                      {dj.profile_image ? (
-                        <img
-                          src={dj.profile_image}
-                          alt={dj.stage_name}
-                          className="w-20 h-20 rounded-full object-cover border-2 border-purple-600"
-                        />
-                      ) : (
-                        <div className="w-20 h-20 rounded-full bg-zinc-800 border-2 border-zinc-700 flex items-center justify-center text-zinc-500 text-xs text-center">
-                          No Image
-                        </div>
-                      )}
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+                  <div className="flex items-center gap-4">
+                    {dj.profile_image ? (
+                      <img
+                        src={dj.profile_image}
+                        alt={dj.stage_name}
+                        className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover border-2 border-purple-600"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-zinc-800 border-2 border-zinc-700 flex items-center justify-center text-zinc-500 text-xs text-center shrink-0">
+                        No Image
+                      </div>
+                    )}
 
-                      <div>
+                    <div>
+                      <div className="flex flex-wrap items-center gap-3">
                         <h2 className="text-2xl font-bold">{dj.stage_name}</h2>
 
-                        <p className="text-zinc-400 mt-1">
+                        <span
+                          className={`inline-flex items-center border px-3 py-1 rounded-full text-xs font-bold ${verificationBadge.className}`}
+                        >
+                          {verificationBadge.label}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-2 mt-3">
+                        {earnings && (
+                          <span className="bg-purple-500/10 border border-purple-500/30 text-purple-300 px-3 py-1 rounded-full text-xs font-bold">
+                            Available: {earnings.currency}{" "}
+                            {earnings.availableBalance.toFixed(2)}
+                          </span>
+                        )}
+
+                        {hasPendingWithdrawal && (
+                          <span className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 px-3 py-1 rounded-full text-xs font-bold">
+                            Pending withdrawal
+                          </span>
+                        )}
+
+                        {hasApprovedWithdrawal && (
+                          <span className="bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 px-3 py-1 rounded-full text-xs font-bold">
+                            Approved withdrawal
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => toggleDjDetails(dj.id, isExpanded)}
+                    className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-4 py-2 rounded-xl font-semibold"
+                  >
+                    {isExpanded ? "Hide Details ▲" : "View Details ▼"}
+                  </button>
+                </div>
+
+                {isExpanded && (
+                  <div className="mt-5 border-t border-zinc-800 pt-5 space-y-5">
+                    <div className="grid md:grid-cols-2 gap-3">
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500">Email</p>
+                        <p className="font-bold text-white">
                           {dj.email || "No email"}
                         </p>
+                      </div>
 
-                        <p className="text-sm text-zinc-500 mt-2">
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500">
+                          Country / Currency
+                        </p>
+                        <p className="font-bold text-white">
                           {dj.country || "No country"} •{" "}
-                          {dj.preferred_currency || "No currency"} •{" "}
+                          {dj.preferred_currency || "No currency"}
+                        </p>
+                      </div>
+
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500">Payout Email</p>
+                        <p className="font-bold text-white">
+                          {dj.payout_email || "Not provided"}
+                        </p>
+                      </div>
+
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500">Payout Method</p>
+                        <p className="font-bold text-white">
                           {dj.payout_method || "No payout method"}
                         </p>
+                      </div>
+                    </div>
 
-                        <p className="text-sm text-zinc-500 mt-1">
-                          Payout email: {dj.payout_email || "Not provided"}
+                    <div className="grid md:grid-cols-2 gap-3">
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500">Payout Status</p>
+                        <p
+                          className={`font-bold ${
+                            dj.payout_status === "Active"
+                              ? "text-green-400"
+                              : "text-red-400"
+                          }`}
+                        >
+                          {dj.payout_status === "Active"
+                            ? "🟢 Active"
+                            : "🔴 Not Connected"}
                         </p>
+                      </div>
 
-                        <div className="mt-4 grid md:grid-cols-2 gap-3">
-  <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-    <p className="text-xs text-zinc-500">Payout Status</p>
-    <p
-      className={`font-bold ${
-        dj.payout_status === "Active"
-          ? "text-green-400"
-          : "text-red-400"
-      }`}
-    >
-      {dj.payout_status === "Active" ? "🟢 Active" : "🔴 Not Connected"}
-    </p>
-  </div>
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500">Provider</p>
+                        <p className="font-bold text-white">
+                          {dj.payout_provider || "Not provided"}
+                        </p>
+                      </div>
 
-  <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-    <p className="text-xs text-zinc-500">Provider</p>
-    <p className="font-bold text-white">
-      {dj.payout_provider || "Not provided"}
-    </p>
-  </div>
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500">Account Name</p>
+                        <p className="font-bold text-white">
+                          {dj.payout_account_name || "Not provided"}
+                        </p>
+                      </div>
 
-  <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-    <p className="text-xs text-zinc-500">Account Name</p>
-    <p className="font-bold text-white">
-      {dj.payout_account_name || "Not provided"}
-    </p>
-  </div>
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500">Account Number</p>
+                        <p className="font-bold text-white">
+                          {dj.payout_account_number || "Not provided"}
+                        </p>
+                      </div>
 
-  <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-    <p className="text-xs text-zinc-500">Account Number</p>
-    <p className="font-bold text-white">
-      {dj.payout_account_number || "Not provided"}
-    </p>
-  </div>
-
-  <div className="bg-black/40 border border-zinc-800 rounded-xl p-3 md:col-span-2">
-    <p className="text-xs text-zinc-500">Paystack Recipient Code</p>
-    <p className="font-bold text-zinc-300">
-      {dj.paystack_recipient_code || "Not created yet"}
-    </p>
-  </div>
-</div>
-
-                        <p className="mt-3 font-bold">
-                          Status:{" "}
-                          <span
-                            className={
-                              dj.verification_status === "verified"
-                                ? "text-green-400"
-                                : dj.verification_status === "pending"
-                                ? "text-yellow-400"
-                                : dj.verification_status === "rejected"
-                                ? "text-red-400"
-                                : "text-zinc-400"
-                            }
-                          >
-                            {dj.verification_status === "verified"
-                              ? "🟢 Verified"
-                              : dj.verification_status === "pending"
-                              ? "🟡 Pending Verification"
-                              : dj.verification_status === "rejected"
-                              ? "🔴 Rejected"
-                              : "⚪ Not Started"}
-                          </span>
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3 md:col-span-2">
+                        <p className="text-xs text-zinc-500">
+                          Paystack Recipient Code
+                        </p>
+                        <p className="font-bold text-zinc-300">
+                          {dj.paystack_recipient_code || "Not created yet"}
                         </p>
                       </div>
                     </div>
@@ -782,50 +895,51 @@ export default function VerificationDashboardClient() {
                           </button>
                         )}
                     </div>
+
+                    {earnings && (
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                        <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                          <p className="text-xs text-zinc-500">Gross</p>
+                          <p className="font-black text-green-400">
+                            {earnings.currency}{" "}
+                            {earnings.grossRevenue.toFixed(2)}
+                          </p>
+                        </div>
+
+                        <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                          <p className="text-xs text-zinc-500">DJ Earnings</p>
+                          <p className="font-black text-cyan-400">
+                            {earnings.currency} {earnings.djRevenue.toFixed(2)}
+                          </p>
+                        </div>
+
+                        <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                          <p className="text-xs text-zinc-500">Platform Fee</p>
+                          <p className="font-black text-zinc-300">
+                            {earnings.currency}{" "}
+                            {earnings.platformRevenue.toFixed(2)}
+                          </p>
+                        </div>
+
+                        <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                          <p className="text-xs text-zinc-500">Withdrawals</p>
+                          <p className="font-black text-yellow-400">
+                            {earnings.currency}{" "}
+                            {earnings.totalWithdrawals.toFixed(2)}
+                          </p>
+                        </div>
+
+                        <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                          <p className="text-xs text-zinc-500">Available</p>
+                          <p className="font-black text-purple-400">
+                            {earnings.currency}{" "}
+                            {earnings.availableBalance.toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
-
-                  {earnings && (
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                        <p className="text-xs text-zinc-500">Gross</p>
-                        <p className="font-black text-green-400">
-                          {earnings.currency} {earnings.grossRevenue.toFixed(2)}
-                        </p>
-                      </div>
-
-                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                        <p className="text-xs text-zinc-500">DJ Earnings</p>
-                        <p className="font-black text-cyan-400">
-                          {earnings.currency} {earnings.djRevenue.toFixed(2)}
-                        </p>
-                      </div>
-
-                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                        <p className="text-xs text-zinc-500">Platform Fee</p>
-                        <p className="font-black text-zinc-300">
-                          {earnings.currency}{" "}
-                          {earnings.platformRevenue.toFixed(2)}
-                        </p>
-                      </div>
-
-                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                        <p className="text-xs text-zinc-500">Withdrawals</p>
-                        <p className="font-black text-yellow-400">
-                          {earnings.currency}{" "}
-                          {earnings.totalWithdrawals.toFixed(2)}
-                        </p>
-                      </div>
-
-                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                        <p className="text-xs text-zinc-500">Available</p>
-                        <p className="font-black text-purple-400">
-                          {earnings.currency}{" "}
-                          {earnings.availableBalance.toFixed(2)}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                )}
               </div>
             );
           })}
@@ -843,7 +957,6 @@ export default function VerificationDashboardClient() {
             Export CSV
           </button>
         </div>
-
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
             <p className="text-zinc-400 text-sm">Pending</p>
@@ -873,7 +986,6 @@ export default function VerificationDashboardClient() {
             </p>
           </div>
         </div>
-
         <input
           type="text"
           placeholder="🔍 Search DJ withdrawals..."
@@ -881,7 +993,6 @@ export default function VerificationDashboardClient() {
           onChange={(e) => setWithdrawalSearch(e.target.value)}
           className="w-full p-4 rounded-2xl bg-zinc-800 border-2 border-purple-500 text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500 mb-6"
         />
-
         <div className="max-h-[850px] overflow-y-auto space-y-4 pr-2">
           {sortedWithdrawals.length === 0 && (
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
@@ -910,10 +1021,10 @@ export default function VerificationDashboardClient() {
                           withdrawal.status === "paid"
                             ? "bg-green-500/10 border-green-500/30 text-green-400"
                             : withdrawal.status === "approved"
-                            ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
-                            : withdrawal.status === "rejected"
-                            ? "bg-red-500/10 border-red-500/30 text-red-400"
-                            : "bg-yellow-500/10 border-yellow-500/30 text-yellow-400"
+                              ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
+                              : withdrawal.status === "rejected"
+                                ? "bg-red-500/10 border-red-500/30 text-red-400"
+                                : "bg-yellow-500/10 border-yellow-500/30 text-yellow-400"
                         }`}
                       >
                         {withdrawalStatusLabel(withdrawal.status)}
@@ -1158,9 +1269,7 @@ export default function VerificationDashboardClient() {
 
                       {withdrawal.status === "rejected" && (
                         <button
-                          disabled={
-                            withdrawalActionLoadingId === withdrawal.id
-                          }
+                          disabled={withdrawalActionLoadingId === withdrawal.id}
                           onClick={() =>
                             setConfirmAction({
                               kind: "withdrawal",
@@ -1184,7 +1293,8 @@ export default function VerificationDashboardClient() {
               </div>
             );
           })}
-        </div>      </section>
+        </div>{" "}
+      </section>
 
       {confirmAction && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
