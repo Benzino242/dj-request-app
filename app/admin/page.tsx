@@ -63,6 +63,8 @@ type AuditLog = {
     amount?: number;
     currency?: string;
     status?: string;
+    previous_status?: string;
+    new_status?: string;
   } | null;
   created_at?: string;
 };
@@ -133,6 +135,10 @@ export default function AdminPage() {
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [expandedWithdrawalIds, setExpandedWithdrawalIds] = useState<number[]>([]);
+  const [expandedWithdrawalTimelineIds, setExpandedWithdrawalTimelineIds] =
+    useState<number[]>([]);
+  const [isWithdrawalHistoryExpanded, setIsWithdrawalHistoryExpanded] =
+    useState(false);
 
   const [language, setLanguage] = useState<Language>("en");
 
@@ -969,6 +975,28 @@ export default function AdminPage() {
         withdrawal.status === "approved"
     );
 
+  const availableBalance = netEarnings - totalWithdrawals;
+
+  const sortedWithdrawalHistory = [...withdrawals].sort(
+    (a, b) =>
+      new Date(b.created_at || 0).getTime() -
+      new Date(a.created_at || 0).getTime()
+  );
+
+  const latestWithdrawal = sortedWithdrawalHistory[0];
+
+  const withdrawalPaidTotal = sortedWithdrawalHistory
+    .filter((withdrawal) => withdrawal.status === "paid")
+    .reduce((sum, withdrawal) => sum + Number(withdrawal.amount || 0), 0);
+
+  const withdrawalRequestedTotal = sortedWithdrawalHistory.reduce(
+    (sum, withdrawal) => sum + Number(withdrawal.amount || 0),
+    0
+  );
+
+  const withdrawalHistoryIsOpen =
+    hasOpenWithdrawal || isWithdrawalHistoryExpanded;
+
   function toggleWithdrawalDetails(withdrawalId: number) {
     setExpandedWithdrawalIds((currentIds) =>
       currentIds.includes(withdrawalId)
@@ -985,6 +1013,117 @@ export default function AdminPage() {
           Number(log.entity_id) === withdrawalId
       )
       .slice(0, 10);
+  }
+
+  function getAuditMetadataValue(log: AuditLog, key: string) {
+    const value = log.metadata?.[key as keyof NonNullable<AuditLog["metadata"]>];
+    return typeof value === "string" ? value : null;
+  }
+
+  function formatStatusText(status?: string | null) {
+    if (!status) return "Updated";
+
+    return status
+      .replace(/_/g, " ")
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
+
+  function getAuditTimelineDetails(log: AuditLog) {
+    const previousStatus = getAuditMetadataValue(log, "previous_status");
+    const newStatus = getAuditMetadataValue(log, "new_status") || log.action_type;
+    const status = (newStatus || "").toLowerCase();
+
+    const label = previousStatus
+      ? `${formatStatusText(previousStatus)} → ${formatStatusText(newStatus)}`
+      : formatStatusText(newStatus);
+
+    if (status === "paid") {
+      return {
+        icon: "🟢",
+        label,
+        dotClass: "bg-green-500/20 border-green-500 text-green-400",
+        textClass: "text-green-400",
+      };
+    }
+
+    if (status === "approved") {
+      return {
+        icon: "🔵",
+        label,
+        dotClass: "bg-cyan-500/20 border-cyan-500 text-cyan-400",
+        textClass: "text-cyan-400",
+      };
+    }
+
+    if (status === "rejected") {
+      return {
+        icon: "🔴",
+        label,
+        dotClass: "bg-red-500/20 border-red-500 text-red-400",
+        textClass: "text-red-400",
+      };
+    }
+
+    if (status === "pending") {
+      return {
+        icon: "🟡",
+        label,
+        dotClass: "bg-yellow-500/20 border-yellow-500 text-yellow-400",
+        textClass: "text-yellow-400",
+      };
+    }
+
+    return {
+      icon: "📝",
+      label,
+      dotClass: "bg-zinc-700/40 border-zinc-600 text-zinc-300",
+      textClass: "text-zinc-300",
+    };
+  }
+
+  function getWithdrawalStatusBadge(status?: string | null) {
+    if (status === "pending") {
+      return {
+        label: "🟡 Pending",
+        className: "bg-yellow-500/10 border-yellow-500/30 text-yellow-400",
+      };
+    }
+
+    if (status === "approved") {
+      return {
+        label: "🔵 Approved",
+        className: "bg-blue-500/10 border-blue-500/30 text-blue-400",
+      };
+    }
+
+    if (status === "paid") {
+      return {
+        label: "🟢 Paid",
+        className: "bg-green-500/10 border-green-500/30 text-green-400",
+      };
+    }
+
+    if (status === "rejected") {
+      return {
+        label: "🔴 Rejected",
+        className: "bg-red-500/10 border-red-500/30 text-red-400",
+      };
+    }
+
+    return {
+      label: status || "Unknown",
+      className: "bg-zinc-500/10 border-zinc-500/30 text-zinc-400",
+    };
+  }
+
+  function toggleWithdrawalTimeline(withdrawalId: number) {
+    setExpandedWithdrawalTimelineIds((currentIds) =>
+      currentIds.includes(withdrawalId)
+        ? currentIds.filter((id) => id !== withdrawalId)
+        : [...currentIds, withdrawalId]
+    );
   }
 
   if (authLoading) {
@@ -1830,7 +1969,7 @@ export default function AdminPage() {
               <p className="text-zinc-400 text-sm">{t.availableBalance}</p>
 
               <h4 className="text-3xl font-bold text-green-400">
-                {currency} {(netEarnings - totalWithdrawals).toFixed(2)}
+                {currency} {availableBalance.toFixed(2)}
               </h4>
             </div>
 
@@ -1896,151 +2035,236 @@ export default function AdminPage() {
             Withdrawal History
           </h3>
 
-          <div className="max-h-[600px] overflow-y-auto space-y-4 pr-2">
-            {withdrawals.length === 0 && (
-              <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
-                <p className="text-zinc-500">{t.noWithdrawalRequestsYet}</p>
-              </div>
-            )}
+          {withdrawals.length === 0 ? (
+            <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
+              <p className="text-zinc-500">{t.noWithdrawalRequestsYet}</p>
+            </div>
+          ) : (
+            <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+                <div className="flex items-center gap-4">
+                  {profileImage ? (
+                    <img
+                      src={profileImage}
+                      alt={dj.stage_name}
+                      className="w-16 h-16 rounded-full object-cover border-2 border-purple-600 shrink-0"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-full bg-zinc-800 border-2 border-zinc-700 flex items-center justify-center text-zinc-500 text-xs text-center shrink-0">
+                      {t.noImage || "No Image"}
+                    </div>
+                  )}
 
-            {withdrawals.map((withdrawal) => {
-              const statusBadge =
-                withdrawal.status === "pending"
-                  ? {
-                      label: "🟡 Pending",
-                      className:
-                        "bg-yellow-500/10 border-yellow-500/30 text-yellow-400",
-                    }
-                  : withdrawal.status === "approved"
-                  ? {
-                      label: "🔵 Approved",
-                      className:
-                        "bg-blue-500/10 border-blue-500/30 text-blue-400",
-                    }
-                  : withdrawal.status === "paid"
-                  ? {
-                      label: "🟢 Paid",
-                      className:
-                        "bg-green-500/10 border-green-500/30 text-green-400",
-                    }
-                  : withdrawal.status === "rejected"
-                  ? {
-                      label: "🔴 Rejected",
-                      className:
-                        "bg-red-500/10 border-red-500/30 text-red-400",
-                    }
-                  : {
-                      label: withdrawal.status,
-                      className:
-                        "bg-zinc-500/10 border-zinc-500/30 text-zinc-400",
-                    };
+                  <div>
+                    <h3 className="text-2xl font-bold">{dj.stage_name}</h3>
 
-              const shouldStayOpen =
-                withdrawal.status === "pending" ||
-                withdrawal.status === "approved";
-
-              const isExpanded =
-                shouldStayOpen || expandedWithdrawalIds.includes(withdrawal.id);
-
-              return (
-                <div
-                  key={withdrawal.id}
-                  className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl"
-                >
-                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
-                    <div className="flex-1">
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h3 className="text-xl font-bold">
-                          {withdrawal.currency}{" "}
-                          {Number(withdrawal.amount || 0).toFixed(2)}
-                        </h3>
-
+                    {latestWithdrawal && (
+                      <div className="mt-2">
                         <span
-                          className={`inline-flex items-center border px-3 py-1 rounded-full text-xs font-bold uppercase ${statusBadge.className}`}
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${
+                            getWithdrawalStatusBadge(latestWithdrawal.status).className
+                          }`}
                         >
-                          {statusBadge.label}
+                          Latest: {getWithdrawalStatusBadge(latestWithdrawal.status).label}
                         </span>
                       </div>
+                    )}
 
-                      <div className="mt-3">
-                        <p className="text-xs text-zinc-500">Requested on</p>
-                        <p className="text-sm text-zinc-300 mt-1">
-                          {withdrawal.created_at
-                            ? new Date(withdrawal.created_at).toLocaleString()
-                            : "No date"}
-                        </p>
-                      </div>
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      <span className="bg-black/40 border border-zinc-800 px-3 py-1 rounded-full text-xs text-zinc-300 font-bold">
+                        {sortedWithdrawalHistory.length} withdrawal
+                        {sortedWithdrawalHistory.length === 1 ? "" : "s"}
+                      </span>
 
-                      {isExpanded && (
-                        <div className="mt-4 space-y-4">
-                          <div className="bg-black/30 border border-zinc-800 rounded-xl p-4">
-                            <p className="text-zinc-400">
-                              {withdrawal.payout_method || "Bank Transfer"} •{" "}
-                              {withdrawal.provider || "No provider"}
-                            </p>
+                      <span className="bg-green-500/10 border border-green-500/30 px-3 py-1 rounded-full text-xs text-green-400 font-bold">
+                        Total withdrawn: {currency} {withdrawalPaidTotal.toFixed(2)}
+                      </span>
 
-                            <p className="text-sm text-zinc-500 mt-3">
-                              Account name:{" "}
-                              <span className="text-zinc-300">
-                                {withdrawal.account_name || "No account name"}
-                              </span>
-                            </p>
+                      <span className="bg-purple-500/10 border border-purple-500/30 px-3 py-1 rounded-full text-xs text-purple-300 font-bold">
+                        Total requested: {currency} {withdrawalRequestedTotal.toFixed(2)}
+                      </span>
 
-                            <p className="text-sm text-zinc-500 mt-1">
-                              Account number:{" "}
-                              <span className="text-zinc-300">
-                                {withdrawal.account_number || "No account number"}
-                              </span>
-                            </p>
-                          </div>
-
-                          <div className="bg-black/30 border border-zinc-800 rounded-xl p-4">
-                            <p className="text-xs text-zinc-500 mb-3">
-                              Status Updates
-                            </p>
-
-                            {getWithdrawalAuditLogs(withdrawal.id).length === 0 ? (
-                              <p className="text-sm text-zinc-500">
-                                No status updates yet.
-                              </p>
-                            ) : (
-                              <div className="max-h-40 overflow-y-auto space-y-3 pr-2">
-                                {getWithdrawalAuditLogs(withdrawal.id).map((log) => (
-                                  <div key={log.id}>
-                                    <p className="text-sm text-zinc-300">
-                                      {log.description || "Activity updated"}
-                                    </p>
-
-                                    <p className="text-xs text-zinc-600 mt-1">
-                                      {log.created_at
-                                        ? new Date(log.created_at).toLocaleString()
-                                        : "No date"}
-                                    </p>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )}
+                      <span className="bg-yellow-500/10 border border-yellow-500/30 px-3 py-1 rounded-full text-xs text-yellow-400 font-bold">
+                        Available: {currency} {availableBalance.toFixed(2)}
+                      </span>
                     </div>
 
-                    {!shouldStayOpen && (
-                      <div className="md:text-right">
-                        <button
-                          type="button"
-                          onClick={() => toggleWithdrawalDetails(withdrawal.id)}
-                          className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-4 py-2 rounded-xl text-sm font-bold"
-                        >
-                          {isExpanded ? "Hide Details" : "View Details"}
-                        </button>
-                      </div>
-                    )}
+                    <p className="text-xs text-zinc-500 mt-3">
+                      Latest request: {latestWithdrawal?.created_at
+                        ? new Date(latestWithdrawal.created_at).toLocaleString()
+                        : "Unknown"}
+                    </p>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsWithdrawalHistoryExpanded((currentValue) => !currentValue)}
+                  className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-4 py-2 rounded-xl text-sm font-bold"
+                >
+                  {withdrawalHistoryIsOpen ? "Hide Details ▲" : "View Details ▼"}
+                </button>
+              </div>
+
+              {withdrawalHistoryIsOpen && (
+                <div className="mt-5 border-t border-zinc-800 pt-5 max-h-[600px] overflow-y-auto space-y-4 pr-2">
+                  {sortedWithdrawalHistory.map((withdrawal) => {
+                    const statusBadge = getWithdrawalStatusBadge(withdrawal.status);
+                    const auditTrail = getWithdrawalAuditLogs(withdrawal.id);
+                    const isTimelineOpen = expandedWithdrawalTimelineIds.includes(
+                      withdrawal.id
+                    );
+
+                    return (
+                      <div
+                        key={withdrawal.id}
+                        className="bg-black/30 border border-zinc-800 rounded-2xl p-4"
+                      >
+                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                          <div>
+                            <div className="flex flex-wrap items-center gap-3">
+                              <h4 className="text-xl font-black text-white">
+                                {withdrawal.currency || currency} {" "}
+                                {Number(withdrawal.amount || 0).toFixed(2)}
+                              </h4>
+
+                              <span
+                                className={`inline-flex items-center border px-3 py-1 rounded-full text-xs font-bold uppercase ${statusBadge.className}`}
+                              >
+                                {statusBadge.label}
+                              </span>
+                            </div>
+
+                            <p className="text-xs text-zinc-500 mt-2">
+                              Requested: {withdrawal.created_at
+                                ? new Date(withdrawal.created_at).toLocaleString()
+                                : "No date"}
+                            </p>
+                          </div>
+
+                          {withdrawal.status === "paid" && (
+                            <span className="bg-green-600/20 text-green-400 px-4 py-2 rounded-xl font-semibold">
+                              ✅ Paid
+                            </span>
+                          )}
+
+                          {withdrawal.status === "approved" && (
+                            <span className="bg-cyan-600/20 text-cyan-400 px-4 py-2 rounded-xl font-semibold">
+                              🔵 Approved by Blackline
+                            </span>
+                          )}
+
+                          {withdrawal.status === "pending" && (
+                            <span className="bg-yellow-500/10 text-yellow-400 px-4 py-2 rounded-xl font-semibold">
+                              🟡 Waiting for review
+                            </span>
+                          )}
+
+                          {withdrawal.status === "rejected" && (
+                            <span className="bg-red-600/20 text-red-400 px-4 py-2 rounded-xl font-semibold">
+                              🔴 Rejected
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="grid md:grid-cols-4 gap-3 mt-4">
+                          <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                            <p className="text-xs text-zinc-500">Method</p>
+                            <p className="text-zinc-300 font-semibold">
+                              {withdrawal.payout_method || "Bank Transfer"}
+                            </p>
+                          </div>
+
+                          <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                            <p className="text-xs text-zinc-500">Provider</p>
+                            <p className="text-zinc-300 font-semibold">
+                              {withdrawal.provider || "No provider"}
+                            </p>
+                          </div>
+
+                          <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                            <p className="text-xs text-zinc-500">Account Name</p>
+                            <p className="text-zinc-300 font-semibold">
+                              {withdrawal.account_name || "No account name"}
+                            </p>
+                          </div>
+
+                          <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                            <p className="text-xs text-zinc-500">Account Number</p>
+                            <p className="text-zinc-300 font-semibold">
+                              {withdrawal.account_number || "No account number"}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="mt-4 bg-black/40 border border-zinc-800 rounded-xl p-4">
+                          <button
+                            type="button"
+                            onClick={() => toggleWithdrawalTimeline(withdrawal.id)}
+                            className="w-full flex items-center justify-between gap-3 text-left"
+                          >
+                            <span className="text-xs text-zinc-400 font-bold">
+                              Withdrawal Activity Timeline ({auditTrail.length})
+                            </span>
+
+                            <span className="text-xs text-zinc-500 font-bold">
+                              {isTimelineOpen ? "Hide ▲" : "Show ▼"}
+                            </span>
+                          </button>
+
+                          {isTimelineOpen && (
+                            <div className="mt-4">
+                              {auditTrail.length === 0 ? (
+                                <p className="text-sm text-zinc-500">
+                                  No status updates yet.
+                                </p>
+                              ) : (
+                                <div className="max-h-44 overflow-y-auto pr-2">
+                                  <div className="relative pl-9 space-y-4">
+                                    <div className="absolute left-3 top-3 bottom-3 w-px bg-zinc-700" />
+
+                                    {auditTrail.map((log) => {
+                                      const timelineDetails = getAuditTimelineDetails(log);
+
+                                      return (
+                                        <div key={log.id} className="relative">
+                                          <div
+                                            className={`absolute -left-9 top-0 w-7 h-7 rounded-full border flex items-center justify-center text-xs ${timelineDetails.dotClass}`}
+                                          >
+                                            {timelineDetails.icon}
+                                          </div>
+
+                                          <p
+                                            className={`text-sm font-bold ${timelineDetails.textClass}`}
+                                          >
+                                            {timelineDetails.label}
+                                          </p>
+
+                                          <p className="text-sm text-zinc-300 mt-1">
+                                            {log.description || "Activity updated"}
+                                          </p>
+
+                                          <p className="text-xs text-zinc-600 mt-1">
+                                            {log.created_at
+                                              ? new Date(log.created_at).toLocaleString()
+                                              : "No date"}
+                                          </p>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </main>
