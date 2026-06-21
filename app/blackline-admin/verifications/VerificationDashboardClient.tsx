@@ -59,16 +59,8 @@ type AuditLog = {
   created_at?: string | null;
 };
 
-type ConfirmAction =
-  | {
-      kind: "dj";
-      id: number;
-      status: "verified" | "rejected" | "pending" | "not_started" | "removed";
-      title: string;
-      message: string;
-      confirmText: string;
-      buttonClass: string;
-    }
+
+
   | {
       kind: "withdrawal";
       id: number;
@@ -315,7 +307,7 @@ export default function VerificationDashboardClient() {
 
   async function updateVerificationStatus(
     djId: number,
-    status: "verified" | "rejected" | "pending" | "not_started",
+    status: "verified" | "rejected" | "pending" | "not_started" | "removed"
   ) {
     setActionLoadingId(djId);
 
