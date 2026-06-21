@@ -561,6 +561,74 @@ export default function VerificationDashboardClient() {
       .slice(0, 10);
   }
 
+  function getAuditMetadataValue(log: AuditLog, key: string) {
+    const value = log.metadata?.[key];
+    return typeof value === "string" ? value : null;
+  }
+
+  function formatStatusText(status?: string | null) {
+    if (!status) return "Updated";
+
+    return status
+      .replace(/_/g, " ")
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
+
+  function getAuditTimelineDetails(log: AuditLog) {
+    const previousStatus = getAuditMetadataValue(log, "previous_status");
+    const newStatus = getAuditMetadataValue(log, "new_status") || log.action_type;
+    const status = (newStatus || "").toLowerCase();
+
+    const label = previousStatus
+      ? `${formatStatusText(previousStatus)} → ${formatStatusText(newStatus)}`
+      : formatStatusText(newStatus);
+
+    if (status === "paid") {
+      return {
+        icon: "🟢",
+        label,
+        dotClass: "bg-green-500/20 border-green-500 text-green-400",
+        textClass: "text-green-400",
+      };
+    }
+
+    if (status === "approved") {
+      return {
+        icon: "🔵",
+        label,
+        dotClass: "bg-cyan-500/20 border-cyan-500 text-cyan-400",
+        textClass: "text-cyan-400",
+      };
+    }
+
+    if (status === "rejected") {
+      return {
+        icon: "🔴",
+        label,
+        dotClass: "bg-red-500/20 border-red-500 text-red-400",
+        textClass: "text-red-400",
+      };
+    }
+
+    if (status === "pending") {
+      return {
+        icon: "🟡",
+        label,
+        dotClass: "bg-yellow-500/20 border-yellow-500 text-yellow-400",
+        textClass: "text-yellow-400",
+      };
+    }
+
+    return {
+      icon: "📝",
+      label,
+      dotClass: "bg-zinc-700/40 border-zinc-600 text-zinc-300",
+      textClass: "text-zinc-300",
+    };
+  }
+
   function toggleWithdrawalDjDetails(groupKey: string) {
     setExpandedWithdrawalDjKeys((currentKeys) =>
       currentKeys.includes(groupKey)
@@ -1293,6 +1361,11 @@ export default function VerificationDashboardClient() {
             const latestCurrency = latestWithdrawal?.currency || "GHS";
             const isDetailsOpen =
               group.hasActionRequired || expandedWithdrawalDjKeys.includes(group.key);
+            const withdrawalDj = djs.find(
+              (dj) =>
+                dj.id === group.djId ||
+                dj.stage_name?.toLowerCase() === group.djName.toLowerCase(),
+            );
 
             return (
               <div
@@ -1300,52 +1373,66 @@ export default function VerificationDashboardClient() {
                 className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
               >
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <h3 className="text-2xl font-bold">{group.djName}</h3>
+                  <div className="flex items-center gap-4">
+                    {withdrawalDj?.profile_image ? (
+                      <img
+                        src={withdrawalDj.profile_image}
+                        alt={group.djName}
+                        className="w-16 h-16 rounded-full object-cover border-2 border-purple-600 shrink-0"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-full bg-zinc-800 border-2 border-zinc-700 flex items-center justify-center text-zinc-500 text-xs text-center shrink-0">
+                        No Image
+                      </div>
+                    )}
 
-                      {latestWithdrawal && (
-                        <span
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${
-                            latestWithdrawal.status === "paid"
-                              ? "bg-green-500/10 border-green-500/30 text-green-400"
-                              : latestWithdrawal.status === "approved"
-                                ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
-                                : latestWithdrawal.status === "rejected"
-                                  ? "bg-red-500/10 border-red-500/30 text-red-400"
-                                  : "bg-yellow-500/10 border-yellow-500/30 text-yellow-400"
-                          }`}
-                        >
-                          Latest: {withdrawalStatusLabel(latestWithdrawal.status)}
+                    <div>
+                      <div className="flex flex-wrap items-center gap-3">
+                        <h3 className="text-2xl font-bold">{group.djName}</h3>
+
+                        {latestWithdrawal && (
+                          <span
+                            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${
+                              latestWithdrawal.status === "paid"
+                                ? "bg-green-500/10 border-green-500/30 text-green-400"
+                                : latestWithdrawal.status === "approved"
+                                  ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
+                                  : latestWithdrawal.status === "rejected"
+                                    ? "bg-red-500/10 border-red-500/30 text-red-400"
+                                    : "bg-yellow-500/10 border-yellow-500/30 text-yellow-400"
+                            }`}
+                          >
+                            Latest: {withdrawalStatusLabel(latestWithdrawal.status)}
+                          </span>
+                        )}
+
+                        {group.hasActionRequired && (
+                          <span className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 px-3 py-1 rounded-full text-xs font-bold">
+                            Action required
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        <span className="bg-black/40 border border-zinc-800 px-3 py-1 rounded-full text-xs text-zinc-300 font-bold">
+                          {group.withdrawals.length} withdrawal{group.withdrawals.length === 1 ? "" : "s"}
                         </span>
-                      )}
 
-                      {group.hasActionRequired && (
-                        <span className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 px-3 py-1 rounded-full text-xs font-bold">
-                          Action required
+                        <span className="bg-green-500/10 border border-green-500/30 px-3 py-1 rounded-full text-xs text-green-400 font-bold">
+                          Total withdrawn: {latestCurrency} {group.paidTotal.toFixed(2)}
                         </span>
-                      )}
+
+                        <span className="bg-purple-500/10 border border-purple-500/30 px-3 py-1 rounded-full text-xs text-purple-300 font-bold">
+                          Total requested: {latestCurrency} {group.requestedTotal.toFixed(2)}
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-zinc-500 mt-3">
+                        Latest request: {latestWithdrawal?.created_at
+                          ? new Date(latestWithdrawal.created_at).toLocaleString()
+                          : "Unknown"}
+                      </p>
                     </div>
-
-                    <div className="flex flex-wrap gap-2 mt-3">
-                      <span className="bg-black/40 border border-zinc-800 px-3 py-1 rounded-full text-xs text-zinc-300 font-bold">
-                        {group.withdrawals.length} withdrawal{group.withdrawals.length === 1 ? "" : "s"}
-                      </span>
-
-                      <span className="bg-green-500/10 border border-green-500/30 px-3 py-1 rounded-full text-xs text-green-400 font-bold">
-                        Total withdrawn: {latestCurrency} {group.paidTotal.toFixed(2)}
-                      </span>
-
-                      <span className="bg-purple-500/10 border border-purple-500/30 px-3 py-1 rounded-full text-xs text-purple-300 font-bold">
-                        Total requested: {latestCurrency} {group.requestedTotal.toFixed(2)}
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-zinc-500 mt-3">
-                      Latest request: {latestWithdrawal?.created_at
-                        ? new Date(latestWithdrawal.created_at).toLocaleString()
-                        : "Unknown"}
-                    </p>
                   </div>
 
                   <button
@@ -1575,9 +1662,9 @@ export default function VerificationDashboardClient() {
                             </div>
                           </div>
 
-                          <div className="mt-4 bg-black/40 border border-zinc-800 rounded-xl p-3">
-                            <p className="text-xs text-zinc-500 mb-2">
-                              Withdrawal Activity
+                          <div className="mt-4 bg-black/40 border border-zinc-800 rounded-xl p-4">
+                            <p className="text-xs text-zinc-500 mb-3">
+                              Withdrawal Activity Timeline
                             </p>
 
                             {auditTrail.length === 0 ? (
@@ -1585,20 +1672,38 @@ export default function VerificationDashboardClient() {
                                 No status activity yet.
                               </p>
                             ) : (
-                              <div className="max-h-36 overflow-y-auto space-y-2 pr-2">
-                                {auditTrail.map((log) => (
-                                  <div key={log.id}>
-                                    <p className="text-sm text-zinc-300">
-                                      {log.description}
-                                    </p>
+                              <div className="max-h-44 overflow-y-auto pr-2">
+                                <div className="relative pl-9 space-y-4">
+                                  <div className="absolute left-3 top-3 bottom-3 w-px bg-zinc-700" />
 
-                                    <p className="text-xs text-zinc-600">
-                                      {log.created_at
-                                        ? new Date(log.created_at).toLocaleString()
-                                        : "Unknown time"}
-                                    </p>
-                                  </div>
-                                ))}
+                                  {auditTrail.map((log) => {
+                                    const timelineDetails = getAuditTimelineDetails(log);
+
+                                    return (
+                                      <div key={log.id} className="relative">
+                                        <div
+                                          className={`absolute -left-9 top-0 w-7 h-7 rounded-full border flex items-center justify-center text-xs ${timelineDetails.dotClass}`}
+                                        >
+                                          {timelineDetails.icon}
+                                        </div>
+
+                                        <p className={`text-sm font-bold ${timelineDetails.textClass}`}>
+                                          {timelineDetails.label}
+                                        </p>
+
+                                        <p className="text-sm text-zinc-300 mt-1">
+                                          {log.description}
+                                        </p>
+
+                                        <p className="text-xs text-zinc-600 mt-1">
+                                          {log.created_at
+                                            ? new Date(log.created_at).toLocaleString()
+                                            : "Unknown time"}
+                                        </p>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
                               </div>
                             )}
                           </div>
