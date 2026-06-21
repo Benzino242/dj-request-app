@@ -106,6 +106,8 @@ export default function VerificationDashboardClient() {
     "other",
     "removed",
   ]);
+  const [isRecentActivityCollapsed, setIsRecentActivityCollapsed] =
+    useState(false);
   const isFetchingDashboardRef = useRef(false);
 
   async function fetchDashboardData(showLoader = false) {
@@ -1044,50 +1046,66 @@ export default function VerificationDashboardClient() {
       </div>
 
       <section className="mb-14">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-5">
-          <div>
-            <h2 className="text-3xl font-black">Recent Activity</h2>
-            <p className="text-zinc-500 text-sm mt-1">
-              Latest DJ verification and withdrawal changes.
-            </p>
-          </div>
-
-          <p className="text-sm text-zinc-500">
-            Showing latest {auditLogs.length} entries
-          </p>
-        </div>
-
         <div className="bg-zinc-900 border border-purple-900/60 rounded-2xl overflow-hidden">
-          {auditLogs.length === 0 ? (
-            <div className="p-5">
-              <p className="text-zinc-500">No activity recorded yet.</p>
+          <button
+            type="button"
+            onClick={() =>
+              setIsRecentActivityCollapsed((currentValue) => !currentValue)
+            }
+            className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-3 p-5 text-left hover:bg-purple-950/20 transition"
+          >
+            <div>
+              <h2 className="text-3xl font-black">Recent Activity</h2>
+              <p className="text-zinc-500 text-sm mt-1">
+                Latest DJ verification and withdrawal changes.
+              </p>
             </div>
-          ) : (
-            <div className="max-h-96 overflow-y-auto divide-y divide-zinc-800">
-              {auditLogs.map((log) => (
-                <div
-                  key={log.id}
-                  className="p-5 hover:bg-purple-950/20 transition"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-purple-600/20 border border-purple-600/40 flex items-center justify-center shrink-0">
-                      {auditLogIcon(log.entity_type)}
-                    </div>
 
-                    <div className="flex-1">
-                      <p className="text-white font-bold leading-relaxed">
-                        {log.description}
-                      </p>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="text-sm text-zinc-500">
+                Showing latest {auditLogs.length} entries
+              </span>
 
-                      <p className="text-sm text-zinc-500 mt-2">
-                        {log.created_at
-                          ? new Date(log.created_at).toLocaleString()
-                          : "Unknown time"}
-                      </p>
-                    </div>
-                  </div>
+              <span className="bg-zinc-800 border border-zinc-700 px-4 py-2 rounded-xl text-sm font-bold">
+                {isRecentActivityCollapsed ? "Show ▼" : "Hide ▲"}
+              </span>
+            </div>
+          </button>
+
+          {!isRecentActivityCollapsed && (
+            <div className="border-t border-zinc-800">
+              {auditLogs.length === 0 ? (
+                <div className="p-5">
+                  <p className="text-zinc-500">No activity recorded yet.</p>
                 </div>
-              ))}
+              ) : (
+                <div className="max-h-72 overflow-y-auto divide-y divide-zinc-800">
+                  {auditLogs.map((log) => (
+                    <div
+                      key={log.id}
+                      className="p-5 hover:bg-purple-950/20 transition"
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className="w-10 h-10 rounded-full bg-purple-600/20 border border-purple-600/40 flex items-center justify-center shrink-0">
+                          {auditLogIcon(log.entity_type)}
+                        </div>
+
+                        <div className="flex-1">
+                          <p className="text-white font-bold leading-relaxed">
+                            {log.description}
+                          </p>
+
+                          <p className="text-sm text-zinc-500 mt-2">
+                            {log.created_at
+                              ? new Date(log.created_at).toLocaleString()
+                              : "Unknown time"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
