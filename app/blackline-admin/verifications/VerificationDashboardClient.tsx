@@ -60,7 +60,21 @@ type AuditLog = {
 };
 
 
-
+type ConfirmAction =
+  | {
+      kind: "dj";
+      id: number;
+      status:
+        | "verified"
+        | "rejected"
+        | "pending"
+        | "not_started"
+        | "removed";
+      title: string;
+      message: string;
+      confirmText: string;
+      buttonClass: string;
+    }
   | {
       kind: "withdrawal";
       id: number;
