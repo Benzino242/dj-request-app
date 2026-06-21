@@ -415,7 +415,7 @@ export default function VerificationDashboardClient() {
           log.entity_type === "withdrawal" &&
           log.entity_id === withdrawalId
       )
-      .slice(0, 3);
+      .slice(0, 10);
   }
 
   function exportWithdrawalsCSV() {
@@ -560,7 +560,7 @@ export default function VerificationDashboardClient() {
               <p className="text-zinc-500">No activity recorded yet.</p>
             </div>
           ) : (
-            <div className="divide-y divide-zinc-800">
+            <div className="max-h-96 overflow-y-auto divide-y divide-zinc-800">
               {auditLogs.map((log) => (
                 <div
                   key={log.id}
@@ -865,7 +865,7 @@ export default function VerificationDashboardClient() {
           className="w-full p-4 rounded-2xl bg-zinc-800 border-2 border-purple-500 text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500 mb-6"
         />
 
-        <div className="space-y-5">
+        <div className="max-h-[850px] overflow-y-auto space-y-5 pr-2">
           {sortedWithdrawals.length === 0 && (
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
               <p className="text-zinc-500">No withdrawal requests yet.</p>
@@ -924,7 +924,7 @@ export default function VerificationDashboardClient() {
       Withdrawal Audit Trail
     </p>
 
-    <div className="space-y-2">
+    <div className="max-h-40 overflow-y-auto space-y-2 pr-2">
       {getWithdrawalAuditLogs(withdrawal.id).map((log) => (
         <div key={log.id}>
           <p className="text-sm text-zinc-300">
