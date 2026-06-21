@@ -18,7 +18,7 @@ export async function GET() {
 
   const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 
-  const { data: djs, error: djError } = await supabaseAdmin
+  const { data: allDjs, error: djError } = await supabaseAdmin
     .from("djs")
     .select("*")
     .order("created_at", { ascending: false });
@@ -51,7 +51,11 @@ export async function GET() {
     );
   }
 
-  const djEarnings = (djs || []).map((dj) => {
+  const djs = (allDjs || []).filter(
+    (dj) => dj.verification_status !== "removed"
+  );
+
+  const djEarnings = djs.map((dj) => {
     const djRequests = (requests || []).filter(
       (request) => request.dj_id === dj.id
     );
@@ -112,7 +116,7 @@ export async function GET() {
   });
 
   return NextResponse.json({
-    djs: djs || [],
+    djs,
     withdrawals: withdrawals || [],
     djEarnings,
     auditLogs: auditLogs || [],
@@ -260,9 +264,14 @@ export async function PATCH(request: Request) {
       );
     }
 
+    const updatePayload =
+      status === "removed"
+        ? { verification_status: status, is_live: false }
+        : { verification_status: status };
+
     const { error } = await supabaseAdmin
       .from("djs")
-      .update({ verification_status: status })
+      .update(updatePayload)
       .eq("id", id);
 
     if (error) {
@@ -274,9 +283,12 @@ export async function PATCH(request: Request) {
         action_type: status,
         entity_type: "dj",
         entity_id: id,
-        description: `DJ ${djBeforeUpdate.stage_name || "Unknown DJ"} verification changed from ${
-          djBeforeUpdate.verification_status || "not_started"
-        } to ${status}`,
+        description:
+          status === "removed"
+            ? `DJ ${djBeforeUpdate.stage_name || "Unknown DJ"} was removed from Blackline`
+            : `DJ ${djBeforeUpdate.stage_name || "Unknown DJ"} verification changed from ${
+                djBeforeUpdate.verification_status || "not_started"
+              } to ${status}`,
         metadata: {
           dj_id: djBeforeUpdate.id,
           stage_name: djBeforeUpdate.stage_name,
