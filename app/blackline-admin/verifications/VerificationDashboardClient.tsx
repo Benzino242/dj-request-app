@@ -108,6 +108,10 @@ export default function VerificationDashboardClient() {
   ]);
   const [isRecentActivityCollapsed, setIsRecentActivityCollapsed] =
     useState(false);
+  const [
+    expandedWithdrawalActivityDjNames,
+    setExpandedWithdrawalActivityDjNames,
+  ] = useState<string[]>([]);
   const isFetchingDashboardRef = useRef(false);
 
   async function fetchDashboardData(showLoader = false) {
@@ -144,7 +148,9 @@ export default function VerificationDashboardClient() {
         ...dashboardDjs,
         ...removedDashboardDjs.filter(
           (removedDj: DJ) =>
-            !dashboardDjs.some((dashboardDj: DJ) => dashboardDj.id === removedDj.id),
+            !dashboardDjs.some(
+              (dashboardDj: DJ) => dashboardDj.id === removedDj.id,
+            ),
         ),
       ];
 
@@ -227,13 +233,9 @@ export default function VerificationDashboardClient() {
     };
   }, []);
 
-  const activeDjs = djs.filter(
-    (dj) => dj.verification_status !== "removed",
-  );
+  const activeDjs = djs.filter((dj) => dj.verification_status !== "removed");
 
-  const removedDjs = djs.filter(
-    (dj) => dj.verification_status === "removed",
-  );
+  const removedDjs = djs.filter((dj) => dj.verification_status === "removed");
 
   const pendingCount = activeDjs.filter(
     (dj) => dj.verification_status === "pending",
@@ -366,9 +368,38 @@ export default function VerificationDashboardClient() {
       );
     });
 
+  const withdrawalActivityByDj = Array.from(
+    new Map(
+      withdrawals
+        .filter((withdrawal) => withdrawal.dj_name)
+        .map((withdrawal) => [withdrawal.dj_name as string, withdrawal]),
+    ).entries(),
+  )
+    .map(([djName, latestWithdrawal]) => {
+      const activityLogs = getDjWithdrawalActivity(djName);
+
+      return {
+        djName,
+        latestWithdrawal,
+        activityLogs,
+        latestActivityDate:
+          activityLogs[0]?.created_at || latestWithdrawal.created_at || null,
+      };
+    })
+    .sort((a, b) => {
+      const aTime = a.latestActivityDate
+        ? new Date(a.latestActivityDate).getTime()
+        : 0;
+      const bTime = b.latestActivityDate
+        ? new Date(b.latestActivityDate).getTime()
+        : 0;
+
+      return bTime - aTime;
+    });
+
   async function updateVerificationStatus(
     djId: number,
-    status: "verified" | "rejected" | "pending" | "not_started" | "removed"
+    status: "verified" | "rejected" | "pending" | "not_started" | "removed",
   ) {
     setActionLoadingId(djId);
 
@@ -483,6 +514,60 @@ export default function VerificationDashboardClient() {
       .slice(0, 10);
   }
 
+  function getWithdrawalActivityLabel(log: AuditLog) {
+    const previousStatus = String(log.metadata?.previous_status || "");
+    const newStatus = String(log.metadata?.new_status || log.action_type || "");
+
+    if (previousStatus && newStatus) {
+      return `${previousStatus.charAt(0).toUpperCase()}${previousStatus.slice(1)} → ${newStatus.charAt(0).toUpperCase()}${newStatus.slice(1)}`;
+    }
+
+    if (newStatus === "pending") return "Withdrawal Requested";
+    if (newStatus === "approved") return "Withdrawal Approved";
+    if (newStatus === "paid") return "Withdrawal Paid";
+    if (newStatus === "rejected") return "Withdrawal Rejected";
+
+    return log.description || "Withdrawal activity updated";
+  }
+
+  function getWithdrawalActivityIcon(log: AuditLog) {
+    if (log.action_type === "paid") return "🟢";
+    if (log.action_type === "approved") return "🔵";
+    if (log.action_type === "rejected") return "🔴";
+    if (log.action_type === "pending") return "🟡";
+    return "💸";
+  }
+
+  function getDjWithdrawalActivity(djName: string) {
+    return auditLogs
+      .filter((log) => {
+        const metadataDjName = String(
+          log.metadata?.dj_name || "",
+        ).toLowerCase();
+        const description = String(log.description || "").toLowerCase();
+        const normalizedDjName = djName.toLowerCase();
+
+        return (
+          log.entity_type === "withdrawal" &&
+          (metadataDjName === normalizedDjName ||
+            description.includes(`withdrawal for ${normalizedDjName}`))
+        );
+      })
+      .sort((a, b) => {
+        const aTime = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const bTime = b.created_at ? new Date(b.created_at).getTime() : 0;
+        return bTime - aTime;
+      });
+  }
+
+  function toggleWithdrawalActivityDj(djName: string) {
+    setExpandedWithdrawalActivityDjNames((currentNames) =>
+      currentNames.includes(djName)
+        ? currentNames.filter((name) => name !== djName)
+        : [...currentNames, djName],
+    );
+  }
+
   function toggleWithdrawalDetails(withdrawalId: number) {
     setExpandedWithdrawalIds((currentIds) =>
       currentIds.includes(withdrawalId)
@@ -579,9 +664,8 @@ export default function VerificationDashboardClient() {
 
   function renderDjCard(dj: DJ) {
     const earnings = djEarnings.find((item) => item.dj_id === dj.id);
-    const { hasPendingWithdrawal, hasApprovedWithdrawal } = getDjWithdrawalFlags(
-      dj.id,
-    );
+    const { hasPendingWithdrawal, hasApprovedWithdrawal } =
+      getDjWithdrawalFlags(dj.id);
     const shouldAutoExpand =
       dj.verification_status === "pending" ||
       hasPendingWithdrawal ||
@@ -589,7 +673,9 @@ export default function VerificationDashboardClient() {
     const isExpanded =
       expandedDjIds.includes(dj.id) ||
       (shouldAutoExpand && !collapsedPriorityDjIds.includes(dj.id));
-    const verificationBadge = getVerificationStatusBadge(dj.verification_status);
+    const verificationBadge = getVerificationStatusBadge(
+      dj.verification_status,
+    );
 
     return (
       <div
@@ -626,7 +712,7 @@ export default function VerificationDashboardClient() {
               <div className="flex flex-wrap items-center gap-2 mt-3">
                 {earnings && (
                   <span className="bg-purple-500/10 border border-purple-500/30 text-purple-300 px-3 py-1 rounded-full text-xs font-bold">
-                    Available: {earnings.currency} {" "}
+                    Available: {earnings.currency}{" "}
                     {earnings.availableBalance.toFixed(2)}
                   </span>
                 )}
@@ -666,7 +752,7 @@ export default function VerificationDashboardClient() {
               <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
                 <p className="text-xs text-zinc-500">Country / Currency</p>
                 <p className="font-bold text-white">
-                  {dj.country || "No country"} • {" "}
+                  {dj.country || "No country"} •{" "}
                   {dj.preferred_currency || "No currency"}
                 </p>
               </div>
@@ -787,7 +873,8 @@ export default function VerificationDashboardClient() {
                         title: "Mark DJ as Pending",
                         message: `Are you sure you want to mark ${dj.stage_name} as pending verification?`,
                         confirmText: "Mark Pending",
-                        buttonClass: "bg-yellow-500 hover:bg-yellow-600 text-black",
+                        buttonClass:
+                          "bg-yellow-500 hover:bg-yellow-600 text-black",
                       })
                     }
                     className="bg-yellow-500 text-black hover:bg-yellow-600 px-4 py-2 rounded-xl disabled:opacity-50"
@@ -807,7 +894,8 @@ export default function VerificationDashboardClient() {
                       title: "Restore DJ",
                       message: `Restore ${dj.stage_name} back to pending verification?`,
                       confirmText: "Restore DJ",
-                      buttonClass: "bg-yellow-500 hover:bg-yellow-600 text-black",
+                      buttonClass:
+                        "bg-yellow-500 hover:bg-yellow-600 text-black",
                     })
                   }
                   className="bg-yellow-500 text-black hover:bg-yellow-600 px-4 py-2 rounded-xl disabled:opacity-50"
@@ -827,7 +915,8 @@ export default function VerificationDashboardClient() {
                       title: "Remove DJ from Blackline",
                       message: `This will hide ${dj.stage_name} from the normal Blackline admin dashboard and disable their live page. You should only do this if Blackline does not want to work with this DJ.`,
                       confirmText: "Remove DJ",
-                      buttonClass: "bg-red-900 hover:bg-red-800 border border-red-500 text-red-200",
+                      buttonClass:
+                        "bg-red-900 hover:bg-red-800 border border-red-500 text-red-200",
                     })
                   }
                   className="md:ml-auto bg-red-900 hover:bg-red-800 border border-red-500 text-red-200 px-4 py-2 rounded-xl disabled:opacity-50"
@@ -1116,7 +1205,8 @@ export default function VerificationDashboardClient() {
           <div>
             <h2 className="text-3xl font-black">DJ Verification Management</h2>
             <p className="text-zinc-500 text-sm mt-1">
-              Priority DJs stay visible. Lower-priority and removed DJs stay tucked away.
+              Priority DJs stay visible. Lower-priority and removed DJs stay
+              tucked away.
             </p>
           </div>
 
@@ -1504,6 +1594,133 @@ export default function VerificationDashboardClient() {
             );
           })}
         </div>{" "}
+      </section>
+
+      <section className="mt-14">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
+          <div>
+            <h2 className="text-3xl font-black">Withdrawal Activity By DJ</h2>
+            <p className="text-zinc-500 text-sm mt-1">
+              Compact withdrawal history grouped by each DJ, newest activity
+              first.
+            </p>
+          </div>
+
+          <p className="text-sm text-zinc-500">
+            Showing {withdrawalActivityByDj.length} DJs
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          {withdrawalActivityByDj.length === 0 && (
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+              <p className="text-zinc-500">No withdrawal activity yet.</p>
+            </div>
+          )}
+
+          {withdrawalActivityByDj.map((item) => {
+            const isOpen = expandedWithdrawalActivityDjNames.includes(
+              item.djName,
+            );
+            const latestStatus = item.latestWithdrawal.status || "pending";
+
+            return (
+              <div
+                key={item.djName}
+                className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
+              >
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h3 className="text-2xl font-bold">{item.djName}</h3>
+
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${
+                          latestStatus === "paid"
+                            ? "bg-green-500/10 border-green-500/30 text-green-400"
+                            : latestStatus === "approved"
+                              ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
+                              : latestStatus === "rejected"
+                                ? "bg-red-500/10 border-red-500/30 text-red-400"
+                                : "bg-yellow-500/10 border-yellow-500/30 text-yellow-400"
+                        }`}
+                      >
+                        {withdrawalStatusLabel(latestStatus)}
+                      </span>
+                    </div>
+
+                    <p className="text-zinc-400 mt-2">
+                      {item.latestWithdrawal.currency || "GHS"}{" "}
+                      {Number(item.latestWithdrawal.amount || 0).toFixed(2)}
+                    </p>
+
+                    <p className="text-xs text-zinc-500 mt-2">
+                      Latest activity:{" "}
+                      {item.latestActivityDate
+                        ? new Date(item.latestActivityDate).toLocaleString()
+                        : "Unknown"}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => toggleWithdrawalActivityDj(item.djName)}
+                    className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-4 py-2 rounded-xl font-semibold"
+                  >
+                    {isOpen ? "Hide Details ▲" : "View Details ▼"}
+                  </button>
+                </div>
+
+                {isOpen && (
+                  <div className="mt-5 border-t border-zinc-800 pt-5">
+                    <h4 className="text-lg font-black mb-4">
+                      Withdrawal Activity
+                    </h4>
+
+                    {item.activityLogs.length === 0 ? (
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-4">
+                        <p className="text-zinc-500">
+                          No audit activity found for this DJ yet.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="max-h-72 overflow-y-auto space-y-3 pr-2">
+                        {item.activityLogs.map((log) => (
+                          <div
+                            key={log.id}
+                            className="bg-black/40 border border-zinc-800 rounded-xl p-4"
+                          >
+                            <div className="flex items-start gap-3">
+                              <div className="text-2xl">
+                                {getWithdrawalActivityIcon(log)}
+                              </div>
+
+                              <div>
+                                <p className="text-white font-bold">
+                                  {getWithdrawalActivityLabel(log)}
+                                </p>
+
+                                <p className="text-sm text-zinc-400 mt-1">
+                                  {log.description}
+                                </p>
+
+                                <p className="text-xs text-zinc-500 mt-2">
+                                  {log.created_at
+                                    ? new Date(log.created_at).toLocaleString()
+                                    : "Unknown time"}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </section>
 
       {confirmAction && (
