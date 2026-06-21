@@ -92,6 +92,7 @@ export default function VerificationDashboardClient() {
   const [withdrawalSearch, setWithdrawalSearch] = useState("");
   const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [expandedWithdrawalIds, setExpandedWithdrawalIds] = useState<number[]>([]);
   const isFetchingDashboardRef = useRef(false);
 
   async function fetchDashboardData(showLoader = false) {
@@ -416,6 +417,22 @@ export default function VerificationDashboardClient() {
           log.entity_id === withdrawalId
       )
       .slice(0, 10);
+  }
+
+  function toggleWithdrawalDetails(withdrawalId: number) {
+    setExpandedWithdrawalIds((currentIds) =>
+      currentIds.includes(withdrawalId)
+        ? currentIds.filter((id) => id !== withdrawalId)
+        : [...currentIds, withdrawalId]
+    );
+  }
+
+  function shouldShowWithdrawalDetails(withdrawal: Withdrawal) {
+    return (
+      withdrawal.status === "pending" ||
+      withdrawal.status === "approved" ||
+      expandedWithdrawalIds.includes(withdrawal.id)
+    );
   }
 
   function exportWithdrawalsCSV() {
@@ -865,241 +882,309 @@ export default function VerificationDashboardClient() {
           className="w-full p-4 rounded-2xl bg-zinc-800 border-2 border-purple-500 text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500 mb-6"
         />
 
-        <div className="max-h-[850px] overflow-y-auto space-y-5 pr-2">
+        <div className="max-h-[850px] overflow-y-auto space-y-4 pr-2">
           {sortedWithdrawals.length === 0 && (
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
               <p className="text-zinc-500">No withdrawal requests yet.</p>
             </div>
           )}
 
-          {sortedWithdrawals.map((withdrawal) => (
-            <div
-              key={withdrawal.id}
-              className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
-            >
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
-                <div>
-                  <h3 className="text-2xl font-bold">
-                    {withdrawal.dj_name || "Unknown DJ"}
-                  </h3>
+          {sortedWithdrawals.map((withdrawal) => {
+            const isDetailsOpen = shouldShowWithdrawalDetails(withdrawal);
+            const auditTrail = getWithdrawalAuditLogs(withdrawal.id);
 
-                  <p className="text-zinc-400 mt-1">
-                    {withdrawal.currency || "GHS"} {withdrawal.amount}
-                  </p>
+            return (
+              <div
+                key={withdrawal.id}
+                className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
+              >
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h3 className="text-2xl font-bold">
+                        {withdrawal.dj_name || "Unknown DJ"}
+                      </h3>
 
-                  <p className="text-sm text-zinc-500 mt-2">
-                    Method: {withdrawal.payout_method || "Not provided"}
-                  </p>
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${
+                          withdrawal.status === "paid"
+                            ? "bg-green-500/10 border-green-500/30 text-green-400"
+                            : withdrawal.status === "approved"
+                            ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
+                            : withdrawal.status === "rejected"
+                            ? "bg-red-500/10 border-red-500/30 text-red-400"
+                            : "bg-yellow-500/10 border-yellow-500/30 text-yellow-400"
+                        }`}
+                      >
+                        {withdrawalStatusLabel(withdrawal.status)}
+                      </span>
+                    </div>
 
-                  <p className="text-sm text-zinc-500 mt-1">
-                    Provider: {withdrawal.provider || "Not provided"}
-                  </p>
+                    <p className="text-zinc-400 mt-2">
+                      {withdrawal.currency || "GHS"} {withdrawal.amount}
+                    </p>
 
-                  <p className="text-sm text-zinc-500 mt-1">
-                    Account name: {withdrawal.account_name || "Not provided"}
-                  </p>
+                    <p className="text-xs text-zinc-500 mt-2">
+                      Requested:{" "}
+                      {withdrawal.created_at
+                        ? new Date(withdrawal.created_at).toLocaleString()
+                        : "Unknown"}
+                    </p>
+                  </div>
 
-                  <p className="text-sm text-zinc-500 mt-1">
-                    Account number:{" "}
-                    {withdrawal.account_number || "Not provided"}
-                  </p>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {(withdrawal.status === "paid" ||
+                      withdrawal.status === "rejected") && (
+                      <button
+                        type="button"
+                        onClick={() => toggleWithdrawalDetails(withdrawal.id)}
+                        className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-4 py-2 rounded-xl font-semibold"
+                      >
+                        {isDetailsOpen ? "Hide Details" : "View Details"}
+                      </button>
+                    )}
 
-                  <p className="text-sm text-zinc-500 mt-1">
-                    Requested:{" "}
-                    {withdrawal.created_at
-                      ? new Date(withdrawal.created_at).toLocaleString()
-                      : "Unknown"}
-                  </p>
+                    {withdrawal.status === "pending" && (
+                      <span className="text-xs text-yellow-400 font-semibold">
+                        Needs review
+                      </span>
+                    )}
 
-                  <p
-                    className={`mt-3 font-bold ${withdrawalStatusColor(
-                      withdrawal.status
-                    )}`}
-                  >
-                    {withdrawalStatusLabel(withdrawal.status)}
-                  </p>
-                  {getWithdrawalAuditLogs(withdrawal.id).length > 0 && (
-  <div className="mt-4 w-full bg-black/40 border border-zinc-800 rounded-xl p-3">
-    <p className="text-xs text-zinc-500 mb-2">
-      Withdrawal Audit Trail
-    </p>
-
-    <div className="max-h-40 overflow-y-auto space-y-2 pr-2">
-      {getWithdrawalAuditLogs(withdrawal.id).map((log) => (
-        <div key={log.id}>
-          <p className="text-sm text-zinc-300">
-            {log.description}
-          </p>
-
-          <p className="text-xs text-zinc-600">
-            {log.created_at
-              ? new Date(log.created_at).toLocaleString()
-              : "Unknown time"}
-          </p>
-        </div>
-      ))}
-    </div>
-  </div>
-)}
+                    {withdrawal.status === "approved" && (
+                      <span className="text-xs text-cyan-400 font-semibold">
+                        Ready for payout
+                      </span>
+                    )}
+                  </div>
                 </div>
 
-                <div className="flex flex-wrap gap-3">
-                  {withdrawal.status === "pending" && (
-                    <>
-                      <button
-                        disabled={withdrawalActionLoadingId === withdrawal.id}
-                        onClick={() =>
-                          setConfirmAction({
-                            kind: "withdrawal",
-                            id: withdrawal.id,
-                            status: "approved",
-                            title: "Approve Withdrawal",
-                            message: `Approve ${
-                              withdrawal.currency || "GHS"
-                            } ${withdrawal.amount} withdrawal for ${
-                              withdrawal.dj_name || "this DJ"
-                            }?`,
-                            confirmText: "Approve Withdrawal",
-                            buttonClass: "bg-cyan-600 hover:bg-cyan-700",
-                          })
-                        }
-                        className="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded-xl disabled:opacity-50"
-                      >
-                        Approve
-                      </button>
+                {isDetailsOpen && (
+                  <div className="mt-5 border-t border-zinc-800 pt-5">
+                    <div className="grid md:grid-cols-2 gap-3 mb-5">
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500">Method</p>
+                        <p className="text-zinc-300 font-semibold">
+                          {withdrawal.payout_method || "Not provided"}
+                        </p>
+                      </div>
 
-                      <button
-                        disabled={withdrawalActionLoadingId === withdrawal.id}
-                        onClick={() =>
-                          setConfirmAction({
-                            kind: "withdrawal",
-                            id: withdrawal.id,
-                            status: "rejected",
-                            title: "Reject Withdrawal",
-                            message: `Are you sure you want to reject this withdrawal request from ${
-                              withdrawal.dj_name || "this DJ"
-                            }?`,
-                            confirmText: "Reject Withdrawal",
-                            buttonClass: "bg-red-600 hover:bg-red-700",
-                          })
-                        }
-                        className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl disabled:opacity-50"
-                      >
-                        Reject
-                      </button>
-                    </>
-                  )}
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500">Provider</p>
+                        <p className="text-zinc-300 font-semibold">
+                          {withdrawal.provider || "Not provided"}
+                        </p>
+                      </div>
 
-{withdrawal.status === "approved" && (
-  <>
-    <button
-      disabled
-      title="Automatic Paystack payouts require a Registered Business account."
-      className="bg-zinc-700 text-zinc-400 px-4 py-2 rounded-xl opacity-60 cursor-not-allowed"
-    >
-      💸 Pay Now Coming Soon
-    </button>
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500">Account Name</p>
+                        <p className="text-zinc-300 font-semibold">
+                          {withdrawal.account_name || "Not provided"}
+                        </p>
+                      </div>
 
-    <button
-      disabled={withdrawalActionLoadingId === withdrawal.id}
-      onClick={() =>
-        setConfirmAction({
-          kind: "withdrawal",
-          id: withdrawal.id,
-          status: "paid",
-          title: "Mark Withdrawal as Paid",
-          message: `Only mark this as paid after ${
-            withdrawal.dj_name || "the DJ"
-          } has actually received ${withdrawal.currency || "GHS"} ${
-            withdrawal.amount
-          } manually.`,
-          confirmText: "Mark Paid Manually",
-          buttonClass: "bg-green-600 hover:bg-green-700",
-        })
-      }
-      className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl disabled:opacity-50"
-    >
-      Mark Paid Manually
-    </button>
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500">Account Number</p>
+                        <p className="text-zinc-300 font-semibold">
+                          {withdrawal.account_number || "Not provided"}
+                        </p>
+                      </div>
+                    </div>
 
-    <button
-      disabled={withdrawalActionLoadingId === withdrawal.id}
-      onClick={() =>
-        setConfirmAction({
-          kind: "withdrawal",
-          id: withdrawal.id,
-          status: "rejected",
-          title: "Reject Withdrawal",
-          message: `Are you sure you want to reject this withdrawal request from ${
-            withdrawal.dj_name || "this DJ"
-          }?`,
-          confirmText: "Reject Withdrawal",
-          buttonClass: "bg-red-600 hover:bg-red-700",
-        })
-      }
-      className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl disabled:opacity-50"
-    >
-      Reject
-    </button>
+                    {auditTrail.length > 0 && (
+                      <div className="mb-5 w-full max-w-xl bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500 mb-2">
+                          Withdrawal Audit Trail
+                        </p>
 
-    <button
-      disabled={withdrawalActionLoadingId === withdrawal.id}
-      onClick={() =>
-        setConfirmAction({
-          kind: "withdrawal",
-          id: withdrawal.id,
-          status: "pending",
-          title: "Mark Withdrawal as Pending",
-          message:
-            "Are you sure you want to move this withdrawal request back to pending?",
-          confirmText: "Mark Pending",
-          buttonClass: "bg-zinc-700 hover:bg-zinc-600",
-        })
-      }
-      className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:opacity-50"
-    >
-      Mark Pending
-    </button>
+                        <div className="max-h-40 overflow-y-auto space-y-2 pr-2">
+                          {auditTrail.map((log) => (
+                            <div key={log.id}>
+                              <p className="text-sm text-zinc-300">
+                                {log.description}
+                              </p>
 
-    <p className="mt-3 text-xs text-yellow-400">
-      Automatic payouts require Paystack Registered Business approval.
-      Use "Mark Paid Manually" until Paystack enables transfers.
-    </p>
-  </>
-)}
+                              <p className="text-xs text-zinc-600">
+                                {log.created_at
+                                  ? new Date(log.created_at).toLocaleString()
+                                  : "Unknown time"}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
-{withdrawal.status === "paid" && (
-  <span className="bg-green-600/20 text-green-400 px-4 py-2 rounded-xl font-semibold">
-    ✅ Paid
-  </span>
-)}
+                    <div className="flex flex-wrap gap-3">
+                      {withdrawal.status === "pending" && (
+                        <>
+                          <button
+                            disabled={
+                              withdrawalActionLoadingId === withdrawal.id
+                            }
+                            onClick={() =>
+                              setConfirmAction({
+                                kind: "withdrawal",
+                                id: withdrawal.id,
+                                status: "approved",
+                                title: "Approve Withdrawal",
+                                message: `Approve ${
+                                  withdrawal.currency || "GHS"
+                                } ${withdrawal.amount} withdrawal for ${
+                                  withdrawal.dj_name || "this DJ"
+                                }?`,
+                                confirmText: "Approve Withdrawal",
+                                buttonClass: "bg-cyan-600 hover:bg-cyan-700",
+                              })
+                            }
+                            className="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded-xl disabled:opacity-50"
+                          >
+                            Approve
+                          </button>
 
-{withdrawal.status === "rejected" && (
-  <button
-    disabled={withdrawalActionLoadingId === withdrawal.id}
-    onClick={() =>
-      setConfirmAction({
-        kind: "withdrawal",
-        id: withdrawal.id,
-        status: "pending",
-        title: "Mark Withdrawal as Pending",
-        message:
-          "Are you sure you want to move this withdrawal request back to pending?",
-        confirmText: "Mark Pending",
-        buttonClass: "bg-zinc-700 hover:bg-zinc-600",
-      })
-    }
-    className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:opacity-50"
-  >
-    Mark Pending
-  </button>
-)}
-                </div>
+                          <button
+                            disabled={
+                              withdrawalActionLoadingId === withdrawal.id
+                            }
+                            onClick={() =>
+                              setConfirmAction({
+                                kind: "withdrawal",
+                                id: withdrawal.id,
+                                status: "rejected",
+                                title: "Reject Withdrawal",
+                                message: `Are you sure you want to reject this withdrawal request from ${
+                                  withdrawal.dj_name || "this DJ"
+                                }?`,
+                                confirmText: "Reject Withdrawal",
+                                buttonClass: "bg-red-600 hover:bg-red-700",
+                              })
+                            }
+                            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl disabled:opacity-50"
+                          >
+                            Reject
+                          </button>
+                        </>
+                      )}
+
+                      {withdrawal.status === "approved" && (
+                        <>
+                          <button
+                            disabled
+                            title="Automatic Paystack payouts require a Registered Business account."
+                            className="bg-zinc-700 text-zinc-400 px-4 py-2 rounded-xl opacity-60 cursor-not-allowed"
+                          >
+                            💸 Pay Now Coming Soon
+                          </button>
+
+                          <button
+                            disabled={
+                              withdrawalActionLoadingId === withdrawal.id
+                            }
+                            onClick={() =>
+                              setConfirmAction({
+                                kind: "withdrawal",
+                                id: withdrawal.id,
+                                status: "paid",
+                                title: "Mark Withdrawal as Paid",
+                                message: `Only mark this as paid after ${
+                                  withdrawal.dj_name || "the DJ"
+                                } has actually received ${
+                                  withdrawal.currency || "GHS"
+                                } ${withdrawal.amount} manually.`,
+                                confirmText: "Mark Paid Manually",
+                                buttonClass: "bg-green-600 hover:bg-green-700",
+                              })
+                            }
+                            className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl disabled:opacity-50"
+                          >
+                            Mark Paid Manually
+                          </button>
+
+                          <button
+                            disabled={
+                              withdrawalActionLoadingId === withdrawal.id
+                            }
+                            onClick={() =>
+                              setConfirmAction({
+                                kind: "withdrawal",
+                                id: withdrawal.id,
+                                status: "rejected",
+                                title: "Reject Withdrawal",
+                                message: `Are you sure you want to reject this withdrawal request from ${
+                                  withdrawal.dj_name || "this DJ"
+                                }?`,
+                                confirmText: "Reject Withdrawal",
+                                buttonClass: "bg-red-600 hover:bg-red-700",
+                              })
+                            }
+                            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl disabled:opacity-50"
+                          >
+                            Reject
+                          </button>
+
+                          <button
+                            disabled={
+                              withdrawalActionLoadingId === withdrawal.id
+                            }
+                            onClick={() =>
+                              setConfirmAction({
+                                kind: "withdrawal",
+                                id: withdrawal.id,
+                                status: "pending",
+                                title: "Mark Withdrawal as Pending",
+                                message:
+                                  "Are you sure you want to move this withdrawal request back to pending?",
+                                confirmText: "Mark Pending",
+                                buttonClass: "bg-zinc-700 hover:bg-zinc-600",
+                              })
+                            }
+                            className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:opacity-50"
+                          >
+                            Mark Pending
+                          </button>
+
+                          <p className="w-full mt-1 text-xs text-yellow-400">
+                            Automatic payouts require Paystack Registered
+                            Business approval. Use "Mark Paid Manually" until
+                            Paystack enables transfers.
+                          </p>
+                        </>
+                      )}
+
+                      {withdrawal.status === "paid" && (
+                        <span className="bg-green-600/20 text-green-400 px-4 py-2 rounded-xl font-semibold">
+                          ✅ Paid
+                        </span>
+                      )}
+
+                      {withdrawal.status === "rejected" && (
+                        <button
+                          disabled={
+                            withdrawalActionLoadingId === withdrawal.id
+                          }
+                          onClick={() =>
+                            setConfirmAction({
+                              kind: "withdrawal",
+                              id: withdrawal.id,
+                              status: "pending",
+                              title: "Mark Withdrawal as Pending",
+                              message:
+                                "Are you sure you want to move this withdrawal request back to pending?",
+                              confirmText: "Mark Pending",
+                              buttonClass: "bg-zinc-700 hover:bg-zinc-600",
+                            })
+                          }
+                          className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:opacity-50"
+                        >
+                          Mark Pending
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
-        </div>
-      </section>
+            );
+          })}
+        </div>      </section>
 
       {confirmAction && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
