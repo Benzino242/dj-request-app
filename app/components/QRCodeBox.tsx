@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import QRCode from "react-qr-code";
 
 type Props = {
@@ -11,25 +12,108 @@ type Props = {
 };
 
 export default function QRCodeBox({ stageName, t }: Props) {
-  const requestUrl = `https://dj-request-app-topaz.vercel.app/${stageName.toLowerCase()}`;
+  const [promoKitOpen, setPromoKitOpen] = useState(false);
+
+  const cleanStageName = stageName.toLowerCase();
+  const requestUrl = `https://dj-request-app-topaz.vercel.app/${cleanStageName}`;
+
+  const promoKitUrl = (type: "poster" | "table-tent" | "sticker") =>
+    `/api/promo-kit?stage=${encodeURIComponent(cleanStageName)}&type=${type}`;
 
   return (
     <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl text-center">
       <h2 className="text-3xl font-bold text-purple-500 mb-3">
-  {t.yourDjQrCode}
-</h2>
+        {t.yourDjQrCode}
+      </h2>
 
-      <p className="text-zinc-400 mb-6">
-      {t.qrInstruction}
-     </p>
+      <p className="text-zinc-400 mb-6">{t.qrInstruction}</p>
 
       <div className="bg-white p-4 rounded-2xl inline-block">
         <QRCode value={requestUrl} size={220} />
       </div>
 
-      <p className="mt-5 text-purple-400 break-all">
-        {requestUrl}
-      </p>
+      <p className="mt-5 text-purple-400 break-all">{requestUrl}</p>
+
+      <div className="mt-6 border-t border-zinc-800 pt-6">
+        <button
+          type="button"
+          onClick={() => setPromoKitOpen(true)}
+          className="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-xl font-bold text-white"
+        >
+          📥 Download Promo Kit
+        </button>
+
+        <p className="text-xs text-zinc-500 mt-3">
+          Printable QR materials for posters, table tents, and laptop stickers.
+        </p>
+      </div>
+
+      {promoKitOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+          <div className="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 w-full max-w-md text-left">
+            <div className="flex items-start justify-between gap-4 mb-5">
+              <div>
+                <h3 className="text-2xl font-black text-white">
+                  Download Promo Kit
+                </h3>
+                <p className="text-sm text-zinc-500 mt-1">
+                  Choose a printable format for your QR code.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setPromoKitOpen(false)}
+                className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-3 py-2 rounded-xl text-sm font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <a
+                href={promoKitUrl("poster")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-black/40 hover:bg-black border border-zinc-800 rounded-2xl p-4 transition"
+              >
+                <p className="text-white font-black">📄 A4 Poster</p>
+                <p className="text-sm text-zinc-500 mt-1">
+                  Best for walls, DJ booths, entrances, and venue posters.
+                </p>
+              </a>
+
+              <a
+                href={promoKitUrl("table-tent")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-black/40 hover:bg-black border border-zinc-800 rounded-2xl p-4 transition"
+              >
+                <p className="text-white font-black">🎫 Table Tent</p>
+                <p className="text-sm text-zinc-500 mt-1">
+                  Best for tables, VIP booths, bars, and lounges.
+                </p>
+              </a>
+
+              <a
+                href={promoKitUrl("sticker")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-black/40 hover:bg-black border border-zinc-800 rounded-2xl p-4 transition"
+              >
+                <p className="text-white font-black">💻 Laptop Sticker</p>
+                <p className="text-sm text-zinc-500 mt-1">
+                  120mm × 80mm landscape sticker for laptops and DJ gear.
+                </p>
+              </a>
+            </div>
+
+            <p className="text-xs text-zinc-600 mt-5 leading-relaxed">
+              Instagram Story, Instagram Square, and high-resolution QR PNG will be added after this first PDF version is tested.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
