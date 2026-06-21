@@ -63,7 +63,7 @@ type ConfirmAction =
   | {
       kind: "dj";
       id: number;
-      status: "verified" | "rejected" | "pending" | "not_started";
+      status: "verified" | "rejected" | "pending" | "not_started" | "removed";
       title: string;
       message: string;
       confirmText: string;
@@ -210,19 +210,23 @@ export default function VerificationDashboardClient() {
     };
   }, []);
 
-  const pendingCount = djs.filter(
+  const activeDjs = djs.filter(
+    (dj) => dj.verification_status !== "removed",
+  );
+
+  const pendingCount = activeDjs.filter(
     (dj) => dj.verification_status === "pending",
   ).length;
 
-  const verifiedCount = djs.filter(
+  const verifiedCount = activeDjs.filter(
     (dj) => dj.verification_status === "verified",
   ).length;
 
-  const rejectedCount = djs.filter(
+  const rejectedCount = activeDjs.filter(
     (dj) => dj.verification_status === "rejected",
   ).length;
 
-  const totalCount = djs.length;
+  const totalCount = activeDjs.length;
 
   const pendingWithdrawals = withdrawals.filter(
     (withdrawal) => withdrawal.status === "pending",
@@ -262,7 +266,7 @@ export default function VerificationDashboardClient() {
 
   const dashboardCurrency = djEarnings[0]?.currency || "GHS";
 
-  const sortedDjs = [...djs].sort((a, b) => {
+  const sortedDjs = [...activeDjs].sort((a, b) => {
     function getDjPriority(dj: DJ) {
       const djWithdrawals = withdrawals.filter(
         (withdrawal) => withdrawal.dj_id === dj.id,
@@ -481,6 +485,13 @@ export default function VerificationDashboardClient() {
       return {
         label: "🔴 Rejected",
         className: "bg-red-500/10 border-red-500/30 text-red-400",
+      };
+    }
+
+    if (status === "removed") {
+      return {
+        label: "⚫ Removed",
+        className: "bg-zinc-700/30 border-zinc-600/40 text-zinc-400",
       };
     }
 
@@ -894,6 +905,27 @@ export default function VerificationDashboardClient() {
                             Mark Pending
                           </button>
                         )}
+
+
+                      {dj.verification_status === "rejected" && (
+                        <button
+                          disabled={actionLoadingId === dj.id}
+                          onClick={() =>
+                            setConfirmAction({
+                              kind: "dj",
+                              id: dj.id,
+                              status: "removed",
+                              title: "Remove DJ from Blackline",
+                              message: `This will hide ${dj.stage_name} from the normal Blackline admin dashboard and disable their live page. You should only do this if Blackline does not want to work with this DJ.`,
+                              confirmText: "Remove DJ",
+                              buttonClass: "bg-zinc-700 hover:bg-zinc-600",
+                            })
+                          }
+                          className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:opacity-50"
+                        >
+                          Remove DJ
+                        </button>
+                      )}
                     </div>
 
                     {earnings && (
