@@ -353,10 +353,10 @@ export default function VerificationDashboardClient() {
       );
     });
 
-  async function updateVerificationStatus(
-    djId: number,
-    status: "verified" | "rejected" | "pending" | "not_started",
-  ) {
+    async function updateVerificationStatus(
+      djId: number,
+      status: "verified" | "rejected" | "pending" | "not_started" | "removed"
+    ) {
     setActionLoadingId(djId);
 
     const response = await fetch("/api/blackline-admin/dashboard", {
