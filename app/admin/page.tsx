@@ -132,6 +132,7 @@ export default function AdminPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+  const [expandedWithdrawalIds, setExpandedWithdrawalIds] = useState<number[]>([]);
 
   const [language, setLanguage] = useState<Language>("en");
 
@@ -967,6 +968,14 @@ export default function AdminPage() {
         withdrawal.status === "pending" ||
         withdrawal.status === "approved"
     );
+
+  function toggleWithdrawalDetails(withdrawalId: number) {
+    setExpandedWithdrawalIds((currentIds) =>
+      currentIds.includes(withdrawalId)
+        ? currentIds.filter((id) => id !== withdrawalId)
+        : [...currentIds, withdrawalId]
+    );
+  }
 
   if (authLoading) {
     return (
@@ -1888,20 +1897,7 @@ export default function AdminPage() {
                   <div key={log.id}>
                     <p className="text-white text-base leading-relaxed">
                       {log.description || "Activity updated"}
-                    </p>
-
-                    <p className="text-xs text-zinc-500 mt-1">
-                      {log.created_at
-                        ? new Date(log.created_at).toLocaleString()
-                        : "No date"}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <h3 className="text-2xl font-bold text-white mb-4">
+                    </p          <h3 className="text-2xl font-bold text-white mb-4">
             Withdrawal History
           </h3>
 
@@ -1944,13 +1940,20 @@ export default function AdminPage() {
                         "bg-zinc-500/10 border-zinc-500/30 text-zinc-400",
                     };
 
+              const shouldStayOpen =
+                withdrawal.status === "pending" ||
+                withdrawal.status === "approved";
+
+              const isExpanded =
+                shouldStayOpen || expandedWithdrawalIds.includes(withdrawal.id);
+
               return (
                 <div
                   key={withdrawal.id}
                   className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl"
                 >
                   <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
-                    <div>
+                    <div className="flex-1">
                       <div className="flex flex-wrap items-center gap-3">
                         <h3 className="text-xl font-bold">
                           {withdrawal.currency}{" "}
@@ -1964,29 +1967,58 @@ export default function AdminPage() {
                         </span>
                       </div>
 
-                      <p className="text-zinc-400 mt-3">
-                        {withdrawal.payout_method || "Bank Transfer"} •{" "}
-                        {withdrawal.provider || "No provider"}
+                      <p className="text-xs text-zinc-500 mt-3">
+                        Requested on
                       </p>
 
-                      <p className="text-sm text-zinc-500 mt-2">
-                        Account name:{" "}
-                        <span className="text-zinc-300">
-                          {withdrawal.account_name || "No account name"}
-                        </span>
+                      <p className="text-sm text-zinc-300 mt-1">
+                        {withdrawal.created_at
+                          ? new Date(withdrawal.created_at).toLocaleString()
+                          : "No date"}
                       </p>
 
-                      <p className="text-sm text-zinc-500 mt-1">
-                        Account number:{" "}
-                        <span className="text-zinc-300">
-                          {withdrawal.account_number || "No account number"}
-                        </span>
-                      </p>
+                      {isExpanded && (
+                        <div className="mt-4 bg-black/30 border border-zinc-800 rounded-xl p-4">
+                          <p className="text-zinc-400">
+                            {withdrawal.payout_method || "Bank Transfer"} •{" "}
+                            {withdrawal.provider || "No provider"}
+                          </p>
+
+                          <p className="text-sm text-zinc-500 mt-3">
+                            Account name:{" "}
+                            <span className="text-zinc-300">
+                              {withdrawal.account_name || "No account name"}
+                            </span>
+                          </p>
+
+                          <p className="text-sm text-zinc-500 mt-1">
+                            Account number:{" "}
+                            <span className="text-zinc-300">
+                              {withdrawal.account_number || "No account number"}
+                            </span>
+                          </p>
+                        </div>
+                      )}
                     </div>
 
-                    <div className="md:text-right">
-                      <p className="text-xs text-zinc-500">Requested on</p>
-                      <p className="text-sm text-zinc-300 mt-1">
+                    <div className="md:text-right flex md:block items-center gap-3">
+                      {!shouldStayOpen && (
+                        <button
+                          type="button"
+                          onClick={() => toggleWithdrawalDetails(withdrawal.id)}
+                          className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-4 py-2 rounded-xl text-sm font-bold"
+                        >
+                          {isExpanded ? "Hide Details" : "View Details"}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+ text-zinc-300 mt-1">
                         {withdrawal.created_at
                           ? new Date(withdrawal.created_at).toLocaleString()
                           : "No date"}
