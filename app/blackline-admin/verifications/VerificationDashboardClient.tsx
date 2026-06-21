@@ -59,17 +59,11 @@ type AuditLog = {
   created_at?: string | null;
 };
 
-
 type ConfirmAction =
   | {
       kind: "dj";
       id: number;
-      status:
-        | "verified"
-        | "rejected"
-        | "pending"
-        | "not_started"
-        | "removed";
+      status: "verified" | "rejected" | "pending" | "not_started" | "removed";
       title: string;
       message: string;
       confirmText: string;
@@ -108,6 +102,10 @@ export default function VerificationDashboardClient() {
   const [collapsedPriorityDjIds, setCollapsedPriorityDjIds] = useState<
     number[]
   >([]);
+  const [collapsedDjGroups, setCollapsedDjGroups] = useState<string[]>([
+    "other",
+    "removed",
+  ]);
   const isFetchingDashboardRef = useRef(false);
 
   async function fetchDashboardData(showLoader = false) {
@@ -220,6 +218,10 @@ export default function VerificationDashboardClient() {
     (dj) => dj.verification_status !== "removed",
   );
 
+  const removedDjs = djs.filter(
+    (dj) => dj.verification_status === "removed",
+  );
+
   const pendingCount = activeDjs.filter(
     (dj) => dj.verification_status === "pending",
   ).length;
@@ -299,6 +301,38 @@ export default function VerificationDashboardClient() {
     return getDjPriority(a) - getDjPriority(b);
   });
 
+  const pendingVerificationDjs = sortedDjs.filter(
+    (dj) => dj.verification_status === "pending",
+  );
+
+  const withdrawalActionDjs = sortedDjs.filter((dj) => {
+    if (dj.verification_status === "pending") return false;
+
+    const djWithdrawals = withdrawals.filter(
+      (withdrawal) => withdrawal.dj_id === dj.id,
+    );
+
+    return djWithdrawals.some(
+      (withdrawal) =>
+        withdrawal.status === "pending" || withdrawal.status === "approved",
+    );
+  });
+
+  const otherDjs = sortedDjs.filter((dj) => {
+    if (dj.verification_status === "pending") return false;
+
+    const djWithdrawals = withdrawals.filter(
+      (withdrawal) => withdrawal.dj_id === dj.id,
+    );
+
+    const hasActionWithdrawal = djWithdrawals.some(
+      (withdrawal) =>
+        withdrawal.status === "pending" || withdrawal.status === "approved",
+    );
+
+    return !hasActionWithdrawal;
+  });
+
   const sortedWithdrawals = withdrawals
     .filter((withdrawal) =>
       (withdrawal.dj_name || "")
@@ -321,7 +355,7 @@ export default function VerificationDashboardClient() {
 
   async function updateVerificationStatus(
     djId: number,
-    status: "verified" | "rejected" | "pending" | "not_started" | "removed"
+    status: "verified" | "rejected" | "pending" | "not_started",
   ) {
     setActionLoadingId(djId);
 
@@ -507,6 +541,375 @@ export default function VerificationDashboardClient() {
     };
   }
 
+  function getDjWithdrawalFlags(djId: number) {
+    const djWithdrawals = withdrawals.filter(
+      (withdrawal) => withdrawal.dj_id === djId,
+    );
+
+    return {
+      hasPendingWithdrawal: djWithdrawals.some(
+        (withdrawal) => withdrawal.status === "pending",
+      ),
+      hasApprovedWithdrawal: djWithdrawals.some(
+        (withdrawal) => withdrawal.status === "approved",
+      ),
+    };
+  }
+
+  function toggleDjGroup(groupId: string) {
+    setCollapsedDjGroups((currentGroups) =>
+      currentGroups.includes(groupId)
+        ? currentGroups.filter((id) => id !== groupId)
+        : [...currentGroups, groupId],
+    );
+  }
+
+  function renderDjCard(dj: DJ) {
+    const earnings = djEarnings.find((item) => item.dj_id === dj.id);
+    const { hasPendingWithdrawal, hasApprovedWithdrawal } = getDjWithdrawalFlags(
+      dj.id,
+    );
+    const shouldAutoExpand =
+      dj.verification_status === "pending" ||
+      hasPendingWithdrawal ||
+      hasApprovedWithdrawal;
+    const isExpanded =
+      expandedDjIds.includes(dj.id) ||
+      (shouldAutoExpand && !collapsedPriorityDjIds.includes(dj.id));
+    const verificationBadge = getVerificationStatusBadge(dj.verification_status);
+
+    return (
+      <div
+        key={dj.id}
+        className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
+      >
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+          <div className="flex items-center gap-4">
+            {dj.profile_image ? (
+              <img
+                src={dj.profile_image}
+                alt={dj.stage_name}
+                className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover border-2 border-purple-600"
+              />
+            ) : (
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-zinc-800 border-2 border-zinc-700 flex items-center justify-center text-zinc-500 text-xs text-center shrink-0">
+                No Image
+              </div>
+            )}
+
+            <div>
+              <div className="flex flex-wrap items-center gap-3">
+                <h2 className="text-2xl font-bold">{dj.stage_name}</h2>
+
+                <span
+                  className={`inline-flex items-center border px-3 py-1 rounded-full text-xs font-bold ${verificationBadge.className}`}
+                >
+                  {dj.verification_status === "rejected"
+                    ? "🔴 Rejected • Eligible for Removal"
+                    : verificationBadge.label}
+                </span>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 mt-3">
+                {earnings && (
+                  <span className="bg-purple-500/10 border border-purple-500/30 text-purple-300 px-3 py-1 rounded-full text-xs font-bold">
+                    Available: {earnings.currency} {" "}
+                    {earnings.availableBalance.toFixed(2)}
+                  </span>
+                )}
+
+                {hasPendingWithdrawal && (
+                  <span className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 px-3 py-1 rounded-full text-xs font-bold">
+                    Pending withdrawal
+                  </span>
+                )}
+
+                {hasApprovedWithdrawal && (
+                  <span className="bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 px-3 py-1 rounded-full text-xs font-bold">
+                    Approved withdrawal
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => toggleDjDetails(dj.id, isExpanded)}
+            className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-4 py-2 rounded-xl font-semibold"
+          >
+            {isExpanded ? "Hide Details ▲" : "View Details ▼"}
+          </button>
+        </div>
+
+        {isExpanded && (
+          <div className="mt-5 border-t border-zinc-800 pt-5 space-y-5">
+            <div className="grid md:grid-cols-2 gap-3">
+              <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                <p className="text-xs text-zinc-500">Email</p>
+                <p className="font-bold text-white">{dj.email || "No email"}</p>
+              </div>
+
+              <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                <p className="text-xs text-zinc-500">Country / Currency</p>
+                <p className="font-bold text-white">
+                  {dj.country || "No country"} • {" "}
+                  {dj.preferred_currency || "No currency"}
+                </p>
+              </div>
+
+              <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                <p className="text-xs text-zinc-500">Payout Email</p>
+                <p className="font-bold text-white">
+                  {dj.payout_email || "Not provided"}
+                </p>
+              </div>
+
+              <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                <p className="text-xs text-zinc-500">Payout Method</p>
+                <p className="font-bold text-white">
+                  {dj.payout_method || "No payout method"}
+                </p>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-3">
+              <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                <p className="text-xs text-zinc-500">Payout Status</p>
+                <p
+                  className={`font-bold ${
+                    dj.payout_status === "Active"
+                      ? "text-green-400"
+                      : "text-red-400"
+                  }`}
+                >
+                  {dj.payout_status === "Active"
+                    ? "🟢 Active"
+                    : "🔴 Not Connected"}
+                </p>
+              </div>
+
+              <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                <p className="text-xs text-zinc-500">Provider</p>
+                <p className="font-bold text-white">
+                  {dj.payout_provider || "Not provided"}
+                </p>
+              </div>
+
+              <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                <p className="text-xs text-zinc-500">Account Name</p>
+                <p className="font-bold text-white">
+                  {dj.payout_account_name || "Not provided"}
+                </p>
+              </div>
+
+              <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                <p className="text-xs text-zinc-500">Account Number</p>
+                <p className="font-bold text-white">
+                  {dj.payout_account_number || "Not provided"}
+                </p>
+              </div>
+
+              <div className="bg-black/40 border border-zinc-800 rounded-xl p-3 md:col-span-2">
+                <p className="text-xs text-zinc-500">Paystack Recipient Code</p>
+                <p className="font-bold text-zinc-300">
+                  {dj.paystack_recipient_code || "Not created yet"}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              {dj.verification_status !== "verified" &&
+                dj.verification_status !== "removed" && (
+                  <button
+                    disabled={actionLoadingId === dj.id}
+                    onClick={() =>
+                      setConfirmAction({
+                        kind: "dj",
+                        id: dj.id,
+                        status: "verified",
+                        title: "Verify DJ",
+                        message: `Are you sure you want to verify ${dj.stage_name}?`,
+                        confirmText: "Verify DJ",
+                        buttonClass: "bg-green-600 hover:bg-green-700",
+                      })
+                    }
+                    className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl disabled:opacity-50"
+                  >
+                    Verify
+                  </button>
+                )}
+
+              {dj.verification_status !== "rejected" &&
+                dj.verification_status !== "removed" && (
+                  <button
+                    disabled={actionLoadingId === dj.id}
+                    onClick={() =>
+                      setConfirmAction({
+                        kind: "dj",
+                        id: dj.id,
+                        status: "rejected",
+                        title: "Reject DJ",
+                        message: `Are you sure you want to reject ${dj.stage_name}?`,
+                        confirmText: "Reject DJ",
+                        buttonClass: "bg-red-600 hover:bg-red-700",
+                      })
+                    }
+                    className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl disabled:opacity-50"
+                  >
+                    Reject
+                  </button>
+                )}
+
+              {dj.verification_status !== "pending" &&
+                dj.verification_status !== "not_started" &&
+                dj.verification_status !== "removed" && (
+                  <button
+                    disabled={actionLoadingId === dj.id}
+                    onClick={() =>
+                      setConfirmAction({
+                        kind: "dj",
+                        id: dj.id,
+                        status: "pending",
+                        title: "Mark DJ as Pending",
+                        message: `Are you sure you want to mark ${dj.stage_name} as pending verification?`,
+                        confirmText: "Mark Pending",
+                        buttonClass: "bg-yellow-500 hover:bg-yellow-600 text-black",
+                      })
+                    }
+                    className="bg-yellow-500 text-black hover:bg-yellow-600 px-4 py-2 rounded-xl disabled:opacity-50"
+                  >
+                    Mark Pending
+                  </button>
+                )}
+
+              {dj.verification_status === "removed" && (
+                <button
+                  disabled={actionLoadingId === dj.id}
+                  onClick={() =>
+                    setConfirmAction({
+                      kind: "dj",
+                      id: dj.id,
+                      status: "pending",
+                      title: "Restore DJ",
+                      message: `Restore ${dj.stage_name} back to pending verification?`,
+                      confirmText: "Restore DJ",
+                      buttonClass: "bg-yellow-500 hover:bg-yellow-600 text-black",
+                    })
+                  }
+                  className="bg-yellow-500 text-black hover:bg-yellow-600 px-4 py-2 rounded-xl disabled:opacity-50"
+                >
+                  Restore DJ
+                </button>
+              )}
+
+              {dj.verification_status === "rejected" && (
+                <button
+                  disabled={actionLoadingId === dj.id}
+                  onClick={() =>
+                    setConfirmAction({
+                      kind: "dj",
+                      id: dj.id,
+                      status: "removed",
+                      title: "Remove DJ from Blackline",
+                      message: `This will hide ${dj.stage_name} from the normal Blackline admin dashboard and disable their live page. You should only do this if Blackline does not want to work with this DJ.`,
+                      confirmText: "Remove DJ",
+                      buttonClass: "bg-red-900 hover:bg-red-800 border border-red-500 text-red-200",
+                    })
+                  }
+                  className="md:ml-auto bg-red-900 hover:bg-red-800 border border-red-500 text-red-200 px-4 py-2 rounded-xl disabled:opacity-50"
+                >
+                  Remove DJ
+                </button>
+              )}
+            </div>
+
+            {earnings && dj.verification_status !== "rejected" && (
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                  <p className="text-xs text-zinc-500">Gross</p>
+                  <p className="font-black text-green-400">
+                    {earnings.currency} {earnings.grossRevenue.toFixed(2)}
+                  </p>
+                </div>
+
+                <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                  <p className="text-xs text-zinc-500">DJ Earnings</p>
+                  <p className="font-black text-cyan-400">
+                    {earnings.currency} {earnings.djRevenue.toFixed(2)}
+                  </p>
+                </div>
+
+                <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                  <p className="text-xs text-zinc-500">Platform Fee</p>
+                  <p className="font-black text-zinc-300">
+                    {earnings.currency} {earnings.platformRevenue.toFixed(2)}
+                  </p>
+                </div>
+
+                <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                  <p className="text-xs text-zinc-500">Withdrawals</p>
+                  <p className="font-black text-yellow-400">
+                    {earnings.currency} {earnings.totalWithdrawals.toFixed(2)}
+                  </p>
+                </div>
+
+                <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                  <p className="text-xs text-zinc-500">Available</p>
+                  <p className="font-black text-purple-400">
+                    {earnings.currency} {earnings.availableBalance.toFixed(2)}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  function renderDjGroup(
+    groupId: string,
+    title: string,
+    subtitle: string,
+    items: DJ[],
+  ) {
+    const isCollapsed = collapsedDjGroups.includes(groupId);
+
+    return (
+      <div className="bg-black/30 border border-zinc-800 rounded-3xl overflow-hidden">
+        <button
+          type="button"
+          onClick={() => toggleDjGroup(groupId)}
+          className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-3 p-5 text-left hover:bg-zinc-900 transition"
+        >
+          <div>
+            <h3 className="text-xl font-black text-white">
+              {title} ({items.length})
+            </h3>
+            <p className="text-sm text-zinc-500 mt-1">{subtitle}</p>
+          </div>
+
+          <span className="bg-zinc-800 border border-zinc-700 px-4 py-2 rounded-xl text-sm font-bold">
+            {isCollapsed ? "Show ▼" : "Hide ▲"}
+          </span>
+        </button>
+
+        {!isCollapsed && (
+          <div className="border-t border-zinc-800 p-4 space-y-4">
+            {items.length === 0 ? (
+              <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+                <p className="text-zinc-500">No DJs in this group.</p>
+              </div>
+            ) : (
+              items.map((dj) => renderDjCard(dj))
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   function exportWithdrawalsCSV() {
     const headers = [
       "DJ Name",
@@ -680,307 +1083,47 @@ export default function VerificationDashboardClient() {
       </section>
 
       <section className="mb-14">
-        <h2 className="text-3xl font-black mb-5">DJ Verification Management</h2>
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-5">
+          <div>
+            <h2 className="text-3xl font-black">DJ Verification Management</h2>
+            <p className="text-zinc-500 text-sm mt-1">
+              Priority DJs stay visible. Lower-priority and removed DJs stay tucked away.
+            </p>
+          </div>
 
-        <div className="space-y-4">
-          {sortedDjs.map((dj) => {
-            const earnings = djEarnings.find((item) => item.dj_id === dj.id);
-            const djWithdrawals = withdrawals.filter(
-              (withdrawal) => withdrawal.dj_id === dj.id,
-            );
-            const hasPendingWithdrawal = djWithdrawals.some(
-              (withdrawal) => withdrawal.status === "pending",
-            );
-            const hasApprovedWithdrawal = djWithdrawals.some(
-              (withdrawal) => withdrawal.status === "approved",
-            );
-            const shouldAutoExpand =
-              dj.verification_status === "pending" ||
-              hasPendingWithdrawal ||
-              hasApprovedWithdrawal;
-            const isExpanded =
-              expandedDjIds.includes(dj.id) ||
-              (shouldAutoExpand && !collapsedPriorityDjIds.includes(dj.id));
-            const verificationBadge = getVerificationStatusBadge(
-              dj.verification_status,
-            );
+          <p className="text-sm text-zinc-500">
+            Showing {activeDjs.length} active DJs
+          </p>
+        </div>
 
-            return (
-              <div
-                key={dj.id}
-                className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
-              >
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
-                  <div className="flex items-center gap-4">
-                    {dj.profile_image ? (
-                      <img
-                        src={dj.profile_image}
-                        alt={dj.stage_name}
-                        className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover border-2 border-purple-600"
-                      />
-                    ) : (
-                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-zinc-800 border-2 border-zinc-700 flex items-center justify-center text-zinc-500 text-xs text-center shrink-0">
-                        No Image
-                      </div>
-                    )}
+        <div className="space-y-5">
+          {renderDjGroup(
+            "pending",
+            "🟡 Pending Verification",
+            "New DJs waiting for Blackline approval.",
+            pendingVerificationDjs,
+          )}
 
-                    <div>
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h2 className="text-2xl font-bold">{dj.stage_name}</h2>
+          {renderDjGroup(
+            "withdrawal-action",
+            "🔵 Withdrawal Action Required",
+            "DJs with pending or approved withdrawals that need attention.",
+            withdrawalActionDjs,
+          )}
 
-                        <span
-                          className={`inline-flex items-center border px-3 py-1 rounded-full text-xs font-bold ${verificationBadge.className}`}
-                        >
-                          {verificationBadge.label}
-                        </span>
-                      </div>
+          {renderDjGroup(
+            "other",
+            "⚪ Other DJs",
+            "Verified, rejected, or not-started DJs with no current withdrawal action required.",
+            otherDjs,
+          )}
 
-                      <div className="flex flex-wrap items-center gap-2 mt-3">
-                        {earnings && (
-                          <span className="bg-purple-500/10 border border-purple-500/30 text-purple-300 px-3 py-1 rounded-full text-xs font-bold">
-                            Available: {earnings.currency}{" "}
-                            {earnings.availableBalance.toFixed(2)}
-                          </span>
-                        )}
-
-                        {hasPendingWithdrawal && (
-                          <span className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 px-3 py-1 rounded-full text-xs font-bold">
-                            Pending withdrawal
-                          </span>
-                        )}
-
-                        {hasApprovedWithdrawal && (
-                          <span className="bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 px-3 py-1 rounded-full text-xs font-bold">
-                            Approved withdrawal
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => toggleDjDetails(dj.id, isExpanded)}
-                    className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-4 py-2 rounded-xl font-semibold"
-                  >
-                    {isExpanded ? "Hide Details ▲" : "View Details ▼"}
-                  </button>
-                </div>
-
-                {isExpanded && (
-                  <div className="mt-5 border-t border-zinc-800 pt-5 space-y-5">
-                    <div className="grid md:grid-cols-2 gap-3">
-                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                        <p className="text-xs text-zinc-500">Email</p>
-                        <p className="font-bold text-white">
-                          {dj.email || "No email"}
-                        </p>
-                      </div>
-
-                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                        <p className="text-xs text-zinc-500">
-                          Country / Currency
-                        </p>
-                        <p className="font-bold text-white">
-                          {dj.country || "No country"} •{" "}
-                          {dj.preferred_currency || "No currency"}
-                        </p>
-                      </div>
-
-                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                        <p className="text-xs text-zinc-500">Payout Email</p>
-                        <p className="font-bold text-white">
-                          {dj.payout_email || "Not provided"}
-                        </p>
-                      </div>
-
-                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                        <p className="text-xs text-zinc-500">Payout Method</p>
-                        <p className="font-bold text-white">
-                          {dj.payout_method || "No payout method"}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-3">
-                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                        <p className="text-xs text-zinc-500">Payout Status</p>
-                        <p
-                          className={`font-bold ${
-                            dj.payout_status === "Active"
-                              ? "text-green-400"
-                              : "text-red-400"
-                          }`}
-                        >
-                          {dj.payout_status === "Active"
-                            ? "🟢 Active"
-                            : "🔴 Not Connected"}
-                        </p>
-                      </div>
-
-                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                        <p className="text-xs text-zinc-500">Provider</p>
-                        <p className="font-bold text-white">
-                          {dj.payout_provider || "Not provided"}
-                        </p>
-                      </div>
-
-                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                        <p className="text-xs text-zinc-500">Account Name</p>
-                        <p className="font-bold text-white">
-                          {dj.payout_account_name || "Not provided"}
-                        </p>
-                      </div>
-
-                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                        <p className="text-xs text-zinc-500">Account Number</p>
-                        <p className="font-bold text-white">
-                          {dj.payout_account_number || "Not provided"}
-                        </p>
-                      </div>
-
-                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3 md:col-span-2">
-                        <p className="text-xs text-zinc-500">
-                          Paystack Recipient Code
-                        </p>
-                        <p className="font-bold text-zinc-300">
-                          {dj.paystack_recipient_code || "Not created yet"}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap gap-3">
-                      {dj.verification_status !== "verified" && (
-                        <button
-                          disabled={actionLoadingId === dj.id}
-                          onClick={() =>
-                            setConfirmAction({
-                              kind: "dj",
-                              id: dj.id,
-                              status: "verified",
-                              title: "Verify DJ",
-                              message: `Are you sure you want to verify ${dj.stage_name}?`,
-                              confirmText: "Verify DJ",
-                              buttonClass: "bg-green-600 hover:bg-green-700",
-                            })
-                          }
-                          className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl disabled:opacity-50"
-                        >
-                          Verify
-                        </button>
-                      )}
-
-                      {dj.verification_status !== "rejected" && (
-                        <button
-                          disabled={actionLoadingId === dj.id}
-                          onClick={() =>
-                            setConfirmAction({
-                              kind: "dj",
-                              id: dj.id,
-                              status: "rejected",
-                              title: "Reject DJ",
-                              message: `Are you sure you want to reject ${dj.stage_name}?`,
-                              confirmText: "Reject DJ",
-                              buttonClass: "bg-red-600 hover:bg-red-700",
-                            })
-                          }
-                          className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl disabled:opacity-50"
-                        >
-                          Reject
-                        </button>
-                      )}
-
-                      {dj.verification_status !== "pending" &&
-                        dj.verification_status !== "not_started" && (
-                          <button
-                            disabled={actionLoadingId === dj.id}
-                            onClick={() =>
-                              setConfirmAction({
-                                kind: "dj",
-                                id: dj.id,
-                                status: "pending",
-                                title: "Mark DJ as Pending",
-                                message: `Are you sure you want to mark ${dj.stage_name} as pending verification?`,
-                                confirmText: "Mark Pending",
-                                buttonClass:
-                                  "bg-yellow-500 hover:bg-yellow-600 text-black",
-                              })
-                            }
-                            className="bg-yellow-500 text-black hover:bg-yellow-600 px-4 py-2 rounded-xl disabled:opacity-50"
-                          >
-                            Mark Pending
-                          </button>
-                        )}
-
-
-                      {dj.verification_status === "rejected" && (
-                        <button
-                          disabled={actionLoadingId === dj.id}
-                          onClick={() =>
-                            setConfirmAction({
-                              kind: "dj",
-                              id: dj.id,
-                              status: "removed",
-                              title: "Remove DJ from Blackline",
-                              message: `This will hide ${dj.stage_name} from the normal Blackline admin dashboard and disable their live page. You should only do this if Blackline does not want to work with this DJ.`,
-                              confirmText: "Remove DJ",
-                              buttonClass: "bg-zinc-700 hover:bg-zinc-600",
-                            })
-                          }
-                          className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:opacity-50"
-                        >
-                          Remove DJ
-                        </button>
-                      )}
-                    </div>
-
-                    {earnings && (
-                      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                        <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                          <p className="text-xs text-zinc-500">Gross</p>
-                          <p className="font-black text-green-400">
-                            {earnings.currency}{" "}
-                            {earnings.grossRevenue.toFixed(2)}
-                          </p>
-                        </div>
-
-                        <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                          <p className="text-xs text-zinc-500">DJ Earnings</p>
-                          <p className="font-black text-cyan-400">
-                            {earnings.currency} {earnings.djRevenue.toFixed(2)}
-                          </p>
-                        </div>
-
-                        <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                          <p className="text-xs text-zinc-500">Platform Fee</p>
-                          <p className="font-black text-zinc-300">
-                            {earnings.currency}{" "}
-                            {earnings.platformRevenue.toFixed(2)}
-                          </p>
-                        </div>
-
-                        <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                          <p className="text-xs text-zinc-500">Withdrawals</p>
-                          <p className="font-black text-yellow-400">
-                            {earnings.currency}{" "}
-                            {earnings.totalWithdrawals.toFixed(2)}
-                          </p>
-                        </div>
-
-                        <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                          <p className="text-xs text-zinc-500">Available</p>
-                          <p className="font-black text-purple-400">
-                            {earnings.currency}{" "}
-                            {earnings.availableBalance.toFixed(2)}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+          {renderDjGroup(
+            "removed",
+            "⚫ Removed DJs",
+            "Hidden DJs kept for audit history and possible restoration.",
+            removedDjs,
+          )}
         </div>
       </section>
 
