@@ -977,6 +977,16 @@ export default function AdminPage() {
     );
   }
 
+  function getWithdrawalAuditLogs(withdrawalId: number) {
+    return auditLogs
+      .filter(
+        (log) =>
+          log.entity_type === "withdrawal" &&
+          Number(log.entity_id) === withdrawalId
+      )
+      .slice(0, 10);
+  }
+
   if (authLoading) {
     return (
       <main className="min-h-screen bg-black text-white flex items-center justify-center">
@@ -1882,34 +1892,6 @@ export default function AdminPage() {
             />
           </div>
 
-          <div className="mb-8 max-w-xl">
-            <div className="bg-black/40 border border-zinc-800 rounded-2xl p-5">
-              <p className="text-zinc-500 text-sm mb-4">
-                Withdrawal Audit Trail
-              </p>
-
-              <div className="max-h-72 overflow-y-auto space-y-5 pr-2">
-                {auditLogs.length === 0 && (
-                  <p className="text-zinc-500">No activity yet.</p>
-                )}
-
-                {auditLogs.map((log) => (
-                  <div key={log.id}>
-                    <p className="text-white text-base leading-relaxed">
-                      {log.description || "Activity updated"}
-                    </p>
-
-                    <p className="text-xs text-zinc-500 mt-1">
-                      {log.created_at
-                        ? new Date(log.created_at).toLocaleString()
-                        : "No date"}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
           <h3 className="text-2xl font-bold text-white mb-4">
             Withdrawal History
           </h3>
@@ -1990,25 +1972,55 @@ export default function AdminPage() {
                       </div>
 
                       {isExpanded && (
-                        <div className="mt-4 bg-black/30 border border-zinc-800 rounded-xl p-4">
-                          <p className="text-zinc-400">
-                            {withdrawal.payout_method || "Bank Transfer"} •{" "}
-                            {withdrawal.provider || "No provider"}
-                          </p>
+                        <div className="mt-4 space-y-4">
+                          <div className="bg-black/30 border border-zinc-800 rounded-xl p-4">
+                            <p className="text-zinc-400">
+                              {withdrawal.payout_method || "Bank Transfer"} •{" "}
+                              {withdrawal.provider || "No provider"}
+                            </p>
 
-                          <p className="text-sm text-zinc-500 mt-3">
-                            Account name:{" "}
-                            <span className="text-zinc-300">
-                              {withdrawal.account_name || "No account name"}
-                            </span>
-                          </p>
+                            <p className="text-sm text-zinc-500 mt-3">
+                              Account name:{" "}
+                              <span className="text-zinc-300">
+                                {withdrawal.account_name || "No account name"}
+                              </span>
+                            </p>
 
-                          <p className="text-sm text-zinc-500 mt-1">
-                            Account number:{" "}
-                            <span className="text-zinc-300">
-                              {withdrawal.account_number || "No account number"}
-                            </span>
-                          </p>
+                            <p className="text-sm text-zinc-500 mt-1">
+                              Account number:{" "}
+                              <span className="text-zinc-300">
+                                {withdrawal.account_number || "No account number"}
+                              </span>
+                            </p>
+                          </div>
+
+                          <div className="bg-black/30 border border-zinc-800 rounded-xl p-4">
+                            <p className="text-xs text-zinc-500 mb-3">
+                              Status Updates
+                            </p>
+
+                            {getWithdrawalAuditLogs(withdrawal.id).length === 0 ? (
+                              <p className="text-sm text-zinc-500">
+                                No status updates yet.
+                              </p>
+                            ) : (
+                              <div className="max-h-40 overflow-y-auto space-y-3 pr-2">
+                                {getWithdrawalAuditLogs(withdrawal.id).map((log) => (
+                                  <div key={log.id}>
+                                    <p className="text-sm text-zinc-300">
+                                      {log.description || "Activity updated"}
+                                    </p>
+
+                                    <p className="text-xs text-zinc-600 mt-1">
+                                      {log.created_at
+                                        ? new Date(log.created_at).toLocaleString()
+                                        : "No date"}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       )}
                     </div>
