@@ -318,8 +318,7 @@ page.drawText("SCAN HERE", {
   color: WHITE,
 });
 
-  const qrBytes = await getQrPngBytes(requestUrl);
-  const qrImage = await pdfDoc.embedPng(qrBytes);
+  
 
   const qrBoxSize = 190;
   const qrBoxX = cardX + (cardW - qrBoxSize) / 2;
