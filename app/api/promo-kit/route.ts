@@ -294,10 +294,10 @@ async function buildStickerPdf(requestUrl: string) {
   drawRoundedFill(page, qrCardX, qrCardY, qrCardW, qrCardH, 8, WHITE);
 
   page.drawImage(qrImage, {
-    x: qrCardX + 8,
-    y: qrCardY + 36,
-    width: 82,
-    height: 82,
+    x: qrCardX + 5,
+    y: qrCardY + 31,
+    width: 88,
+    height: 88,
   });
 
   page.drawRectangle({
@@ -311,7 +311,7 @@ async function buildStickerPdf(requestUrl: string) {
   drawPhoneIcon(page, qrCardX + 12, qrCardY + 8, 0.75);
 
   page.drawText("SCAN HERE", {
-    x: qrCardX + 31,
+    x: qrCardX + 24,
     y: qrCardY + 12,
     size: 13,
     font: bold,
@@ -359,7 +359,7 @@ async function buildTableTentPdf(requestUrl: string) {
 
   page.drawRectangle({
     x: cardX + 104,
-    y: cardY + 495,
+    y: cardY + 470,
     width: 152,
     height: 33,
     color: PURPLE,
@@ -367,7 +367,7 @@ async function buildTableTentPdf(requestUrl: string) {
 
   page.drawText("SCAN HERE", {
     x: cardX + 127,
-    y: cardY + 503,
+    y: cardY + 478,
     size: 19,
     font: bold,
     color: WHITE,
