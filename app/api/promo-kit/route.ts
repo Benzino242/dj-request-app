@@ -113,43 +113,16 @@ function drawHeadphonesIcon(page: PDFPage, x: number, y: number, scale = 1) {
 
 function drawMusicIcon(page: PDFPage, x: number, y: number, size = 10) {
   page.drawCircle({ x, y, size, color: PURPLE });
-
   page.drawCircle({ x: x - 3, y: y - 4, size: 2.5, color: BLACK });
-  page.drawLine({
-    start: { x: x - 1, y: y - 4 },
-    end: { x: x - 1, y: y + 6 },
-    thickness: 2,
-    color: BLACK,
-  });
-  page.drawLine({
-    start: { x: x - 1, y: y + 6 },
-    end: { x: x + 6, y: y + 8 },
-    thickness: 2,
-    color: BLACK,
-  });
+  page.drawLine({ start: { x: x - 1, y: y - 4 }, end: { x: x - 1, y: y + 6 }, thickness: 2, color: BLACK });
+  page.drawLine({ start: { x: x - 1, y: y + 6 }, end: { x: x + 6, y: y + 8 }, thickness: 2, color: BLACK });
 }
 
 function drawArrowIcon(page: PDFPage, x: number, y: number, size = 10) {
   page.drawCircle({ x, y, size, color: GREEN });
-
-  page.drawLine({
-    start: { x, y: y - 5 },
-    end: { x, y: y + 5 },
-    thickness: 3,
-    color: BLACK,
-  });
-  page.drawLine({
-    start: { x: x - 4, y: y + 1 },
-    end: { x, y: y + 6 },
-    thickness: 3,
-    color: BLACK,
-  });
-  page.drawLine({
-    start: { x: x + 4, y: y + 1 },
-    end: { x, y: y + 6 },
-    thickness: 3,
-    color: BLACK,
-  });
+  page.drawLine({ start: { x, y: y - 5 }, end: { x, y: y + 5 }, thickness: 3, color: BLACK });
+  page.drawLine({ start: { x: x - 4, y: y + 1 }, end: { x, y: y + 6 }, thickness: 3, color: BLACK });
+  page.drawLine({ start: { x: x + 4, y: y + 1 }, end: { x, y: y + 6 }, thickness: 3, color: BLACK });
 }
 
 function drawPhoneIcon(page: PDFPage, x: number, y: number, scale = 1) {
@@ -287,38 +260,94 @@ async function buildStickerPdf(requestUrl: string) {
   const qrImage = await pdfDoc.embedPng(qrBytes);
 
   const qrCardX = 223;
-const qrCardY = 38;
-const qrCardW = 98;
-const qrCardH = 138;
+  const qrCardY = 38;
+  const qrCardW = 98;
+  const qrCardH = 138;
 
-drawRoundedFill(page, qrCardX, qrCardY, qrCardW, qrCardH, 8, WHITE);
+  drawRoundedFill(page, qrCardX, qrCardY, qrCardW, qrCardH, 8, WHITE);
 
-page.drawImage(qrImage, {
-  x: qrCardX + 4,
-  y: qrCardY + 52,
-  width: 90,
-  height: 82,
-});
+  page.drawImage(qrImage, {
+    x: qrCardX + 4,
+    y: qrCardY + 56,
+    width: 90,
+    height: 78,
+  });
 
-page.drawRectangle({
-  x: qrCardX,
-  y: qrCardY,
-  width: qrCardW,
-  height: 42,
-  color: PURPLE,
-});
+  page.drawRectangle({
+    x: qrCardX,
+    y: qrCardY,
+    width: qrCardW,
+    height: 46,
+    color: PURPLE,
+  });
 
-drawPhoneIcon(page, qrCardX + 12, qrCardY + 11, 0.75);
+  drawPhoneIcon(page, qrCardX + 12, qrCardY + 13, 0.75);
 
-page.drawText("SCAN HERE", {
-  x: qrCardX + 24,
-  y: qrCardY + 16,
-  size: 13,
-  font: bold,
-  color: WHITE,
-});
+  page.drawText("SCAN HERE", {
+    x: qrCardX + 24,
+    y: qrCardY + 18,
+    size: 13,
+    font: bold,
+    color: WHITE,
+  });
 
-  
+  return pdfDoc.save();
+}
+
+async function buildTableTentPdf(requestUrl: string) {
+  const pdfDoc = await PDFDocument.create();
+
+  const pageW = 595.28;
+  const pageH = 841.89;
+  const page = pdfDoc.addPage([pageW, pageH]);
+
+  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+  page.drawRectangle({ x: 0, y: 0, width: pageW, height: pageH, color: LIGHT_GRAY });
+
+  const cardW = 360;
+  const cardH = 700;
+  const cardX = (pageW - cardW) / 2;
+  const cardY = 72;
+
+  page.drawRectangle({ x: cardX, y: cardY, width: cardW, height: cardH, color: BLACK });
+
+  page.drawRectangle({
+    x: cardX + 12,
+    y: cardY + 12,
+    width: cardW - 24,
+    height: cardH - 24,
+    borderColor: PURPLE,
+    borderWidth: 2,
+  });
+
+  drawHeadphonesIcon(page, cardX + 164, cardY + 613, 0.75);
+
+  page.drawLine({ start: { x: cardX + 93, y: cardY + 640 }, end: { x: cardX + 145, y: cardY + 640 }, thickness: 2, color: PURPLE });
+  page.drawLine({ start: { x: cardX + 214, y: cardY + 640 }, end: { x: cardX + 267, y: cardY + 640 }, thickness: 2, color: PURPLE });
+
+  drawCenteredText(page, "REQUEST", cardY + 555, 45, bold, WHITE, cardX, cardW);
+  drawCenteredText(page, "A SONG", cardY + 503, 45, bold, WHITE, cardX, cardW);
+
+  page.drawRectangle({
+    x: cardX + 104,
+    y: cardY + 470,
+    width: 152,
+    height: 33,
+    color: PURPLE,
+  });
+
+  page.drawText("SCAN HERE", {
+    x: cardX + 127,
+    y: cardY + 478,
+    size: 19,
+    font: bold,
+    color: WHITE,
+  });
+
+  const qrBytes = await getQrPngBytes(requestUrl);
+  const qrImage = await pdfDoc.embedPng(qrBytes);
 
   const qrBoxSize = 190;
   const qrBoxX = cardX + (cardW - qrBoxSize) / 2;
