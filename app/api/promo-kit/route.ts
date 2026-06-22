@@ -343,9 +343,9 @@ async function buildStickerPdf(requestUrl: string) {
   drawMusicIcon(page, 46, 76, 10);
 
   page.drawText("Request your favorite song", {
-    x: 63,
+    x: 56,
     y: 68,
-    size: 12.5,
+    size: 10.5,
     font: bold,
     color: WHITE,
   });
@@ -406,9 +406,9 @@ async function buildStickerPdf(requestUrl: string) {
   drawPhoneIcon(page, qrCardX + 12, qrCardY + 13, 0.75);
 
   page.drawText("SCAN HERE", {
-    x: qrCardX + 24,
-    y: qrCardY + 18,
-    size: 13,
+    x: qrCardX + 28,
+    y: qrCardY + 19,
+    size: 11,
     font: bold,
     color: WHITE,
   });
