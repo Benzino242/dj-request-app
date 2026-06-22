@@ -17,8 +17,18 @@ export default function QRCodeBox({ stageName, t }: Props) {
   const cleanStageName = stageName.toLowerCase();
   const requestUrl = `https://dj-request-app-topaz.vercel.app/${cleanStageName}`;
 
-  const promoKitUrl = (type: "poster" | "table-tent" | "sticker") =>
-    `/api/promo-kit?stage=${encodeURIComponent(cleanStageName)}&type=${type}`;
+  const promoKitUrl = (
+    type:
+      | "poster"
+      | "table-tent"
+      | "sticker"
+      | "instagram-post"
+      | "instagram-story"
+      | "qr-png"
+  ) =>
+    `/api/promo-kit?stage=${encodeURIComponent(
+      cleanStageName
+    )}&type=${type}`;
 
   return (
     <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl text-center">
@@ -44,20 +54,21 @@ export default function QRCodeBox({ stageName, t }: Props) {
         </button>
 
         <p className="text-xs text-zinc-500 mt-3">
-          Printable QR materials for posters, table tents, and laptop stickers.
+          Printable QR materials and social media assets.
         </p>
       </div>
 
       {promoKitOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-          <div className="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 w-full max-w-md text-left">
+          <div className="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 w-full max-w-md text-left max-h-[90vh] overflow-y-auto">
             <div className="flex items-start justify-between gap-4 mb-5">
               <div>
                 <h3 className="text-2xl font-black text-white">
                   Download Promo Kit
                 </h3>
+
                 <p className="text-sm text-zinc-500 mt-1">
-                  Choose a printable format for your QR code.
+                  Choose a printable or digital format.
                 </p>
               </div>
 
@@ -79,7 +90,7 @@ export default function QRCodeBox({ stageName, t }: Props) {
               >
                 <p className="text-white font-black">📄 A4 Poster</p>
                 <p className="text-sm text-zinc-500 mt-1">
-                  Best for walls, DJ booths, entrances, and venue posters.
+                  Best for walls, DJ booths, entrances and venue posters.
                 </p>
               </a>
 
@@ -91,7 +102,7 @@ export default function QRCodeBox({ stageName, t }: Props) {
               >
                 <p className="text-white font-black">🎫 Table Tent</p>
                 <p className="text-sm text-zinc-500 mt-1">
-                  Best for tables, VIP booths, bars, and lounges.
+                  Best for tables, VIP booths, bars and lounges.
                 </p>
               </a>
 
@@ -106,11 +117,45 @@ export default function QRCodeBox({ stageName, t }: Props) {
                   120mm × 80mm landscape sticker for laptops and DJ gear.
                 </p>
               </a>
-            </div>
 
-            <p className="text-xs text-zinc-600 mt-5 leading-relaxed">
-              Instagram Story, Instagram Square, and high-resolution QR PNG will be added after this first PDF version is tested.
-            </p>
+              <a
+                href={promoKitUrl("instagram-post")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-black/40 hover:bg-black border border-zinc-800 rounded-2xl p-4 transition"
+              >
+                <p className="text-white font-black">🖼️ Instagram Post</p>
+                <p className="text-sm text-zinc-500 mt-1">
+                  1080 × 1080 square image for Instagram feed posts.
+                </p>
+              </a>
+
+              <a
+                href={promoKitUrl("instagram-story")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-black/40 hover:bg-black border border-zinc-800 rounded-2xl p-4 transition"
+              >
+                <p className="text-white font-black">📱 Instagram Story</p>
+                <p className="text-sm text-zinc-500 mt-1">
+                  1080 × 1920 vertical story format.
+                </p>
+              </a>
+
+              <a
+                href={promoKitUrl("qr-png")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-black/40 hover:bg-black border border-zinc-800 rounded-2xl p-4 transition"
+              >
+                <p className="text-white font-black">
+                  🖨️ High Resolution QR PNG
+                </p>
+                <p className="text-sm text-zinc-500 mt-1">
+                  Transparent PNG for flyers, banners and custom designs.
+                </p>
+              </a>
+            </div>
           </div>
         </div>
       )}
