@@ -18,13 +18,7 @@ export default function QRCodeBox({ stageName, t }: Props) {
   const requestUrl = `https://dj-request-app-topaz.vercel.app/${cleanStageName}`;
 
   const promoKitUrl = (
-    type:
-      | "poster"
-      | "table-tent"
-      | "sticker"
-      | "instagram-post"
-      | "instagram-story"
-      | "qr-png"
+    type: "poster" | "table-tent" | "sticker" | "qr-png"
   ) =>
     `/api/promo-kit?stage=${encodeURIComponent(
       cleanStageName
@@ -54,7 +48,7 @@ export default function QRCodeBox({ stageName, t }: Props) {
         </button>
 
         <p className="text-xs text-zinc-500 mt-3">
-          Printable QR materials and social media assets.
+          Printable QR materials and high-resolution QR downloads.
         </p>
       </div>
 
@@ -68,7 +62,7 @@ export default function QRCodeBox({ stageName, t }: Props) {
                 </h3>
 
                 <p className="text-sm text-zinc-500 mt-1">
-                  Choose a printable or digital format.
+                  Choose a printable or QR format.
                 </p>
               </div>
 
@@ -119,30 +113,6 @@ export default function QRCodeBox({ stageName, t }: Props) {
               </a>
 
               <a
-                href={promoKitUrl("instagram-post")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block bg-black/40 hover:bg-black border border-zinc-800 rounded-2xl p-4 transition"
-              >
-                <p className="text-white font-black">🖼️ Instagram Post</p>
-                <p className="text-sm text-zinc-500 mt-1">
-                  1080 × 1080 square image for Instagram feed posts.
-                </p>
-              </a>
-
-              <a
-                href={promoKitUrl("instagram-story")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block bg-black/40 hover:bg-black border border-zinc-800 rounded-2xl p-4 transition"
-              >
-                <p className="text-white font-black">📱 Instagram Story</p>
-                <p className="text-sm text-zinc-500 mt-1">
-                  1080 × 1920 vertical story format.
-                </p>
-              </a>
-
-              <a
                 href={promoKitUrl("qr-png")}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -152,10 +122,15 @@ export default function QRCodeBox({ stageName, t }: Props) {
                   🖨️ High Resolution QR PNG
                 </p>
                 <p className="text-sm text-zinc-500 mt-1">
-                  Transparent PNG for flyers, banners and custom designs.
+                  PNG QR code for flyers, banners and custom designs.
                 </p>
               </a>
             </div>
+
+            <p className="text-xs text-zinc-600 mt-5 leading-relaxed">
+              Instagram Story and Instagram Post assets are temporarily paused
+              while we improve image generation.
+            </p>
           </div>
         </div>
       )}
