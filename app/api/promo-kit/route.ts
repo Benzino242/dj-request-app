@@ -395,23 +395,17 @@ async function buildStickerPdf(requestUrl: string) {
     height: 78,
   });
 
-  page.drawRectangle({
-    x: qrCardX,
-    y: qrCardY,
-    width: qrCardW,
-    height: 46,
-    color: PURPLE,
-  });
+  drawRoundedFill(page, qrCardX, qrCardY, qrCardW, 46, 8, PURPLE);
 
-  drawPhoneIcon(page, qrCardX + 12, qrCardY + 13, 0.75);
+drawPhoneIcon(page, qrCardX + 12, qrCardY + 13, 0.75);
 
-  page.drawText("SCAN HERE", {
-    x: qrCardX + 28,
-    y: qrCardY + 19,
-    size: 11,
-    font: bold,
-    color: WHITE,
-  });
+page.drawText("SCAN HERE", {
+  x: qrCardX + 28,
+  y: qrCardY + 19,
+  size: 11,
+  font: bold,
+  color: WHITE,
+});
 
   return pdfDoc.save();
 }
