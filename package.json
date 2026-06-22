@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@paystack/inline-js": "^2.22.8",
+    "@resvg/resvg-js": "^2.6.2",
     "@supabase/supabase-js": "^2.105.4",
     "next": "16.2.6",
     "pdf-lib": "^1.17.1",
