@@ -273,7 +273,7 @@ async function buildPosterPdf(requestUrl: string) {
     height: qrSize,
   });
 
-  drawCenteredText(page, "Scan to request a song", 210, 25, bold);
+  drawCenteredText(page, "Request your favorite song", 210, 25, bold);
   drawCenteredText(page, "Tip to move higher in the queue", 174, 19, regular, GREEN);
   drawCenteredText(page, "No app required", 142, 17, regular);
   drawCenteredText(page, "Powered by Blackline", 60, 13, bold, PURPLE);
@@ -342,7 +342,7 @@ async function buildStickerPdf(requestUrl: string) {
 
   drawMusicIcon(page, 46, 76, 10);
 
-  page.drawText("Scan to request music", {
+  page.drawText("Request your favorite song", {
     x: 63,
     y: 68,
     size: 12.5,
@@ -509,7 +509,7 @@ async function buildTableTentPdf(requestUrl: string) {
 
   drawMusicIcon(page, cardX + 110, cardY + 220, 9);
 
-  page.drawText("Scan to request music", {
+  page.drawText("Request your favorite song", {
     x: cardX + 126,
     y: cardY + 214,
     size: 14,
@@ -619,7 +619,7 @@ async function buildInstagramStoryPdf(requestUrl: string) {
   });
 
   drawMusicIcon(page, 290, 525, 34);
-  page.drawText("Scan to request music", {
+  page.drawText("Request your favorite song", {
     x: 350,
     y: 502,
     size: 44,
@@ -711,7 +711,7 @@ async function buildInstagramPostPdf(requestUrl: string) {
   drawCenteredText(page, "SCAN HERE", 548, 34, bold, WHITE, 700, 280);
 
   drawMusicIcon(page, 120, 490, 35);
-  page.drawText("Scan to request music", {
+  page.drawText("Request your favorite song", {
     x: 185,
     y: 470,
     size: 42,
