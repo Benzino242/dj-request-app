@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PDFDocument, PDFPage, PDFFont, StandardFonts, rgb } from "pdf-lib";
 import * as QRCode from "qrcode";
-import sharp from "sharp";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -13,31 +12,13 @@ const GREEN = rgb(0.18, 0.95, 0.35);
 const GRAY = rgb(0.42, 0.42, 0.48);
 const LIGHT_GRAY = rgb(0.94, 0.94, 0.94);
 
-const PURPLE_HEX = "#8c1ef2";
-const GREEN_HEX = "#2ef25c";
-const GRAY_HEX = "#777780";
 
-type PromoKitType =
-  | "poster"
-  | "table-tent"
-  | "sticker"
-  | "qr-png"
-  | "instagram-story"
-  | "instagram-post";
+type PromoKitType = "poster" | "table-tent" | "sticker" | "qr-png";
 
 function getRequestUrl(stageName: string) {
   return `https://dj-request-app-topaz.vercel.app/${stageName
     .toLowerCase()
     .trim()}`;
-}
-
-function escapeXml(value: string) {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
 }
 
 async function getQrPngBytes(requestUrl: string, width = 1600) {
@@ -589,127 +570,6 @@ async function buildTableTentPdf(requestUrl: string) {
 }
 
 
-async function textLayer(
-  text: string,
-  width: number,
-  height: number,
-  fontSize: number,
-  color: string,
-  weight: "normal" | "bold" = "bold",
-  align: "left" | "center" = "center"
-) {
-  const safeText = escapeXml(text);
-  const fontWeight = weight === "bold" ? "900" : "600";
-  const textAnchor = align === "center" ? "middle" : "start";
-  const x = align === "center" ? width / 2 : 0;
-  const y = Math.round(height * 0.72);
-
-  const svg = `
-<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-  <text
-    x="${x}"
-    y="${y}"
-    text-anchor="${textAnchor}"
-    font-family="Arial, Helvetica, sans-serif"
-    font-size="${fontSize}"
-    font-weight="${fontWeight}"
-    fill="${color}"
-  >${safeText}</text>
-</svg>`;
-
-  return sharp(Buffer.from(svg)).png().toBuffer();
-}
-
-async function buildInstagramStoryPng(requestUrl: string) {
-  const baseSvg = `
-<svg width="1080" height="1920" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1080" height="1920" fill="#000000"/>
-  <rect x="60" y="80" width="960" height="1760" rx="70" fill="none" stroke="${PURPLE_HEX}" stroke-width="10"/>
-
-  <g transform="translate(470 175)">
-    <circle cx="70" cy="70" r="55" fill="none" stroke="${PURPLE_HEX}" stroke-width="14"/>
-    <rect x="18" y="70" width="24" height="70" fill="${PURPLE_HEX}"/>
-    <rect x="98" y="70" width="24" height="70" fill="${PURPLE_HEX}"/>
-    <line x1="55" y1="78" x2="55" y2="122" stroke="${PURPLE_HEX}" stroke-width="10"/>
-    <line x1="70" y1="72" x2="70" y2="128" stroke="${PURPLE_HEX}" stroke-width="10"/>
-    <line x1="85" y1="78" x2="85" y2="122" stroke="${PURPLE_HEX}" stroke-width="10"/>
-  </g>
-
-  <rect x="195" y="790" width="690" height="105" rx="24" fill="${PURPLE_HEX}"/>
-  <rect x="125" y="1065" width="830" height="118" rx="30" fill="#ffffff"/>
-
-  <circle cx="225" cy="1348" r="38" fill="${PURPLE_HEX}"/>
-  <path d="M220 1370 C205 1370 200 1358 207 1348 C212 1341 222 1340 229 1345 L229 1317 L258 1308 L258 1320 L239 1325 L239 1358 C238 1366 231 1370 220 1370 Z" fill="#000000"/>
-
-  <circle cx="225" cy="1465" r="38" fill="${GREEN_HEX}"/>
-  <path d="M225 1432 L260 1470 H240 V1505 H210 V1470 H190 Z" fill="#000000"/>
-
-  <rect x="325" y="1625" width="430" height="82" rx="22" fill="${PURPLE_HEX}"/>
-</svg>`;
-
-  const base = await sharp(Buffer.from(baseSvg)).png().toBuffer();
-
-  return sharp(base)
-    .composite([
-      { input: await textLayer("REQUEST", 900, 150, 132, "#ffffff"), left: 90, top: 405 },
-      { input: await textLayer("A SONG", 900, 150, 132, "#ffffff"), left: 90, top: 560 },
-      { input: await textLayer("TAP LINK TO REQUEST", 690, 85, 54, "#ffffff"), left: 195, top: 800 },
-      { input: await textLayer("Add this as your Instagram link sticker", 900, 60, 38, GRAY_HEX, "normal"), left: 90, top: 940 },
-      { input: await textLayer(requestUrl, 800, 70, 28, "#000000"), left: 140, top: 1085 },
-      { input: await textLayer("Request your favorite song", 690, 70, 48, "#ffffff", "bold", "left"), left: 290, top: 1318 },
-      { input: await textLayer("Tip to move higher", 620, 70, 46, GREEN_HEX, "bold", "left"), left: 290, top: 1424 },
-      { input: await textLayer("in the queue", 620, 70, 46, GREEN_HEX, "bold", "left"), left: 290, top: 1482 },
-      { input: await textLayer("No app required", 430, 58, 36, "#ffffff"), left: 325, top: 1638 },
-      { input: await textLayer("Powered by Blackline", 600, 50, 28, GRAY_HEX, "normal"), left: 240, top: 1748 },
-    ])
-    .png()
-    .toBuffer();
-}
-
-async function buildInstagramPostPng(requestUrl: string) {
-  const baseSvg = `
-<svg width="1080" height="1080" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1080" height="1080" fill="#000000"/>
-  <rect x="45" y="45" width="990" height="990" rx="60" fill="none" stroke="${PURPLE_HEX}" stroke-width="10"/>
-
-  <g transform="translate(105 145)">
-    <circle cx="60" cy="60" r="48" fill="none" stroke="${PURPLE_HEX}" stroke-width="12"/>
-    <rect x="14" y="60" width="22" height="62" fill="${PURPLE_HEX}"/>
-    <rect x="84" y="60" width="22" height="62" fill="${PURPLE_HEX}"/>
-    <line x1="48" y1="68" x2="48" y2="108" stroke="${PURPLE_HEX}" stroke-width="8"/>
-    <line x1="60" y1="62" x2="60" y2="114" stroke="${PURPLE_HEX}" stroke-width="8"/>
-    <line x1="72" y1="68" x2="72" y2="108" stroke="${PURPLE_HEX}" stroke-width="8"/>
-  </g>
-
-  <line x1="140" y1="465" x2="800" y2="465" stroke="${PURPLE_HEX}" stroke-width="9"/>
-  <rect x="205" y="525" width="670" height="90" rx="22" fill="${PURPLE_HEX}"/>
-  <rect x="140" y="645" width="800" height="85" rx="20" fill="#ffffff"/>
-
-  <circle cx="150" cy="815" r="32" fill="${PURPLE_HEX}"/>
-  <path d="M146 835 C134 835 130 825 135 817 C140 811 148 810 154 814 L154 792 L178 785 L178 795 L162 799 L162 826 C161 832 155 835 146 835 Z" fill="#000000"/>
-
-  <circle cx="150" cy="900" r="32" fill="${GREEN_HEX}"/>
-  <path d="M150 872 L180 904 H163 V934 H137 V904 H120 Z" fill="#000000"/>
-
-  <rect x="345" y="960" width="390" height="62" rx="18" fill="${PURPLE_HEX}"/>
-</svg>`;
-
-  const base = await sharp(Buffer.from(baseSvg)).png().toBuffer();
-
-  return sharp(base)
-    .composite([
-      { input: await textLayer("REQUEST", 650, 115, 95, "#ffffff", "bold", "left"), left: 285, top: 160 },
-      { input: await textLayer("A SONG", 760, 150, 120, "#ffffff", "bold", "left"), left: 140, top: 275 },
-      { input: await textLayer("TAP LINK TO REQUEST", 670, 70, 42, "#ffffff"), left: 205, top: 537 },
-      { input: await textLayer(requestUrl, 780, 60, 25, "#000000"), left: 150, top: 662 },
-      { input: await textLayer("Request your favorite song", 700, 60, 38, "#ffffff", "bold", "left"), left: 210, top: 790 },
-      { input: await textLayer("Tip to move higher in the queue", 780, 55, 36, GREEN_HEX, "bold", "left"), left: 210, top: 878 },
-      { input: await textLayer("No app required", 390, 50, 30, "#ffffff"), left: 345, top: 970 },
-    ])
-    .png()
-    .toBuffer();
-}
-
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
@@ -725,8 +585,6 @@ export async function GET(request: NextRequest) {
       "table-tent",
       "sticker",
       "qr-png",
-      "instagram-story",
-      "instagram-post",
     ];
 
     if (!validTypes.includes(type as PromoKitType)) {
@@ -743,32 +601,6 @@ export async function GET(request: NextRequest) {
         headers: {
           "Content-Type": "image/png",
           "Content-Disposition": `attachment; filename="${stageName}-blackline-qr-code.png"`,
-          "Cache-Control": "no-store",
-        },
-      });
-    }
-
-    if (type === "instagram-story") {
-      const pngBytes = await buildInstagramStoryPng(requestUrl);
-
-      return new NextResponse(Buffer.from(pngBytes), {
-        status: 200,
-        headers: {
-          "Content-Type": "image/png",
-          "Content-Disposition": `attachment; filename="${stageName}-blackline-instagram-story.png"`,
-          "Cache-Control": "no-store",
-        },
-      });
-    }
-
-    if (type === "instagram-post") {
-      const pngBytes = await buildInstagramPostPng(requestUrl);
-
-      return new NextResponse(Buffer.from(pngBytes), {
-        status: 200,
-        headers: {
-          "Content-Type": "image/png",
-          "Content-Disposition": `attachment; filename="${stageName}-blackline-instagram-post.png"`,
           "Cache-Control": "no-store",
         },
       });
