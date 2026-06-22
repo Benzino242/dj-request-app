@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PDFDocument, PDFPage, PDFFont, StandardFonts, rgb } from "pdf-lib";
 import * as QRCode from "qrcode";
+import sharp from "sharp";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -11,6 +12,10 @@ const PURPLE = rgb(0.55, 0.12, 0.95);
 const GREEN = rgb(0.18, 0.95, 0.35);
 const GRAY = rgb(0.42, 0.42, 0.48);
 const LIGHT_GRAY = rgb(0.94, 0.94, 0.94);
+
+const PURPLE_HEX = "#8c1ef2";
+const GREEN_HEX = "#2ef25c";
+const GRAY_HEX = "#777780";
 
 type PromoKitType =
   | "poster"
@@ -24,6 +29,15 @@ function getRequestUrl(stageName: string) {
   return `https://dj-request-app-topaz.vercel.app/${stageName
     .toLowerCase()
     .trim()}`;
+}
+
+function escapeXml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
 async function getQrPngBytes(requestUrl: string, width = 1600) {
@@ -273,7 +287,7 @@ async function buildPosterPdf(requestUrl: string) {
     height: qrSize,
   });
 
-  drawCenteredText(page, "Request your favorite song", 210, 25, bold);
+  drawCenteredText(page, "Request your favorite song", 210, 23, bold);
   drawCenteredText(page, "Tip to move higher in the queue", 174, 19, regular, GREEN);
   drawCenteredText(page, "No app required", 142, 17, regular);
   drawCenteredText(page, "Powered by Blackline", 60, 13, bold, PURPLE);
@@ -506,7 +520,7 @@ async function buildTableTentPdf(requestUrl: string) {
   page.drawText("Request your favorite song", {
     x: cardX + 126,
     y: cardY + 214,
-    size: 14,
+    size: 12,
     font: bold,
     color: WHITE,
   });
@@ -574,144 +588,101 @@ async function buildTableTentPdf(requestUrl: string) {
   return pdfDoc.save();
 }
 
-async function buildInstagramStoryPdf(requestUrl: string) {
-  const pdfDoc = await PDFDocument.create();
-  const page = pdfDoc.addPage([1080, 1920]);
+function buildInstagramStorySvg(requestUrl: string) {
+  const safeUrl = escapeXml(requestUrl);
 
-  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  return `
+<svg width="1080" height="1920" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1080" height="1920" fill="#000000"/>
+  <rect x="60" y="80" width="960" height="1760" rx="70" fill="none" stroke="${PURPLE_HEX}" stroke-width="10"/>
 
-  page.drawRectangle({ x: 0, y: 0, width: 1080, height: 1920, color: BLACK });
+  <g transform="translate(470 175)">
+    <circle cx="70" cy="70" r="55" fill="none" stroke="${PURPLE_HEX}" stroke-width="14"/>
+    <rect x="18" y="70" width="24" height="70" fill="${PURPLE_HEX}"/>
+    <rect x="98" y="70" width="24" height="70" fill="${PURPLE_HEX}"/>
+    <line x1="55" y1="78" x2="55" y2="122" stroke="${PURPLE_HEX}" stroke-width="10"/>
+    <line x1="70" y1="72" x2="70" y2="128" stroke="${PURPLE_HEX}" stroke-width="10"/>
+    <line x1="85" y1="78" x2="85" y2="122" stroke="${PURPLE_HEX}" stroke-width="10"/>
+  </g>
 
-  drawRoundedBorder(page, 60, 80, 960, 1760, 70, 8, PURPLE, BLACK);
+  <text x="540" y="520" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="132" font-weight="900" fill="#ffffff">REQUEST</text>
+  <text x="540" y="675" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="132" font-weight="900" fill="#ffffff">A SONG</text>
 
-  drawHeadphonesIcon(page, 475, 1630, 2.8);
+  <rect x="195" y="790" width="690" height="105" rx="24" fill="${PURPLE_HEX}"/>
+  <text x="540" y="860" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="900" fill="#ffffff">TAP LINK TO REQUEST</text>
 
-  drawCenteredText(page, "REQUEST", 1450, 120, bold);
-  drawCenteredText(page, "A SONG", 1310, 120, bold);
+  <text x="540" y="990" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" fill="${GRAY_HEX}">Add this as your Instagram link sticker</text>
 
-  page.drawRectangle({
-    x: 210,
-    y: 1135,
-    width: 660,
-    height: 95,
-    color: PURPLE,
-  });
+  <rect x="125" y="1065" width="830" height="118" rx="30" fill="#ffffff"/>
+  <text x="540" y="1138" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="900" fill="#000000">${safeUrl}</text>
 
-  drawCenteredText(page, "TAP LINK TO REQUEST", 1162, 46, bold, WHITE, 210, 660);
+  <circle cx="225" cy="1348" r="38" fill="${PURPLE_HEX}"/>
+  <path d="M220 1370 C205 1370 200 1358 207 1348 C212 1341 222 1340 229 1345 L229 1317 L258 1308 L258 1320 L239 1325 L239 1358 C238 1366 231 1370 220 1370 Z" fill="#000000"/>
+  <text x="290" y="1362" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#ffffff">Request your favorite song</text>
 
-  page.drawText("Add the Instagram link sticker to this story", {
-    x: 215,
-    y: 1045,
-    size: 34,
-    font: regular,
-    color: GRAY,
-  });
+  <circle cx="225" cy="1465" r="38" fill="${GREEN_HEX}"/>
+  <path d="M225 1432 L260 1470 H240 V1505 H210 V1470 H190 Z" fill="#000000"/>
+  <text x="290" y="1467" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="900" fill="${GREEN_HEX}">Tip to move higher</text>
+  <text x="290" y="1525" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="900" fill="${GREEN_HEX}">in the queue</text>
 
-  drawRoundedFill(page, 125, 850, 830, 118, 26, WHITE);
+  <rect x="325" y="1625" width="430" height="82" rx="22" fill="${PURPLE_HEX}"/>
+  <text x="540" y="1678" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="900" fill="#ffffff">No app required</text>
 
-  drawCenteredText(page, requestUrl, 892, 28, bold, BLACK, 125, 830);
-
-  drawMusicIcon(page, 210, 675, 36);
-  page.drawText("Request your favorite song", {
-    x: 275,
-    y: 652,
-    size: 46,
-    font: bold,
-    color: WHITE,
-  });
-
-  drawArrowIcon(page, 210, 560, 36);
-  page.drawText("Tip to move higher", {
-    x: 275,
-    y: 555,
-    size: 44,
-    font: bold,
-    color: GREEN,
-  });
-
-  page.drawText("in the queue", {
-    x: 275,
-    y: 500,
-    size: 44,
-    font: bold,
-    color: GREEN,
-  });
-
-  drawRoundedFill(page, 325, 350, 430, 82, 20, PURPLE);
-  drawCenteredText(page, "No app required", 378, 36, bold, WHITE, 325, 430);
-
-  drawCenteredText(page, "Powered by Blackline", 190, 28, regular, GRAY);
-
-  return pdfDoc.save();
+  <text x="540" y="1785" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="${GRAY_HEX}">Powered by Blackline</text>
+</svg>`;
 }
 
-async function buildInstagramPostPdf(requestUrl: string) {
-  const pdfDoc = await PDFDocument.create();
-  const page = pdfDoc.addPage([1080, 1080]);
+function buildInstagramPostSvg(requestUrl: string) {
+  const safeUrl = escapeXml(requestUrl);
 
-  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  return `
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1080" height="1080" fill="#000000"/>
+  <rect x="45" y="45" width="990" height="990" rx="60" fill="none" stroke="${PURPLE_HEX}" stroke-width="10"/>
 
-  page.drawRectangle({ x: 0, y: 0, width: 1080, height: 1080, color: BLACK });
+  <g transform="translate(105 145)">
+    <circle cx="60" cy="60" r="48" fill="none" stroke="${PURPLE_HEX}" stroke-width="12"/>
+    <rect x="14" y="60" width="22" height="62" fill="${PURPLE_HEX}"/>
+    <rect x="84" y="60" width="22" height="62" fill="${PURPLE_HEX}"/>
+    <line x1="48" y1="68" x2="48" y2="108" stroke="${PURPLE_HEX}" stroke-width="8"/>
+    <line x1="60" y1="62" x2="60" y2="114" stroke="${PURPLE_HEX}" stroke-width="8"/>
+    <line x1="72" y1="68" x2="72" y2="108" stroke="${PURPLE_HEX}" stroke-width="8"/>
+  </g>
 
-  drawRoundedBorder(page, 45, 45, 990, 990, 60, 8, PURPLE, BLACK);
+  <text x="285" y="250" font-family="Arial, Helvetica, sans-serif" font-size="95" font-weight="900" fill="#ffffff">REQUEST</text>
+  <text x="140" y="400" font-family="Arial, Helvetica, sans-serif" font-size="120" font-weight="900" fill="#ffffff">A SONG</text>
 
-  drawHeadphonesIcon(page, 120, 820, 2.25);
+  <line x1="140" y1="465" x2="800" y2="465" stroke="${PURPLE_HEX}" stroke-width="9"/>
 
-  page.drawText("REQUEST", {
-    x: 280,
-    y: 860,
-    size: 95,
-    font: bold,
-    color: WHITE,
-  });
+  <rect x="205" y="525" width="670" height="90" rx="22" fill="${PURPLE_HEX}"/>
+  <text x="540" y="585" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="900" fill="#ffffff">TAP LINK TO REQUEST</text>
 
-  page.drawText("A SONG", {
-    x: 145,
-    y: 715,
-    size: 115,
-    font: bold,
-    color: WHITE,
-  });
+  <rect x="140" y="645" width="800" height="85" rx="20" fill="#ffffff"/>
+  <text x="540" y="698" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="900" fill="#000000">${safeUrl}</text>
 
-  page.drawLine({
-    start: { x: 145, y: 655 },
-    end: { x: 760, y: 655 },
-    thickness: 8,
-    color: PURPLE,
-  });
+  <circle cx="150" cy="815" r="32" fill="${PURPLE_HEX}"/>
+  <path d="M146 835 C134 835 130 825 135 817 C140 811 148 810 154 814 L154 792 L178 785 L178 795 L162 799 L162 826 C161 832 155 835 146 835 Z" fill="#000000"/>
+  <text x="210" y="829" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="900" fill="#ffffff">Request your favorite song</text>
 
-  drawRoundedFill(page, 205, 525, 670, 90, 22, PURPLE);
-  drawCenteredText(page, "TAP LINK TO REQUEST", 552, 42, bold, WHITE, 205, 670);
+  <circle cx="150" cy="900" r="32" fill="${GREEN_HEX}"/>
+  <path d="M150 872 L180 904 H163 V934 H137 V904 H120 Z" fill="#000000"/>
+  <text x="210" y="913" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="900" fill="${GREEN_HEX}">Tip to move higher in the queue</text>
 
-  drawRoundedFill(page, 140, 405, 800, 85, 20, WHITE);
-  drawCenteredText(page, requestUrl, 435, 25, bold, BLACK, 140, 800);
+  <rect x="345" y="960" width="390" height="62" rx="18" fill="${PURPLE_HEX}"/>
+  <text x="540" y="1002" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="900" fill="#ffffff">No app required</text>
+</svg>`;
+}
 
-  drawMusicIcon(page, 150, 305, 32);
-  page.drawText("Request your favorite song", {
-    x: 210,
-    y: 286,
-    size: 38,
-    font: bold,
-    color: WHITE,
-  });
+async function buildInstagramStoryPng(requestUrl: string) {
+  return sharp(Buffer.from(buildInstagramStorySvg(requestUrl)))
+    .png()
+    .toBuffer();
+}
 
-  drawArrowIcon(page, 150, 220, 32);
-  page.drawText("Tip to move higher in the queue", {
-    x: 210,
-    y: 210,
-    size: 36,
-    font: bold,
-    color: GREEN,
-  });
-
-  drawRoundedFill(page, 345, 115, 390, 70, 18, PURPLE);
-  drawCenteredText(page, "No app required", 138, 32, bold, WHITE, 345, 390);
-
-  drawCenteredText(page, "Powered by Blackline", 70, 24, regular, GRAY);
-
-  return pdfDoc.save();
+async function buildInstagramPostPng(requestUrl: string) {
+  return sharp(Buffer.from(buildInstagramPostSvg(requestUrl)))
+    .png()
+    .toBuffer();
 }
 
 export async function GET(request: NextRequest) {
@@ -752,6 +723,32 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    if (type === "instagram-story") {
+      const pngBytes = await buildInstagramStoryPng(requestUrl);
+
+      return new NextResponse(Buffer.from(pngBytes), {
+        status: 200,
+        headers: {
+          "Content-Type": "image/png",
+          "Content-Disposition": `attachment; filename="${stageName}-blackline-instagram-story.png"`,
+          "Cache-Control": "no-store",
+        },
+      });
+    }
+
+    if (type === "instagram-post") {
+      const pngBytes = await buildInstagramPostPng(requestUrl);
+
+      return new NextResponse(Buffer.from(pngBytes), {
+        status: 200,
+        headers: {
+          "Content-Type": "image/png",
+          "Content-Disposition": `attachment; filename="${stageName}-blackline-instagram-post.png"`,
+          "Cache-Control": "no-store",
+        },
+      });
+    }
+
     let pdfBytes: Uint8Array;
     let filename: string;
 
@@ -761,12 +758,6 @@ export async function GET(request: NextRequest) {
     } else if (type === "table-tent") {
       pdfBytes = await buildTableTentPdf(requestUrl);
       filename = `${stageName}-blackline-table-tent.pdf`;
-    } else if (type === "instagram-story") {
-      pdfBytes = await buildInstagramStoryPdf(requestUrl);
-      filename = `${stageName}-blackline-instagram-story.pdf`;
-    } else if (type === "instagram-post") {
-      pdfBytes = await buildInstagramPostPdf(requestUrl);
-      filename = `${stageName}-blackline-instagram-post.pdf`;
     } else {
       pdfBytes = await buildStickerPdf(requestUrl);
       filename = `${stageName}-blackline-laptop-sticker.pdf`;
