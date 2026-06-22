@@ -1,49 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
-import QRCode from "qrcode";
+import { PDFDocument, PDFPage, PDFFont, StandardFonts, rgb } from "pdf-lib";
+import * as QRCode from "qrcode";
 
-export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
-type PromoKitType = "poster" | "table-tent" | "sticker";
-
-const BRAND_PURPLE = rgb(0.55, 0.25, 0.95);
 const BLACK = rgb(0, 0, 0);
 const WHITE = rgb(1, 1, 1);
-const ZINC = rgb(0.18, 0.18, 0.2);
-const GREEN = rgb(0.05, 0.72, 0.34);
-
-function sanitizeStageName(stageName: string) {
-  return stageName.trim().toLowerCase().replace(/[^a-z0-9-_]/g, "");
-}
+const PURPLE = rgb(0.65, 0.12, 1);
+const GREEN = rgb(0.15, 0.9, 0.35);
+const GRAY = rgb(0.45, 0.45, 0.5);
+const LIGHT_GRAY = rgb(0.94, 0.94, 0.94);
 
 function getRequestUrl(stageName: string) {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://dj-request-app-topaz.vercel.app";
-
-  return `${baseUrl.replace(/\/$/, "")}/${stageName}`;
+  return `https://dj-request-app-topaz.vercel.app/${stageName
+    .toLowerCase()
+    .trim()}`;
 }
 
-function drawCenteredText({
-  page,
-  text,
-  y,
-  size,
-  font,
-  color = BLACK,
-}: {
-  page: any;
-  text: string;
-  y: number;
-  size: number;
-  font: any;
-  color?: ReturnType<typeof rgb>;
-}) {
-  const pageWidth = page.getWidth();
+async function getQrPngBytes(requestUrl: string) {
+  const dataUrl = await QRCode.toDataURL(requestUrl, {
+    width: 1600,
+    margin: 2,
+    errorCorrectionLevel: "H",
+    color: {
+      dark: "#000000",
+      light: "#FFFFFF",
+    },
+  });
+
+  return Buffer.from(dataUrl.split(",")[1], "base64");
+}
+
+function drawCenteredText(
+  page: PDFPage,
+  text: string,
+  y: number,
+  size: number,
+  font: PDFFont,
+  color = WHITE,
+  boxX = 0,
+  boxWidth = page.getWidth()
+) {
   const textWidth = font.widthOfTextAtSize(text, size);
 
   page.drawText(text, {
-    x: (pageWidth - textWidth) / 2,
+    x: boxX + (boxWidth - textWidth) / 2,
     y,
     size,
     font,
@@ -51,116 +53,210 @@ function drawCenteredText({
   });
 }
 
-function drawRoundedPanel(page: any, x: number, y: number, width: number, height: number) {
+function drawPill(
+  page: PDFPage,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  color = PURPLE
+) {
   page.drawRectangle({
     x,
     y,
     width,
     height,
-    color: WHITE,
-    borderColor: BRAND_PURPLE,
-    borderWidth: 3,
+    color,
   });
-}
-
-async function createQrImage(pdfDoc: PDFDocument, requestUrl: string) {
-  const qrDataUrl = await QRCode.toDataURL(requestUrl, {
-    errorCorrectionLevel: "H",
-    margin: 2,
-    scale: 12,
-    color: {
-      dark: "#000000",
-      light: "#ffffff",
-    },
-  });
-
-  const qrBase64 = qrDataUrl.split(",")[1];
-  const qrBytes = Buffer.from(qrBase64, "base64");
-
-  return pdfDoc.embedPng(qrBytes);
 }
 
 async function buildPosterPdf(requestUrl: string) {
   const pdfDoc = await PDFDocument.create();
   const page = pdfDoc.addPage([595.28, 841.89]);
-  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  const qrImage = await createQrImage(pdfDoc, requestUrl);
 
-  page.drawRectangle({ x: 0, y: 0, width: 595.28, height: 841.89, color: BLACK });
+  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-  drawCenteredText({
-    page,
-    text: "REQUEST A SONG",
-    y: 715,
-    size: 48,
-    font: boldFont,
-    color: WHITE,
+  page.drawRectangle({
+    x: 0,
+    y: 0,
+    width: 595.28,
+    height: 841.89,
+    color: BLACK,
   });
 
-  drawCenteredText({
-    page,
-    text: "SCAN THE QR CODE",
-    y: 665,
-    size: 22,
-    font: boldFont,
-    color: BRAND_PURPLE,
-  });
+  drawCenteredText(page, "REQUEST A SONG", 700, 44, bold);
+  drawCenteredText(page, "SCAN THE QR CODE", 650, 20, bold, PURPLE);
 
-  const qrSize = 310;
+  const qrBytes = await getQrPngBytes(requestUrl);
+  const qrImage = await pdfDoc.embedPng(qrBytes);
+
+  const qrSize = 370;
   const qrX = (595.28 - qrSize) / 2;
+  const qrY = 278;
+
   page.drawRectangle({
     x: qrX - 18,
-    y: 315 - 18,
+    y: qrY - 18,
     width: qrSize + 36,
     height: qrSize + 36,
     color: WHITE,
   });
-  page.drawImage(qrImage, { x: qrX, y: 315, width: qrSize, height: qrSize });
 
-  drawCenteredText({
-    page,
-    text: "Scan to request music instantly",
-    y: 255,
-    size: 24,
-    font: boldFont,
+  page.drawImage(qrImage, {
+    x: qrX,
+    y: qrY,
+    width: qrSize,
+    height: qrSize,
+  });
+
+  drawCenteredText(page, "Scan to request a song", 210, 25, bold);
+  drawCenteredText(page, "Tip to move higher in the queue", 174, 19, regular, GREEN);
+  drawCenteredText(page, "No app required", 142, 17, regular);
+  drawCenteredText(page, "Powered by Blackline", 60, 13, bold, PURPLE);
+
+  return pdfDoc.save();
+}
+
+async function buildStickerPdf(requestUrl: string) {
+  const pdfDoc = await PDFDocument.create();
+
+  // 120mm x 80mm landscape
+  const pageW = 340.16;
+  const pageH = 226.77;
+  const page = pdfDoc.addPage([pageW, pageH]);
+
+  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+  page.drawRectangle({
+    x: 0,
+    y: 0,
+    width: pageW,
+    height: pageH,
+    color: BLACK,
+  });
+
+  page.drawRectangle({
+    x: 11,
+    y: 11,
+    width: pageW - 22,
+    height: pageH - 22,
+    borderColor: PURPLE,
+    borderWidth: 4,
+  });
+
+  // Left headline
+  page.drawText("REQUEST", {
+    x: 34,
+    y: 148,
+    size: 31,
+    font: bold,
     color: WHITE,
   });
 
-  drawCenteredText({
-    page,
-    text: "Tip to move higher in the queue",
-    y: 215,
-    size: 20,
-    font,
+  page.drawText("A SONG", {
+    x: 34,
+    y: 106,
+    size: 39,
+    font: bold,
+    color: WHITE,
+  });
+
+  page.drawLine({
+    start: { x: 34, y: 90 },
+    end: { x: 160, y: 90 },
+    thickness: 2.5,
+    color: PURPLE,
+  });
+
+  // Left benefits
+  page.drawCircle({
+    x: 42,
+    y: 67,
+    size: 8,
+    color: PURPLE,
+  });
+
+  page.drawText("Scan to request music", {
+    x: 58,
+    y: 62,
+    size: 12.5,
+    font: bold,
+    color: WHITE,
+  });
+
+  page.drawCircle({
+    x: 42,
+    y: 43,
+    size: 8,
     color: GREEN,
   });
 
-  drawCenteredText({
-    page,
-    text: "No app required",
-    y: 180,
-    size: 18,
-    font,
+  page.drawText("Tip to move higher", {
+    x: 58,
+    y: 43,
+    size: 12,
+    font: bold,
+    color: GREEN,
+  });
+
+  page.drawText("in the queue", {
+    x: 58,
+    y: 28,
+    size: 12,
+    font: bold,
+    color: GREEN,
+  });
+
+  drawPill(page, 34, 13, 90, 18, PURPLE);
+
+  page.drawText("No app required", {
+    x: 43,
+    y: 18,
+    size: 8.5,
+    font: bold,
     color: WHITE,
   });
 
-  drawCenteredText({
-    page,
-    text: requestUrl,
-    y: 115,
-    size: 12,
-    font,
-    color: rgb(0.7, 0.7, 0.75),
+  // Right QR block
+  const qrBytes = await getQrPngBytes(requestUrl);
+  const qrImage = await pdfDoc.embedPng(qrBytes);
+
+  const qrBoxX = 198;
+  const qrBoxY = 65;
+  const qrBoxW = 112;
+  const qrBoxH = 122;
+
+  page.drawRectangle({
+    x: qrBoxX,
+    y: qrBoxY,
+    width: qrBoxW,
+    height: qrBoxH,
+    color: WHITE,
   });
 
-  drawCenteredText({
-    page,
-    text: "Powered by Blackline",
-    y: 55,
-    size: 16,
-    font: boldFont,
-    color: BRAND_PURPLE,
+  page.drawImage(qrImage, {
+    x: qrBoxX + 8,
+    y: qrBoxY + 18,
+    width: 96,
+    height: 96,
+  });
+
+  page.drawRectangle({
+    x: qrBoxX,
+    y: 36,
+    width: qrBoxW,
+    height: 29,
+    color: PURPLE,
+  });
+
+  page.drawText("SCAN HERE", {
+    x: qrBoxX + 14,
+    y: 46,
+    size: 15,
+    font: bold,
+    color: WHITE,
   });
 
   return pdfDoc.save();
@@ -168,169 +264,173 @@ async function buildPosterPdf(requestUrl: string) {
 
 async function buildTableTentPdf(requestUrl: string) {
   const pdfDoc = await PDFDocument.create();
-  const page = pdfDoc.addPage([841.89, 595.28]);
-  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  const qrImage = await createQrImage(pdfDoc, requestUrl);
 
-  page.drawRectangle({ x: 0, y: 0, width: 841.89, height: 595.28, color: BLACK });
+  // A4 sheet with one large printable front panel.
+  const pageW = 595.28;
+  const pageH = 841.89;
+  const page = pdfDoc.addPage([pageW, pageH]);
 
-  const panelWidth = 380;
-  const panelHeight = 470;
-  const panelY = 65;
-  const leftX = 35;
-  const rightX = 426;
+  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-  [leftX, rightX].forEach((panelX) => {
-    drawRoundedPanel(page, panelX, panelY, panelWidth, panelHeight);
-
-    const centerX = panelX + panelWidth / 2;
-
-    page.drawText("REQUEST A SONG", {
-      x: centerX - boldFont.widthOfTextAtSize("REQUEST A SONG", 28) / 2,
-      y: panelY + 390,
-      size: 28,
-      font: boldFont,
-      color: BLACK,
-    });
-
-    page.drawText("SCAN HERE", {
-      x: centerX - boldFont.widthOfTextAtSize("SCAN HERE", 16) / 2,
-      y: panelY + 355,
-      size: 16,
-      font: boldFont,
-      color: BRAND_PURPLE,
-    });
-
-    const qrSize = 210;
-    page.drawImage(qrImage, {
-      x: centerX - qrSize / 2,
-      y: panelY + 130,
-      width: qrSize,
-      height: qrSize,
-    });
-
-    page.drawText("Higher tips move you up the queue", {
-      x: centerX - font.widthOfTextAtSize("Higher tips move you up the queue", 15) / 2,
-      y: panelY + 85,
-      size: 15,
-      font,
-      color: GREEN,
-    });
-
-    page.drawText("No app required", {
-      x: centerX - font.widthOfTextAtSize("No app required", 14) / 2,
-      y: panelY + 55,
-      size: 14,
-      font,
-      color: ZINC,
-    });
-
-    page.drawText("Powered by Blackline", {
-      x: centerX - boldFont.widthOfTextAtSize("Powered by Blackline", 13) / 2,
-      y: panelY + 25,
-      size: 13,
-      font: boldFont,
-      color: BRAND_PURPLE,
-    });
+  page.drawRectangle({
+    x: 0,
+    y: 0,
+    width: pageW,
+    height: pageH,
+    color: LIGHT_GRAY,
   });
 
-  page.drawText("Cut along the middle line. Fold each card into a table tent.", {
-    x: 270,
-    y: 25,
-    size: 12,
-    font,
-    color: rgb(0.75, 0.75, 0.78),
+  const cardW = 360;
+  const cardH = 700;
+  const cardX = (pageW - cardW) / 2;
+  const cardY = 70;
+
+  page.drawRectangle({
+    x: cardX,
+    y: cardY,
+    width: cardW,
+    height: cardH,
+    color: BLACK,
+    borderColor: PURPLE,
+    borderWidth: 4,
+  });
+
+  // Decorative top
+  page.drawLine({
+    start: { x: cardX + 95, y: cardY + 650 },
+    end: { x: cardX + 150, y: cardY + 650 },
+    thickness: 2,
+    color: PURPLE,
   });
 
   page.drawLine({
-    start: { x: 420.95, y: 50 },
-    end: { x: 420.95, y: 545 },
-    thickness: 1,
-    color: rgb(0.55, 0.55, 0.58),
+    start: { x: cardX + 210, y: cardY + 650 },
+    end: { x: cardX + 265, y: cardY + 650 },
+    thickness: 2,
+    color: PURPLE,
   });
 
-  return pdfDoc.save();
-}
+  page.drawText("HEADPHONES", {
+    x: cardX + 132,
+    y: cardY + 633,
+    size: 10,
+    font: bold,
+    color: PURPLE,
+  });
 
-async function buildStickerPdf(requestUrl: string) {
-  const pdfDoc = await PDFDocument.create();
-  const page = pdfDoc.addPage([340.16, 226.77]); // 120mm x 80mm
-  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  const qrImage = await createQrImage(pdfDoc, requestUrl);
+  drawCenteredText(page, "REQUEST", cardY + 560, 43, bold, WHITE, cardX, cardW);
+  drawCenteredText(page, "A SONG", cardY + 508, 43, bold, WHITE, cardX, cardW);
 
-  page.drawRectangle({ x: 0, y: 0, width: 340.16, height: 226.77, color: BLACK });
   page.drawRectangle({
-    x: 8,
-    y: 8,
-    width: 324.16,
-    height: 210.77,
-    borderColor: BRAND_PURPLE,
-    borderWidth: 3,
-    color: BLACK,
+    x: cardX + 95,
+    y: cardY + 455,
+    width: 170,
+    height: 34,
+    color: PURPLE,
   });
 
-  page.drawText("REQUEST A SONG", {
-    x: 22,
-    y: 166,
-    size: 24,
-    font: boldFont,
+  drawCenteredText(page, "SCAN HERE", cardY + 464, 18, bold, WHITE, cardX + 95, 170);
+
+  const qrBytes = await getQrPngBytes(requestUrl);
+  const qrImage = await pdfDoc.embedPng(qrBytes);
+
+  const qrBoxSize = 215;
+  const qrBoxX = cardX + (cardW - qrBoxSize) / 2;
+  const qrBoxY = cardY + 230;
+
+  page.drawRectangle({
+    x: qrBoxX,
+    y: qrBoxY,
+    width: qrBoxSize,
+    height: qrBoxSize,
     color: WHITE,
   });
 
-  page.drawText("SCAN HERE", {
-    x: 22,
-    y: 132,
+  page.drawImage(qrImage, {
+    x: qrBoxX + 13,
+    y: qrBoxY + 13,
+    width: qrBoxSize - 26,
+    height: qrBoxSize - 26,
+  });
+
+  page.drawCircle({
+    x: cardX + 100,
+    y: cardY + 188,
+    size: 8,
+    color: PURPLE,
+  });
+
+  page.drawText("Scan to request music", {
+    x: cardX + 116,
+    y: cardY + 183,
     size: 16,
-    font: boldFont,
-    color: BRAND_PURPLE,
+    font: bold,
+    color: WHITE,
+  });
+
+  page.drawCircle({
+    x: cardX + 100,
+    y: cardY + 158,
+    size: 8,
+    color: GREEN,
   });
 
   page.drawText("Tip to move higher", {
-    x: 22,
-    y: 92,
-    size: 13,
-    font,
+    x: cardX + 116,
+    y: cardY + 160,
+    size: 15,
+    font: bold,
     color: GREEN,
   });
 
   page.drawText("in the queue", {
-    x: 22,
-    y: 72,
-    size: 13,
-    font,
+    x: cardX + 116,
+    y: cardY + 142,
+    size: 15,
+    font: bold,
     color: GREEN,
   });
 
-  page.drawText("No app required", {
-    x: 22,
-    y: 40,
-    size: 11,
-    font,
-    color: rgb(0.75, 0.75, 0.78),
+  page.drawLine({
+    start: { x: cardX + 100, y: cardY + 125 },
+    end: { x: cardX + 260, y: cardY + 125 },
+    thickness: 2,
+    color: PURPLE,
   });
 
-  const qrSize = 150;
-  page.drawRectangle({ x: 174, y: 38, width: qrSize + 18, height: qrSize + 18, color: WHITE });
-  page.drawImage(qrImage, { x: 183, y: 47, width: qrSize, height: qrSize });
+  page.drawRectangle({
+    x: cardX + 115,
+    y: cardY + 82,
+    width: 130,
+    height: 28,
+    color: PURPLE,
+  });
+
+  drawCenteredText(page, "No app required", cardY + 91, 11, bold, WHITE, cardX + 115, 130);
+
+  drawCenteredText(page, "Powered by Blackline", cardY + 38, 11, regular, GRAY, cardX, cardW);
 
   return pdfDoc.save();
 }
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const rawStage = searchParams.get("stage") || "";
-  const type = searchParams.get("type") as PromoKitType | null;
+  const stageName = searchParams.get("stage") || "";
+  const type = searchParams.get("type") || "";
 
-  const stageName = sanitizeStageName(rawStage);
-
-  if (!stageName) {
-    return NextResponse.json({ error: "Missing stage name" }, { status: 400 });
+  if (!stageName.trim()) {
+    return NextResponse.json(
+      { error: "Missing DJ stage name" },
+      { status: 400 }
+    );
   }
 
-  if (!type || !["poster", "table-tent", "sticker"].includes(type)) {
-    return NextResponse.json({ error: "Invalid promo kit type" }, { status: 400 });
+  if (!["poster", "table-tent", "sticker"].includes(type)) {
+    return NextResponse.json(
+      { error: "Invalid promo kit type" },
+      { status: 400 }
+    );
   }
 
   const requestUrl = getRequestUrl(stageName);
