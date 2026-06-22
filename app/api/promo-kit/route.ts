@@ -287,17 +287,17 @@ async function buildStickerPdf(requestUrl: string) {
   const qrImage = await pdfDoc.embedPng(qrBytes);
 
   const qrCardX = 223;
-  const qrCardY = 68;
+  const qrCardY = 50;
   const qrCardW = 98;
-  const qrCardH = 118;
+  const qrCardH = 126;
 
   drawRoundedFill(page, qrCardX, qrCardY, qrCardW, qrCardH, 8, WHITE);
 
   page.drawImage(qrImage, {
-    x: qrCardX + 5,
-    y: qrCardY + 31,
-    width: 88,
-    height: 88,
+    x: qrCardX + 3,
+    y: qrCardY + 29,
+    width: 92,
+    height: 92,
   });
 
   page.drawRectangle({
