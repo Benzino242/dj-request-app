@@ -222,7 +222,7 @@ async function buildStickerPdf(requestUrl: string) {
 
   drawRoundedBorder(page, 9, 10, pageW - 18, pageH - 20, 20, 3.5, PURPLE, BLACK);
 
-  drawHeadphonesIcon(page, 31, 151, 0.9);
+  drawHeadphonesIcon(page, 40, 160, 0.65);
 
   page.drawText("REQUEST", {
     x: 73,
@@ -273,12 +273,12 @@ async function buildStickerPdf(requestUrl: string) {
     color: GREEN,
   });
 
-  drawRoundedFill(page, 35, 13, 103, 19, 5, PURPLE);
+  drawRoundedFill(page, 35, 6, 88, 16, 4, PURPLE);
 
   page.drawText("No app required", {
-    x: 45,
-    y: 19,
-    size: 9.5,
+    x: 43,
+    y: 11,
+    size: 8,
     font: bold,
     color: WHITE,
   });
@@ -286,34 +286,34 @@ async function buildStickerPdf(requestUrl: string) {
   const qrBytes = await getQrPngBytes(requestUrl);
   const qrImage = await pdfDoc.embedPng(qrBytes);
 
-  const qrCardX = 201;
-  const qrCardY = 49;
-  const qrCardW = 116;
-  const qrCardH = 142;
+  const qrCardX = 223;
+  const qrCardY = 68;
+  const qrCardW = 98;
+  const qrCardH = 118;
 
   drawRoundedFill(page, qrCardX, qrCardY, qrCardW, qrCardH, 8, WHITE);
 
   page.drawImage(qrImage, {
-    x: qrCardX + 9,
-    y: qrCardY + 44,
-    width: 98,
-    height: 98,
+    x: qrCardX + 8,
+    y: qrCardY + 36,
+    width: 82,
+    height: 82,
   });
 
   page.drawRectangle({
     x: qrCardX,
     y: qrCardY,
     width: qrCardW,
-    height: 43,
+    height: 34,
     color: PURPLE,
   });
 
-  drawPhoneIcon(page, qrCardX + 15, qrCardY + 11, 0.95);
+  drawPhoneIcon(page, qrCardX + 12, qrCardY + 8, 0.75);
 
   page.drawText("SCAN HERE", {
-    x: qrCardX + 38,
-    y: qrCardY + 15,
-    size: 15.5,
+    x: qrCardX + 31,
+    y: qrCardY + 12,
+    size: 13,
     font: bold,
     color: WHITE,
   });
@@ -349,7 +349,7 @@ async function buildTableTentPdf(requestUrl: string) {
     borderWidth: 2,
   });
 
-  drawHeadphonesIcon(page, cardX + 158, cardY + 607, 1);
+  drawHeadphonesIcon(page, cardX + 164, cardY + 613, 0.75);
 
   page.drawLine({ start: { x: cardX + 93, y: cardY + 640 }, end: { x: cardX + 145, y: cardY + 640 }, thickness: 2, color: PURPLE });
   page.drawLine({ start: { x: cardX + 214, y: cardY + 640 }, end: { x: cardX + 267, y: cardY + 640 }, thickness: 2, color: PURPLE });
@@ -359,7 +359,7 @@ async function buildTableTentPdf(requestUrl: string) {
 
   page.drawRectangle({
     x: cardX + 104,
-    y: cardY + 456,
+    y: cardY + 495,
     width: 152,
     height: 33,
     color: PURPLE,
@@ -367,7 +367,7 @@ async function buildTableTentPdf(requestUrl: string) {
 
   page.drawText("SCAN HERE", {
     x: cardX + 127,
-    y: cardY + 464,
+    y: cardY + 503,
     size: 19,
     font: bold,
     color: WHITE,
@@ -378,7 +378,7 @@ async function buildTableTentPdf(requestUrl: string) {
 
   const qrBoxSize = 190;
   const qrBoxX = cardX + (cardW - qrBoxSize) / 2;
-  const qrBoxY = cardY + 275;
+  const qrBoxY = cardY + 245;
 
   drawRoundedFill(page, qrBoxX, qrBoxY, qrBoxSize, qrBoxSize, 7, WHITE);
 
@@ -389,21 +389,21 @@ async function buildTableTentPdf(requestUrl: string) {
     height: qrBoxSize - 22,
   });
 
-  drawMusicIcon(page, cardX + 110, cardY + 240, 9);
+  drawMusicIcon(page, cardX + 110, cardY + 220, 9);
 
   page.drawText("Scan to request music", {
     x: cardX + 126,
-    y: cardY + 234,
+    y: cardY + 214,
     size: 14,
     font: bold,
     color: WHITE,
   });
 
-  drawArrowIcon(page, cardX + 110, cardY + 212, 9);
+  drawArrowIcon(page, cardX + 110, cardY + 192, 9);
 
   page.drawText("Tip to move higher", {
     x: cardX + 126,
-    y: cardY + 211,
+    y: cardY + 191,
     size: 14,
     font: bold,
     color: GREEN,
@@ -411,29 +411,29 @@ async function buildTableTentPdf(requestUrl: string) {
 
   page.drawText("in the queue", {
     x: cardX + 126,
-    y: cardY + 193,
+    y: cardY + 173,
     size: 14,
     font: bold,
     color: GREEN,
   });
 
-  page.drawLine({ start: { x: cardX + 105, y: cardY + 174 }, end: { x: cardX + 168, y: cardY + 174 }, thickness: 2, color: PURPLE });
-  page.drawLine({ start: { x: cardX + 180, y: cardY + 174 }, end: { x: cardX + 255, y: cardY + 174 }, thickness: 2, color: PURPLE });
-  page.drawLine({ start: { x: cardX + 168, y: cardY + 174 }, end: { x: cardX + 174, y: cardY + 168 }, thickness: 2, color: PURPLE });
-  page.drawLine({ start: { x: cardX + 174, y: cardY + 168 }, end: { x: cardX + 180, y: cardY + 174 }, thickness: 2, color: PURPLE });
+  page.drawLine({ start: { x: cardX + 105, y: cardY + 154 }, end: { x: cardX + 168, y: cardY + 154 }, thickness: 2, color: PURPLE });
+  page.drawLine({ start: { x: cardX + 180, y: cardY + 154 }, end: { x: cardX + 255, y: cardY + 154 }, thickness: 2, color: PURPLE });
+  page.drawLine({ start: { x: cardX + 168, y: cardY + 154 }, end: { x: cardX + 174, y: cardY + 148 }, thickness: 2, color: PURPLE });
+  page.drawLine({ start: { x: cardX + 174, y: cardY + 148 }, end: { x: cardX + 180, y: cardY + 154 }, thickness: 2, color: PURPLE });
 
-  drawRoundedFill(page, cardX + 128, cardY + 136, 104, 24, 5, PURPLE);
+  drawRoundedFill(page, cardX + 128, cardY + 116, 104, 24, 5, PURPLE);
 
-  drawCenteredText(page, "No app required", cardY + 144, 10, bold, WHITE, cardX + 128, 104);
+  drawCenteredText(page, "No app required", cardY + 124, 10, bold, WHITE, cardX + 128, 104);
 
-  drawHeadphonesIcon(page, cardX + 110, cardY + 83, 0.35);
+  drawHeadphonesIcon(page, cardX + 112, cardY + 78, 0.32);
 
   page.drawText("Powered by Blackline", {
     x: cardX + 132,
-    y: cardY + 90,
-    size: 10,
+    y: cardY + 85,
+    size: 8,
     font: regular,
-    color: WHITE,
+    color: GRAY,
   });
 
   return pdfDoc.save();
