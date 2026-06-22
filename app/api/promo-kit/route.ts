@@ -588,10 +588,43 @@ async function buildTableTentPdf(requestUrl: string) {
   return pdfDoc.save();
 }
 
-function buildInstagramStorySvg(requestUrl: string) {
-  const safeUrl = escapeXml(requestUrl);
 
-  return `
+function textSvg(
+  text: string,
+  width: number,
+  height: number,
+  size: number,
+  color: string,
+  weight = 900,
+  align: "left" | "center" = "center"
+) {
+  const safeText = escapeXml(text);
+  const anchor = align === "center" ? "middle" : "start";
+  const x = align === "center" ? width / 2 : 0;
+  const y = Math.round(height * 0.72);
+
+  return Buffer.from(`
+<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+  <text x="${x}" y="${y}" text-anchor="${anchor}" font-family="sans-serif" font-size="${size}" font-weight="${weight}" fill="${color}">${safeText}</text>
+</svg>`);
+}
+
+async function textPng(
+  text: string,
+  width: number,
+  height: number,
+  size: number,
+  color: string,
+  weight = 900,
+  align: "left" | "center" = "center"
+) {
+  return sharp(textSvg(text, width, height, size, color, weight, align))
+    .png()
+    .toBuffer();
+}
+
+async function buildInstagramStoryPng(requestUrl: string) {
+  const baseSvg = `
 <svg width="1080" height="1920" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
   <rect width="1080" height="1920" fill="#000000"/>
   <rect x="60" y="80" width="960" height="1760" rx="70" fill="none" stroke="${PURPLE_HEX}" stroke-width="10"/>
@@ -605,37 +638,39 @@ function buildInstagramStorySvg(requestUrl: string) {
     <line x1="85" y1="78" x2="85" y2="122" stroke="${PURPLE_HEX}" stroke-width="10"/>
   </g>
 
-  <text x="540" y="520" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="132" font-weight="900" fill="#ffffff">REQUEST</text>
-  <text x="540" y="675" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="132" font-weight="900" fill="#ffffff">A SONG</text>
-
   <rect x="195" y="790" width="690" height="105" rx="24" fill="${PURPLE_HEX}"/>
-  <text x="540" y="860" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="900" fill="#ffffff">TAP LINK TO REQUEST</text>
-
-  <text x="540" y="990" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" fill="${GRAY_HEX}">Add this as your Instagram link sticker</text>
-
   <rect x="125" y="1065" width="830" height="118" rx="30" fill="#ffffff"/>
-  <text x="540" y="1138" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="900" fill="#000000">${safeUrl}</text>
 
   <circle cx="225" cy="1348" r="38" fill="${PURPLE_HEX}"/>
   <path d="M220 1370 C205 1370 200 1358 207 1348 C212 1341 222 1340 229 1345 L229 1317 L258 1308 L258 1320 L239 1325 L239 1358 C238 1366 231 1370 220 1370 Z" fill="#000000"/>
-  <text x="290" y="1362" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="#ffffff">Request your favorite song</text>
 
   <circle cx="225" cy="1465" r="38" fill="${GREEN_HEX}"/>
   <path d="M225 1432 L260 1470 H240 V1505 H210 V1470 H190 Z" fill="#000000"/>
-  <text x="290" y="1467" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="900" fill="${GREEN_HEX}">Tip to move higher</text>
-  <text x="290" y="1525" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="900" fill="${GREEN_HEX}">in the queue</text>
 
   <rect x="325" y="1625" width="430" height="82" rx="22" fill="${PURPLE_HEX}"/>
-  <text x="540" y="1678" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="900" fill="#ffffff">No app required</text>
-
-  <text x="540" y="1785" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="${GRAY_HEX}">Powered by Blackline</text>
 </svg>`;
+
+  const composites = [
+    { input: await textPng("REQUEST", 900, 150, 132, "#ffffff"), left: 90, top: 405 },
+    { input: await textPng("A SONG", 900, 150, 132, "#ffffff"), left: 90, top: 560 },
+    { input: await textPng("TAP LINK TO REQUEST", 690, 85, 54, "#ffffff"), left: 195, top: 802 },
+    { input: await textPng("Add this as your Instagram link sticker", 900, 60, 38, GRAY_HEX, 700), left: 90, top: 940 },
+    { input: await textPng(requestUrl, 800, 70, 28, "#000000"), left: 140, top: 1085 },
+    { input: await textPng("Request your favorite song", 680, 70, 48, "#ffffff", 900, "left"), left: 290, top: 1318 },
+    { input: await textPng("Tip to move higher", 620, 70, 46, GREEN_HEX, 900, "left"), left: 290, top: 1424 },
+    { input: await textPng("in the queue", 620, 70, 46, GREEN_HEX, 900, "left"), left: 290, top: 1482 },
+    { input: await textPng("No app required", 430, 58, 36, "#ffffff"), left: 325, top: 1638 },
+    { input: await textPng("Powered by Blackline", 600, 50, 28, GRAY_HEX, 700), left: 240, top: 1748 },
+  ];
+
+  return sharp(Buffer.from(baseSvg))
+    .composite(composites)
+    .png()
+    .toBuffer();
 }
 
-function buildInstagramPostSvg(requestUrl: string) {
-  const safeUrl = escapeXml(requestUrl);
-
-  return `
+async function buildInstagramPostPng(requestUrl: string) {
+  const baseSvg = `
 <svg width="1080" height="1080" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
   <rect width="1080" height="1080" fill="#000000"/>
   <rect x="45" y="45" width="990" height="990" rx="60" fill="none" stroke="${PURPLE_HEX}" stroke-width="10"/>
@@ -649,38 +684,31 @@ function buildInstagramPostSvg(requestUrl: string) {
     <line x1="72" y1="68" x2="72" y2="108" stroke="${PURPLE_HEX}" stroke-width="8"/>
   </g>
 
-  <text x="285" y="250" font-family="Arial, Helvetica, sans-serif" font-size="95" font-weight="900" fill="#ffffff">REQUEST</text>
-  <text x="140" y="400" font-family="Arial, Helvetica, sans-serif" font-size="120" font-weight="900" fill="#ffffff">A SONG</text>
-
   <line x1="140" y1="465" x2="800" y2="465" stroke="${PURPLE_HEX}" stroke-width="9"/>
-
   <rect x="205" y="525" width="670" height="90" rx="22" fill="${PURPLE_HEX}"/>
-  <text x="540" y="585" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="900" fill="#ffffff">TAP LINK TO REQUEST</text>
-
   <rect x="140" y="645" width="800" height="85" rx="20" fill="#ffffff"/>
-  <text x="540" y="698" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="900" fill="#000000">${safeUrl}</text>
 
   <circle cx="150" cy="815" r="32" fill="${PURPLE_HEX}"/>
   <path d="M146 835 C134 835 130 825 135 817 C140 811 148 810 154 814 L154 792 L178 785 L178 795 L162 799 L162 826 C161 832 155 835 146 835 Z" fill="#000000"/>
-  <text x="210" y="829" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="900" fill="#ffffff">Request your favorite song</text>
 
   <circle cx="150" cy="900" r="32" fill="${GREEN_HEX}"/>
   <path d="M150 872 L180 904 H163 V934 H137 V904 H120 Z" fill="#000000"/>
-  <text x="210" y="913" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="900" fill="${GREEN_HEX}">Tip to move higher in the queue</text>
 
   <rect x="345" y="960" width="390" height="62" rx="18" fill="${PURPLE_HEX}"/>
-  <text x="540" y="1002" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="900" fill="#ffffff">No app required</text>
 </svg>`;
-}
 
-async function buildInstagramStoryPng(requestUrl: string) {
-  return sharp(Buffer.from(buildInstagramStorySvg(requestUrl)))
-    .png()
-    .toBuffer();
-}
+  const composites = [
+    { input: await textPng("REQUEST", 650, 115, 95, "#ffffff", 900, "left"), left: 285, top: 160 },
+    { input: await textPng("A SONG", 760, 150, 120, "#ffffff", 900, "left"), left: 140, top: 275 },
+    { input: await textPng("TAP LINK TO REQUEST", 670, 70, 42, "#ffffff"), left: 205, top: 537 },
+    { input: await textPng(requestUrl, 780, 60, 25, "#000000"), left: 150, top: 662 },
+    { input: await textPng("Request your favorite song", 700, 60, 38, "#ffffff", 900, "left"), left: 210, top: 790 },
+    { input: await textPng("Tip to move higher in the queue", 780, 55, 36, GREEN_HEX, 900, "left"), left: 210, top: 878 },
+    { input: await textPng("No app required", 390, 50, 30, "#ffffff"), left: 345, top: 970 },
+  ];
 
-async function buildInstagramPostPng(requestUrl: string) {
-  return sharp(Buffer.from(buildInstagramPostSvg(requestUrl)))
+  return sharp(Buffer.from(baseSvg))
+    .composite(composites)
     .png()
     .toBuffer();
 }
