@@ -397,15 +397,15 @@ async function buildStickerPdf(requestUrl: string) {
 
   drawRoundedFill(page, qrCardX, qrCardY, qrCardW, 46, 8, PURPLE);
 
-drawPhoneIcon(page, qrCardX + 12, qrCardY + 13, 0.75);
+  drawPhoneIcon(page, qrCardX + 12, qrCardY + 13, 0.75);
 
-page.drawText("SCAN HERE", {
-  x: qrCardX + 28,
-  y: qrCardY + 19,
-  size: 11,
-  font: bold,
-  color: WHITE,
-});
+  page.drawText("SCAN HERE", {
+    x: qrCardX + 28,
+    y: qrCardY + 19,
+    size: 11,
+    font: bold,
+    color: WHITE,
+  });
 
   return pdfDoc.save();
 }
@@ -587,61 +587,61 @@ async function buildInstagramStoryPdf(requestUrl: string) {
 
   drawHeadphonesIcon(page, 475, 1630, 2.8);
 
-  drawCenteredText(page, "REQUEST", 1435, 120, bold);
-  drawCenteredText(page, "A SONG", 1295, 120, bold);
+  drawCenteredText(page, "REQUEST", 1450, 120, bold);
+  drawCenteredText(page, "A SONG", 1310, 120, bold);
 
   page.drawRectangle({
-    x: 300,
-    y: 1190,
-    width: 480,
-    height: 90,
+    x: 210,
+    y: 1135,
+    width: 660,
+    height: 95,
     color: PURPLE,
   });
 
-  drawCenteredText(page, "SCAN HERE", 1215, 54, bold, WHITE, 300, 480);
+  drawCenteredText(page, "TAP LINK TO REQUEST", 1162, 46, bold, WHITE, 210, 660);
 
-  const qrBytes = await getQrPngBytes(requestUrl);
-  const qrImage = await pdfDoc.embedPng(qrBytes);
-
-  drawRoundedFill(page, 260, 650, 560, 560, 30, WHITE);
-
-  page.drawImage(qrImage, {
-    x: 295,
-    y: 685,
-    width: 490,
-    height: 490,
+  page.drawText("Add the Instagram link sticker to this story", {
+    x: 215,
+    y: 1045,
+    size: 34,
+    font: regular,
+    color: GRAY,
   });
 
-  drawMusicIcon(page, 290, 525, 34);
+  drawRoundedFill(page, 125, 850, 830, 118, 26, WHITE);
+
+  drawCenteredText(page, requestUrl, 892, 28, bold, BLACK, 125, 830);
+
+  drawMusicIcon(page, 210, 675, 36);
   page.drawText("Request your favorite song", {
-    x: 350,
-    y: 502,
-    size: 44,
+    x: 275,
+    y: 652,
+    size: 46,
     font: bold,
     color: WHITE,
   });
 
-  drawArrowIcon(page, 290, 440, 34);
+  drawArrowIcon(page, 210, 560, 36);
   page.drawText("Tip to move higher", {
-    x: 350,
-    y: 435,
-    size: 42,
+    x: 275,
+    y: 555,
+    size: 44,
     font: bold,
     color: GREEN,
   });
 
   page.drawText("in the queue", {
-    x: 350,
-    y: 382,
-    size: 42,
+    x: 275,
+    y: 500,
+    size: 44,
     font: bold,
     color: GREEN,
   });
 
-  drawRoundedFill(page, 360, 260, 360, 72, 18, PURPLE);
-  drawCenteredText(page, "No app required", 284, 32, bold, WHITE, 360, 360);
+  drawRoundedFill(page, 325, 350, 430, 82, 20, PURPLE);
+  drawCenteredText(page, "No app required", 378, 36, bold, WHITE, 325, 430);
 
-  drawCenteredText(page, "Powered by Blackline", 165, 28, regular, GRAY);
+  drawCenteredText(page, "Powered by Blackline", 190, 28, regular, GRAY);
 
   return pdfDoc.save();
 }
@@ -657,10 +657,10 @@ async function buildInstagramPostPdf(requestUrl: string) {
 
   drawRoundedBorder(page, 45, 45, 990, 990, 60, 8, PURPLE, BLACK);
 
-  drawHeadphonesIcon(page, 95, 820, 2.4);
+  drawHeadphonesIcon(page, 120, 820, 2.25);
 
   page.drawText("REQUEST", {
-    x: 255,
+    x: 280,
     y: 860,
     size: 95,
     font: bold,
@@ -668,7 +668,7 @@ async function buildInstagramPostPdf(requestUrl: string) {
   });
 
   page.drawText("A SONG", {
-    x: 105,
+    x: 145,
     y: 715,
     size: 115,
     font: bold,
@@ -676,70 +676,40 @@ async function buildInstagramPostPdf(requestUrl: string) {
   });
 
   page.drawLine({
-    start: { x: 105, y: 655 },
-    end: { x: 650, y: 655 },
+    start: { x: 145, y: 655 },
+    end: { x: 760, y: 655 },
     thickness: 8,
     color: PURPLE,
   });
 
-  const qrBytes = await getQrPngBytes(requestUrl);
-  const qrImage = await pdfDoc.embedPng(qrBytes);
+  drawRoundedFill(page, 205, 525, 670, 90, 22, PURPLE);
+  drawCenteredText(page, "TAP LINK TO REQUEST", 552, 42, bold, WHITE, 205, 670);
 
-  drawRoundedFill(page, 700, 520, 280, 370, 28, WHITE);
+  drawRoundedFill(page, 140, 405, 800, 85, 20, WHITE);
+  drawCenteredText(page, requestUrl, 435, 25, bold, BLACK, 140, 800);
 
-  page.drawImage(qrImage, {
-    x: 720,
-    y: 630,
-    width: 240,
-    height: 240,
-  });
-
-  page.drawRectangle({
-    x: 700,
-    y: 520,
-    width: 280,
-    height: 95,
-    color: PURPLE,
-  });
-
-  drawCenteredText(page, "SCAN HERE", 548, 34, bold, WHITE, 700, 280);
-
-  drawMusicIcon(page, 120, 490, 35);
+  drawMusicIcon(page, 150, 305, 32);
   page.drawText("Request your favorite song", {
-    x: 185,
-    y: 470,
-    size: 42,
+    x: 210,
+    y: 286,
+    size: 38,
     font: bold,
     color: WHITE,
   });
 
-  drawArrowIcon(page, 120, 400, 35);
-  page.drawText("Tip to move higher", {
-    x: 185,
-    y: 400,
-    size: 42,
-    font: bold,
-    color: GREEN,
-  });
-
-  page.drawText("in the queue", {
-    x: 185,
-    y: 350,
-    size: 42,
-    font: bold,
-    color: GREEN,
-  });
-
-  drawRoundedFill(page, 120, 185, 330, 75, 18, PURPLE);
-  page.drawText("No app required", {
-    x: 160,
+  drawArrowIcon(page, 150, 220, 32);
+  page.drawText("Tip to move higher in the queue", {
+    x: 210,
     y: 210,
-    size: 34,
+    size: 36,
     font: bold,
-    color: WHITE,
+    color: GREEN,
   });
 
-  drawCenteredText(page, "Powered by Blackline", 95, 25, regular, GRAY);
+  drawRoundedFill(page, 345, 115, 390, 70, 18, PURPLE);
+  drawCenteredText(page, "No app required", 138, 32, bold, WHITE, 345, 390);
+
+  drawCenteredText(page, "Powered by Blackline", 70, 24, regular, GRAY);
 
   return pdfDoc.save();
 }
