@@ -12,13 +12,23 @@ const GREEN = rgb(0.18, 0.95, 0.35);
 const GRAY = rgb(0.42, 0.42, 0.48);
 const LIGHT_GRAY = rgb(0.94, 0.94, 0.94);
 
+type PromoKitType =
+  | "poster"
+  | "table-tent"
+  | "sticker"
+  | "qr-png"
+  | "instagram-story"
+  | "instagram-post";
+
 function getRequestUrl(stageName: string) {
-  return `https://dj-request-app-topaz.vercel.app/${stageName.toLowerCase().trim()}`;
+  return `https://dj-request-app-topaz.vercel.app/${stageName
+    .toLowerCase()
+    .trim()}`;
 }
 
-async function getQrPngBytes(requestUrl: string) {
+async function getQrPngBytes(requestUrl: string, width = 1600) {
   const dataUrl = await QRCode.toDataURL(requestUrl, {
-    width: 1600,
+    width,
     margin: 1,
     errorCorrectionLevel: "H",
     color: {
@@ -60,13 +70,31 @@ function drawRoundedFill(
   radius: number,
   color: any
 ) {
-  page.drawRectangle({ x: x + radius, y, width: width - radius * 2, height, color });
-  page.drawRectangle({ x, y: y + radius, width, height: height - radius * 2, color });
+  page.drawRectangle({
+    x: x + radius,
+    y,
+    width: width - radius * 2,
+    height,
+    color,
+  });
+
+  page.drawRectangle({
+    x,
+    y: y + radius,
+    width,
+    height: height - radius * 2,
+    color,
+  });
 
   page.drawCircle({ x: x + radius, y: y + radius, size: radius, color });
   page.drawCircle({ x: x + width - radius, y: y + radius, size: radius, color });
   page.drawCircle({ x: x + radius, y: y + height - radius, size: radius, color });
-  page.drawCircle({ x: x + width - radius, y: y + height - radius, size: radius, color });
+  page.drawCircle({
+    x: x + width - radius,
+    y: y + height - radius,
+    size: radius,
+    color,
+  });
 }
 
 function drawRoundedBorder(
@@ -103,26 +131,86 @@ function drawHeadphonesIcon(page: PDFPage, x: number, y: number, scale = 1) {
     borderWidth: 4 * s,
   });
 
-  page.drawRectangle({ x: x + 1 * s, y: y + 6 * s, width: 9 * s, height: 20 * s, color: PURPLE });
-  page.drawRectangle({ x: x + 34 * s, y: y + 6 * s, width: 9 * s, height: 20 * s, color: PURPLE });
+  page.drawRectangle({
+    x: x + 1 * s,
+    y: y + 6 * s,
+    width: 9 * s,
+    height: 20 * s,
+    color: PURPLE,
+  });
 
-  page.drawLine({ start: { x: x + 17 * s, y: y + 8 * s }, end: { x: x + 17 * s, y: y + 20 * s }, thickness: 2 * s, color: PURPLE });
-  page.drawLine({ start: { x: x + 22 * s, y: y + 5 * s }, end: { x: x + 22 * s, y: y + 23 * s }, thickness: 2 * s, color: PURPLE });
-  page.drawLine({ start: { x: x + 27 * s, y: y + 8 * s }, end: { x: x + 27 * s, y: y + 20 * s }, thickness: 2 * s, color: PURPLE });
+  page.drawRectangle({
+    x: x + 34 * s,
+    y: y + 6 * s,
+    width: 9 * s,
+    height: 20 * s,
+    color: PURPLE,
+  });
+
+  page.drawLine({
+    start: { x: x + 17 * s, y: y + 8 * s },
+    end: { x: x + 17 * s, y: y + 20 * s },
+    thickness: 2 * s,
+    color: PURPLE,
+  });
+
+  page.drawLine({
+    start: { x: x + 22 * s, y: y + 5 * s },
+    end: { x: x + 22 * s, y: y + 23 * s },
+    thickness: 2 * s,
+    color: PURPLE,
+  });
+
+  page.drawLine({
+    start: { x: x + 27 * s, y: y + 8 * s },
+    end: { x: x + 27 * s, y: y + 20 * s },
+    thickness: 2 * s,
+    color: PURPLE,
+  });
 }
 
 function drawMusicIcon(page: PDFPage, x: number, y: number, size = 10) {
   page.drawCircle({ x, y, size, color: PURPLE });
   page.drawCircle({ x: x - 3, y: y - 4, size: 2.5, color: BLACK });
-  page.drawLine({ start: { x: x - 1, y: y - 4 }, end: { x: x - 1, y: y + 6 }, thickness: 2, color: BLACK });
-  page.drawLine({ start: { x: x - 1, y: y + 6 }, end: { x: x + 6, y: y + 8 }, thickness: 2, color: BLACK });
+
+  page.drawLine({
+    start: { x: x - 1, y: y - 4 },
+    end: { x: x - 1, y: y + 6 },
+    thickness: 2,
+    color: BLACK,
+  });
+
+  page.drawLine({
+    start: { x: x - 1, y: y + 6 },
+    end: { x: x + 6, y: y + 8 },
+    thickness: 2,
+    color: BLACK,
+  });
 }
 
 function drawArrowIcon(page: PDFPage, x: number, y: number, size = 10) {
   page.drawCircle({ x, y, size, color: GREEN });
-  page.drawLine({ start: { x, y: y - 5 }, end: { x, y: y + 5 }, thickness: 3, color: BLACK });
-  page.drawLine({ start: { x: x - 4, y: y + 1 }, end: { x, y: y + 6 }, thickness: 3, color: BLACK });
-  page.drawLine({ start: { x: x + 4, y: y + 1 }, end: { x, y: y + 6 }, thickness: 3, color: BLACK });
+
+  page.drawLine({
+    start: { x, y: y - 5 },
+    end: { x, y: y + 5 },
+    thickness: 3,
+    color: BLACK,
+  });
+
+  page.drawLine({
+    start: { x: x - 4, y: y + 1 },
+    end: { x, y: y + 6 },
+    thickness: 3,
+    color: BLACK,
+  });
+
+  page.drawLine({
+    start: { x: x + 4, y: y + 1 },
+    end: { x, y: y + 6 },
+    thickness: 3,
+    color: BLACK,
+  });
 }
 
 function drawPhoneIcon(page: PDFPage, x: number, y: number, scale = 1) {
@@ -152,7 +240,13 @@ async function buildPosterPdf(requestUrl: string) {
   const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-  page.drawRectangle({ x: 0, y: 0, width: 595.28, height: 841.89, color: BLACK });
+  page.drawRectangle({
+    x: 0,
+    y: 0,
+    width: 595.28,
+    height: 841.89,
+    color: BLACK,
+  });
 
   drawCenteredText(page, "REQUEST A SONG", 700, 44, bold);
   drawCenteredText(page, "SCAN THE QR CODE", 650, 20, bold, PURPLE);
@@ -172,7 +266,12 @@ async function buildPosterPdf(requestUrl: string) {
     color: WHITE,
   });
 
-  page.drawImage(qrImage, { x: qrX, y: qrY, width: qrSize, height: qrSize });
+  page.drawImage(qrImage, {
+    x: qrX,
+    y: qrY,
+    width: qrSize,
+    height: qrSize,
+  });
 
   drawCenteredText(page, "Scan to request a song", 210, 25, bold);
   drawCenteredText(page, "Tip to move higher in the queue", 174, 19, regular, GREEN);
@@ -213,10 +312,33 @@ async function buildStickerPdf(requestUrl: string) {
     color: WHITE,
   });
 
-  page.drawLine({ start: { x: 34, y: 100 }, end: { x: 99, y: 100 }, thickness: 2, color: PURPLE });
-  page.drawLine({ start: { x: 111, y: 100 }, end: { x: 162, y: 100 }, thickness: 2, color: PURPLE });
-  page.drawLine({ start: { x: 99, y: 100 }, end: { x: 105, y: 94 }, thickness: 2, color: PURPLE });
-  page.drawLine({ start: { x: 105, y: 94 }, end: { x: 111, y: 100 }, thickness: 2, color: PURPLE });
+  page.drawLine({
+    start: { x: 34, y: 100 },
+    end: { x: 99, y: 100 },
+    thickness: 2,
+    color: PURPLE,
+  });
+
+  page.drawLine({
+    start: { x: 111, y: 100 },
+    end: { x: 162, y: 100 },
+    thickness: 2,
+    color: PURPLE,
+  });
+
+  page.drawLine({
+    start: { x: 99, y: 100 },
+    end: { x: 105, y: 94 },
+    thickness: 2,
+    color: PURPLE,
+  });
+
+  page.drawLine({
+    start: { x: 105, y: 94 },
+    end: { x: 111, y: 100 },
+    thickness: 2,
+    color: PURPLE,
+  });
 
   drawMusicIcon(page, 46, 76, 10);
 
@@ -304,14 +426,26 @@ async function buildTableTentPdf(requestUrl: string) {
   const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-  page.drawRectangle({ x: 0, y: 0, width: pageW, height: pageH, color: LIGHT_GRAY });
+  page.drawRectangle({
+    x: 0,
+    y: 0,
+    width: pageW,
+    height: pageH,
+    color: LIGHT_GRAY,
+  });
 
   const cardW = 360;
   const cardH = 700;
   const cardX = (pageW - cardW) / 2;
   const cardY = 72;
 
-  page.drawRectangle({ x: cardX, y: cardY, width: cardW, height: cardH, color: BLACK });
+  page.drawRectangle({
+    x: cardX,
+    y: cardY,
+    width: cardW,
+    height: cardH,
+    color: BLACK,
+  });
 
   page.drawRectangle({
     x: cardX + 12,
@@ -324,8 +458,19 @@ async function buildTableTentPdf(requestUrl: string) {
 
   drawHeadphonesIcon(page, cardX + 164, cardY + 613, 0.75);
 
-  page.drawLine({ start: { x: cardX + 93, y: cardY + 640 }, end: { x: cardX + 145, y: cardY + 640 }, thickness: 2, color: PURPLE });
-  page.drawLine({ start: { x: cardX + 214, y: cardY + 640 }, end: { x: cardX + 267, y: cardY + 640 }, thickness: 2, color: PURPLE });
+  page.drawLine({
+    start: { x: cardX + 93, y: cardY + 640 },
+    end: { x: cardX + 145, y: cardY + 640 },
+    thickness: 2,
+    color: PURPLE,
+  });
+
+  page.drawLine({
+    start: { x: cardX + 214, y: cardY + 640 },
+    end: { x: cardX + 267, y: cardY + 640 },
+    thickness: 2,
+    color: PURPLE,
+  });
 
   drawCenteredText(page, "REQUEST", cardY + 555, 45, bold, WHITE, cardX, cardW);
   drawCenteredText(page, "A SONG", cardY + 503, 45, bold, WHITE, cardX, cardW);
@@ -390,10 +535,33 @@ async function buildTableTentPdf(requestUrl: string) {
     color: GREEN,
   });
 
-  page.drawLine({ start: { x: cardX + 105, y: cardY + 154 }, end: { x: cardX + 168, y: cardY + 154 }, thickness: 2, color: PURPLE });
-  page.drawLine({ start: { x: cardX + 180, y: cardY + 154 }, end: { x: cardX + 255, y: cardY + 154 }, thickness: 2, color: PURPLE });
-  page.drawLine({ start: { x: cardX + 168, y: cardY + 154 }, end: { x: cardX + 174, y: cardY + 148 }, thickness: 2, color: PURPLE });
-  page.drawLine({ start: { x: cardX + 174, y: cardY + 148 }, end: { x: cardX + 180, y: cardY + 154 }, thickness: 2, color: PURPLE });
+  page.drawLine({
+    start: { x: cardX + 105, y: cardY + 154 },
+    end: { x: cardX + 168, y: cardY + 154 },
+    thickness: 2,
+    color: PURPLE,
+  });
+
+  page.drawLine({
+    start: { x: cardX + 180, y: cardY + 154 },
+    end: { x: cardX + 255, y: cardY + 154 },
+    thickness: 2,
+    color: PURPLE,
+  });
+
+  page.drawLine({
+    start: { x: cardX + 168, y: cardY + 154 },
+    end: { x: cardX + 174, y: cardY + 148 },
+    thickness: 2,
+    color: PURPLE,
+  });
+
+  page.drawLine({
+    start: { x: cardX + 174, y: cardY + 148 },
+    end: { x: cardX + 180, y: cardY + 154 },
+    thickness: 2,
+    color: PURPLE,
+  });
 
   drawRoundedFill(page, cardX + 128, cardY + 116, 104, 24, 5, PURPLE);
 
@@ -412,6 +580,176 @@ async function buildTableTentPdf(requestUrl: string) {
   return pdfDoc.save();
 }
 
+async function buildInstagramStoryPdf(requestUrl: string) {
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage([1080, 1920]);
+
+  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+  page.drawRectangle({ x: 0, y: 0, width: 1080, height: 1920, color: BLACK });
+
+  drawRoundedBorder(page, 60, 80, 960, 1760, 70, 8, PURPLE, BLACK);
+
+  drawHeadphonesIcon(page, 475, 1630, 2.8);
+
+  drawCenteredText(page, "REQUEST", 1435, 120, bold);
+  drawCenteredText(page, "A SONG", 1295, 120, bold);
+
+  page.drawRectangle({
+    x: 300,
+    y: 1190,
+    width: 480,
+    height: 90,
+    color: PURPLE,
+  });
+
+  drawCenteredText(page, "SCAN HERE", 1215, 54, bold, WHITE, 300, 480);
+
+  const qrBytes = await getQrPngBytes(requestUrl);
+  const qrImage = await pdfDoc.embedPng(qrBytes);
+
+  drawRoundedFill(page, 260, 650, 560, 560, 30, WHITE);
+
+  page.drawImage(qrImage, {
+    x: 295,
+    y: 685,
+    width: 490,
+    height: 490,
+  });
+
+  drawMusicIcon(page, 290, 525, 34);
+  page.drawText("Scan to request music", {
+    x: 350,
+    y: 502,
+    size: 44,
+    font: bold,
+    color: WHITE,
+  });
+
+  drawArrowIcon(page, 290, 440, 34);
+  page.drawText("Tip to move higher", {
+    x: 350,
+    y: 435,
+    size: 42,
+    font: bold,
+    color: GREEN,
+  });
+
+  page.drawText("in the queue", {
+    x: 350,
+    y: 382,
+    size: 42,
+    font: bold,
+    color: GREEN,
+  });
+
+  drawRoundedFill(page, 360, 260, 360, 72, 18, PURPLE);
+  drawCenteredText(page, "No app required", 284, 32, bold, WHITE, 360, 360);
+
+  drawCenteredText(page, "Powered by Blackline", 165, 28, regular, GRAY);
+
+  return pdfDoc.save();
+}
+
+async function buildInstagramPostPdf(requestUrl: string) {
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage([1080, 1080]);
+
+  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+  page.drawRectangle({ x: 0, y: 0, width: 1080, height: 1080, color: BLACK });
+
+  drawRoundedBorder(page, 45, 45, 990, 990, 60, 8, PURPLE, BLACK);
+
+  drawHeadphonesIcon(page, 95, 820, 2.4);
+
+  page.drawText("REQUEST", {
+    x: 255,
+    y: 860,
+    size: 95,
+    font: bold,
+    color: WHITE,
+  });
+
+  page.drawText("A SONG", {
+    x: 105,
+    y: 715,
+    size: 115,
+    font: bold,
+    color: WHITE,
+  });
+
+  page.drawLine({
+    start: { x: 105, y: 655 },
+    end: { x: 650, y: 655 },
+    thickness: 8,
+    color: PURPLE,
+  });
+
+  const qrBytes = await getQrPngBytes(requestUrl);
+  const qrImage = await pdfDoc.embedPng(qrBytes);
+
+  drawRoundedFill(page, 700, 520, 280, 370, 28, WHITE);
+
+  page.drawImage(qrImage, {
+    x: 720,
+    y: 630,
+    width: 240,
+    height: 240,
+  });
+
+  page.drawRectangle({
+    x: 700,
+    y: 520,
+    width: 280,
+    height: 95,
+    color: PURPLE,
+  });
+
+  drawCenteredText(page, "SCAN HERE", 548, 34, bold, WHITE, 700, 280);
+
+  drawMusicIcon(page, 120, 490, 35);
+  page.drawText("Scan to request music", {
+    x: 185,
+    y: 470,
+    size: 42,
+    font: bold,
+    color: WHITE,
+  });
+
+  drawArrowIcon(page, 120, 400, 35);
+  page.drawText("Tip to move higher", {
+    x: 185,
+    y: 400,
+    size: 42,
+    font: bold,
+    color: GREEN,
+  });
+
+  page.drawText("in the queue", {
+    x: 185,
+    y: 350,
+    size: 42,
+    font: bold,
+    color: GREEN,
+  });
+
+  drawRoundedFill(page, 120, 185, 330, 75, 18, PURPLE);
+  page.drawText("No app required", {
+    x: 160,
+    y: 210,
+    size: 34,
+    font: bold,
+    color: WHITE,
+  });
+
+  drawCenteredText(page, "Powered by Blackline", 95, 25, regular, GRAY);
+
+  return pdfDoc.save();
+}
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
@@ -422,11 +760,33 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Missing DJ stage name" }, { status: 400 });
     }
 
-    if (!["poster", "table-tent", "sticker"].includes(type)) {
+    const validTypes: PromoKitType[] = [
+      "poster",
+      "table-tent",
+      "sticker",
+      "qr-png",
+      "instagram-story",
+      "instagram-post",
+    ];
+
+    if (!validTypes.includes(type as PromoKitType)) {
       return NextResponse.json({ error: "Invalid promo kit type" }, { status: 400 });
     }
 
     const requestUrl = getRequestUrl(stageName);
+
+    if (type === "qr-png") {
+      const qrBytes = await getQrPngBytes(requestUrl, 2400);
+
+      return new NextResponse(qrBytes, {
+        status: 200,
+        headers: {
+          "Content-Type": "image/png",
+          "Content-Disposition": `attachment; filename="${stageName}-blackline-qr-code.png"`,
+          "Cache-Control": "no-store",
+        },
+      });
+    }
 
     let pdfBytes: Uint8Array;
     let filename: string;
@@ -437,6 +797,12 @@ export async function GET(request: NextRequest) {
     } else if (type === "table-tent") {
       pdfBytes = await buildTableTentPdf(requestUrl);
       filename = `${stageName}-blackline-table-tent.pdf`;
+    } else if (type === "instagram-story") {
+      pdfBytes = await buildInstagramStoryPdf(requestUrl);
+      filename = `${stageName}-blackline-instagram-story.pdf`;
+    } else if (type === "instagram-post") {
+      pdfBytes = await buildInstagramPostPdf(requestUrl);
+      filename = `${stageName}-blackline-instagram-post.pdf`;
     } else {
       pdfBytes = await buildStickerPdf(requestUrl);
       filename = `${stageName}-blackline-laptop-sticker.pdf`;
