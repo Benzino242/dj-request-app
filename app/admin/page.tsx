@@ -102,15 +102,45 @@ type PaystackBank = {
 };
 
 type QuickSetupTranslation = {
-  eyebrow: string; heading: string; subtitle: string;
-  profileTodoTitle: string; profileReadyTitle: string; profileTodoMessage: string; profileReadyMessage: string;
-  payoutTodoTitle: string; payoutReadyTitle: string; payoutTodoMessage: string; payoutReadyMessage: string;
-  openRequestsTitle: string; liveTitle: string; openRequestsMessage: string; liveMessage: string;
-  shareQrTitle: string; shareQrMessage: string; watchQueueTitle: string; acceptRequestsTitle: string;
-  watchQueueMessage: string; acceptRequestsMessage: string; verificationTitle: string; withdrawalsUnlockedTitle: string;
-  verificationNotStartedMessage: string; verificationPendingMessage: string; connectPayoutMessage: string; withdrawalsReadyMessage: string;
-  verificationNote: string; startHere: string; ready: string; needed: string; connected: string;
-  share: string; actionNeeded: string; queue: string; goLive: string; liveNow: string; requestsAllowed: string; unlocked: string;
+  eyebrow: string;
+  heading: string;
+  subtitle: string;
+  profileTodoTitle: string;
+  profileReadyTitle: string;
+  payoutTodoTitle: string;
+  payoutReadyTitle: string;
+  openRequestsTitle: string;
+  liveTitle: string;
+  shareQrTitle: string;
+  watchQueueTitle: string;
+  acceptRequestsTitle: string;
+  verificationTitle: string;
+  withdrawalsUnlockedTitle: string;
+  verificationNote: string;
+  startHere: string;
+  ready: string;
+  needed: string;
+  connected: string;
+  share: string;
+  actionNeeded: string;
+  queue: string;
+  goLive: string;
+  liveNow: string;
+  requestsAllowed: string;
+  unlocked: string;
+  profileTodoMessage: string;
+  profileReadyMessage: string;
+  payoutTodoMessage: string;
+  payoutReadyMessage: string;
+  openRequestsMessage: string;
+  liveMessage: string;
+  shareQrMessage: string;
+  watchQueueMessage: string;
+  acceptRequestsMessage: string;
+  verificationNotStartedMessage: string;
+  verificationPendingMessage: string;
+  connectPayoutMessage: string;
+  withdrawalsReadyMessage: string;
 };
 
 const quickSetupTranslations: Record<Language, QuickSetupTranslation> = {
@@ -141,19 +171,19 @@ const quickSetupTranslations: Record<Language, QuickSetupTranslation> = {
     "liveNow": "Live now",
     "requestsAllowed": "Requests allowed",
     "unlocked": "Unlocked",
-    "profileTodoMessage": "Set up your profile",
-    "profileReadyMessage": "Profile is set",
-    "payoutTodoMessage": "Add payout method",
-    "payoutReadyMessage": "Payout method added",
-    "openRequestsMessage": "Open requests",
-    "liveMessage": "Requests are open",
-    "shareQrMessage": "Share your QR code",
-    "watchQueueMessage": "Watch your request queue",
-    "acceptRequestsMessage": "Accept pending requests",
-    "verificationNotStartedMessage": "Verification unlocks withdrawals",
-    "verificationPendingMessage": "Verification unlocks withdrawals",
-    "connectPayoutMessage": "Add payout method",
-    "withdrawalsReadyMessage": "Withdrawals are unlocked"
+    "profileTodoMessage": "Add event name, venue, Instagram, bio, or a profile photo.",
+    "profileReadyMessage": "Your DJ profile has enough details for guests to recognize your page.",
+    "payoutTodoMessage": "Add where you want to receive your money before requesting withdrawals.",
+    "payoutReadyMessage": "Your payout account is connected for future withdrawals.",
+    "openRequestsMessage": "Tap Go Live when you are ready for guests to start requesting songs.",
+    "liveMessage": "Guests can scan your QR code and send paid requests now.",
+    "shareQrMessage": "Download your promo kit, print it, or show the QR code on your phone so guests can scan it.",
+    "watchQueueMessage": "New paid song requests will appear in your queue automatically.",
+    "acceptRequestsMessage": "Review new songs and accept the ones you want to play.",
+    "verificationNotStartedMessage": "Submit verification when ready. You can still take requests before approval.",
+    "verificationPendingMessage": "You can still take requests now. Withdrawals unlock after Blackline approval.",
+    "connectPayoutMessage": "Connect your payout method before requesting your first withdrawal.",
+    "withdrawalsReadyMessage": "You can request withdrawals when you have available balance."
   },
   "zh": {
     "eyebrow": "快速设置",
@@ -182,19 +212,19 @@ const quickSetupTranslations: Record<Language, QuickSetupTranslation> = {
     "liveNow": "直播中",
     "requestsAllowed": "可接单",
     "unlocked": "已解锁",
-    "profileTodoMessage": "设置DJ资料",
-    "profileReadyMessage": "资料已设置",
-    "payoutTodoMessage": "添加收款方式",
-    "payoutReadyMessage": "收款方式已添加",
-    "openRequestsMessage": "开启点歌",
-    "liveMessage": "点歌已开启",
-    "shareQrMessage": "分享二维码",
-    "watchQueueMessage": "查看点歌队列",
-    "acceptRequestsMessage": "接受待处理点歌",
-    "verificationNotStartedMessage": "验证解锁提现",
-    "verificationPendingMessage": "验证解锁提现",
-    "connectPayoutMessage": "添加收款方式",
-    "withdrawalsReadyMessage": "提现已解锁"
+    "profileTodoMessage": "添加活动名称、场地、Instagram、简介或头像。",
+    "profileReadyMessage": "你的DJ资料足够让客人认出你的页面。",
+    "payoutTodoMessage": "在申请提现前，添加你想收款的账户。",
+    "payoutReadyMessage": "你的收款账户已连接，可用于之后提现。",
+    "openRequestsMessage": "准备好让客人点歌时，点击 Go Live。",
+    "liveMessage": "客人现在可以扫码并发送付费点歌。",
+    "shareQrMessage": "下载宣传套件、打印，或在手机上展示二维码让客人扫码。",
+    "watchQueueMessage": "新的付费点歌会自动出现在你的队列中。",
+    "acceptRequestsMessage": "查看新歌曲并接受你想播放的请求。",
+    "verificationNotStartedMessage": "准备好时提交验证。批准前仍可接受点歌。",
+    "verificationPendingMessage": "你现在仍可接受点歌。Blackline 批准后可提现。",
+    "connectPayoutMessage": "申请首次提现前，请先连接收款方式。",
+    "withdrawalsReadyMessage": "有可用余额时，你可以申请提现。"
   },
   "ja": {
     "eyebrow": "クイック設定",
@@ -223,19 +253,19 @@ const quickSetupTranslations: Record<Language, QuickSetupTranslation> = {
     "liveNow": "受付中",
     "requestsAllowed": "受付可能",
     "unlocked": "有効",
-    "profileTodoMessage": "DJプロフィールを設定",
-    "profileReadyMessage": "プロフィール設定済み",
-    "payoutTodoMessage": "出金方法を追加",
-    "payoutReadyMessage": "出金方法を追加済み",
-    "openRequestsMessage": "リクエストを開く",
-    "liveMessage": "リクエスト受付中",
-    "shareQrMessage": "QRコードを共有",
-    "watchQueueMessage": "リクエストキューを見る",
-    "acceptRequestsMessage": "保留中のリクエストを承認",
-    "verificationNotStartedMessage": "認証で出金を有効化",
-    "verificationPendingMessage": "認証で出金を有効化",
-    "connectPayoutMessage": "出金方法を追加",
-    "withdrawalsReadyMessage": "出金が有効です"
+    "profileTodoMessage": "イベント名、会場、Instagram、自己紹介、プロフィール写真を追加しましょう。",
+    "profileReadyMessage": "ゲストがあなたのページだと分かる情報が入っています。",
+    "payoutTodoMessage": "出金前にお金を受け取る方法を追加してください。",
+    "payoutReadyMessage": "今後の出金用アカウントが接続されています。",
+    "openRequestsMessage": "受付を始める準備ができたら Go Live をタップ。",
+    "liveMessage": "ゲストはQRを読み取り、有料リクエストを送信できます。",
+    "shareQrMessage": "プロモキットをダウンロードして印刷するか、スマホでQRコードを表示しましょう。",
+    "watchQueueMessage": "新しい有料リクエストは自動でキューに表示されます。",
+    "acceptRequestsMessage": "新しい曲を確認し、再生したい曲を承認してください。",
+    "verificationNotStartedMessage": "準備ができたら認証を送信してください。承認前でもリクエストは受けられます。",
+    "verificationPendingMessage": "今すぐリクエストは受けられます。Blackline 承認後に出金できます。",
+    "connectPayoutMessage": "初回出金前に出金方法を接続してください。",
+    "withdrawalsReadyMessage": "利用可能残高があれば出金申請できます。"
   },
   "ko": {
     "eyebrow": "빠른 설정",
@@ -264,19 +294,19 @@ const quickSetupTranslations: Record<Language, QuickSetupTranslation> = {
     "liveNow": "라이브",
     "requestsAllowed": "요청 가능",
     "unlocked": "해제됨",
-    "profileTodoMessage": "DJ 프로필 설정",
-    "profileReadyMessage": "프로필 설정됨",
-    "payoutTodoMessage": "정산 방법 추가",
-    "payoutReadyMessage": "정산 방법 추가됨",
-    "openRequestsMessage": "요청 열기",
-    "liveMessage": "요청 열림",
-    "shareQrMessage": "QR 코드 공유",
-    "watchQueueMessage": "요청 대기열 보기",
-    "acceptRequestsMessage": "대기 요청 수락",
-    "verificationNotStartedMessage": "인증 후 출금 가능",
-    "verificationPendingMessage": "인증 후 출금 가능",
-    "connectPayoutMessage": "정산 방법 추가",
-    "withdrawalsReadyMessage": "출금 잠금 해제됨"
+    "profileTodoMessage": "이벤트명, 장소, Instagram, 소개 또는 프로필 사진을 추가하세요.",
+    "profileReadyMessage": "게스트가 내 페이지를 알아볼 수 있는 정보가 있습니다.",
+    "payoutTodoMessage": "출금 요청 전에 받을 계정을 추가하세요.",
+    "payoutReadyMessage": "향후 출금을 위한 계정이 연결되었습니다.",
+    "openRequestsMessage": "곡 요청을 받을 준비가 되면 Go Live를 누르세요.",
+    "liveMessage": "게스트가 QR 코드를 스캔하고 유료 요청을 보낼 수 있습니다.",
+    "shareQrMessage": "프로모 키트를 다운로드해 인쇄하거나 휴대폰에서 QR 코드를 보여주세요.",
+    "watchQueueMessage": "새 유료 요청은 자동으로 대기열에 표시됩니다.",
+    "acceptRequestsMessage": "새 곡을 확인하고 재생할 곡을 수락하세요.",
+    "verificationNotStartedMessage": "준비되면 인증을 제출하세요. 승인 전에도 요청은 받을 수 있습니다.",
+    "verificationPendingMessage": "지금도 요청을 받을 수 있습니다. Blackline 승인 후 출금이 열립니다.",
+    "connectPayoutMessage": "첫 출금 전에 정산 방법을 연결하세요.",
+    "withdrawalsReadyMessage": "사용 가능 잔액이 있으면 출금을 요청할 수 있습니다."
   },
   "id": {
     "eyebrow": "Pengaturan Cepat",
@@ -305,19 +335,19 @@ const quickSetupTranslations: Record<Language, QuickSetupTranslation> = {
     "liveNow": "Live",
     "requestsAllowed": "Request boleh",
     "unlocked": "Terbuka",
-    "profileTodoMessage": "Atur profil DJ",
-    "profileReadyMessage": "Profil sudah siap",
-    "payoutTodoMessage": "Tambah metode payout",
-    "payoutReadyMessage": "Metode payout ditambahkan",
-    "openRequestsMessage": "Buka request",
-    "liveMessage": "Request sudah dibuka",
-    "shareQrMessage": "Bagikan kode QR",
-    "watchQueueMessage": "Pantau antrean request",
-    "acceptRequestsMessage": "Terima request pending",
-    "verificationNotStartedMessage": "Verifikasi membuka penarikan",
-    "verificationPendingMessage": "Verifikasi membuka penarikan",
-    "connectPayoutMessage": "Tambah metode payout",
-    "withdrawalsReadyMessage": "Penarikan terbuka"
+    "profileTodoMessage": "Tambahkan nama acara, venue, Instagram, bio, atau foto profil.",
+    "profileReadyMessage": "Profil DJ Anda cukup jelas untuk dikenali tamu.",
+    "payoutTodoMessage": "Tambahkan tujuan penerimaan uang sebelum menarik saldo.",
+    "payoutReadyMessage": "Akun payout Anda sudah terhubung untuk penarikan nanti.",
+    "openRequestsMessage": "Tap Go Live saat siap menerima request lagu.",
+    "liveMessage": "Tamu bisa scan QR dan mengirim request berbayar sekarang.",
+    "shareQrMessage": "Download promo kit, cetak, atau tampilkan QR di ponsel.",
+    "watchQueueMessage": "Request berbayar baru muncul otomatis di antrean.",
+    "acceptRequestsMessage": "Periksa lagu baru dan terima yang ingin dimainkan.",
+    "verificationNotStartedMessage": "Kirim verifikasi saat siap. Request tetap bisa diterima sebelum disetujui.",
+    "verificationPendingMessage": "Anda tetap bisa menerima request. Penarikan terbuka setelah disetujui Blackline.",
+    "connectPayoutMessage": "Hubungkan metode payout sebelum penarikan pertama.",
+    "withdrawalsReadyMessage": "Anda bisa menarik saldo saat ada saldo tersedia."
   },
   "ms": {
     "eyebrow": "Tetapan Pantas",
@@ -346,19 +376,19 @@ const quickSetupTranslations: Record<Language, QuickSetupTranslation> = {
     "liveNow": "Live",
     "requestsAllowed": "Permintaan dibenarkan",
     "unlocked": "Dibuka",
-    "profileTodoMessage": "Sediakan profil DJ",
-    "profileReadyMessage": "Profil sudah siap",
-    "payoutTodoMessage": "Tambah kaedah payout",
-    "payoutReadyMessage": "Kaedah payout ditambah",
-    "openRequestsMessage": "Buka permintaan",
-    "liveMessage": "Permintaan dibuka",
-    "shareQrMessage": "Kongsi kod QR",
-    "watchQueueMessage": "Pantau barisan permintaan",
-    "acceptRequestsMessage": "Terima permintaan pending",
-    "verificationNotStartedMessage": "Verifikasi membuka pengeluaran",
-    "verificationPendingMessage": "Verifikasi membuka pengeluaran",
-    "connectPayoutMessage": "Tambah kaedah payout",
-    "withdrawalsReadyMessage": "Pengeluaran dibuka"
+    "profileTodoMessage": "Tambah nama acara, venue, Instagram, bio atau gambar profil.",
+    "profileReadyMessage": "Profil DJ anda cukup jelas untuk dikenali tetamu.",
+    "payoutTodoMessage": "Tambah tempat menerima wang sebelum meminta pengeluaran.",
+    "payoutReadyMessage": "Akaun payout anda sudah disambungkan untuk pengeluaran nanti.",
+    "openRequestsMessage": "Tekan Go Live apabila sedia menerima permintaan lagu.",
+    "liveMessage": "Tetamu boleh imbas QR dan hantar permintaan berbayar sekarang.",
+    "shareQrMessage": "Muat turun promo kit, cetak, atau tunjuk kod QR pada telefon.",
+    "watchQueueMessage": "Permintaan berbayar baru akan muncul secara automatik.",
+    "acceptRequestsMessage": "Semak lagu baru dan terima yang mahu dimainkan.",
+    "verificationNotStartedMessage": "Hantar verifikasi apabila sedia. Permintaan masih boleh diterima sebelum kelulusan.",
+    "verificationPendingMessage": "Anda masih boleh menerima permintaan. Pengeluaran dibuka selepas diluluskan Blackline.",
+    "connectPayoutMessage": "Sambungkan kaedah payout sebelum pengeluaran pertama.",
+    "withdrawalsReadyMessage": "Anda boleh meminta pengeluaran apabila ada baki tersedia."
   },
   "th": {
     "eyebrow": "ตั้งค่าด่วน",
@@ -510,60 +540,60 @@ const quickSetupTranslations: Record<Language, QuickSetupTranslation> = {
     "liveNow": "Đang live",
     "requestsAllowed": "Được nhận yêu cầu",
     "unlocked": "Đã mở",
-    "profileTodoMessage": "Thiết lập hồ sơ DJ",
-    "profileReadyMessage": "Hồ sơ đã sẵn sàng",
-    "payoutTodoMessage": "Thêm phương thức nhận tiền",
-    "payoutReadyMessage": "Đã thêm phương thức nhận tiền",
-    "openRequestsMessage": "Mở nhận yêu cầu",
-    "liveMessage": "Yêu cầu đã mở",
-    "shareQrMessage": "Chia sẻ mã QR",
-    "watchQueueMessage": "Theo dõi hàng đợi",
-    "acceptRequestsMessage": "Nhận yêu cầu đang chờ",
-    "verificationNotStartedMessage": "Xác minh mở rút tiền",
-    "verificationPendingMessage": "Xác minh mở rút tiền",
-    "connectPayoutMessage": "Thêm phương thức nhận tiền",
-    "withdrawalsReadyMessage": "Rút tiền đã mở"
+    "profileTodoMessage": "Thêm tên sự kiện, địa điểm, Instagram, bio hoặc ảnh đại diện.",
+    "profileReadyMessage": "Hồ sơ DJ đủ thông tin để khách nhận ra trang của bạn.",
+    "payoutTodoMessage": "Thêm nơi bạn muốn nhận tiền trước khi rút.",
+    "payoutReadyMessage": "Tài khoản nhận tiền đã kết nối cho các lần rút sau.",
+    "openRequestsMessage": "Nhấn Go Live khi bạn sẵn sàng nhận yêu cầu bài hát.",
+    "liveMessage": "Khách có thể quét QR và gửi yêu cầu trả phí ngay.",
+    "shareQrMessage": "Tải promo kit, in ra hoặc hiển thị QR trên điện thoại.",
+    "watchQueueMessage": "Yêu cầu trả phí mới sẽ tự hiện trong hàng đợi.",
+    "acceptRequestsMessage": "Xem bài hát mới và nhận bài bạn muốn phát.",
+    "verificationNotStartedMessage": "Gửi xác minh khi sẵn sàng. Trước khi duyệt vẫn nhận yêu cầu được.",
+    "verificationPendingMessage": "Bạn vẫn có thể nhận yêu cầu. Rút tiền mở sau khi Blackline duyệt.",
+    "connectPayoutMessage": "Kết nối phương thức nhận tiền trước lần rút đầu tiên.",
+    "withdrawalsReadyMessage": "Bạn có thể rút khi có số dư khả dụng."
   },
   "tl": {
     "eyebrow": "Quick Setup",
     "heading": "Ano ang gagawin ngayon",
     "subtitle": "Tapusin ang mga step na ito para makatanggap ng requests at ma-unlock ang withdrawals.",
+    "profileReadyTitle": "Naka-set na ang profile",
     "profileTodoTitle": "I-set up ang DJ profile",
-    "profileReadyTitle": "Profile ay set na",
-    "payoutTodoTitle": "Magdagdag ng payout method",
-    "payoutReadyTitle": "Payout method added",
-    "openRequestsTitle": "Buksan ang requests",
-    "liveTitle": "Requests are open",
-    "shareQrTitle": "I-share ang QR code",
-    "watchQueueTitle": "Bantayan ang request queue",
-    "acceptRequestsTitle": "Tanggapin ang pending requests",
-    "verificationTitle": "Verification unlocks withdrawals",
-    "withdrawalsUnlockedTitle": "Withdrawals unlocked",
-    "verificationNote": "Hindi pinipigilan ng verification ang requests. Pwede pa ring tumanggap ng paid requests habang pending ang approval.",
-    "startHere": "Start here",
+    "profileReadyMessage": "May sapat na detalye ang DJ profile mo para makilala ng guests ang page mo.",
+    "profileTodoMessage": "Magdagdag ng event name, venue, Instagram, bio, o profile photo.",
     "ready": "Ready",
-    "needed": "Needed",
+    "startHere": "Magsimula dito",
+    "payoutReadyTitle": "Nadagdag na ang payout method",
+    "payoutTodoTitle": "Magdagdag ng payout method",
+    "payoutReadyMessage": "Connected na ang payout account mo para sa future withdrawals.",
+    "payoutTodoMessage": "Ilagay kung saan mo gustong matanggap ang pera bago mag-withdraw.",
     "connected": "Connected",
-    "share": "Share",
-    "actionNeeded": "Action needed",
-    "queue": "Queue",
-    "goLive": "Go live",
+    "needed": "Kailangan",
+    "liveTitle": "Bukas na ang requests",
+    "openRequestsTitle": "Buksan ang requests",
+    "liveMessage": "Pwede nang mag-scan ang guests at magpadala ng paid requests.",
+    "openRequestsMessage": "I-tap ang Go Live kapag ready ka nang tumanggap ng song requests.",
     "liveNow": "Live now",
-    "requestsAllowed": "Requests allowed",
+    "goLive": "Go live",
+    "shareQrTitle": "I-share ang QR code",
+    "shareQrMessage": "I-download ang promo kit, i-print, o ipakita ang QR code sa phone para ma-scan ng guests.",
+    "share": "Share",
+    "acceptRequestsTitle": "Tanggapin ang pending requests",
+    "watchQueueTitle": "Bantayan ang request queue",
+    "acceptRequestsMessage": "Tingnan ang bagong songs at tanggapin ang gusto mong i-play.",
+    "watchQueueMessage": "Lalabas automatically sa queue ang bagong paid song requests.",
+    "actionNeeded": "Kailangan aksyon",
+    "queue": "Queue",
+    "withdrawalsUnlockedTitle": "Unlocked na ang withdrawals",
+    "verificationTitle": "Verification ang mag-u-unlock ng withdrawals",
+    "withdrawalsReadyMessage": "Pwede kang mag-request ng withdrawal kapag may available balance.",
+    "connectPayoutMessage": "I-connect ang payout method bago ang first withdrawal.",
+    "verificationPendingMessage": "Pwede ka pa ring tumanggap ng requests ngayon. Unlock ang withdrawals after Blackline approval.",
+    "verificationNotStartedMessage": "Submit verification kapag ready. Pwede pa ring tumanggap ng requests bago ma-approve.",
     "unlocked": "Unlocked",
-    "profileTodoMessage": "I-set up ang DJ profile",
-    "profileReadyMessage": "Profile ay set na",
-    "payoutTodoMessage": "Magdagdag ng payout method",
-    "payoutReadyMessage": "Payout method added",
-    "openRequestsMessage": "Buksan ang requests",
-    "liveMessage": "Requests are open",
-    "shareQrMessage": "I-share ang QR code",
-    "watchQueueMessage": "Bantayan ang request queue",
-    "acceptRequestsMessage": "Tanggapin ang pending requests",
-    "verificationNotStartedMessage": "Verification unlocks withdrawals",
-    "verificationPendingMessage": "Verification unlocks withdrawals",
-    "connectPayoutMessage": "Magdagdag ng payout method",
-    "withdrawalsReadyMessage": "Withdrawals unlocked"
+    "requestsAllowed": "Pwede ang requests",
+    "verificationNote": "Hindi pinipigilan ng verification ang requests. Pwede pa ring mag-live at tumanggap ng paid requests habang pending ang approval. Unlock ang withdrawals pagkatapos ma-approve ng Blackline ang account."
   },
   "pt": {
     "eyebrow": "Configuração rápida",
@@ -633,19 +663,19 @@ const quickSetupTranslations: Record<Language, QuickSetupTranslation> = {
     "liveNow": "En vivo",
     "requestsAllowed": "Solicitudes permitidas",
     "unlocked": "Desbloqueado",
-    "profileTodoMessage": "Configura tu perfil de DJ",
-    "profileReadyMessage": "Perfil listo",
-    "payoutTodoMessage": "Agrega método de pago",
-    "payoutReadyMessage": "Método de pago agregado",
-    "openRequestsMessage": "Abrir solicitudes",
-    "liveMessage": "Solicitudes abiertas",
-    "shareQrMessage": "Comparte tu código QR",
-    "watchQueueMessage": "Mira tu cola de solicitudes",
-    "acceptRequestsMessage": "Aceptar solicitudes pendientes",
-    "verificationNotStartedMessage": "La verificación desbloquea retiros",
-    "verificationPendingMessage": "La verificación desbloquea retiros",
-    "connectPayoutMessage": "Agrega método de pago",
-    "withdrawalsReadyMessage": "Retiros desbloqueados"
+    "profileTodoMessage": "Agrega nombre del evento, lugar, Instagram, bio o foto de perfil.",
+    "profileReadyMessage": "Tu perfil tiene suficientes datos para que los invitados reconozcan tu página.",
+    "payoutTodoMessage": "Agrega dónde quieres recibir tu dinero antes de solicitar retiros.",
+    "payoutReadyMessage": "Tu cuenta de pago está conectada para futuros retiros.",
+    "openRequestsMessage": "Toca Go Live cuando estés listo para recibir canciones.",
+    "liveMessage": "Los invitados ya pueden escanear tu QR y enviar solicitudes pagadas.",
+    "shareQrMessage": "Descarga tu promo kit, imprímelo o muestra el QR en tu teléfono.",
+    "watchQueueMessage": "Las nuevas solicitudes pagadas aparecerán automáticamente en tu cola.",
+    "acceptRequestsMessage": "Revisa nuevas canciones y acepta las que quieres tocar.",
+    "verificationNotStartedMessage": "Envía la verificación cuando estés listo. Puedes recibir solicitudes antes de aprobarse.",
+    "verificationPendingMessage": "Puedes recibir solicitudes ahora. Los retiros se desbloquean tras aprobación de Blackline.",
+    "connectPayoutMessage": "Conecta tu método de pago antes del primer retiro.",
+    "withdrawalsReadyMessage": "Puedes solicitar retiros cuando tengas saldo disponible."
   },
   "fr": {
     "eyebrow": "Configuration rapide",
@@ -674,19 +704,19 @@ const quickSetupTranslations: Record<Language, QuickSetupTranslation> = {
     "liveNow": "En direct",
     "requestsAllowed": "Demandes autorisées",
     "unlocked": "Débloqué",
-    "profileTodoMessage": "Configurez votre profil DJ",
-    "profileReadyMessage": "Profil prêt",
-    "payoutTodoMessage": "Ajoutez une méthode de paiement",
-    "payoutReadyMessage": "Méthode de paiement ajoutée",
-    "openRequestsMessage": "Ouvrir les demandes",
-    "liveMessage": "Demandes ouvertes",
-    "shareQrMessage": "Partagez votre QR code",
-    "watchQueueMessage": "Surveillez la file de demandes",
-    "acceptRequestsMessage": "Accepter les demandes en attente",
-    "verificationNotStartedMessage": "La vérification débloque les retraits",
-    "verificationPendingMessage": "La vérification débloque les retraits",
-    "connectPayoutMessage": "Ajoutez une méthode de paiement",
-    "withdrawalsReadyMessage": "Retraits débloqués"
+    "profileTodoMessage": "Ajoutez le nom de l’événement, le lieu, Instagram, bio ou photo de profil.",
+    "profileReadyMessage": "Votre profil contient assez d’informations pour que les invités reconnaissent votre page.",
+    "payoutTodoMessage": "Ajoutez où recevoir votre argent avant de demander un retrait.",
+    "payoutReadyMessage": "Votre compte de paiement est connecté pour les futurs retraits.",
+    "openRequestsMessage": "Touchez Go Live quand vous êtes prêt à recevoir des demandes.",
+    "liveMessage": "Les invités peuvent scanner le QR et envoyer des demandes payantes.",
+    "shareQrMessage": "Téléchargez le kit promo, imprimez-le ou affichez le QR sur votre téléphone.",
+    "watchQueueMessage": "Les nouvelles demandes payantes apparaîtront automatiquement dans la file.",
+    "acceptRequestsMessage": "Vérifiez les nouveaux morceaux et acceptez ceux que vous voulez jouer.",
+    "verificationNotStartedMessage": "Soumettez la vérification quand vous êtes prêt. Les demandes restent possibles avant approbation.",
+    "verificationPendingMessage": "Vous pouvez recevoir des demandes maintenant. Les retraits s’ouvrent après approbation Blackline.",
+    "connectPayoutMessage": "Connectez votre méthode de paiement avant le premier retrait.",
+    "withdrawalsReadyMessage": "Vous pouvez demander un retrait avec un solde disponible."
   },
   "de": {
     "eyebrow": "Schnelle Einrichtung",
@@ -715,19 +745,19 @@ const quickSetupTranslations: Record<Language, QuickSetupTranslation> = {
     "liveNow": "Live",
     "requestsAllowed": "Anfragen erlaubt",
     "unlocked": "Freigeschaltet",
-    "profileTodoMessage": "DJ-Profil einrichten",
-    "profileReadyMessage": "Profil ist bereit",
-    "payoutTodoMessage": "Auszahlungsmethode hinzufügen",
-    "payoutReadyMessage": "Auszahlungsmethode hinzugefügt",
-    "openRequestsMessage": "Anfragen öffnen",
-    "liveMessage": "Anfragen geöffnet",
-    "shareQrMessage": "QR-Code teilen",
-    "watchQueueMessage": "Request-Queue beobachten",
-    "acceptRequestsMessage": "Ausstehende Anfragen annehmen",
-    "verificationNotStartedMessage": "Verifizierung schaltet Auszahlungen frei",
-    "verificationPendingMessage": "Verifizierung schaltet Auszahlungen frei",
-    "connectPayoutMessage": "Auszahlungsmethode hinzufügen",
-    "withdrawalsReadyMessage": "Auszahlungen freigeschaltet"
+    "profileTodoMessage": "Füge Eventname, Venue, Instagram, Bio oder Profilfoto hinzu.",
+    "profileReadyMessage": "Dein Profil hat genug Infos, damit Gäste deine Seite erkennen.",
+    "payoutTodoMessage": "Füge hinzu, wohin du dein Geld erhalten möchtest.",
+    "payoutReadyMessage": "Dein Auszahlungskonto ist für spätere Auszahlungen verbunden.",
+    "openRequestsMessage": "Tippe Go Live, wenn du Song-Anfragen annehmen möchtest.",
+    "liveMessage": "Gäste können deinen QR scannen und bezahlte Anfragen senden.",
+    "shareQrMessage": "Lade dein Promo-Kit herunter, drucke es oder zeige den QR am Handy.",
+    "watchQueueMessage": "Neue bezahlte Anfragen erscheinen automatisch in deiner Queue.",
+    "acceptRequestsMessage": "Prüfe neue Songs und akzeptiere, was du spielen willst.",
+    "verificationNotStartedMessage": "Sende die Verifizierung, wenn du bereit bist. Anfragen sind vorher möglich.",
+    "verificationPendingMessage": "Du kannst jetzt Anfragen annehmen. Auszahlungen nach Blackline-Freigabe.",
+    "connectPayoutMessage": "Verbinde deine Auszahlungsmethode vor der ersten Auszahlung.",
+    "withdrawalsReadyMessage": "Du kannst auszahlen, wenn Guthaben verfügbar ist."
   },
   "ru": {
     "eyebrow": "Быстрая настройка",
@@ -756,19 +786,19 @@ const quickSetupTranslations: Record<Language, QuickSetupTranslation> = {
     "liveNow": "В эфире",
     "requestsAllowed": "Заявки разрешены",
     "unlocked": "Открыто",
-    "profileTodoMessage": "Настройте профиль DJ",
-    "profileReadyMessage": "Профиль готов",
-    "payoutTodoMessage": "Добавьте способ выплат",
-    "payoutReadyMessage": "Способ выплат добавлен",
-    "openRequestsMessage": "Открыть заявки",
-    "liveMessage": "Заявки открыты",
-    "shareQrMessage": "Поделитесь QR-кодом",
-    "watchQueueMessage": "Следите за очередью",
-    "acceptRequestsMessage": "Принять ожидающие заявки",
-    "verificationNotStartedMessage": "Проверка открывает выводы",
-    "verificationPendingMessage": "Проверка открывает выводы",
-    "connectPayoutMessage": "Добавьте способ выплат",
-    "withdrawalsReadyMessage": "Выводы открыты"
+    "profileTodoMessage": "Добавьте название события, место, Instagram, био или фото профиля.",
+    "profileReadyMessage": "В профиле достаточно данных, чтобы гости узнали вашу страницу.",
+    "payoutTodoMessage": "Добавьте, куда получать деньги перед выводом.",
+    "payoutReadyMessage": "Счет выплат подключен для будущих выводов.",
+    "openRequestsMessage": "Нажмите Go Live, когда готовы принимать песни.",
+    "liveMessage": "Гости могут сканировать QR и отправлять платные заявки.",
+    "shareQrMessage": "Скачайте промо-кит, распечатайте или покажите QR на телефоне.",
+    "watchQueueMessage": "Новые платные заявки появятся в очереди автоматически.",
+    "acceptRequestsMessage": "Проверьте новые песни и примите те, что хотите сыграть.",
+    "verificationNotStartedMessage": "Отправьте проверку, когда будете готовы. Заявки можно принимать до одобрения.",
+    "verificationPendingMessage": "Вы уже можете принимать заявки. Выводы откроются после одобрения Blackline.",
+    "connectPayoutMessage": "Подключите способ выплат перед первым выводом.",
+    "withdrawalsReadyMessage": "Вы можете вывести средства при доступном балансе."
   },
   "tr": {
     "eyebrow": "Hızlı Kurulum",
@@ -838,19 +868,19 @@ const quickSetupTranslations: Record<Language, QuickSetupTranslation> = {
     "liveNow": "Live",
     "requestsAllowed": "Richieste consentite",
     "unlocked": "Sbloccato",
-    "profileTodoMessage": "Configura il profilo DJ",
-    "profileReadyMessage": "Profilo pronto",
-    "payoutTodoMessage": "Aggiungi metodo payout",
-    "payoutReadyMessage": "Metodo payout aggiunto",
-    "openRequestsMessage": "Apri richieste",
-    "liveMessage": "Richieste aperte",
-    "shareQrMessage": "Condividi il QR code",
-    "watchQueueMessage": "Controlla la coda richieste",
-    "acceptRequestsMessage": "Accetta richieste in attesa",
-    "verificationNotStartedMessage": "La verifica sblocca i prelievi",
-    "verificationPendingMessage": "La verifica sblocca i prelievi",
-    "connectPayoutMessage": "Aggiungi metodo payout",
-    "withdrawalsReadyMessage": "Prelievi sbloccati"
+    "profileTodoMessage": "Aggiungi nome evento, location, Instagram, bio o foto profilo.",
+    "profileReadyMessage": "Il tuo profilo ha abbastanza dettagli per essere riconosciuto dagli ospiti.",
+    "payoutTodoMessage": "Aggiungi dove vuoi ricevere il denaro prima di prelevare.",
+    "payoutReadyMessage": "Il tuo account payout è collegato per futuri prelievi.",
+    "openRequestsMessage": "Tocca Go Live quando sei pronto a ricevere canzoni.",
+    "liveMessage": "Gli ospiti possono scansionare il QR e inviare richieste pagate.",
+    "shareQrMessage": "Scarica il promo kit, stampalo o mostra il QR sul telefono.",
+    "watchQueueMessage": "Le nuove richieste pagate appariranno automaticamente in coda.",
+    "acceptRequestsMessage": "Controlla nuove canzoni e accetta quelle da suonare.",
+    "verificationNotStartedMessage": "Invia la verifica quando sei pronto. Puoi ricevere richieste prima dell’approvazione.",
+    "verificationPendingMessage": "Puoi ricevere richieste ora. I prelievi si sbloccano dopo approvazione Blackline.",
+    "connectPayoutMessage": "Collega il payout prima del primo prelievo.",
+    "withdrawalsReadyMessage": "Puoi richiedere prelievi quando hai saldo disponibile."
   },
   "nl": {
     "eyebrow": "Snelle setup",
@@ -879,19 +909,19 @@ const quickSetupTranslations: Record<Language, QuickSetupTranslation> = {
     "liveNow": "Live",
     "requestsAllowed": "Verzoeken toegestaan",
     "unlocked": "Ontgrendeld",
-    "profileTodoMessage": "Stel je DJ-profiel in",
-    "profileReadyMessage": "Profiel is klaar",
-    "payoutTodoMessage": "Voeg uitbetaalmethode toe",
-    "payoutReadyMessage": "Uitbetaalmethode toegevoegd",
-    "openRequestsMessage": "Open verzoeken",
-    "liveMessage": "Verzoeken open",
-    "shareQrMessage": "Deel je QR-code",
-    "watchQueueMessage": "Bekijk je request queue",
-    "acceptRequestsMessage": "Accepteer openstaande verzoeken",
-    "verificationNotStartedMessage": "Verificatie ontgrendelt opnames",
-    "verificationPendingMessage": "Verificatie ontgrendelt opnames",
-    "connectPayoutMessage": "Voeg uitbetaalmethode toe",
-    "withdrawalsReadyMessage": "Opnames ontgrendeld"
+    "profileTodoMessage": "Voeg eventnaam, locatie, Instagram, bio of profielfoto toe.",
+    "profileReadyMessage": "Je profiel heeft genoeg details zodat gasten je pagina herkennen.",
+    "payoutTodoMessage": "Voeg toe waar je geld wilt ontvangen vóór je opnames aanvraagt.",
+    "payoutReadyMessage": "Je uitbetaalaccount is gekoppeld voor toekomstige opnames.",
+    "openRequestsMessage": "Tik op Go Live wanneer je klaar bent voor song requests.",
+    "liveMessage": "Gasten kunnen je QR scannen en betaalde verzoeken sturen.",
+    "shareQrMessage": "Download je promo kit, print hem of toon de QR op je telefoon.",
+    "watchQueueMessage": "Nieuwe betaalde verzoeken verschijnen automatisch in je queue.",
+    "acceptRequestsMessage": "Controleer nieuwe nummers en accepteer wat je wilt draaien.",
+    "verificationNotStartedMessage": "Dien verificatie in wanneer je klaar bent. Verzoeken kunnen vóór goedkeuring.",
+    "verificationPendingMessage": "Je kunt nu al verzoeken ontvangen. Opnames worden ontgrendeld na Blackline-goedkeuring.",
+    "connectPayoutMessage": "Koppel je uitbetaalmethode vóór je eerste opname.",
+    "withdrawalsReadyMessage": "Je kunt opnemen wanneer je beschikbaar saldo hebt."
   },
   "pl": {
     "eyebrow": "Szybka konfiguracja",
@@ -920,19 +950,19 @@ const quickSetupTranslations: Record<Language, QuickSetupTranslation> = {
     "liveNow": "Live",
     "requestsAllowed": "Prośby dozwolone",
     "unlocked": "Odblokowane",
-    "profileTodoMessage": "Skonfiguruj profil DJ",
-    "profileReadyMessage": "Profil gotowy",
-    "payoutTodoMessage": "Dodaj metodę wypłaty",
-    "payoutReadyMessage": "Metoda wypłaty dodana",
-    "openRequestsMessage": "Otwórz prośby",
-    "liveMessage": "Prośby otwarte",
-    "shareQrMessage": "Udostępnij kod QR",
-    "watchQueueMessage": "Obserwuj kolejkę próśb",
-    "acceptRequestsMessage": "Akceptuj oczekujące prośby",
-    "verificationNotStartedMessage": "Weryfikacja odblokowuje wypłaty",
-    "verificationPendingMessage": "Weryfikacja odblokowuje wypłaty",
-    "connectPayoutMessage": "Dodaj metodę wypłaty",
-    "withdrawalsReadyMessage": "Wypłaty odblokowane"
+    "profileTodoMessage": "Dodaj nazwę wydarzenia, miejsce, Instagram, bio lub zdjęcie profilu.",
+    "profileReadyMessage": "Twój profil ma wystarczające dane, by goście rozpoznali stronę.",
+    "payoutTodoMessage": "Dodaj, gdzie chcesz otrzymywać pieniądze przed wypłatą.",
+    "payoutReadyMessage": "Konto wypłat jest połączone na przyszłe wypłaty.",
+    "openRequestsMessage": "Kliknij Go Live, gdy chcesz przyjmować utwory.",
+    "liveMessage": "Goście mogą skanować QR i wysyłać płatne prośby.",
+    "shareQrMessage": "Pobierz promo kit, wydrukuj lub pokaż QR na telefonie.",
+    "watchQueueMessage": "Nowe płatne prośby pojawią się automatycznie w kolejce.",
+    "acceptRequestsMessage": "Sprawdź nowe utwory i zaakceptuj te, które chcesz zagrać.",
+    "verificationNotStartedMessage": "Wyślij weryfikację, gdy będziesz gotowy. Prośby są możliwe przed akceptacją.",
+    "verificationPendingMessage": "Możesz już przyjmować prośby. Wypłaty po akceptacji Blackline.",
+    "connectPayoutMessage": "Połącz metodę wypłaty przed pierwszą wypłatą.",
+    "withdrawalsReadyMessage": "Możesz wypłacać, gdy masz dostępne saldo."
   },
   "el": {
     "eyebrow": "Γρήγορη ρύθμιση",
@@ -1970,12 +2000,76 @@ export default function AdminPage() {
   const isVerificationPending = verificationStatus === "pending";
 
   const quickSetupActions = [
-    { number: "1", icon: hasProfileSetup ? "✅" : "🎤", title: hasProfileSetup ? quickSetupText.profileReadyTitle : quickSetupText.profileTodoTitle, message: hasProfileSetup ? quickSetupText.profileReadyMessage : quickSetupText.profileTodoMessage, status: hasProfileSetup ? quickSetupText.ready : quickSetupText.startHere, className: hasProfileSetup ? "border-green-500/40 bg-green-500/10" : "border-purple-500/50 bg-purple-500/10", target: "profile" as const },
-    { number: "2", icon: hasPayoutSetup ? "✅" : "💸", title: hasPayoutSetup ? quickSetupText.payoutReadyTitle : quickSetupText.payoutTodoTitle, message: hasPayoutSetup ? quickSetupText.payoutReadyMessage : quickSetupText.payoutTodoMessage, status: hasPayoutSetup ? quickSetupText.connected : quickSetupText.needed, className: hasPayoutSetup ? "border-green-500/40 bg-green-500/10" : "border-cyan-500/40 bg-cyan-500/10", target: "payout" as const },
-    { number: "3", icon: dj?.is_live ? "🟢" : "🔴", title: dj?.is_live ? quickSetupText.liveTitle : quickSetupText.openRequestsTitle, message: dj?.is_live ? quickSetupText.liveMessage : quickSetupText.openRequestsMessage, status: dj?.is_live ? quickSetupText.liveNow : quickSetupText.goLive, className: dj?.is_live ? "border-green-500/40 bg-green-500/10" : "border-green-500/50 bg-green-500/10", target: "live" as const },
-    { number: "4", icon: "📲", title: quickSetupText.shareQrTitle, message: quickSetupText.shareQrMessage, status: quickSetupText.share, className: "border-purple-500/40 bg-purple-500/10", target: "qr" as const },
-    { number: "5", icon: grouped.pending.length > 0 ? "🎵" : "🎧", title: grouped.pending.length > 0 ? `${quickSetupText.acceptRequestsTitle} (${grouped.pending.length})` : quickSetupText.watchQueueTitle, message: grouped.pending.length > 0 ? quickSetupText.acceptRequestsMessage : quickSetupText.watchQueueMessage, status: grouped.pending.length > 0 ? quickSetupText.actionNeeded : quickSetupText.queue, className: grouped.pending.length > 0 ? "border-yellow-500/50 bg-yellow-500/10" : "border-zinc-700 bg-black/30", target: "queue" as const },
-    { number: "6", icon: isVerificationApproved ? "✅" : "🛡️", title: isVerificationApproved ? quickSetupText.withdrawalsUnlockedTitle : quickSetupText.verificationTitle, message: isVerificationApproved ? (hasPayoutSetup ? quickSetupText.withdrawalsReadyMessage : quickSetupText.connectPayoutMessage) : (isVerificationPending ? quickSetupText.verificationPendingMessage : quickSetupText.verificationNotStartedMessage), status: isVerificationApproved ? quickSetupText.unlocked : quickSetupText.requestsAllowed, className: isVerificationApproved ? "border-green-500/40 bg-green-500/10" : "border-yellow-500/40 bg-yellow-500/10", target: "withdrawals" as const },
+    {
+      number: "1",
+      icon: hasProfileSetup ? "✅" : "🎤",
+      title: hasProfileSetup ? quickSetupText.profileReadyTitle : quickSetupText.profileTodoTitle,
+      message: hasProfileSetup ? quickSetupText.profileReadyMessage : quickSetupText.profileTodoMessage,
+      status: hasProfileSetup ? quickSetupText.ready : quickSetupText.startHere,
+      className: hasProfileSetup
+        ? "border-green-500/40 bg-green-500/10"
+        : "border-purple-500/50 bg-purple-500/10",
+      target: "profile" as const,
+    },
+    {
+      number: "2",
+      icon: hasPayoutSetup ? "✅" : "💸",
+      title: hasPayoutSetup ? quickSetupText.payoutReadyTitle : quickSetupText.payoutTodoTitle,
+      message: hasPayoutSetup ? quickSetupText.payoutReadyMessage : quickSetupText.payoutTodoMessage,
+      status: hasPayoutSetup ? quickSetupText.connected : quickSetupText.needed,
+      className: hasPayoutSetup
+        ? "border-green-500/40 bg-green-500/10"
+        : "border-cyan-500/40 bg-cyan-500/10",
+      target: "payout" as const,
+    },
+    {
+      number: "3",
+      icon: dj?.is_live ? "🟢" : "🔴",
+      title: dj?.is_live ? quickSetupText.liveTitle : quickSetupText.openRequestsTitle,
+      message: dj?.is_live ? quickSetupText.liveMessage : quickSetupText.openRequestsMessage,
+      status: dj?.is_live ? quickSetupText.liveNow : quickSetupText.goLive,
+      className: dj?.is_live
+        ? "border-green-500/40 bg-green-500/10"
+        : "border-green-500/50 bg-green-500/10",
+      target: "live" as const,
+    },
+    {
+      number: "4",
+      icon: "📲",
+      title: quickSetupText.shareQrTitle,
+      message: quickSetupText.shareQrMessage,
+      status: quickSetupText.share,
+      className: "border-purple-500/40 bg-purple-500/10",
+      target: "qr" as const,
+    },
+    {
+      number: "5",
+      icon: grouped.pending.length > 0 ? "🎵" : "🎧",
+      title: grouped.pending.length > 0 ? `${quickSetupText.acceptRequestsTitle} (${grouped.pending.length})` : quickSetupText.watchQueueTitle,
+      message: grouped.pending.length > 0 ? quickSetupText.acceptRequestsMessage : quickSetupText.watchQueueMessage,
+      status: grouped.pending.length > 0 ? quickSetupText.actionNeeded : quickSetupText.queue,
+      className: grouped.pending.length > 0
+        ? "border-yellow-500/50 bg-yellow-500/10"
+        : "border-zinc-700 bg-black/30",
+      target: "queue" as const,
+    },
+    {
+      number: "6",
+      icon: isVerificationApproved ? "✅" : "🛡️",
+      title: isVerificationApproved ? quickSetupText.withdrawalsUnlockedTitle : quickSetupText.verificationTitle,
+      message: isVerificationApproved
+        ? hasPayoutSetup
+          ? quickSetupText.withdrawalsReadyMessage
+          : quickSetupText.connectPayoutMessage
+        : isVerificationPending
+          ? quickSetupText.verificationPendingMessage
+          : quickSetupText.verificationNotStartedMessage,
+      status: isVerificationApproved ? quickSetupText.unlocked : quickSetupText.requestsAllowed,
+      className: isVerificationApproved
+        ? "border-green-500/40 bg-green-500/10"
+        : "border-yellow-500/40 bg-yellow-500/10",
+      target: "withdrawals" as const,
+    },
   ];
   function toggleWithdrawalDetails(withdrawalId: number) {
     setExpandedWithdrawalIds((currentIds) =>
@@ -2151,28 +2245,28 @@ export default function AdminPage() {
           onChange={(e) => setLanguage(e.target.value as Language)}
           className="bg-black border border-zinc-700 rounded-xl px-4 py-2 text-sm"
         >
-          <option value="en"> English</option>
-          <option value="zh"> </option>
-          <option value="ja"> </option>
-          <option value="ko"> </option>
-          <option value="id"> Bahasa Indonesia</option>
-          <option value="ms"> Bahasa Melayu</option>
-          <option value="th"> </option>
-          <option value="hi"> </option>
-          <option value="ar"> </option>
-          <option value="vi"> Ting Vit</option>
-          <option value="tl"> Tagalog</option>
-          <option value="pt"> Portugu\'eas</option>
-          <option value="es"> Espa\'f1ol</option>
-          <option value="fr"> Fran\'e7ais</option>
-          <option value="de"> Deutsch</option>
-          <option value="ru"> </option>
-          <option value="tr"> T\'fcrk\'e7e</option>
-          <option value="it"> Italiano</option>
-          <option value="nl"> Nederlands</option>
-          <option value="pl"> Polski</option>
-          <option value="el"> </option>
-          <option value="uk"> </option>
+          <option value="en">🇺🇸 English</option>
+          <option value="zh">🇨🇳 中文</option>
+          <option value="ja">🇯🇵 日本語</option>
+          <option value="ko">🇰🇷 한국어</option>
+          <option value="id">🇮🇩 Bahasa Indonesia</option>
+          <option value="ms">🇲🇾 Bahasa Melayu</option>
+          <option value="th">🇹🇭 ไทย</option>
+          <option value="hi">🇮🇳 हिन्दी</option>
+          <option value="ar">🇦🇪 العربية</option>
+          <option value="vi">🇻🇳 Tiếng Việt</option>
+          <option value="tl">🇵🇭 Tagalog</option>
+          <option value="pt">🇧🇷 Português</option>
+          <option value="es">🇪🇸 Español</option>
+          <option value="fr">🇫🇷 Français</option>
+          <option value="de">🇩🇪 Deutsch</option>
+          <option value="ru">🇷🇺 Русский</option>
+          <option value="tr">🇹🇷 Türkçe</option>
+          <option value="it">🇮🇹 Italiano</option>
+          <option value="nl">🇳🇱 Nederlands</option>
+          <option value="pl">🇵🇱 Polski</option>
+          <option value="el">🇬🇷 Ελληνικά</option>
+          <option value="uk">🇺🇦 Українська</option>
         </select>
       </div>
 
@@ -2560,33 +2654,64 @@ export default function AdminPage() {
 
           <div className="grid md:grid-cols-2 gap-4">
             <select
-          value={language}
-          onChange={(e) => setLanguage(e.target.value as Language)}
-          className="bg-black border border-zinc-700 rounded-xl px-4 py-2 text-sm"
-        >
-          <option value="en">🇺🇸 English</option>
-          <option value="zh">🇨🇳 中文</option>
-          <option value="ja">🇯🇵 日本語</option>
-          <option value="ko">🇰🇷 한국어</option>
-          <option value="id">🇮🇩 Bahasa Indonesia</option>
-          <option value="ms">🇲🇾 Bahasa Melayu</option>
-          <option value="th">🇹🇭 ไทย</option>
-          <option value="hi">🇮🇳 हिन्दी</option>
-          <option value="ar">🇦🇪 العربية</option>
-          <option value="vi">🇻🇳 Tiếng Việt</option>
-          <option value="tl">🇵🇭 Tagalog</option>
-          <option value="pt">🇧🇷 Português</option>
-          <option value="es">🇪🇸 Español</option>
-          <option value="fr">🇫🇷 Français</option>
-          <option value="de">🇩🇪 Deutsch</option>
-          <option value="ru">🇷🇺 Русский</option>
-          <option value="tr">🇹🇷 Türkçe</option>
-          <option value="it">🇮🇹 Italiano</option>
-          <option value="nl">🇳🇱 Nederlands</option>
-          <option value="pl">🇵🇱 Polski</option>
-          <option value="el">🇬🇷 Ελληνικά</option>
-          <option value="uk">🇺🇦 Українська</option>
-        </select>
+              value={country}
+              onChange={(e) => {
+                const selectedCountry = e.target.value;
+                const nextCurrency = getCurrencyForCountry(selectedCountry);
+
+                setCountry(selectedCountry);
+                setPreferredCurrency(nextCurrency);
+                setPayoutBankCode("");
+                setPaystackBanks([]);
+
+                if (payoutMethod === "Bank Transfer") {
+                  loadPaystackBanks(nextCurrency);
+                }
+              }}
+              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+            >
+              <option value="">{t.selectCountry}</option>
+
+              <option value="Ghana"> Ghana</option>
+              <option value="Nigeria"> Nigeria</option>
+              <option value="Kenya"> Kenya</option>
+              <option value="South Africa"> South Africa</option>
+
+              <option value="United Kingdom"> United Kingdom</option>
+              <option value="United States"> United States</option>
+              <option value="Canada"> Canada</option>
+
+              <option value="Germany"> Germany</option>
+              <option value="France"> France</option>
+              <option value="Spain"> Spain</option>
+              <option value="Italy"> Italy</option>
+              <option value="Netherlands"> Netherlands</option>
+              <option value="Poland"> Poland</option>
+              <option value="Greece"> Greece</option>
+              <option value="Ukraine"> Ukraine</option>
+              <option value="Turkey"> Turkey</option>
+
+              <option value="UAE"> UAE</option>
+              <option value="Qatar"> Qatar</option>
+              <option value="Saudi Arabia"> Saudi Arabia</option>
+
+              <option value="Singapore"> Singapore</option>
+              <option value="Malaysia"> Malaysia</option>
+              <option value="Indonesia"> Indonesia</option>
+              <option value="Thailand"> Thailand</option>
+              <option value="Philippines"> Philippines</option>
+              <option value="Vietnam"> Vietnam</option>
+              <option value="China"> China</option>
+              <option value="Japan"> Japan</option>
+              <option value="South Korea"> South Korea</option>
+              <option value="India"> India</option>
+
+              <option value="Australia"> Australia</option>
+              <option value="New Zealand"> New Zealand</option>
+
+              <option value="Brazil"> Brazil</option>
+              <option value="Mexico"> Mexico</option>
+            </select>
 
             <select
               value={preferredCurrency}
