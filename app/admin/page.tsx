@@ -1010,11 +1010,6 @@ export default function AdminPage() {
   const withdrawalHistoryIsOpen =
     hasOpenWithdrawal || isWithdrawalHistoryExpanded;
 
-  const hasProfileSetup = Boolean(
-    dj?.stage_name?.trim() &&
-    (eventName.trim() || venue.trim() || profileImage.trim()),
-  );
-
   const hasPayoutSetup = Boolean(
     payoutStatus === "Active" &&
     payoutMethod &&
@@ -1026,82 +1021,67 @@ export default function AdminPage() {
 
   const isVerificationApproved = verificationStatus === "verified";
   const isVerificationPending = verificationStatus === "pending";
-  const isPromoKitReady = Boolean(dj?.stage_name?.trim());
 
-  const readySteps = [
+  const quickSetupActions = [
     {
-      icon: "🎤",
-      title: "Profile",
-      message: hasProfileSetup
-        ? "Profile is ready"
-        : "Add event details or a profile image",
-      status: hasProfileSetup ? "Ready" : "Setup needed",
-      isComplete: hasProfileSetup,
-      className: hasProfileSetup
-        ? "border-green-500/30 bg-green-500/10 text-green-400"
-        : "border-yellow-500/30 bg-yellow-500/10 text-yellow-400",
-    },
-    {
-      icon: "💸",
-      title: "Payout",
-      message: hasPayoutSetup
-        ? "Payout account connected"
-        : "Add payout details before withdrawal",
-      status: hasPayoutSetup ? "Connected" : "Needed later",
-      isComplete: hasPayoutSetup,
-      className: hasPayoutSetup
-        ? "border-green-500/30 bg-green-500/10 text-green-400"
-        : "border-zinc-700 bg-black/30 text-zinc-400",
-    },
-    {
-      icon: "🛡️",
-      title: "Verification",
-      message: isVerificationApproved
-        ? "Withdrawals unlocked"
-        : isVerificationPending
-          ? "Pending — requests still allowed"
-          : "Submit verification when ready",
-      status: isVerificationApproved
-        ? "Approved"
-        : isVerificationPending
-          ? "Pending"
-          : "Not started",
-      isComplete: isVerificationApproved,
-      className: isVerificationApproved
-        ? "border-green-500/30 bg-green-500/10 text-green-400"
-        : isVerificationPending
-          ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-400"
-          : "border-zinc-700 bg-black/30 text-zinc-400",
-    },
-    {
-      icon: "🟢",
-      title: "Go Live",
+      number: "1",
+      icon: dj?.is_live ? "🟢" : "🔴",
+      title: dj?.is_live ? "Requests are open" : "Open requests",
       message: dj?.is_live
-        ? "Guests can request songs now"
-        : "Turn on when your event starts",
-      status: dj?.is_live ? "Live" : "Offline",
-      isComplete: Boolean(dj?.is_live),
+        ? "Guests can scan your QR code and send paid requests now."
+        : "Tap Go Live when you are ready for guests to start requesting songs.",
+      status: dj?.is_live ? "Live now" : "Do this first",
       className: dj?.is_live
-        ? "border-green-500/30 bg-green-500/10 text-green-400"
-        : "border-red-500/30 bg-red-500/10 text-red-400",
+        ? "border-green-500/40 bg-green-500/10"
+        : "border-green-500/50 bg-green-500/10",
     },
     {
+      number: "2",
       icon: "📲",
-      title: "Promo Kit",
-      message: isPromoKitReady
-        ? "QR kit ready to download"
-        : "Add stage name first",
-      status: isPromoKitReady ? "Ready" : "Needed",
-      isComplete: isPromoKitReady,
-      className: isPromoKitReady
-        ? "border-green-500/30 bg-green-500/10 text-green-400"
-        : "border-yellow-500/30 bg-yellow-500/10 text-yellow-400",
+      title: "Share your QR code",
+      message:
+        "Download your promo kit, print it, or show the QR code on your phone so guests can scan it.",
+      status: "Share",
+      className: "border-purple-500/40 bg-purple-500/10",
+    },
+    {
+      number: "3",
+      icon: grouped.pending.length > 0 ? "🎵" : "🎧",
+      title:
+        grouped.pending.length > 0
+          ? `Accept ${grouped.pending.length} pending request${
+              grouped.pending.length === 1 ? "" : "s"
+            }`
+          : "Watch your request queue",
+      message:
+        grouped.pending.length > 0
+          ? "Review new songs and accept the ones you want to play."
+          : "New paid song requests will appear in your queue automatically.",
+      status: grouped.pending.length > 0 ? "Action needed" : "Queue",
+      className:
+        grouped.pending.length > 0
+          ? "border-yellow-500/50 bg-yellow-500/10"
+          : "border-zinc-700 bg-black/30",
+    },
+    {
+      number: "4",
+      icon: isVerificationApproved ? "✅" : "🛡️",
+      title: isVerificationApproved
+        ? "Withdrawals are unlocked"
+        : "Verification unlocks withdrawals",
+      message: isVerificationApproved
+        ? hasPayoutSetup
+          ? "Your payout setup is connected. You can request withdrawals when you have available balance."
+          : "Add payout details before requesting your first withdrawal."
+        : isVerificationPending
+          ? "You can still take requests now. Withdrawals unlock after Blackline approval."
+          : "Submit verification when ready. You can still take requests before approval.",
+      status: isVerificationApproved ? "Unlocked" : "Requests allowed",
+      className: isVerificationApproved
+        ? "border-green-500/40 bg-green-500/10"
+        : "border-cyan-500/40 bg-cyan-500/10",
     },
   ];
-
-  const completedReadySteps = readySteps.filter(
-    (step) => step.isComplete,
-  ).length;
 
   function toggleWithdrawalDetails(withdrawalId: number) {
     setExpandedWithdrawalIds((currentIds) =>
@@ -1318,56 +1298,56 @@ export default function AdminPage() {
         <p className="text-zinc-400 mt-3 text-lg">{t.adminSubtitle}</p>
       </div>
 
-      <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-4 md:p-6 mb-10">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-purple-400 font-black">
-              Quick Setup
-            </p>
-            <h2 className="text-2xl md:text-3xl font-black mt-2">
-              🎧 Quick Setup
-            </h2>
-            <p className="text-sm text-zinc-400 mt-2">
-              Keep setup simple: go live, share your QR code, and collect
-              requests.
-            </p>
-          </div>
-
-          <div className="bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-center shrink-0">
-            <p className="text-3xl font-black text-green-400">
-              {completedReadySteps}/5
-            </p>
-            <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">
-              ready
-            </p>
-          </div>
+      <div className="bg-zinc-900 border border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.16)] rounded-3xl p-4 md:p-6 mb-10">
+        <div className="mb-5">
+          <p className="text-xs uppercase tracking-[0.3em] text-purple-400 font-black">
+            Quick Setup
+          </p>
+          <h2 className="text-2xl md:text-3xl font-black mt-2">
+            🎧 What to do now
+          </h2>
+          <p className="text-sm md:text-base text-zinc-300 mt-2 max-w-3xl leading-relaxed">
+            Complete these steps to start taking requests and unlock withdrawals.
+          </p>
         </div>
 
-        <div className="relative grid md:grid-cols-5 gap-3">
-          {readySteps.map((step) => (
+        <div className="grid md:grid-cols-2 gap-3">
+          {quickSetupActions.map((action) => (
             <div
-              key={step.title}
-              className={`border rounded-2xl p-4 ${step.className}`}
+              key={action.number}
+              className={`border rounded-2xl p-4 ${action.className}`}
             >
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-2xl">{step.icon}</span>
-                <span className="text-[10px] font-black uppercase tracking-widest bg-black/30 border border-white/10 rounded-full px-2 py-1">
-                  {step.status}
-                </span>
-              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-black/50 border border-white/10 flex items-center justify-center shrink-0 font-black text-purple-300">
+                  {action.number}
+                </div>
 
-              <h3 className="text-white font-black mt-4">{step.title}</h3>
-              <p className="text-xs text-zinc-400 mt-2 leading-relaxed">
-                {step.message}
-              </p>
+                <div className="flex-1">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">{action.icon}</span>
+                      <h3 className="text-white font-black">{action.title}</h3>
+                    </div>
+
+                    <span className="text-[10px] font-black uppercase tracking-widest bg-black/30 border border-white/10 rounded-full px-2 py-1 text-zinc-300">
+                      {action.status}
+                    </span>
+                  </div>
+
+                  <p className="text-sm text-zinc-300 mt-2 leading-relaxed">
+                    {action.message}
+                  </p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
 
         {!isVerificationApproved && (
           <div className="mt-4 bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 rounded-2xl p-4 text-sm leading-relaxed">
-            DJs can still go live and accept paid requests while verification is
-            pending. Withdrawals unlock after Blackline approves the account.
+            Verification does not stop requests. DJs can go live and collect paid
+            requests while approval is pending. Withdrawals unlock after
+            Blackline approves the account.
           </div>
         )}
       </div>
