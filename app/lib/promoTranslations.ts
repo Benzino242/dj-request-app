@@ -34,6 +34,7 @@ type PromoTranslation = {
   laptopStickerDescription: string;
   highResolutionQrPng: string;
   highResolutionQrPngDescription: string;
+  pdfLanguageNote: string;
   instagramPaused: string;
 };
 
@@ -50,6 +51,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "120mm × 80mm landscape sticker for laptops and DJ gear.",
     highResolutionQrPng: "High Resolution QR PNG",
     highResolutionQrPngDescription: "PNG QR code for flyers, banners and custom designs.",
+    pdfLanguageNote: "Printable PDFs are currently translated for selected languages. More languages are coming soon.",
     instagramPaused: "Instagram Story and Instagram Post assets are temporarily paused while we improve image generation.",
   },
   zh: {
@@ -64,6 +66,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "120mm × 80mm 横向贴纸，适合笔记本电脑和 DJ 设备。",
     highResolutionQrPng: "高清二维码 PNG",
     highResolutionQrPngDescription: "用于传单、横幅和自定义设计的 PNG 二维码。",
+    pdfLanguageNote: "可打印 PDF 目前仅支持部分语言翻译，更多语言即将推出。",
     instagramPaused: "Instagram Story 和 Instagram Post 素材暂时暂停，我们正在改进图片生成。",
   },
   ja: {
@@ -78,6 +81,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "ノートPCやDJ機材用の120mm × 80mm横向きステッカー。",
     highResolutionQrPng: "高解像度QR PNG",
     highResolutionQrPngDescription: "チラシ、バナー、カスタムデザイン用のPNG QRコード。",
+    pdfLanguageNote: "印刷用PDFは現在、一部の言語で翻訳されています。その他の言語も近日対応予定です。",
     instagramPaused: "Instagram StoryとInstagram Post素材は、画像生成の改善中につき一時停止しています。",
   },
   ko: {
@@ -92,6 +96,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "노트북과 DJ 장비용 120mm × 80mm 가로 스티커.",
     highResolutionQrPng: "고해상도 QR PNG",
     highResolutionQrPngDescription: "전단지, 배너, 맞춤 디자인용 PNG QR 코드.",
+    pdfLanguageNote: "인쇄용 PDF는 현재 일부 언어로 번역되어 있습니다. 더 많은 언어가 곧 추가됩니다.",
     instagramPaused: "Instagram Story 및 Instagram Post 자료는 이미지 생성을 개선하는 동안 일시 중지되었습니다.",
   },
   id: {
@@ -106,6 +111,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "Stiker landscape 120mm × 80mm untuk laptop dan perlengkapan DJ.",
     highResolutionQrPng: "QR PNG Resolusi Tinggi",
     highResolutionQrPngDescription: "Kode QR PNG untuk flyer, banner, dan desain khusus.",
+    pdfLanguageNote: "PDF cetak saat ini diterjemahkan untuk bahasa tertentu. Bahasa lainnya segera hadir.",
     instagramPaused: "Aset Instagram Story dan Instagram Post sementara dijeda saat kami meningkatkan pembuatan gambar.",
   },
   ms: {
@@ -120,6 +126,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "Pelekat landskap 120mm × 80mm untuk laptop dan peralatan DJ.",
     highResolutionQrPng: "QR PNG Resolusi Tinggi",
     highResolutionQrPngDescription: "Kod QR PNG untuk flyer, banner dan reka bentuk tersuai.",
+    pdfLanguageNote: "PDF bercetak kini diterjemahkan untuk bahasa terpilih. Lebih banyak bahasa akan datang tidak lama lagi.",
     instagramPaused: "Aset Instagram Story dan Instagram Post dihentikan sementara sementara kami menambah baik penjanaan imej.",
   },
   th: {
@@ -134,6 +141,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "สติกเกอร์แนวนอน 120mm × 80mm สำหรับแล็ปท็อปและอุปกรณ์ DJ",
     highResolutionQrPng: "QR PNG ความละเอียดสูง",
     highResolutionQrPngDescription: "QR Code PNG สำหรับใบปลิว แบนเนอร์ และงานออกแบบเอง",
+    pdfLanguageNote: "PDF สำหรับพิมพ์รองรับการแปลบางภาษาในขณะนี้ ภาษาเพิ่มเติมจะพร้อมใช้งานเร็ว ๆ นี้",
     instagramPaused: "สื่อ Instagram Story และ Instagram Post ถูกพักชั่วคราวระหว่างที่เราปรับปรุงการสร้างรูปภาพ",
   },
   hi: {
@@ -148,6 +156,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "लैपटॉप और DJ गियर के लिए 120mm × 80mm लैंडस्केप स्टिकर।",
     highResolutionQrPng: "हाई रेज़ोल्यूशन QR PNG",
     highResolutionQrPngDescription: "फ्लायर, बैनर और कस्टम डिज़ाइन के लिए PNG QR कोड।",
+    pdfLanguageNote: "प्रिंट करने योग्य PDF फिलहाल चुनिंदा भाषाओं में अनुवादित हैं। अधिक भाषाएँ जल्द आ रही हैं।",
     instagramPaused: "Instagram Story और Instagram Post assets अस्थायी रूप से रोके गए हैं जबकि हम image generation सुधार रहे हैं।",
   },
   ar: {
@@ -162,6 +171,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "ملصق أفقي 120mm × 80mm لأجهزة اللابتوب ومعدات DJ.",
     highResolutionQrPng: "QR PNG عالي الدقة",
     highResolutionQrPngDescription: "رمز QR بصيغة PNG للنشرات، اللافتات والتصاميم المخصصة.",
+    pdfLanguageNote: "ملفات PDF القابلة للطباعة مترجمة حاليًا لبعض اللغات. المزيد من اللغات قريبًا.",
     instagramPaused: "تم إيقاف أصول Instagram Story و Instagram Post مؤقتًا بينما نحسن إنشاء الصور.",
   },
   vi: {
@@ -176,6 +186,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "Sticker ngang 120mm × 80mm cho laptop và thiết bị DJ.",
     highResolutionQrPng: "QR PNG Độ Phân Giải Cao",
     highResolutionQrPngDescription: "Mã QR PNG cho flyer, banner và thiết kế riêng.",
+    pdfLanguageNote: "PDF để in hiện được dịch cho một số ngôn ngữ. Các ngôn ngữ khác sẽ sớm được hỗ trợ.",
     instagramPaused: "Instagram Story và Instagram Post tạm dừng trong khi chúng tôi cải thiện tạo hình ảnh.",
   },
   tl: {
@@ -190,6 +201,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "120mm × 80mm landscape sticker para sa laptops at DJ gear.",
     highResolutionQrPng: "High Resolution QR PNG",
     highResolutionQrPngDescription: "PNG QR code para sa flyers, banners at custom designs.",
+    pdfLanguageNote: "Ang printable PDFs ay kasalukuyang translated para sa piling wika. Mas marami pang wika ang paparating.",
     instagramPaused: "Pansamantalang naka-pause ang Instagram Story at Instagram Post assets habang inaayos ang image generation.",
   },
   pt: {
@@ -204,6 +216,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "Sticker horizontal 120mm × 80mm para laptops e equipamentos de DJ.",
     highResolutionQrPng: "QR PNG em Alta Resolução",
     highResolutionQrPngDescription: "Código QR PNG para flyers, banners e designs personalizados.",
+    pdfLanguageNote: "Os PDFs imprimíveis estão traduzidos para idiomas selecionados. Mais idiomas serão adicionados em breve.",
     instagramPaused: "Os assets de Instagram Story e Instagram Post estão temporariamente pausados enquanto melhoramos a geração de imagens.",
   },
   es: {
@@ -218,6 +231,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "Sticker horizontal de 120mm × 80mm para laptops y equipo DJ.",
     highResolutionQrPng: "QR PNG de Alta Resolución",
     highResolutionQrPngDescription: "Código QR PNG para flyers, banners y diseños personalizados.",
+    pdfLanguageNote: "Los PDFs imprimibles están traducidos para idiomas seleccionados. Habrá más idiomas pronto.",
     instagramPaused: "Los assets de Instagram Story e Instagram Post están pausados temporalmente mientras mejoramos la generación de imágenes.",
   },
   fr: {
@@ -232,6 +246,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "Sticker paysage 120mm × 80mm pour laptops et matériel DJ.",
     highResolutionQrPng: "QR PNG Haute Résolution",
     highResolutionQrPngDescription: "Code QR PNG pour flyers, bannières et designs personnalisés.",
+    pdfLanguageNote: "Les PDF imprimables sont actuellement traduits dans certaines langues. D’autres langues arrivent bientôt.",
     instagramPaused: "Les assets Instagram Story et Instagram Post sont temporairement suspendus pendant que nous améliorons la génération d’images.",
   },
   de: {
@@ -246,6 +261,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "120mm × 80mm Querformat-Sticker für Laptops und DJ-Equipment.",
     highResolutionQrPng: "Hochauflösendes QR PNG",
     highResolutionQrPngDescription: "PNG-QR-Code für Flyer, Banner und eigene Designs.",
+    pdfLanguageNote: "Druckbare PDFs sind derzeit für ausgewählte Sprachen übersetzt. Weitere Sprachen folgen bald.",
     instagramPaused: "Instagram Story- und Instagram Post-Assets sind vorübergehend pausiert, während wir die Bildgenerierung verbessern.",
   },
   ru: {
@@ -260,6 +276,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "Горизонтальный стикер 120mm × 80mm для ноутбуков и DJ-оборудования.",
     highResolutionQrPng: "QR PNG высокого разрешения",
     highResolutionQrPngDescription: "PNG QR-код для флаеров, баннеров и индивидуальных дизайнов.",
+    pdfLanguageNote: "Печатные PDF сейчас переведены для выбранных языков. Другие языки появятся скоро.",
     instagramPaused: "Материалы Instagram Story и Instagram Post временно приостановлены, пока мы улучшаем генерацию изображений.",
   },
   tr: {
@@ -274,6 +291,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "Laptoplar ve DJ ekipmanları için 120mm × 80mm yatay sticker.",
     highResolutionQrPng: "Yüksek Çözünürlüklü QR PNG",
     highResolutionQrPngDescription: "Flyer, banner ve özel tasarımlar için PNG QR kodu.",
+    pdfLanguageNote: "Yazdırılabilir PDF’ler şu anda seçili dillerde çevrilmiştir. Daha fazla dil yakında eklenecek.",
     instagramPaused: "Instagram Story ve Instagram Post assetleri, görsel üretimini geliştirirken geçici olarak duraklatıldı.",
   },
   it: {
@@ -288,6 +306,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "Sticker orizzontale 120mm × 80mm per laptop e attrezzatura DJ.",
     highResolutionQrPng: "QR PNG Alta Risoluzione",
     highResolutionQrPngDescription: "Codice QR PNG per flyer, banner e design personalizzati.",
+    pdfLanguageNote: "I PDF stampabili sono attualmente tradotti per alcune lingue. Altre lingue arriveranno presto.",
     instagramPaused: "Gli asset Instagram Story e Instagram Post sono temporaneamente sospesi mentre miglioriamo la generazione delle immagini.",
   },
   nl: {
@@ -302,6 +321,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "120mm × 80mm landscape sticker voor laptops en DJ-apparatuur.",
     highResolutionQrPng: "Hoge Resolutie QR PNG",
     highResolutionQrPngDescription: "PNG QR-code voor flyers, banners en eigen ontwerpen.",
+    pdfLanguageNote: "Printbare PDF’s zijn momenteel vertaald voor geselecteerde talen. Meer talen komen binnenkort.",
     instagramPaused: "Instagram Story- en Instagram Post-assets zijn tijdelijk gepauzeerd terwijl we de beeldgeneratie verbeteren.",
   },
   pl: {
@@ -316,6 +336,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "Pozioma naklejka 120mm × 80mm na laptopy i sprzęt DJ.",
     highResolutionQrPng: "QR PNG w Wysokiej Rozdzielczości",
     highResolutionQrPngDescription: "Kod QR PNG do ulotek, banerów i własnych projektów.",
+    pdfLanguageNote: "Pliki PDF do druku są obecnie przetłumaczone dla wybranych języków. Więcej języków pojawi się wkrótce.",
     instagramPaused: "Materiały Instagram Story i Instagram Post są tymczasowo wstrzymane, gdy ulepszamy generowanie obrazów.",
   },
   el: {
@@ -330,6 +351,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "Οριζόντιο αυτοκόλλητο 120mm × 80mm για laptops και DJ εξοπλισμό.",
     highResolutionQrPng: "QR PNG Υψηλής Ανάλυσης",
     highResolutionQrPngDescription: "Κωδικός QR PNG για flyers, banners και προσαρμοσμένα σχέδια.",
+    pdfLanguageNote: "Τα εκτυπώσιμα PDF είναι προς το παρόν μεταφρασμένα για επιλεγμένες γλώσσες. Περισσότερες γλώσσες έρχονται σύντομα.",
     instagramPaused: "Τα Instagram Story και Instagram Post assets έχουν προσωρινά παγώσει ενώ βελτιώνουμε τη δημιουργία εικόνων.",
   },
   uk: {
@@ -344,6 +366,7 @@ export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
     laptopStickerDescription: "Горизонтальний стікер 120mm × 80mm для ноутбуків і DJ-обладнання.",
     highResolutionQrPng: "QR PNG високої роздільної здатності",
     highResolutionQrPngDescription: "PNG QR-код для флаєрів, банерів і власних дизайнів.",
+    pdfLanguageNote: "Друковані PDF зараз перекладені для вибраних мов. Більше мов буде додано незабаром.",
     instagramPaused: "Матеріали Instagram Story та Instagram Post тимчасово призупинені, поки ми покращуємо генерацію зображень.",
   },
 };

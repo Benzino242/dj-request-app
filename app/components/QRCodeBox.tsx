@@ -135,9 +135,15 @@ export default function QRCodeBox({ stageName, language = "en", t }: Props) {
               </a>
             </div>
 
-            <p className="text-xs text-zinc-600 mt-5 leading-relaxed">
-              {promoT.instagramPaused}
-            </p>
+            <div className="mt-5 space-y-2">
+              <p className="text-xs text-zinc-500 leading-relaxed">
+                {promoT.pdfLanguageNote}
+              </p>
+
+              <p className="text-xs text-zinc-600 leading-relaxed">
+                {promoT.instagramPaused}
+              </p>
+            </div>
           </div>
         </div>
       )}
