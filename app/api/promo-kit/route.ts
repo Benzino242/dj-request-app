@@ -159,7 +159,7 @@ function getPromoPdfText(language: string | null) {
 
 
 
-type PromoKitType = "poster" | "table-tent" | "sticker" | "qr-png";
+type PromoKitType = "poster" | "table-tent" | "sticker" | "counter-card" | "qr-png";
 
 function getRequestUrl(stageName: string) {
   return `https://dj-request-app-topaz.vercel.app/${stageName
@@ -724,17 +724,124 @@ async function buildTableTentPdf(requestUrl: string, texts: PromoPdfText) {
 
   drawRoundedFill(page, cardX + 128, cardY + 116, 104, 24, 5, PURPLE);
 
-  drawCenteredText(page, "No app required", cardY + 124, 10, bold, WHITE, cardX + 128, 104);
+  drawCenteredFitText(page, texts.noAppRequired, cardY + 124, 10, 6.5, bold, WHITE, cardX + 128, 104);
 
   drawHeadphonesIcon(page, cardX + 112, cardY + 78, 0.32);
 
-  page.drawText("Powered by Blackline", {
-    x: cardX + 132,
-    y: cardY + 85,
-    size: 8,
-    font: regular,
-    color: GRAY,
+  drawLeftFitText(
+    page,
+    texts.poweredByBlackline,
+    cardX + 132,
+    cardY + 85,
+    150,
+    8,
+    5.5,
+    regular,
+    GRAY
+  );
+
+  return pdfDoc.save();
+}
+
+
+async function buildCounterCardPdf(requestUrl: string, texts: PromoPdfText) {
+  const pdfDoc = await PDFDocument.create();
+
+  const pageW = 419.53;
+  const pageH = 297.64;
+  const page = pdfDoc.addPage([pageW, pageH]);
+
+  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const titleLines = getPromoTitleLines(texts);
+
+  page.drawRectangle({
+    x: 0,
+    y: 0,
+    width: pageW,
+    height: pageH,
+    color: BLACK,
   });
+
+  drawRoundedBorder(page, 16, 16, pageW - 32, pageH - 32, 22, 4, PURPLE, BLACK);
+
+  drawHeadphonesIcon(page, 48, 218, 0.72);
+
+  drawLeftFitText(page, titleLines.line1, 88, 230, 160, 30, 17, bold, WHITE);
+  drawLeftFitText(page, titleLines.line2, 48, 176, 205, 48, 24, bold, WHITE);
+
+  page.drawLine({
+    start: { x: 52, y: 153 },
+    end: { x: 128, y: 153 },
+    thickness: 2.5,
+    color: PURPLE,
+  });
+
+  page.drawLine({
+    start: { x: 140, y: 153 },
+    end: { x: 232, y: 153 },
+    thickness: 2.5,
+    color: PURPLE,
+  });
+
+  page.drawLine({
+    start: { x: 128, y: 153 },
+    end: { x: 134, y: 146 },
+    thickness: 2.5,
+    color: PURPLE,
+  });
+
+  page.drawLine({
+    start: { x: 134, y: 146 },
+    end: { x: 140, y: 153 },
+    thickness: 2.5,
+    color: PURPLE,
+  });
+
+  drawMusicIcon(page, 58, 115, 10);
+  drawLeftFitText(page, texts.requestFavoriteSong, 76, 108, 170, 14, 8.5, bold, WHITE);
+
+  drawArrowIcon(page, 58, 80, 10);
+  drawLeftFitText(page, texts.tipMoveHigher, 76, 80, 170, 16, 9, bold, GREEN);
+  drawLeftFitText(page, texts.inTheQueue, 76, 59, 170, 16, 9, bold, GREEN);
+
+  drawRoundedFill(page, 52, 30, 128, 24, 6, PURPLE);
+  drawCenteredFitText(page, texts.noAppRequired, 38, 11, 7, bold, WHITE, 52, 128);
+
+  const qrBytes = await getQrPngBytes(requestUrl);
+  const qrImage = await pdfDoc.embedPng(qrBytes);
+
+  const qrCardX = 266;
+  const qrCardY = 58;
+  const qrCardW = 118;
+  const qrCardH = 172;
+
+  drawRoundedFill(page, qrCardX, qrCardY, qrCardW, qrCardH, 11, WHITE);
+
+  page.drawImage(qrImage, {
+    x: qrCardX + 8,
+    y: qrCardY + 62,
+    width: 102,
+    height: 102,
+  });
+
+  drawRoundedFill(page, qrCardX, qrCardY, qrCardW, 50, 11, PURPLE);
+  drawPhoneIcon(page, qrCardX + 13, qrCardY + 15, 0.82);
+
+  drawLeftFitText(
+    page,
+    texts.scanHere,
+    qrCardX + 36,
+    qrCardY + 20,
+    qrCardW - 44,
+    12,
+    7,
+    bold,
+    WHITE
+  );
+
+  drawHeadphonesIcon(page, 276, 31, 0.25);
+  drawLeftFitText(page, texts.poweredByBlackline, 294, 37, 88, 7, 5, regular, GRAY);
 
   return pdfDoc.save();
 }
@@ -755,6 +862,7 @@ export async function GET(request: NextRequest) {
       "poster",
       "table-tent",
       "sticker",
+      "counter-card",
       "qr-png",
     ];
 
@@ -787,6 +895,9 @@ export async function GET(request: NextRequest) {
     } else if (type === "table-tent") {
       pdfBytes = await buildTableTentPdf(requestUrl, texts);
       filename = `${stageName}-blackline-table-tent.pdf`;
+    } else if (type === "counter-card") {
+      pdfBytes = await buildCounterCardPdf(requestUrl, texts);
+      filename = `${stageName}-blackline-counter-card.pdf`;
     } else {
       pdfBytes = await buildStickerPdf(requestUrl, texts);
       filename = `${stageName}-blackline-laptop-sticker.pdf`;

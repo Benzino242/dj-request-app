@@ -24,7 +24,7 @@ export default function QRCodeBox({ stageName, language = "en", t }: Props) {
   const promoT = getPromoTranslation(language);
 
   const promoKitUrl = (
-    type: "poster" | "table-tent" | "sticker" | "qr-png"
+    type: "poster" | "table-tent" | "sticker" | "counter-card" | "qr-png"
   ) =>
     `/api/promo-kit?stage=${encodeURIComponent(
       cleanStageName
@@ -117,6 +117,20 @@ export default function QRCodeBox({ stageName, language = "en", t }: Props) {
                 </p>
                 <p className="text-sm text-zinc-500 mt-1">
                   {promoT.laptopStickerDescription}
+                </p>
+              </a>
+
+              <a
+                href={promoKitUrl("counter-card")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-black/40 hover:bg-black border border-zinc-800 rounded-2xl p-4 transition"
+              >
+                <p className="text-white font-black">
+                  🪧 {promoT.counterCard}
+                </p>
+                <p className="text-sm text-zinc-500 mt-1">
+                  {promoT.counterCardDescription}
                 </p>
               </a>
 
