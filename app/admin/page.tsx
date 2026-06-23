@@ -2889,13 +2889,13 @@ export default function AdminPage() {
             </div>
 
             {payoutStatus === "Active" && (
-              <div className="mt-5 bg-green-500/10 border border-green-500/30 rounded-xl p-4">
-                <p className="text-green-400 font-bold">
-                  Payout account connected
-                </p>
-                <p className="text-sm text-zinc-400 mt-2">
-                  {payoutMethod} \'95 {payoutProvider} \'95 {payoutAccountName}
-                </p>
+  <div className="mt-5 bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+    <p className="text-green-400 font-bold">
+      Payout account connected
+    </p>
+    <p className="text-sm text-zinc-400 mt-2">
+      {payoutMethod} - {payoutProvider} - {payoutAccountName}
+    </p>
 
                 <p className="text-xs text-zinc-500 mt-2">
                   Recipient Code:{" "}
@@ -3123,15 +3123,16 @@ export default function AdminPage() {
               className="w-full p-4 rounded-xl bg-black border border-zinc-700"
             />
 
-            <div className="bg-black border border-zinc-700 rounded-xl p-4">
-              <p className="text-zinc-500 text-sm">Payout destination</p>
-              {payoutStatus === "Active" && paystackRecipientCode ? (
-                <p className="text-green-400 font-bold mt-1">
-                  {payoutMethod} \'95 {payoutProvider}
-                </p>
-              ) : (
-                <p className="text-red-400 font-bold mt-1">Not Connected</p>
-              )}
+<div className="bg-black border border-zinc-700 rounded-xl p-4">
+  <p className="text-zinc-500 text-sm">Payout destination</p>
+  {payoutStatus === "Active" && paystackRecipientCode ? (
+    <p className="text-green-400 font-bold mt-1">
+      {payoutMethod} - {payoutProvider}
+    </p>
+  ) : (
+    <p className="text-red-400 font-bold mt-1">Not Connected</p>
+  )}
+</div>
             </div>
           </div>
 
