@@ -3559,9 +3559,9 @@ function RequestColumn({
 
                 <div>
                   <h3 className="text-2xl font-bold">
-                    {showQueueNumber
-                      ? `#${index + 1} \'97 ${request.song}`
-                      : request.song}
+                  {showQueueNumber
+                    ? `#${index + 1} - ${request.song}`
+                    : request.song}
                   </h3>
 
                   <p className="text-zinc-400 mt-1">{request.artist}</p>
