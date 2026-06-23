@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createRequire } from "module";
+import fontkit from "@pdf-lib/fontkit";
 import { PDFDocument, PDFPage, PDFFont, StandardFonts, rgb } from "pdf-lib";
 import * as QRCode from "qrcode";
+import { readFile } from "fs/promises";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -12,6 +15,27 @@ const GREEN = rgb(0.18, 0.95, 0.35);
 const GRAY = rgb(0.42, 0.42, 0.48);
 const LIGHT_GRAY = rgb(0.94, 0.94, 0.94);
 
+const require = createRequire(import.meta.url);
+
+const NOTO_FONT_FILES = {
+  cyrillicRegular: [
+    "@fontsource/noto-sans/files/noto-sans-cyrillic-400-normal.woff2",
+    "@fontsource/noto-sans/files/noto-sans-cyrillic-400-normal.woff",
+  ],
+  cyrillicBold: [
+    "@fontsource/noto-sans/files/noto-sans-cyrillic-700-normal.woff2",
+    "@fontsource/noto-sans/files/noto-sans-cyrillic-700-normal.woff",
+  ],
+  greekRegular: [
+    "@fontsource/noto-sans/files/noto-sans-greek-400-normal.woff2",
+    "@fontsource/noto-sans/files/noto-sans-greek-400-normal.woff",
+  ],
+  greekBold: [
+    "@fontsource/noto-sans/files/noto-sans-greek-700-normal.woff2",
+    "@fontsource/noto-sans/files/noto-sans-greek-700-normal.woff",
+  ],
+};
+
 type PromoPdfLanguage =
   | "en"
   | "id"
@@ -22,7 +46,10 @@ type PromoPdfLanguage =
   | "fr"
   | "de"
   | "it"
-  | "nl";
+  | "nl"
+  | "ru"
+  | "el"
+  | "uk";
 
 type PromoPdfText = {
   requestASong: string;
@@ -147,6 +174,39 @@ const promoPdfTranslations: Record<PromoPdfLanguage, PromoPdfText> = {
     noAppRequired: "Geen app nodig",
     poweredByBlackline: "Powered by Blackline",
   },
+  ru: {
+    requestASong: "ЗАКАЖИ ПЕСНЮ",
+    scanQrCode: "ОТСКАНИРУЙ QR-КОД",
+    scanHere: "СКАНИРУЙ",
+    requestFavoriteSong: "Закажи любимую песню",
+    tipMoveHigher: "Чаевые поднимут",
+    inTheQueue: "тебя в очереди",
+    tipMoveHigherFull: "Чаевые поднимут тебя в очереди",
+    noAppRequired: "Приложение не нужно",
+    poweredByBlackline: "Powered by Blackline",
+  },
+  el: {
+    requestASong: "ΖΗΤΑ ΤΡΑΓΟΥΔΙ",
+    scanQrCode: "ΣΚΑΝΑΡΕ ΤΟ QR",
+    scanHere: "ΣΚΑΝΑΡΕ ΕΔΩ",
+    requestFavoriteSong: "Ζήτα το αγαπημένο σου τραγούδι",
+    tipMoveHigher: "Δώσε tip για",
+    inTheQueue: "να ανέβεις",
+    tipMoveHigherFull: "Δώσε tip για να ανέβεις",
+    noAppRequired: "Δεν χρειάζεται app",
+    poweredByBlackline: "Powered by Blackline",
+  },
+  uk: {
+    requestASong: "ЗАМОВ ПІСНЮ",
+    scanQrCode: "СКАНУЙ QR-КОД",
+    scanHere: "СКАНУЙ ТУТ",
+    requestFavoriteSong: "Замов улюблену пісню",
+    tipMoveHigher: "Чайові піднімуть",
+    inTheQueue: "тебе в черзі",
+    tipMoveHigherFull: "Чайові піднімуть тебе в черзі",
+    noAppRequired: "Додаток не потрібен",
+    poweredByBlackline: "Powered by Blackline",
+  },
 };
 
 function getPromoPdfText(language: string | null) {
@@ -157,6 +217,61 @@ function getPromoPdfText(language: string | null) {
   return promoPdfTranslations.en;
 }
 
+
+function containsNonLatinText(texts: PromoPdfText) {
+  return Object.values(texts).some((value) => /[^\u0000-\u00ff]/.test(value));
+}
+
+function containsGreekText(texts: PromoPdfText) {
+  return Object.values(texts).some((value) => /[\u0370-\u03FF]/.test(value));
+}
+
+function resolveFirstAvailableFont(candidates: string[]) {
+  for (const candidate of candidates) {
+    try {
+      return require.resolve(candidate);
+    } catch {
+      // Try the next font file extension.
+    }
+  }
+
+  throw new Error(`Unable to resolve font file from: ${candidates.join(", ")}`);
+}
+
+async function embedNotoFont(pdfDoc: PDFDocument, candidates: string[]) {
+  const fontPath = resolveFirstAvailableFont(candidates);
+  const fontBytes = await readFile(fontPath);
+
+  return pdfDoc.embedFont(fontBytes);
+}
+
+async function getPromoFonts(pdfDoc: PDFDocument, texts: PromoPdfText) {
+  if (!containsNonLatinText(texts)) {
+    return {
+      regular: await pdfDoc.embedFont(StandardFonts.Helvetica),
+      bold: await pdfDoc.embedFont(StandardFonts.HelveticaBold),
+    };
+  }
+
+  pdfDoc.registerFontkit(fontkit);
+
+  const fontFamily = containsGreekText(texts) ? "greek" : "cyrillic";
+
+  return {
+    regular: await embedNotoFont(
+      pdfDoc,
+      fontFamily === "greek"
+        ? NOTO_FONT_FILES.greekRegular
+        : NOTO_FONT_FILES.cyrillicRegular
+    ),
+    bold: await embedNotoFont(
+      pdfDoc,
+      fontFamily === "greek"
+        ? NOTO_FONT_FILES.greekBold
+        : NOTO_FONT_FILES.cyrillicBold
+    ),
+  };
+}
 
 
 type PromoKitType = "poster" | "table-tent" | "sticker" | "qr-png";
@@ -456,8 +571,7 @@ async function buildPosterPdf(requestUrl: string, texts: PromoPdfText) {
   const pdfDoc = await PDFDocument.create();
   const page = pdfDoc.addPage([595.28, 841.89]);
 
-  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const { bold, regular } = await getPromoFonts(pdfDoc, texts);
 
   page.drawRectangle({
     x: 0,
@@ -507,7 +621,7 @@ async function buildStickerPdf(requestUrl: string, texts: PromoPdfText) {
   const pageH = 226.77;
   const page = pdfDoc.addPage([pageW, pageH]);
 
-  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const { bold } = await getPromoFonts(pdfDoc, texts);
   const titleLines = getPromoTitleLines(texts);
 
   page.drawRectangle({ x: 0, y: 0, width: pageW, height: pageH, color: BLACK });
@@ -605,8 +719,7 @@ async function buildTableTentPdf(requestUrl: string, texts: PromoPdfText) {
   const pageH = 841.89;
   const page = pdfDoc.addPage([pageW, pageH]);
 
-  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const { bold, regular } = await getPromoFonts(pdfDoc, texts);
   const titleLines = getPromoTitleLines(texts);
 
   page.drawRectangle({
@@ -724,17 +837,21 @@ async function buildTableTentPdf(requestUrl: string, texts: PromoPdfText) {
 
   drawRoundedFill(page, cardX + 128, cardY + 116, 104, 24, 5, PURPLE);
 
-  drawCenteredText(page, "No app required", cardY + 124, 10, bold, WHITE, cardX + 128, 104);
+  drawCenteredFitText(page, texts.noAppRequired, cardY + 124, 10, 6.5, bold, WHITE, cardX + 128, 104);
 
   drawHeadphonesIcon(page, cardX + 112, cardY + 78, 0.32);
 
-  page.drawText("Powered by Blackline", {
-    x: cardX + 132,
-    y: cardY + 85,
-    size: 8,
-    font: regular,
-    color: GRAY,
-  });
+  drawLeftFitText(
+    page,
+    texts.poweredByBlackline,
+    cardX + 132,
+    cardY + 85,
+    150,
+    8,
+    5.5,
+    regular,
+    GRAY
+  );
 
   return pdfDoc.save();
 }
