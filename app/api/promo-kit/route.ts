@@ -781,8 +781,8 @@ async function buildCounterCardPdf(requestUrl: string, texts: PromoPdfText) {
 
   drawHeadphonesIcon(page, 48, 218, 0.72);
 
-  drawLeftFitText(page, titleLines.line1, 88, 230, 160, 30, 17, bold, WHITE);
-  drawLeftFitText(page, titleLines.line2, 48, 176, 205, 48, 24, bold, WHITE);
+  drawLeftFitText(page, titleLines.line1, 88, 230, 150, 30, 17, bold, WHITE);
+  drawLeftFitText(page, titleLines.line2, 48, 176, 185, 48, 20, bold, WHITE);
 
   page.drawLine({
     start: { x: 52, y: 153 },
@@ -854,8 +854,8 @@ async function buildCounterCardPdf(requestUrl: string, texts: PromoPdfText) {
     WHITE
   );
 
-  drawHeadphonesIcon(page, 276, 31, 0.25);
-  drawLeftFitText(page, texts.poweredByBlackline, 294, 37, 88, 7, 5, regular, GRAY);
+  drawHeadphonesIcon(page, 286, 31, 0.25);
+  drawLeftFitText(page, texts.poweredByBlackline, 304, 37, 72, 6.5, 4.5, regular, GRAY);
 
   return pdfDoc.save();
 }
