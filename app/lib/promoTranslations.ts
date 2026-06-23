@@ -1,0 +1,357 @@
+export type PromoLanguage =
+  | "en"
+  | "zh"
+  | "ja"
+  | "ko"
+  | "id"
+  | "ms"
+  | "th"
+  | "hi"
+  | "ar"
+  | "vi"
+  | "tl"
+  | "pt"
+  | "es"
+  | "fr"
+  | "de"
+  | "ru"
+  | "tr"
+  | "it"
+  | "nl"
+  | "pl"
+  | "el"
+  | "uk";
+
+type PromoTranslation = {
+  downloadPromoKit: string;
+  buttonDescription: string;
+  chooseFormat: string;
+  a4Poster: string;
+  a4PosterDescription: string;
+  tableTent: string;
+  tableTentDescription: string;
+  laptopSticker: string;
+  laptopStickerDescription: string;
+  highResolutionQrPng: string;
+  highResolutionQrPngDescription: string;
+  instagramPaused: string;
+};
+
+export const promoTranslations: Record<PromoLanguage, PromoTranslation> = {
+  en: {
+    downloadPromoKit: "Download Promo Kit",
+    buttonDescription: "Printable QR materials and high-resolution QR downloads.",
+    chooseFormat: "Choose a printable or QR format.",
+    a4Poster: "A4 Poster",
+    a4PosterDescription: "Best for walls, DJ booths, entrances and venue posters.",
+    tableTent: "Table Tent",
+    tableTentDescription: "Best for tables, VIP booths, bars and lounges.",
+    laptopSticker: "Laptop Sticker",
+    laptopStickerDescription: "120mm × 80mm landscape sticker for laptops and DJ gear.",
+    highResolutionQrPng: "High Resolution QR PNG",
+    highResolutionQrPngDescription: "PNG QR code for flyers, banners and custom designs.",
+    instagramPaused: "Instagram Story and Instagram Post assets are temporarily paused while we improve image generation.",
+  },
+  zh: {
+    downloadPromoKit: "下载宣传套件",
+    buttonDescription: "可打印的二维码素材和高清二维码下载。",
+    chooseFormat: "选择打印或二维码格式。",
+    a4Poster: "A4 海报",
+    a4PosterDescription: "适合墙面、DJ 台、入口和场地海报。",
+    tableTent: "桌牌",
+    tableTentDescription: "适合桌面、VIP 卡座、酒吧和休息区。",
+    laptopSticker: "笔记本贴纸",
+    laptopStickerDescription: "120mm × 80mm 横向贴纸，适合笔记本电脑和 DJ 设备。",
+    highResolutionQrPng: "高清二维码 PNG",
+    highResolutionQrPngDescription: "用于传单、横幅和自定义设计的 PNG 二维码。",
+    instagramPaused: "Instagram Story 和 Instagram Post 素材暂时暂停，我们正在改进图片生成。",
+  },
+  ja: {
+    downloadPromoKit: "プロモキットをダウンロード",
+    buttonDescription: "印刷用QR素材と高解像度QRダウンロード。",
+    chooseFormat: "印刷用またはQR形式を選択してください。",
+    a4Poster: "A4ポスター",
+    a4PosterDescription: "壁、DJブース、入口、会場ポスターに最適です。",
+    tableTent: "テーブルテント",
+    tableTentDescription: "テーブル、VIP席、バー、ラウンジに最適です。",
+    laptopSticker: "ノートPCステッカー",
+    laptopStickerDescription: "ノートPCやDJ機材用の120mm × 80mm横向きステッカー。",
+    highResolutionQrPng: "高解像度QR PNG",
+    highResolutionQrPngDescription: "チラシ、バナー、カスタムデザイン用のPNG QRコード。",
+    instagramPaused: "Instagram StoryとInstagram Post素材は、画像生成の改善中につき一時停止しています。",
+  },
+  ko: {
+    downloadPromoKit: "프로모 키트 다운로드",
+    buttonDescription: "인쇄용 QR 자료와 고해상도 QR 다운로드.",
+    chooseFormat: "인쇄 또는 QR 형식을 선택하세요.",
+    a4Poster: "A4 포스터",
+    a4PosterDescription: "벽, DJ 부스, 입구, 행사장 포스터에 적합합니다.",
+    tableTent: "테이블 텐트",
+    tableTentDescription: "테이블, VIP 부스, 바, 라운지에 적합합니다.",
+    laptopSticker: "노트북 스티커",
+    laptopStickerDescription: "노트북과 DJ 장비용 120mm × 80mm 가로 스티커.",
+    highResolutionQrPng: "고해상도 QR PNG",
+    highResolutionQrPngDescription: "전단지, 배너, 맞춤 디자인용 PNG QR 코드.",
+    instagramPaused: "Instagram Story 및 Instagram Post 자료는 이미지 생성을 개선하는 동안 일시 중지되었습니다.",
+  },
+  id: {
+    downloadPromoKit: "Unduh Promo Kit",
+    buttonDescription: "Materi QR cetak dan unduhan QR resolusi tinggi.",
+    chooseFormat: "Pilih format cetak atau QR.",
+    a4Poster: "Poster A4",
+    a4PosterDescription: "Terbaik untuk dinding, booth DJ, pintu masuk, dan poster venue.",
+    tableTent: "Table Tent",
+    tableTentDescription: "Terbaik untuk meja, booth VIP, bar, dan lounge.",
+    laptopSticker: "Stiker Laptop",
+    laptopStickerDescription: "Stiker landscape 120mm × 80mm untuk laptop dan perlengkapan DJ.",
+    highResolutionQrPng: "QR PNG Resolusi Tinggi",
+    highResolutionQrPngDescription: "Kode QR PNG untuk flyer, banner, dan desain khusus.",
+    instagramPaused: "Aset Instagram Story dan Instagram Post sementara dijeda saat kami meningkatkan pembuatan gambar.",
+  },
+  ms: {
+    downloadPromoKit: "Muat Turun Promo Kit",
+    buttonDescription: "Bahan QR bercetak dan muat turun QR resolusi tinggi.",
+    chooseFormat: "Pilih format cetakan atau QR.",
+    a4Poster: "Poster A4",
+    a4PosterDescription: "Sesuai untuk dinding, booth DJ, pintu masuk dan poster venue.",
+    tableTent: "Table Tent",
+    tableTentDescription: "Sesuai untuk meja, booth VIP, bar dan lounge.",
+    laptopSticker: "Pelekat Laptop",
+    laptopStickerDescription: "Pelekat landskap 120mm × 80mm untuk laptop dan peralatan DJ.",
+    highResolutionQrPng: "QR PNG Resolusi Tinggi",
+    highResolutionQrPngDescription: "Kod QR PNG untuk flyer, banner dan reka bentuk tersuai.",
+    instagramPaused: "Aset Instagram Story dan Instagram Post dihentikan sementara sementara kami menambah baik penjanaan imej.",
+  },
+  th: {
+    downloadPromoKit: "ดาวน์โหลดโปรโมคิต",
+    buttonDescription: "สื่อ QR สำหรับพิมพ์และดาวน์โหลด QR ความละเอียดสูง",
+    chooseFormat: "เลือกรูปแบบสำหรับพิมพ์หรือ QR",
+    a4Poster: "โปสเตอร์ A4",
+    a4PosterDescription: "เหมาะสำหรับผนัง บูธ DJ ทางเข้า และโปสเตอร์สถานที่",
+    tableTent: "ป้ายตั้งโต๊ะ",
+    tableTentDescription: "เหมาะสำหรับโต๊ะ บูธ VIP บาร์ และเลานจ์",
+    laptopSticker: "สติกเกอร์แล็ปท็อป",
+    laptopStickerDescription: "สติกเกอร์แนวนอน 120mm × 80mm สำหรับแล็ปท็อปและอุปกรณ์ DJ",
+    highResolutionQrPng: "QR PNG ความละเอียดสูง",
+    highResolutionQrPngDescription: "QR Code PNG สำหรับใบปลิว แบนเนอร์ และงานออกแบบเอง",
+    instagramPaused: "สื่อ Instagram Story และ Instagram Post ถูกพักชั่วคราวระหว่างที่เราปรับปรุงการสร้างรูปภาพ",
+  },
+  hi: {
+    downloadPromoKit: "प्रोमो किट डाउनलोड करें",
+    buttonDescription: "प्रिंट करने योग्य QR सामग्री और हाई-रेज़ोल्यूशन QR डाउनलोड।",
+    chooseFormat: "प्रिंट या QR फॉर्मेट चुनें।",
+    a4Poster: "A4 पोस्टर",
+    a4PosterDescription: "दीवारों, DJ बूथ, प्रवेश द्वार और venue पोस्टर के लिए अच्छा।",
+    tableTent: "टेबल टेंट",
+    tableTentDescription: "टेबल, VIP बूथ, बार और लाउंज के लिए अच्छा।",
+    laptopSticker: "लैपटॉप स्टिकर",
+    laptopStickerDescription: "लैपटॉप और DJ गियर के लिए 120mm × 80mm लैंडस्केप स्टिकर।",
+    highResolutionQrPng: "हाई रेज़ोल्यूशन QR PNG",
+    highResolutionQrPngDescription: "फ्लायर, बैनर और कस्टम डिज़ाइन के लिए PNG QR कोड।",
+    instagramPaused: "Instagram Story और Instagram Post assets अस्थायी रूप से रोके गए हैं जबकि हम image generation सुधार रहे हैं।",
+  },
+  ar: {
+    downloadPromoKit: "تحميل حزمة الترويج",
+    buttonDescription: "مواد QR للطباعة وتنزيل QR عالي الدقة.",
+    chooseFormat: "اختر تنسيق طباعة أو QR.",
+    a4Poster: "ملصق A4",
+    a4PosterDescription: "مناسب للجدران، منصات DJ، المداخل وملصقات المكان.",
+    tableTent: "لافتة طاولة",
+    tableTentDescription: "مناسب للطاولات، مناطق VIP، البارات والصالات.",
+    laptopSticker: "ملصق لابتوب",
+    laptopStickerDescription: "ملصق أفقي 120mm × 80mm لأجهزة اللابتوب ومعدات DJ.",
+    highResolutionQrPng: "QR PNG عالي الدقة",
+    highResolutionQrPngDescription: "رمز QR بصيغة PNG للنشرات، اللافتات والتصاميم المخصصة.",
+    instagramPaused: "تم إيقاف أصول Instagram Story و Instagram Post مؤقتًا بينما نحسن إنشاء الصور.",
+  },
+  vi: {
+    downloadPromoKit: "Tải Promo Kit",
+    buttonDescription: "Tài liệu QR để in và tải QR độ phân giải cao.",
+    chooseFormat: "Chọn định dạng in hoặc QR.",
+    a4Poster: "Poster A4",
+    a4PosterDescription: "Phù hợp cho tường, booth DJ, lối vào và poster địa điểm.",
+    tableTent: "Bảng để bàn",
+    tableTentDescription: "Phù hợp cho bàn, booth VIP, bar và lounge.",
+    laptopSticker: "Sticker Laptop",
+    laptopStickerDescription: "Sticker ngang 120mm × 80mm cho laptop và thiết bị DJ.",
+    highResolutionQrPng: "QR PNG Độ Phân Giải Cao",
+    highResolutionQrPngDescription: "Mã QR PNG cho flyer, banner và thiết kế riêng.",
+    instagramPaused: "Instagram Story và Instagram Post tạm dừng trong khi chúng tôi cải thiện tạo hình ảnh.",
+  },
+  tl: {
+    downloadPromoKit: "I-download ang Promo Kit",
+    buttonDescription: "Printable QR materials at high-resolution QR downloads.",
+    chooseFormat: "Pumili ng printable o QR format.",
+    a4Poster: "A4 Poster",
+    a4PosterDescription: "Pinakamainam para sa walls, DJ booths, entrances at venue posters.",
+    tableTent: "Table Tent",
+    tableTentDescription: "Pinakamainam para sa tables, VIP booths, bars at lounges.",
+    laptopSticker: "Laptop Sticker",
+    laptopStickerDescription: "120mm × 80mm landscape sticker para sa laptops at DJ gear.",
+    highResolutionQrPng: "High Resolution QR PNG",
+    highResolutionQrPngDescription: "PNG QR code para sa flyers, banners at custom designs.",
+    instagramPaused: "Pansamantalang naka-pause ang Instagram Story at Instagram Post assets habang inaayos ang image generation.",
+  },
+  pt: {
+    downloadPromoKit: "Baixar Promo Kit",
+    buttonDescription: "Materiais QR imprimíveis e downloads de QR em alta resolução.",
+    chooseFormat: "Escolha um formato imprimível ou QR.",
+    a4Poster: "Poster A4",
+    a4PosterDescription: "Ideal para paredes, cabines de DJ, entradas e posters do local.",
+    tableTent: "Display de Mesa",
+    tableTentDescription: "Ideal para mesas, áreas VIP, bares e lounges.",
+    laptopSticker: "Sticker para Laptop",
+    laptopStickerDescription: "Sticker horizontal 120mm × 80mm para laptops e equipamentos de DJ.",
+    highResolutionQrPng: "QR PNG em Alta Resolução",
+    highResolutionQrPngDescription: "Código QR PNG para flyers, banners e designs personalizados.",
+    instagramPaused: "Os assets de Instagram Story e Instagram Post estão temporariamente pausados enquanto melhoramos a geração de imagens.",
+  },
+  es: {
+    downloadPromoKit: "Descargar Promo Kit",
+    buttonDescription: "Materiales QR imprimibles y descargas QR de alta resolución.",
+    chooseFormat: "Elige un formato imprimible o QR.",
+    a4Poster: "Póster A4",
+    a4PosterDescription: "Ideal para paredes, cabinas de DJ, entradas y pósters del lugar.",
+    tableTent: "Cartel de Mesa",
+    tableTentDescription: "Ideal para mesas, zonas VIP, bares y lounges.",
+    laptopSticker: "Sticker para Laptop",
+    laptopStickerDescription: "Sticker horizontal de 120mm × 80mm para laptops y equipo DJ.",
+    highResolutionQrPng: "QR PNG de Alta Resolución",
+    highResolutionQrPngDescription: "Código QR PNG para flyers, banners y diseños personalizados.",
+    instagramPaused: "Los assets de Instagram Story e Instagram Post están pausados temporalmente mientras mejoramos la generación de imágenes.",
+  },
+  fr: {
+    downloadPromoKit: "Télécharger le Promo Kit",
+    buttonDescription: "Supports QR imprimables et téléchargements QR haute résolution.",
+    chooseFormat: "Choisissez un format imprimable ou QR.",
+    a4Poster: "Affiche A4",
+    a4PosterDescription: "Idéal pour les murs, cabines DJ, entrées et affiches de lieu.",
+    tableTent: "Présentoir de Table",
+    tableTentDescription: "Idéal pour les tables, espaces VIP, bars et lounges.",
+    laptopSticker: "Sticker pour Laptop",
+    laptopStickerDescription: "Sticker paysage 120mm × 80mm pour laptops et matériel DJ.",
+    highResolutionQrPng: "QR PNG Haute Résolution",
+    highResolutionQrPngDescription: "Code QR PNG pour flyers, bannières et designs personnalisés.",
+    instagramPaused: "Les assets Instagram Story et Instagram Post sont temporairement suspendus pendant que nous améliorons la génération d’images.",
+  },
+  de: {
+    downloadPromoKit: "Promo-Kit herunterladen",
+    buttonDescription: "Druckbare QR-Materialien und hochauflösende QR-Downloads.",
+    chooseFormat: "Wähle ein Druck- oder QR-Format.",
+    a4Poster: "A4-Poster",
+    a4PosterDescription: "Ideal für Wände, DJ-Booths, Eingänge und Venue-Poster.",
+    tableTent: "Tischaufsteller",
+    tableTentDescription: "Ideal für Tische, VIP-Booths, Bars und Lounges.",
+    laptopSticker: "Laptop-Sticker",
+    laptopStickerDescription: "120mm × 80mm Querformat-Sticker für Laptops und DJ-Equipment.",
+    highResolutionQrPng: "Hochauflösendes QR PNG",
+    highResolutionQrPngDescription: "PNG-QR-Code für Flyer, Banner und eigene Designs.",
+    instagramPaused: "Instagram Story- und Instagram Post-Assets sind vorübergehend pausiert, während wir die Bildgenerierung verbessern.",
+  },
+  ru: {
+    downloadPromoKit: "Скачать промо-набор",
+    buttonDescription: "Печатные QR-материалы и QR в высоком разрешении.",
+    chooseFormat: "Выберите печатный или QR-формат.",
+    a4Poster: "Постер A4",
+    a4PosterDescription: "Лучше всего для стен, DJ-будок, входов и постеров площадки.",
+    tableTent: "Тейбл-тент",
+    tableTentDescription: "Лучше всего для столов, VIP-зон, баров и лаунжей.",
+    laptopSticker: "Стикер для ноутбука",
+    laptopStickerDescription: "Горизонтальный стикер 120mm × 80mm для ноутбуков и DJ-оборудования.",
+    highResolutionQrPng: "QR PNG высокого разрешения",
+    highResolutionQrPngDescription: "PNG QR-код для флаеров, баннеров и индивидуальных дизайнов.",
+    instagramPaused: "Материалы Instagram Story и Instagram Post временно приостановлены, пока мы улучшаем генерацию изображений.",
+  },
+  tr: {
+    downloadPromoKit: "Promo Kitini İndir",
+    buttonDescription: "Yazdırılabilir QR materyalleri ve yüksek çözünürlüklü QR indirmeleri.",
+    chooseFormat: "Yazdırılabilir veya QR formatı seçin.",
+    a4Poster: "A4 Poster",
+    a4PosterDescription: "Duvarlar, DJ kabinleri, girişler ve mekan posterleri için ideal.",
+    tableTent: "Masa Standı",
+    tableTentDescription: "Masalar, VIP kabinleri, barlar ve lounge alanları için ideal.",
+    laptopSticker: "Laptop Sticker",
+    laptopStickerDescription: "Laptoplar ve DJ ekipmanları için 120mm × 80mm yatay sticker.",
+    highResolutionQrPng: "Yüksek Çözünürlüklü QR PNG",
+    highResolutionQrPngDescription: "Flyer, banner ve özel tasarımlar için PNG QR kodu.",
+    instagramPaused: "Instagram Story ve Instagram Post assetleri, görsel üretimini geliştirirken geçici olarak duraklatıldı.",
+  },
+  it: {
+    downloadPromoKit: "Scarica Promo Kit",
+    buttonDescription: "Materiali QR stampabili e download QR ad alta risoluzione.",
+    chooseFormat: "Scegli un formato stampabile o QR.",
+    a4Poster: "Poster A4",
+    a4PosterDescription: "Ideale per pareti, booth DJ, ingressi e poster del locale.",
+    tableTent: "Segnatavolo",
+    tableTentDescription: "Ideale per tavoli, aree VIP, bar e lounge.",
+    laptopSticker: "Sticker per Laptop",
+    laptopStickerDescription: "Sticker orizzontale 120mm × 80mm per laptop e attrezzatura DJ.",
+    highResolutionQrPng: "QR PNG Alta Risoluzione",
+    highResolutionQrPngDescription: "Codice QR PNG per flyer, banner e design personalizzati.",
+    instagramPaused: "Gli asset Instagram Story e Instagram Post sono temporaneamente sospesi mentre miglioriamo la generazione delle immagini.",
+  },
+  nl: {
+    downloadPromoKit: "Promo Kit downloaden",
+    buttonDescription: "Printbare QR-materialen en QR-downloads in hoge resolutie.",
+    chooseFormat: "Kies een printbaar of QR-formaat.",
+    a4Poster: "A4 Poster",
+    a4PosterDescription: "Ideaal voor muren, DJ-booths, ingangen en venue-posters.",
+    tableTent: "Tafelkaart",
+    tableTentDescription: "Ideaal voor tafels, VIP-booths, bars en lounges.",
+    laptopSticker: "Laptop Sticker",
+    laptopStickerDescription: "120mm × 80mm landscape sticker voor laptops en DJ-apparatuur.",
+    highResolutionQrPng: "Hoge Resolutie QR PNG",
+    highResolutionQrPngDescription: "PNG QR-code voor flyers, banners en eigen ontwerpen.",
+    instagramPaused: "Instagram Story- en Instagram Post-assets zijn tijdelijk gepauzeerd terwijl we de beeldgeneratie verbeteren.",
+  },
+  pl: {
+    downloadPromoKit: "Pobierz Promo Kit",
+    buttonDescription: "Materiały QR do druku i pliki QR w wysokiej rozdzielczości.",
+    chooseFormat: "Wybierz format do druku lub QR.",
+    a4Poster: "Plakat A4",
+    a4PosterDescription: "Najlepszy na ściany, stanowiska DJ, wejścia i plakaty lokalu.",
+    tableTent: "Stojak na Stół",
+    tableTentDescription: "Najlepszy na stoły, strefy VIP, bary i lounge.",
+    laptopSticker: "Naklejka na Laptop",
+    laptopStickerDescription: "Pozioma naklejka 120mm × 80mm na laptopy i sprzęt DJ.",
+    highResolutionQrPng: "QR PNG w Wysokiej Rozdzielczości",
+    highResolutionQrPngDescription: "Kod QR PNG do ulotek, banerów i własnych projektów.",
+    instagramPaused: "Materiały Instagram Story i Instagram Post są tymczasowo wstrzymane, gdy ulepszamy generowanie obrazów.",
+  },
+  el: {
+    downloadPromoKit: "Λήψη Promo Kit",
+    buttonDescription: "Εκτυπώσιμα QR υλικά και λήψεις QR υψηλής ανάλυσης.",
+    chooseFormat: "Επιλέξτε εκτυπώσιμη μορφή ή QR.",
+    a4Poster: "Αφίσα A4",
+    a4PosterDescription: "Ιδανικό για τοίχους, DJ booths, εισόδους και αφίσες χώρου.",
+    tableTent: "Επιτραπέζιο Σταντ",
+    tableTentDescription: "Ιδανικό για τραπέζια, VIP booths, μπαρ και lounges.",
+    laptopSticker: "Αυτοκόλλητο Laptop",
+    laptopStickerDescription: "Οριζόντιο αυτοκόλλητο 120mm × 80mm για laptops και DJ εξοπλισμό.",
+    highResolutionQrPng: "QR PNG Υψηλής Ανάλυσης",
+    highResolutionQrPngDescription: "Κωδικός QR PNG για flyers, banners και προσαρμοσμένα σχέδια.",
+    instagramPaused: "Τα Instagram Story και Instagram Post assets έχουν προσωρινά παγώσει ενώ βελτιώνουμε τη δημιουργία εικόνων.",
+  },
+  uk: {
+    downloadPromoKit: "Завантажити промо-набір",
+    buttonDescription: "Друковані QR-матеріали та QR у високій роздільній здатності.",
+    chooseFormat: "Виберіть друкований або QR-формат.",
+    a4Poster: "Постер A4",
+    a4PosterDescription: "Найкраще для стін, DJ-будок, входів і постерів закладу.",
+    tableTent: "Настільна табличка",
+    tableTentDescription: "Найкраще для столів, VIP-зон, барів і лаунжів.",
+    laptopSticker: "Стікер для ноутбука",
+    laptopStickerDescription: "Горизонтальний стікер 120mm × 80mm для ноутбуків і DJ-обладнання.",
+    highResolutionQrPng: "QR PNG високої роздільної здатності",
+    highResolutionQrPngDescription: "PNG QR-код для флаєрів, банерів і власних дизайнів.",
+    instagramPaused: "Матеріали Instagram Story та Instagram Post тимчасово призупинені, поки ми покращуємо генерацію зображень.",
+  },
+};
+
+export function getPromoTranslation(language: string | undefined) {
+  if (language && language in promoTranslations) {
+    return promoTranslations[language as PromoLanguage];
+  }
+
+  return promoTranslations.en;
+}
