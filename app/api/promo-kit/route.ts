@@ -508,6 +508,7 @@ async function buildStickerPdf(requestUrl: string, texts: PromoPdfText) {
   const page = pdfDoc.addPage([pageW, pageH]);
 
   const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const titleLines = getPromoTitleLines(texts);
 
   page.drawRectangle({ x: 0, y: 0, width: pageW, height: pageH, color: BLACK });
@@ -516,9 +517,9 @@ async function buildStickerPdf(requestUrl: string, texts: PromoPdfText) {
 
   drawHeadphonesIcon(page, 40, 160, 0.65);
 
-  drawLeftFitText(page, titleLines.line1, 73, 165, 135, 28, 18, bold, WHITE);
+  drawLeftFitText(page, titleLines.line1, 73, 165, 128, 28, 16, bold, WHITE);
 
-  drawLeftFitText(page, titleLines.line2, 36, 116, 170, 42, 22, bold, WHITE);
+  drawLeftFitText(page, titleLines.line2, 36, 116, 158, 40, 16, bold, WHITE);
 
   page.drawLine({
     start: { x: 34, y: 100 },
@@ -593,6 +594,19 @@ async function buildStickerPdf(requestUrl: string, texts: PromoPdfText) {
     6.5,
     bold,
     WHITE
+  );
+
+  drawHeadphonesIcon(page, qrCardX + 9, 14, 0.22);
+  drawLeftFitText(
+    page,
+    texts.poweredByBlackline,
+    qrCardX + 25,
+    18,
+    qrCardW - 30,
+    5.5,
+    4,
+    regular,
+    GRAY
   );
 
   return pdfDoc.save();
@@ -767,8 +781,8 @@ async function buildCounterCardPdf(requestUrl: string, texts: PromoPdfText) {
 
   drawHeadphonesIcon(page, 48, 218, 0.72);
 
-  drawLeftFitText(page, titleLines.line1, 88, 230, 150, 30, 17, bold, WHITE);
-  drawLeftFitText(page, titleLines.line2, 48, 176, 185, 48, 20, bold, WHITE);
+  drawLeftFitText(page, titleLines.line1, 88, 230, 160, 30, 17, bold, WHITE);
+  drawLeftFitText(page, titleLines.line2, 48, 176, 205, 48, 24, bold, WHITE);
 
   page.drawLine({
     start: { x: 52, y: 153 },
@@ -840,8 +854,8 @@ async function buildCounterCardPdf(requestUrl: string, texts: PromoPdfText) {
     WHITE
   );
 
-  drawHeadphonesIcon(page, 286, 31, 0.25);
-  drawLeftFitText(page, texts.poweredByBlackline, 304, 37, 72, 6.5, 4.5, regular, GRAY);
+  drawHeadphonesIcon(page, 276, 31, 0.25);
+  drawLeftFitText(page, texts.poweredByBlackline, 294, 37, 88, 7, 5, regular, GRAY);
 
   return pdfDoc.save();
 }
