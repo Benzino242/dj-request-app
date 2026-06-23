@@ -3052,6 +3052,68 @@ export default function AdminPage() {
             {t.requestWithdrawalTitle}
           </h3>
 
+          <div className="bg-black/40 border border-purple-500/30 rounded-2xl p-5 mb-6">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-purple-500/15 border border-purple-500/30 flex items-center justify-center shrink-0">
+                💰
+              </div>
+
+              <div>
+                <h4 className="text-lg font-black text-white">
+                  How your balance works
+                </h4>
+
+                <p className="text-sm text-zinc-400 mt-2 leading-relaxed">
+                  Your <span className="text-white font-semibold">available balance</span>{" "}
+                  is your DJ earnings after the Blackline platform fee, minus any
+                  withdrawals that are pending, approved, or already paid.
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-3 mt-4">
+                  <div className="bg-zinc-900/70 border border-zinc-800 rounded-xl p-3">
+                    <p className="text-xs uppercase tracking-widest text-zinc-500 font-bold">
+                      Gross earnings
+                    </p>
+                    <p className="text-sm text-zinc-300 mt-1">
+                      Total paid requests before fees.
+                    </p>
+                  </div>
+
+                  <div className="bg-zinc-900/70 border border-zinc-800 rounded-xl p-3">
+                    <p className="text-xs uppercase tracking-widest text-zinc-500 font-bold">
+                      DJ earnings
+                    </p>
+                    <p className="text-sm text-zinc-300 mt-1">
+                      Your share after Blackline fees.
+                    </p>
+                  </div>
+
+                  <div className="bg-zinc-900/70 border border-zinc-800 rounded-xl p-3">
+                    <p className="text-xs uppercase tracking-widest text-zinc-500 font-bold">
+                      Open withdrawals
+                    </p>
+                    <p className="text-sm text-zinc-300 mt-1">
+                      Pending, approved, and paid withdrawals reduce available balance.
+                    </p>
+                  </div>
+
+                  <div className="bg-zinc-900/70 border border-zinc-800 rounded-xl p-3">
+                    <p className="text-xs uppercase tracking-widest text-zinc-500 font-bold">
+                      Verification
+                    </p>
+                    <p className="text-sm text-zinc-300 mt-1">
+                      You can take paid requests before approval. Withdrawals unlock after verification.
+                    </p>
+                  </div>
+                </div>
+
+                <p className="text-xs text-zinc-500 mt-4 leading-relaxed">
+                  Formula: Available balance = DJ earnings − pending/approved/paid withdrawals.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="grid md:grid-cols-2 gap-4 mb-4">
             <input
               type="number"
