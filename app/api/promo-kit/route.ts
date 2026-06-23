@@ -167,6 +167,30 @@ function getRequestUrl(stageName: string) {
     .trim()}`;
 }
 
+
+function getPromoTitleLines(texts: PromoPdfText) {
+  const words = texts.requestASong.trim().split(/\s+/);
+
+  if (words.length <= 1) {
+    return {
+      line1: texts.requestASong,
+      line2: "",
+    };
+  }
+
+  if (words.length === 2) {
+    return {
+      line1: words[0],
+      line2: words[1],
+    };
+  }
+
+  return {
+    line1: words[0],
+    line2: words.slice(1).join(" "),
+  };
+}
+
 async function getQrPngBytes(requestUrl: string, width = 1600) {
   const dataUrl = await QRCode.toDataURL(requestUrl, {
     width,
@@ -195,6 +219,60 @@ function drawCenteredText(
 
   page.drawText(text, {
     x: boxX + (boxWidth - textWidth) / 2,
+    y,
+    size,
+    font,
+    color,
+  });
+}
+
+
+function getFittedFontSize(
+  text: string,
+  maxWidth: number,
+  maxSize: number,
+  minSize: number,
+  font: PDFFont
+) {
+  let size = maxSize;
+
+  while (size > minSize && font.widthOfTextAtSize(text, size) > maxWidth) {
+    size -= 0.5;
+  }
+
+  return size;
+}
+
+function drawCenteredFitText(
+  page: PDFPage,
+  text: string,
+  y: number,
+  maxSize: number,
+  minSize: number,
+  font: PDFFont,
+  color = WHITE,
+  boxX = 0,
+  boxWidth = page.getWidth()
+) {
+  const size = getFittedFontSize(text, boxWidth, maxSize, minSize, font);
+  drawCenteredText(page, text, y, size, font, color, boxX, boxWidth);
+}
+
+function drawLeftFitText(
+  page: PDFPage,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  maxSize: number,
+  minSize: number,
+  font: PDFFont,
+  color = WHITE
+) {
+  const size = getFittedFontSize(text, maxWidth, maxSize, minSize, font);
+
+  page.drawText(text, {
+    x,
     y,
     size,
     font,
@@ -389,8 +467,8 @@ async function buildPosterPdf(requestUrl: string, texts: PromoPdfText) {
     color: BLACK,
   });
 
-  drawCenteredText(page, texts.requestASong, 700, 44, bold);
-  drawCenteredText(page, texts.scanQrCode, 650, 20, bold, PURPLE);
+  drawCenteredFitText(page, texts.requestASong, 700, 44, 28, bold);
+  drawCenteredFitText(page, texts.scanQrCode, 650, 20, 14, bold, PURPLE);
 
   const qrBytes = await getQrPngBytes(requestUrl);
   const qrImage = await pdfDoc.embedPng(qrBytes);
@@ -414,9 +492,9 @@ async function buildPosterPdf(requestUrl: string, texts: PromoPdfText) {
     height: qrSize,
   });
 
-  drawCenteredText(page, texts.requestFavoriteSong, 210, 23, bold);
-  drawCenteredText(page, texts.tipMoveHigherFull, 174, 19, regular, GREEN);
-  drawCenteredText(page, texts.noAppRequired, 142, 17, regular);
+  drawCenteredFitText(page, texts.requestFavoriteSong, 210, 23, 14, bold);
+  drawCenteredFitText(page, texts.tipMoveHigherFull, 174, 19, 12, regular, GREEN);
+  drawCenteredFitText(page, texts.noAppRequired, 142, 17, 11, regular);
   drawCenteredText(page, texts.poweredByBlackline, 60, 13, bold, PURPLE);
 
   return pdfDoc.save();
@@ -430,6 +508,7 @@ async function buildStickerPdf(requestUrl: string, texts: PromoPdfText) {
   const page = pdfDoc.addPage([pageW, pageH]);
 
   const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const titleLines = getPromoTitleLines(texts);
 
   page.drawRectangle({ x: 0, y: 0, width: pageW, height: pageH, color: BLACK });
 
@@ -437,21 +516,9 @@ async function buildStickerPdf(requestUrl: string, texts: PromoPdfText) {
 
   drawHeadphonesIcon(page, 40, 160, 0.65);
 
-  page.drawText(texts.requestASong.split(" ")[0] || "REQUEST", {
-    x: 73,
-    y: 165,
-    size: 28,
-    font: bold,
-    color: WHITE,
-  });
+  drawLeftFitText(page, titleLines.line1, 73, 165, 135, 28, 18, bold, WHITE);
 
-  page.drawText(texts.requestASong.replace(/^\S+\s*/, "") || "A SONG", {
-    x: 36,
-    y: 116,
-    size: 42,
-    font: bold,
-    color: WHITE,
-  });
+  drawLeftFitText(page, titleLines.line2, 36, 116, 170, 42, 22, bold, WHITE);
 
   page.drawLine({
     start: { x: 34, y: 100 },
@@ -483,41 +550,17 @@ async function buildStickerPdf(requestUrl: string, texts: PromoPdfText) {
 
   drawMusicIcon(page, 46, 76, 10);
 
-  page.drawText(texts.requestFavoriteSong, {
-    x: 56,
-    y: 68,
-    size: 10.5,
-    font: bold,
-    color: WHITE,
-  });
+  drawLeftFitText(page, texts.requestFavoriteSong, 56, 68, 135, 10.5, 7.5, bold, WHITE);
 
   drawArrowIcon(page, 46, 49, 10);
 
-  page.drawText(texts.tipMoveHigher, {
-    x: 63,
-    y: 47,
-    size: 12.5,
-    font: bold,
-    color: GREEN,
-  });
+  drawLeftFitText(page, texts.tipMoveHigher, 63, 47, 130, 12.5, 8, bold, GREEN);
 
-  page.drawText(texts.inTheQueue, {
-    x: 63,
-    y: 32,
-    size: 12.5,
-    font: bold,
-    color: GREEN,
-  });
+  drawLeftFitText(page, texts.inTheQueue, 63, 32, 130, 12.5, 8, bold, GREEN);
 
   drawRoundedFill(page, 35, 6, 88, 16, 4, PURPLE);
 
-  page.drawText(texts.noAppRequired, {
-    x: 43,
-    y: 11,
-    size: 8,
-    font: bold,
-    color: WHITE,
-  });
+  drawCenteredFitText(page, texts.noAppRequired, 11, 8, 5.5, bold, WHITE, 35, 88);
 
   const qrBytes = await getQrPngBytes(requestUrl);
   const qrImage = await pdfDoc.embedPng(qrBytes);
@@ -540,13 +583,17 @@ async function buildStickerPdf(requestUrl: string, texts: PromoPdfText) {
 
   drawPhoneIcon(page, qrCardX + 12, qrCardY + 13, 0.75);
 
-  page.drawText(texts.scanHere, {
-    x: qrCardX + 28,
-    y: qrCardY + 19,
-    size: 11,
-    font: bold,
-    color: WHITE,
-  });
+  drawLeftFitText(
+    page,
+    texts.scanHere,
+    qrCardX + 28,
+    qrCardY + 19,
+    qrCardW - 34,
+    11,
+    6.5,
+    bold,
+    WHITE
+  );
 
   return pdfDoc.save();
 }
@@ -560,6 +607,7 @@ async function buildTableTentPdf(requestUrl: string, texts: PromoPdfText) {
 
   const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const titleLines = getPromoTitleLines(texts);
 
   page.drawRectangle({
     x: 0,
@@ -607,8 +655,8 @@ async function buildTableTentPdf(requestUrl: string, texts: PromoPdfText) {
     color: PURPLE,
   });
 
-  drawCenteredText(page, texts.requestASong.split(" ")[0] || "REQUEST", cardY + 555, 45, bold, WHITE, cardX, cardW);
-  drawCenteredText(page, texts.requestASong.replace(/^\S+\s*/, "") || "A SONG", cardY + 503, 45, bold, WHITE, cardX, cardW);
+  drawCenteredFitText(page, titleLines.line1, cardY + 555, 45, 30, bold, WHITE, cardX + 20, cardW - 40);
+  drawCenteredFitText(page, titleLines.line2, cardY + 503, 45, 28, bold, WHITE, cardX + 20, cardW - 40);
 
   page.drawRectangle({
     x: cardX + 104,
@@ -618,13 +666,7 @@ async function buildTableTentPdf(requestUrl: string, texts: PromoPdfText) {
     color: PURPLE,
   });
 
-  page.drawText(texts.scanHere, {
-    x: cardX + 127,
-    y: cardY + 478,
-    size: 19,
-    font: bold,
-    color: WHITE,
-  });
+  drawCenteredFitText(page, texts.scanHere, cardY + 478, 19, 11, bold, WHITE, cardX + 104, 152);
 
   const qrBytes = await getQrPngBytes(requestUrl);
   const qrImage = await pdfDoc.embedPng(qrBytes);
@@ -644,31 +686,13 @@ async function buildTableTentPdf(requestUrl: string, texts: PromoPdfText) {
 
   drawMusicIcon(page, cardX + 110, cardY + 220, 9);
 
-  page.drawText(texts.requestFavoriteSong, {
-    x: cardX + 126,
-    y: cardY + 214,
-    size: 12,
-    font: bold,
-    color: WHITE,
-  });
+  drawLeftFitText(page, texts.requestFavoriteSong, cardX + 126, cardY + 214, 155, 12, 8, bold, WHITE);
 
   drawArrowIcon(page, cardX + 110, cardY + 192, 9);
 
-  page.drawText(texts.tipMoveHigher, {
-    x: cardX + 126,
-    y: cardY + 191,
-    size: 14,
-    font: bold,
-    color: GREEN,
-  });
+  drawLeftFitText(page, texts.tipMoveHigher, cardX + 126, cardY + 191, 155, 14, 8, bold, GREEN);
 
-  page.drawText(texts.inTheQueue, {
-    x: cardX + 126,
-    y: cardY + 173,
-    size: 14,
-    font: bold,
-    color: GREEN,
-  });
+  drawLeftFitText(page, texts.inTheQueue, cardX + 126, cardY + 173, 155, 14, 8, bold, GREEN);
 
   page.drawLine({
     start: { x: cardX + 105, y: cardY + 154 },
