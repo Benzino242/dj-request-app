@@ -215,9 +215,33 @@ export default function AdminPage() {
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const isFetchingDashboardRef = useRef(false);
   const requestQueueRef = useRef<HTMLDivElement | null>(null);
+  const liveControlsRef = useRef<HTMLDivElement | null>(null);
+  const profileSectionRef = useRef<HTMLDivElement | null>(null);
+  const qrCodeSectionRef = useRef<HTMLDivElement | null>(null);
+  const withdrawalsSectionRef = useRef<HTMLDivElement | null>(null);
   const previousRequestCountRef = useRef(0);
   const lastScrollYRef = useRef(0);
   const scrollStorageKey = "blackline-dj-admin-scroll-y";
+
+  function scrollToQuickSetupTarget(
+    target: "profile" | "payout" | "live" | "qr" | "queue" | "withdrawals",
+  ) {
+    const targetMap = {
+      profile: profileSectionRef,
+      payout: profileSectionRef,
+      live: liveControlsRef,
+      qr: qrCodeSectionRef,
+      queue: requestQueueRef,
+      withdrawals: withdrawalsSectionRef,
+    };
+
+    const targetRef = targetMap[target];
+
+    targetRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
 
   function saveDashboardScrollPosition() {
     if (typeof window === "undefined") return;
@@ -1010,6 +1034,11 @@ export default function AdminPage() {
   const withdrawalHistoryIsOpen =
     hasOpenWithdrawal || isWithdrawalHistoryExpanded;
 
+  const hasProfileSetup = Boolean(
+    dj?.stage_name?.trim() &&
+    (eventName.trim() || venue.trim() || instagram.trim() || bio.trim() || profileImage.trim()),
+  );
+
   const hasPayoutSetup = Boolean(
     payoutStatus === "Active" &&
     payoutMethod &&
@@ -1025,27 +1054,55 @@ export default function AdminPage() {
   const quickSetupActions = [
     {
       number: "1",
+      icon: hasProfileSetup ? "✅" : "🎤",
+      title: hasProfileSetup ? "Profile is set" : "Set up your profile",
+      message: hasProfileSetup
+        ? "Your DJ profile has enough details for guests to recognize your page."
+        : "Add event name, venue, Instagram, bio, or a profile photo so guests know they are on the right page.",
+      status: hasProfileSetup ? "Ready" : "Start here",
+      className: hasProfileSetup
+        ? "border-green-500/40 bg-green-500/10"
+        : "border-purple-500/50 bg-purple-500/10",
+      target: "profile" as const,
+    },
+    {
+      number: "2",
+      icon: hasPayoutSetup ? "✅" : "💸",
+      title: hasPayoutSetup ? "Payout method added" : "Add payout method",
+      message: hasPayoutSetup
+        ? "Your payout account is connected for future withdrawals."
+        : "Add where you want to receive your money before requesting withdrawals.",
+      status: hasPayoutSetup ? "Connected" : "Needed",
+      className: hasPayoutSetup
+        ? "border-green-500/40 bg-green-500/10"
+        : "border-cyan-500/40 bg-cyan-500/10",
+      target: "payout" as const,
+    },
+    {
+      number: "3",
       icon: dj?.is_live ? "🟢" : "🔴",
       title: dj?.is_live ? "Requests are open" : "Open requests",
       message: dj?.is_live
         ? "Guests can scan your QR code and send paid requests now."
         : "Tap Go Live when you are ready for guests to start requesting songs.",
-      status: dj?.is_live ? "Live now" : "Do this first",
+      status: dj?.is_live ? "Live now" : "Go live",
       className: dj?.is_live
         ? "border-green-500/40 bg-green-500/10"
         : "border-green-500/50 bg-green-500/10",
+      target: "live" as const,
     },
     {
-      number: "2",
+      number: "4",
       icon: "📲",
       title: "Share your QR code",
       message:
         "Download your promo kit, print it, or show the QR code on your phone so guests can scan it.",
       status: "Share",
       className: "border-purple-500/40 bg-purple-500/10",
+      target: "qr" as const,
     },
     {
-      number: "3",
+      number: "5",
       icon: grouped.pending.length > 0 ? "🎵" : "🎧",
       title:
         grouped.pending.length > 0
@@ -1062,24 +1119,26 @@ export default function AdminPage() {
         grouped.pending.length > 0
           ? "border-yellow-500/50 bg-yellow-500/10"
           : "border-zinc-700 bg-black/30",
+      target: "queue" as const,
     },
     {
-      number: "4",
+      number: "6",
       icon: isVerificationApproved ? "✅" : "🛡️",
       title: isVerificationApproved
         ? "Withdrawals are unlocked"
         : "Verification unlocks withdrawals",
       message: isVerificationApproved
         ? hasPayoutSetup
-          ? "Your payout setup is connected. You can request withdrawals when you have available balance."
-          : "Add payout details before requesting your first withdrawal."
+          ? "You can request withdrawals when you have available balance."
+          : "Connect your payout method before requesting your first withdrawal."
         : isVerificationPending
           ? "You can still take requests now. Withdrawals unlock after Blackline approval."
           : "Submit verification when ready. You can still take requests before approval.",
       status: isVerificationApproved ? "Unlocked" : "Requests allowed",
       className: isVerificationApproved
         ? "border-green-500/40 bg-green-500/10"
-        : "border-cyan-500/40 bg-cyan-500/10",
+        : "border-yellow-500/40 bg-yellow-500/10",
+      target: "withdrawals" as const,
     },
   ];
 
@@ -1311,11 +1370,13 @@ export default function AdminPage() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-3">
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3">
           {quickSetupActions.map((action) => (
-            <div
+            <button
               key={action.number}
-              className={`border rounded-2xl p-4 ${action.className}`}
+              type="button"
+              onClick={() => scrollToQuickSetupTarget(action.target)}
+              className={`text-left border rounded-2xl p-4 transition hover:scale-[1.01] active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-purple-500/70 ${action.className}`}
             >
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-full bg-black/50 border border-white/10 flex items-center justify-center shrink-0 font-black text-purple-300">
@@ -1339,7 +1400,7 @@ export default function AdminPage() {
                   </p>
                 </div>
               </div>
-            </div>
+            </button>
           ))}
         </div>
 
@@ -1372,7 +1433,8 @@ export default function AdminPage() {
       </div>
 
       <div
-        className={`border rounded-3xl p-4 md:p-6 mb-10 ${
+        ref={liveControlsRef}
+        className={`scroll-mt-6 border rounded-3xl p-4 md:p-6 mb-10 ${
           dj.is_live
             ? "bg-green-950 border-green-700"
             : "bg-zinc-900 border-zinc-800"
@@ -1415,7 +1477,10 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <div ref={requestQueueRef} className="grid md:grid-cols-2 gap-8 mb-10">
+      <div
+        ref={requestQueueRef}
+        className="scroll-mt-6 grid md:grid-cols-2 gap-8 mb-10"
+      >
         <RequestColumn
           title={`${t.pendingRequests} (${grouped.pending.length})`}
           titleColor="text-yellow-400"
@@ -1564,11 +1629,14 @@ export default function AdminPage() {
         />
       </div>
 
-      <div className="mb-12">
+      <div ref={qrCodeSectionRef} className="scroll-mt-6 mb-12">
         <QRCodeBox stageName={dj.stage_name} language={language} t={t} />
       </div>
 
-      <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
+      <div
+        ref={profileSectionRef}
+        className="scroll-mt-6 bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10"
+      >
         <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-purple-400 mb-8 text-center">
           {t.djProfileSettings}
         </h2>
@@ -2047,7 +2115,7 @@ export default function AdminPage() {
         <p className="text-xs text-zinc-500 mt-3">{t.platformRevenueNote}</p>
       </div>
 
-      <div className="mb-10">
+      <div ref={withdrawalsSectionRef} className="scroll-mt-6 mb-10">
         <h2 className="text-3xl font-bold mb-4 text-cyan-400">
           {t.withdrawalActivity}
         </h2>
