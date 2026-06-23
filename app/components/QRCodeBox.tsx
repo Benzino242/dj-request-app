@@ -8,17 +8,6 @@ type Props = {
   t: {
     yourDjQrCode: string;
     qrInstruction: string;
-    promoDownloadKit: string;
-    promoChooseFormat: string;
-    promoA4Poster: string;
-    promoA4PosterDescription: string;
-    promoTableTent: string;
-    promoTableTentDescription: string;
-    promoLaptopSticker: string;
-    promoLaptopStickerDescription: string;
-    promoQrPng: string;
-    promoQrPngDescription: string;
-    promoInstagramPaused: string;
   };
 };
 
@@ -55,11 +44,11 @@ export default function QRCodeBox({ stageName, t }: Props) {
           onClick={() => setPromoKitOpen(true)}
           className="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-xl font-bold text-white"
         >
-          📥 {t.promoDownloadKit}
+          📥 Download Promo Kit
         </button>
 
         <p className="text-xs text-zinc-500 mt-3">
-          {t.promoChooseFormat}
+          Printable QR materials and high-resolution QR downloads.
         </p>
       </div>
 
@@ -69,11 +58,11 @@ export default function QRCodeBox({ stageName, t }: Props) {
             <div className="flex items-start justify-between gap-4 mb-5">
               <div>
                 <h3 className="text-2xl font-black text-white">
-                  {t.promoDownloadKit}
+                  Download Promo Kit
                 </h3>
 
                 <p className="text-sm text-zinc-500 mt-1">
-                  {t.promoChooseFormat}
+                  Choose a printable or QR format.
                 </p>
               </div>
 
@@ -93,9 +82,9 @@ export default function QRCodeBox({ stageName, t }: Props) {
                 rel="noopener noreferrer"
                 className="block bg-black/40 hover:bg-black border border-zinc-800 rounded-2xl p-4 transition"
               >
-                <p className="text-white font-black">📄 {t.promoA4Poster}</p>
+                <p className="text-white font-black">📄 A4 Poster</p>
                 <p className="text-sm text-zinc-500 mt-1">
-                  {t.promoA4PosterDescription}
+                  Best for walls, DJ booths, entrances and venue posters.
                 </p>
               </a>
 
@@ -105,9 +94,9 @@ export default function QRCodeBox({ stageName, t }: Props) {
                 rel="noopener noreferrer"
                 className="block bg-black/40 hover:bg-black border border-zinc-800 rounded-2xl p-4 transition"
               >
-                <p className="text-white font-black">🎫 {t.promoTableTent}</p>
+                <p className="text-white font-black">🎫 Table Tent</p>
                 <p className="text-sm text-zinc-500 mt-1">
-                  {t.promoTableTentDescription}
+                  Best for tables, VIP booths, bars and lounges.
                 </p>
               </a>
 
@@ -117,9 +106,9 @@ export default function QRCodeBox({ stageName, t }: Props) {
                 rel="noopener noreferrer"
                 className="block bg-black/40 hover:bg-black border border-zinc-800 rounded-2xl p-4 transition"
               >
-                <p className="text-white font-black">💻 {t.promoLaptopSticker}</p>
+                <p className="text-white font-black">💻 Laptop Sticker</p>
                 <p className="text-sm text-zinc-500 mt-1">
-                  {t.promoLaptopStickerDescription}
+                  120mm × 80mm landscape sticker for laptops and DJ gear.
                 </p>
               </a>
 
@@ -129,15 +118,18 @@ export default function QRCodeBox({ stageName, t }: Props) {
                 rel="noopener noreferrer"
                 className="block bg-black/40 hover:bg-black border border-zinc-800 rounded-2xl p-4 transition"
               >
-                <p className="text-white font-black">🖨️ {t.promoQrPng}</p>
+                <p className="text-white font-black">
+                  🖨️ High Resolution QR PNG
+                </p>
                 <p className="text-sm text-zinc-500 mt-1">
-                  {t.promoQrPngDescription}
+                  PNG QR code for flyers, banners and custom designs.
                 </p>
               </a>
             </div>
 
             <p className="text-xs text-zinc-600 mt-5 leading-relaxed">
-              {t.promoInstagramPaused}
+              Instagram Story and Instagram Post assets are temporarily paused
+              while we improve image generation.
             </p>
           </div>
         </div>
