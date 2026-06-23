@@ -134,7 +134,9 @@ export default function AdminPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
-  const [expandedWithdrawalIds, setExpandedWithdrawalIds] = useState<number[]>([]);
+  const [expandedWithdrawalIds, setExpandedWithdrawalIds] = useState<number[]>(
+    [],
+  );
   const [expandedWithdrawalTimelineIds, setExpandedWithdrawalTimelineIds] =
     useState<number[]>([]);
   const [isWithdrawalHistoryExpanded, setIsWithdrawalHistoryExpanded] =
@@ -228,7 +230,9 @@ export default function AdminPage() {
     if (typeof window === "undefined") return;
 
     const savedScroll = Number(
-      window.sessionStorage.getItem(scrollStorageKey) || lastScrollYRef.current || 0
+      window.sessionStorage.getItem(scrollStorageKey) ||
+        lastScrollYRef.current ||
+        0,
     );
 
     if (!savedScroll || Number.isNaN(savedScroll)) return;
@@ -303,7 +307,9 @@ export default function AdminPage() {
     setBanksLoading(true);
 
     try {
-      const response = await fetch(`/api/paystack/banks?currency=${currencyCode}`);
+      const response = await fetch(
+        `/api/paystack/banks?currency=${currencyCode}`,
+      );
       const result = await response.json();
 
       if (!response.ok) {
@@ -430,33 +436,33 @@ export default function AdminPage() {
 
   async function endDJSet() {
     if (!dj) return;
-  
+
     const confirmEnd = window.confirm("End DJ set and clear active queue?");
-  
+
     if (!confirmEnd) return;
-  
+
     const currentScrollY = getCurrentScrollY();
-  
+
     setActionLoadingId(-1);
-  
+
     await supabase.from("djs").update({ is_live: false }).eq("id", dj.id);
-  
+
     await supabase
       .from("requests")
       .update({ status: "finished" })
       .eq("dj_id", dj.id)
       .in("status", ["accepted", "played"]);
-  
+
     await fetchDashboardData();
-  
+
     setDj({
       ...dj,
       is_live: false,
     });
-  
+
     setActionLoadingId(null);
     restoreScrollPosition(currentScrollY);
-  
+
     alert("DJ set ended successfully");
   }
 
@@ -538,7 +544,9 @@ export default function AdminPage() {
       setPaystackRecipientCode(result.recipientCode || "");
       setConnectingPayout(false);
 
-      alert(`Payout account connected. Recipient code: ${result.recipientCode}`);
+      alert(
+        `Payout account connected. Recipient code: ${result.recipientCode}`,
+      );
     } catch (error) {
       console.error("CONNECT PAYOUT ERROR:", error);
       alert("Failed to connect payout account.");
@@ -646,7 +654,7 @@ export default function AdminPage() {
         .eq("dj_id", activeDj.id)
         .order("created_at", { ascending: false });
 
-        const { data: auditLogsData } = await supabase
+      const { data: auditLogsData } = await supabase
         .from("audit_logs")
         .select("*")
         .order("created_at", { ascending: false })
@@ -668,16 +676,16 @@ export default function AdminPage() {
       setPayments((paymentsData || []) as Payment[]);
       setWithdrawals((withdrawalsData || []) as Withdrawal[]);
       setAuditLogs(filteredAuditLogs);
-      } catch (error) {
-        console.error("DASHBOARD FETCH ERROR:", error);
-      } finally {
-        isFetchingDashboardRef.current = false;
+    } catch (error) {
+      console.error("DASHBOARD FETCH ERROR:", error);
+    } finally {
+      isFetchingDashboardRef.current = false;
 
-        if (loading) {
-          setLoading(false);
-        }
+      if (loading) {
+        setLoading(false);
       }
     }
+  }
 
   useEffect(() => {
     if (!dj) return;
@@ -685,7 +693,10 @@ export default function AdminPage() {
     const activeDj = dj;
 
     const refreshDashboardIfVisible = async () => {
-      if (typeof document !== "undefined" && document.visibilityState === "hidden") {
+      if (
+        typeof document !== "undefined" &&
+        document.visibilityState === "hidden"
+      ) {
         saveDashboardScrollPosition();
         return;
       }
@@ -718,34 +729,34 @@ export default function AdminPage() {
     document.addEventListener("visibilitychange", handleVisibleRefresh);
 
     const requestsChannel = supabase
-    .channel(`admin-live-requests-${activeDj.id}`)
-    .on(
-      "postgres_changes",
-      {
-        event: "INSERT",
-        schema: "public",
-        table: "requests",
-        filter: `dj_id=eq.${activeDj.id}`,
-      },
-      async () => {
-        await refreshDashboardIfVisible();
-  
-        requestQueueRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
-    )
-    .on(
-      "postgres_changes",
-      {
-        event: "UPDATE",
-        schema: "public",
-        table: "requests",
-        filter: `dj_id=eq.${activeDj.id}`,
-      },
-      () => refreshDashboardIfVisible()
-    )
+      .channel(`admin-live-requests-${activeDj.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "requests",
+          filter: `dj_id=eq.${activeDj.id}`,
+        },
+        async () => {
+          await refreshDashboardIfVisible();
+
+          requestQueueRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "requests",
+          filter: `dj_id=eq.${activeDj.id}`,
+        },
+        () => refreshDashboardIfVisible(),
+      )
       .subscribe();
 
     const paymentsChannel = supabase
@@ -758,7 +769,7 @@ export default function AdminPage() {
           table: "payments",
           filter: `dj_id=eq.${activeDj.id}`,
         },
-        () => refreshDashboardIfVisible()
+        () => refreshDashboardIfVisible(),
       )
       .subscribe();
 
@@ -772,7 +783,7 @@ export default function AdminPage() {
           table: "withdrawals",
           filter: `dj_id=eq.${activeDj.id}`,
         },
-        () => refreshDashboardIfVisible()
+        () => refreshDashboardIfVisible(),
       )
       .subscribe();
 
@@ -785,7 +796,7 @@ export default function AdminPage() {
           schema: "public",
           table: "audit_logs",
         },
-        () => refreshDashboardIfVisible()
+        () => refreshDashboardIfVisible(),
       )
       .subscribe();
 
@@ -825,12 +836,13 @@ export default function AdminPage() {
 
   async function moveRequest(requestId: number, direction: "up" | "down") {
     const currentIndex = grouped.accepted.findIndex(
-      (request) => request.id === requestId
+      (request) => request.id === requestId,
     );
 
     if (currentIndex === -1) return;
 
-    const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+    const targetIndex =
+      direction === "up" ? currentIndex - 1 : currentIndex + 1;
 
     if (targetIndex < 0 || targetIndex >= grouped.accepted.length) return;
 
@@ -861,7 +873,7 @@ export default function AdminPage() {
 
     if (hasOpenWithdrawal) {
       alert(
-        "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one."
+        "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
       );
       return;
     }
@@ -879,7 +891,9 @@ export default function AdminPage() {
       !payoutAccountNumber ||
       !paystackRecipientCode
     ) {
-      alert("Please connect your payout account before requesting a withdrawal.");
+      alert(
+        "Please connect your payout account before requesting a withdrawal.",
+      );
       return;
     }
 
@@ -946,21 +960,21 @@ export default function AdminPage() {
 
   const grossRevenue = payments.reduce(
     (sum, payment) => sum + Number(payment.amount || 0),
-    0
+    0,
   );
 
   const netEarnings = payments.reduce(
     (sum, payment) => sum + Number(payment.dj_amount || 0),
-    0
+    0,
   );
 
   const serviceFees = payments.reduce(
     (sum, payment) => sum + Number(payment.platform_fee || 0),
-    0
+    0,
   );
 
   const pendingPayouts = payments.filter(
-    (payment) => payment.payout_status === "pending"
+    (payment) => payment.payout_status === "pending",
   ).length;
 
   const vipRequests = requests.filter((r) => r.tip_amount >= 50).length;
@@ -969,18 +983,17 @@ export default function AdminPage() {
     .filter((item) => ["pending", "approved", "paid"].includes(item.status))
     .reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
-    const hasOpenWithdrawal = withdrawals.some(
-      (withdrawal) =>
-        withdrawal.status === "pending" ||
-        withdrawal.status === "approved"
-    );
+  const hasOpenWithdrawal = withdrawals.some(
+    (withdrawal) =>
+      withdrawal.status === "pending" || withdrawal.status === "approved",
+  );
 
   const availableBalance = netEarnings - totalWithdrawals;
 
   const sortedWithdrawalHistory = [...withdrawals].sort(
     (a, b) =>
       new Date(b.created_at || 0).getTime() -
-      new Date(a.created_at || 0).getTime()
+      new Date(a.created_at || 0).getTime(),
   );
 
   const latestWithdrawal = sortedWithdrawalHistory[0];
@@ -991,17 +1004,110 @@ export default function AdminPage() {
 
   const withdrawalRequestedTotal = sortedWithdrawalHistory.reduce(
     (sum, withdrawal) => sum + Number(withdrawal.amount || 0),
-    0
+    0,
   );
 
   const withdrawalHistoryIsOpen =
     hasOpenWithdrawal || isWithdrawalHistoryExpanded;
 
+  const hasProfileSetup = Boolean(
+    dj?.stage_name?.trim() &&
+    (eventName.trim() || venue.trim() || profileImage.trim()),
+  );
+
+  const hasPayoutSetup = Boolean(
+    payoutStatus === "Active" &&
+    payoutMethod &&
+    payoutProvider &&
+    payoutAccountName &&
+    payoutAccountNumber &&
+    paystackRecipientCode,
+  );
+
+  const isVerificationApproved = verificationStatus === "verified";
+  const isVerificationPending = verificationStatus === "pending";
+  const isPromoKitReady = Boolean(dj?.stage_name?.trim());
+
+  const readySteps = [
+    {
+      icon: "🎤",
+      title: "Profile",
+      message: hasProfileSetup
+        ? "Profile is ready"
+        : "Add event details or a profile image",
+      status: hasProfileSetup ? "Ready" : "Setup needed",
+      isComplete: hasProfileSetup,
+      className: hasProfileSetup
+        ? "border-green-500/30 bg-green-500/10 text-green-400"
+        : "border-yellow-500/30 bg-yellow-500/10 text-yellow-400",
+    },
+    {
+      icon: "💸",
+      title: "Payout",
+      message: hasPayoutSetup
+        ? "Payout account connected"
+        : "Add payout details before withdrawal",
+      status: hasPayoutSetup ? "Connected" : "Needed later",
+      isComplete: hasPayoutSetup,
+      className: hasPayoutSetup
+        ? "border-green-500/30 bg-green-500/10 text-green-400"
+        : "border-zinc-700 bg-black/30 text-zinc-400",
+    },
+    {
+      icon: "🛡️",
+      title: "Verification",
+      message: isVerificationApproved
+        ? "Withdrawals unlocked"
+        : isVerificationPending
+          ? "Pending — requests still allowed"
+          : "Submit verification when ready",
+      status: isVerificationApproved
+        ? "Approved"
+        : isVerificationPending
+          ? "Pending"
+          : "Not started",
+      isComplete: isVerificationApproved,
+      className: isVerificationApproved
+        ? "border-green-500/30 bg-green-500/10 text-green-400"
+        : isVerificationPending
+          ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-400"
+          : "border-zinc-700 bg-black/30 text-zinc-400",
+    },
+    {
+      icon: "🟢",
+      title: "Go Live",
+      message: dj?.is_live
+        ? "Guests can request songs now"
+        : "Turn on when your event starts",
+      status: dj?.is_live ? "Live" : "Offline",
+      isComplete: Boolean(dj?.is_live),
+      className: dj?.is_live
+        ? "border-green-500/30 bg-green-500/10 text-green-400"
+        : "border-red-500/30 bg-red-500/10 text-red-400",
+    },
+    {
+      icon: "📲",
+      title: "Promo Kit",
+      message: isPromoKitReady
+        ? "QR kit ready to download"
+        : "Add stage name first",
+      status: isPromoKitReady ? "Ready" : "Needed",
+      isComplete: isPromoKitReady,
+      className: isPromoKitReady
+        ? "border-green-500/30 bg-green-500/10 text-green-400"
+        : "border-yellow-500/30 bg-yellow-500/10 text-yellow-400",
+    },
+  ];
+
+  const completedReadySteps = readySteps.filter(
+    (step) => step.isComplete,
+  ).length;
+
   function toggleWithdrawalDetails(withdrawalId: number) {
     setExpandedWithdrawalIds((currentIds) =>
       currentIds.includes(withdrawalId)
         ? currentIds.filter((id) => id !== withdrawalId)
-        : [...currentIds, withdrawalId]
+        : [...currentIds, withdrawalId],
     );
   }
 
@@ -1010,13 +1116,14 @@ export default function AdminPage() {
       .filter(
         (log) =>
           log.entity_type === "withdrawal" &&
-          Number(log.entity_id) === withdrawalId
+          Number(log.entity_id) === withdrawalId,
       )
       .slice(0, 10);
   }
 
   function getAuditMetadataValue(log: AuditLog, key: string) {
-    const value = log.metadata?.[key as keyof NonNullable<AuditLog["metadata"]>];
+    const value =
+      log.metadata?.[key as keyof NonNullable<AuditLog["metadata"]>];
     return typeof value === "string" ? value : null;
   }
 
@@ -1032,16 +1139,17 @@ export default function AdminPage() {
 
   function getAuditTimelineDetails(log: AuditLog) {
     const previousStatus = getAuditMetadataValue(log, "previous_status");
-    const newStatus = getAuditMetadataValue(log, "new_status") || log.action_type;
+    const newStatus =
+      getAuditMetadataValue(log, "new_status") || log.action_type;
     const status = (newStatus || "").toLowerCase();
 
     const label = previousStatus
-      ? `${formatStatusText(previousStatus)} → ${formatStatusText(newStatus)}`
+      ? `${formatStatusText(previousStatus)}  ${formatStatusText(newStatus)}`
       : formatStatusText(newStatus);
 
     if (status === "paid") {
       return {
-        icon: "🟢",
+        icon: "",
         label,
         dotClass: "bg-green-500/20 border-green-500 text-green-400",
         textClass: "text-green-400",
@@ -1050,7 +1158,7 @@ export default function AdminPage() {
 
     if (status === "approved") {
       return {
-        icon: "🔵",
+        icon: "",
         label,
         dotClass: "bg-cyan-500/20 border-cyan-500 text-cyan-400",
         textClass: "text-cyan-400",
@@ -1059,7 +1167,7 @@ export default function AdminPage() {
 
     if (status === "rejected") {
       return {
-        icon: "🔴",
+        icon: "",
         label,
         dotClass: "bg-red-500/20 border-red-500 text-red-400",
         textClass: "text-red-400",
@@ -1068,7 +1176,7 @@ export default function AdminPage() {
 
     if (status === "pending") {
       return {
-        icon: "🟡",
+        icon: "",
         label,
         dotClass: "bg-yellow-500/20 border-yellow-500 text-yellow-400",
         textClass: "text-yellow-400",
@@ -1076,7 +1184,7 @@ export default function AdminPage() {
     }
 
     return {
-      icon: "📝",
+      icon: "",
       label,
       dotClass: "bg-zinc-700/40 border-zinc-600 text-zinc-300",
       textClass: "text-zinc-300",
@@ -1086,28 +1194,28 @@ export default function AdminPage() {
   function getWithdrawalStatusBadge(status?: string | null) {
     if (status === "pending") {
       return {
-        label: "🟡 Pending",
+        label: " Pending",
         className: "bg-yellow-500/10 border-yellow-500/30 text-yellow-400",
       };
     }
 
     if (status === "approved") {
       return {
-        label: "🔵 Approved",
+        label: " Approved",
         className: "bg-blue-500/10 border-blue-500/30 text-blue-400",
       };
     }
 
     if (status === "paid") {
       return {
-        label: "🟢 Paid",
+        label: " Paid",
         className: "bg-green-500/10 border-green-500/30 text-green-400",
       };
     }
 
     if (status === "rejected") {
       return {
-        label: "🔴 Rejected",
+        label: " Rejected",
         className: "bg-red-500/10 border-red-500/30 text-red-400",
       };
     }
@@ -1122,7 +1230,7 @@ export default function AdminPage() {
     setExpandedWithdrawalTimelineIds((currentIds) =>
       currentIds.includes(withdrawalId)
         ? currentIds.filter((id) => id !== withdrawalId)
-        : [...currentIds, withdrawalId]
+        : [...currentIds, withdrawalId],
     );
   }
 
@@ -1169,28 +1277,28 @@ export default function AdminPage() {
           onChange={(e) => setLanguage(e.target.value as Language)}
           className="bg-black border border-zinc-700 rounded-xl px-4 py-2 text-sm"
         >
-          <option value="en">🇺🇸 English</option>
-          <option value="zh">🇨🇳 中文</option>
-          <option value="ja">🇯🇵 日本語</option>
-          <option value="ko">🇰🇷 한국어</option>
-          <option value="id">🇮🇩 Bahasa Indonesia</option>
-          <option value="ms">🇲🇾 Bahasa Melayu</option>
-          <option value="th">🇹🇭 ไทย</option>
-          <option value="hi">🇮🇳 हिन्दी</option>
-          <option value="ar">🇦🇪 العربية</option>
-          <option value="vi">🇻🇳 Tiếng Việt</option>
-          <option value="tl">🇵🇭 Tagalog</option>
-          <option value="pt">🇧🇷 Português</option>
-          <option value="es">🇪🇸 Español</option>
-          <option value="fr">🇫🇷 Français</option>
-          <option value="de">🇩🇪 Deutsch</option>
-          <option value="ru">🇷🇺 Русский</option>
-          <option value="tr">🇹🇷 Türkçe</option>
-          <option value="it">🇮🇹 Italiano</option>
-          <option value="nl">🇳🇱 Nederlands</option>
-          <option value="pl">🇵🇱 Polski</option>
-          <option value="el">🇬🇷 Ελληνικά</option>
-          <option value="uk">🇺🇦 Українська</option>
+          <option value="en"> English</option>
+          <option value="zh"> </option>
+          <option value="ja"> </option>
+          <option value="ko"> </option>
+          <option value="id"> Bahasa Indonesia</option>
+          <option value="ms"> Bahasa Melayu</option>
+          <option value="th"> </option>
+          <option value="hi"> </option>
+          <option value="ar"> </option>
+          <option value="vi"> Ting Vit</option>
+          <option value="tl"> Tagalog</option>
+          <option value="pt"> Portugu\'eas</option>
+          <option value="es"> Espa\'f1ol</option>
+          <option value="fr"> Fran\'e7ais</option>
+          <option value="de"> Deutsch</option>
+          <option value="ru"> </option>
+          <option value="tr"> T\'fcrk\'e7e</option>
+          <option value="it"> Italiano</option>
+          <option value="nl"> Nederlands</option>
+          <option value="pl"> Polski</option>
+          <option value="el"> </option>
+          <option value="uk"> </option>
         </select>
       </div>
 
@@ -1208,6 +1316,60 @@ export default function AdminPage() {
         </h1>
 
         <p className="text-zinc-400 mt-3 text-lg">{t.adminSubtitle}</p>
+      </div>
+
+      <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-4 md:p-6 mb-10">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-purple-400 font-black">
+              Quick Setup
+            </p>
+            <h2 className="text-2xl md:text-3xl font-black mt-2">
+              🎧 Quick Setup
+            </h2>
+            <p className="text-sm text-zinc-400 mt-2">
+              Keep setup simple: go live, share your QR code, and collect
+              requests.
+            </p>
+          </div>
+
+          <div className="bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-center shrink-0">
+            <p className="text-3xl font-black text-green-400">
+              {completedReadySteps}/5
+            </p>
+            <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">
+              ready
+            </p>
+          </div>
+        </div>
+
+        <div className="relative grid md:grid-cols-5 gap-3">
+          {readySteps.map((step) => (
+            <div
+              key={step.title}
+              className={`border rounded-2xl p-4 ${step.className}`}
+            >
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-2xl">{step.icon}</span>
+                <span className="text-[10px] font-black uppercase tracking-widest bg-black/30 border border-white/10 rounded-full px-2 py-1">
+                  {step.status}
+                </span>
+              </div>
+
+              <h3 className="text-white font-black mt-4">{step.title}</h3>
+              <p className="text-xs text-zinc-400 mt-2 leading-relaxed">
+                {step.message}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {!isVerificationApproved && (
+          <div className="mt-4 bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 rounded-2xl p-4 text-sm leading-relaxed">
+            DJs can still go live and accept paid requests while verification is
+            pending. Withdrawals unlock after Blackline approves the account.
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
@@ -1273,10 +1435,7 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <div
-  ref={requestQueueRef}
-  className="grid md:grid-cols-2 gap-8 mb-10"
->
+      <div ref={requestQueueRef} className="grid md:grid-cols-2 gap-8 mb-10">
         <RequestColumn
           title={`${t.pendingRequests} (${grouped.pending.length})`}
           titleColor="text-yellow-400"
@@ -1426,8 +1585,8 @@ export default function AdminPage() {
       </div>
 
       <div className="mb-12">
-  <QRCodeBox stageName={dj.stage_name} language={language} t={t} />
-</div>
+        <QRCodeBox stageName={dj.stage_name} language={language} t={t} />
+      </div>
 
       <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10">
         <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-purple-400 mb-8 text-center">
@@ -1538,45 +1697,45 @@ export default function AdminPage() {
             >
               <option value="">{t.selectCountry}</option>
 
-              <option value="Ghana">🇬🇭 Ghana</option>
-              <option value="Nigeria">🇳🇬 Nigeria</option>
-              <option value="Kenya">🇰🇪 Kenya</option>
-              <option value="South Africa">🇿🇦 South Africa</option>
+              <option value="Ghana"> Ghana</option>
+              <option value="Nigeria"> Nigeria</option>
+              <option value="Kenya"> Kenya</option>
+              <option value="South Africa"> South Africa</option>
 
-              <option value="United Kingdom">🇬🇧 United Kingdom</option>
-              <option value="United States">🇺🇸 United States</option>
-              <option value="Canada">🇨🇦 Canada</option>
+              <option value="United Kingdom"> United Kingdom</option>
+              <option value="United States"> United States</option>
+              <option value="Canada"> Canada</option>
 
-              <option value="Germany">🇩🇪 Germany</option>
-              <option value="France">🇫🇷 France</option>
-              <option value="Spain">🇪🇸 Spain</option>
-              <option value="Italy">🇮🇹 Italy</option>
-              <option value="Netherlands">🇳🇱 Netherlands</option>
-              <option value="Poland">🇵🇱 Poland</option>
-              <option value="Greece">🇬🇷 Greece</option>
-              <option value="Ukraine">🇺🇦 Ukraine</option>
-              <option value="Turkey">🇹🇷 Turkey</option>
+              <option value="Germany"> Germany</option>
+              <option value="France"> France</option>
+              <option value="Spain"> Spain</option>
+              <option value="Italy"> Italy</option>
+              <option value="Netherlands"> Netherlands</option>
+              <option value="Poland"> Poland</option>
+              <option value="Greece"> Greece</option>
+              <option value="Ukraine"> Ukraine</option>
+              <option value="Turkey"> Turkey</option>
 
-              <option value="UAE">🇦🇪 UAE</option>
-              <option value="Qatar">🇶🇦 Qatar</option>
-              <option value="Saudi Arabia">🇸🇦 Saudi Arabia</option>
+              <option value="UAE"> UAE</option>
+              <option value="Qatar"> Qatar</option>
+              <option value="Saudi Arabia"> Saudi Arabia</option>
 
-              <option value="Singapore">🇸🇬 Singapore</option>
-              <option value="Malaysia">🇲🇾 Malaysia</option>
-              <option value="Indonesia">🇮🇩 Indonesia</option>
-              <option value="Thailand">🇹🇭 Thailand</option>
-              <option value="Philippines">🇵🇭 Philippines</option>
-              <option value="Vietnam">🇻🇳 Vietnam</option>
-              <option value="China">🇨🇳 China</option>
-              <option value="Japan">🇯🇵 Japan</option>
-              <option value="South Korea">🇰🇷 South Korea</option>
-              <option value="India">🇮🇳 India</option>
+              <option value="Singapore"> Singapore</option>
+              <option value="Malaysia"> Malaysia</option>
+              <option value="Indonesia"> Indonesia</option>
+              <option value="Thailand"> Thailand</option>
+              <option value="Philippines"> Philippines</option>
+              <option value="Vietnam"> Vietnam</option>
+              <option value="China"> China</option>
+              <option value="Japan"> Japan</option>
+              <option value="South Korea"> South Korea</option>
+              <option value="India"> India</option>
 
-              <option value="Australia">🇦🇺 Australia</option>
-              <option value="New Zealand">🇳🇿 New Zealand</option>
+              <option value="Australia"> Australia</option>
+              <option value="New Zealand"> New Zealand</option>
 
-              <option value="Brazil">🇧🇷 Brazil</option>
-              <option value="Mexico">🇲🇽 Mexico</option>
+              <option value="Brazil"> Brazil</option>
+              <option value="Mexico"> Mexico</option>
             </select>
 
             <select
@@ -1593,39 +1752,39 @@ export default function AdminPage() {
               }}
               className="w-full p-4 rounded-xl bg-black border border-zinc-700"
             >
-              <option value="GHS">🇬🇭 GHS</option>
-              <option value="NGN">🇳🇬 NGN</option>
-              <option value="KES">🇰🇪 KES</option>
-              <option value="ZAR">🇿🇦 ZAR</option>
+              <option value="GHS"> GHS</option>
+              <option value="NGN"> NGN</option>
+              <option value="KES"> KES</option>
+              <option value="ZAR"> ZAR</option>
 
-              <option value="USD">🇺🇸 USD</option>
-              <option value="CAD">🇨🇦 CAD</option>
-              <option value="MXN">🇲🇽 MXN</option>
-              <option value="BRL">🇧🇷 BRL</option>
+              <option value="USD"> USD</option>
+              <option value="CAD"> CAD</option>
+              <option value="MXN"> MXN</option>
+              <option value="BRL"> BRL</option>
 
-              <option value="EUR">🇪🇺 EUR</option>
-              <option value="GBP">🇬🇧 GBP</option>
-              <option value="PLN">🇵🇱 PLN</option>
-              <option value="UAH">🇺🇦 UAH</option>
-              <option value="TRY">🇹🇷 TRY</option>
+              <option value="EUR"> EUR</option>
+              <option value="GBP"> GBP</option>
+              <option value="PLN"> PLN</option>
+              <option value="UAH"> UAH</option>
+              <option value="TRY"> TRY</option>
 
-              <option value="AED">🇦🇪 AED</option>
-              <option value="QAR">🇶🇦 QAR</option>
-              <option value="SAR">🇸🇦 SAR</option>
+              <option value="AED"> AED</option>
+              <option value="QAR"> QAR</option>
+              <option value="SAR"> SAR</option>
 
-              <option value="SGD">🇸🇬 SGD</option>
-              <option value="MYR">🇲🇾 MYR</option>
-              <option value="IDR">🇮🇩 IDR</option>
-              <option value="THB">🇹🇭 THB</option>
-              <option value="PHP">🇵🇭 PHP</option>
-              <option value="VND">🇻🇳 VND</option>
-              <option value="CNY">🇨🇳 CNY</option>
-              <option value="JPY">🇯🇵 JPY</option>
-              <option value="KRW">🇰🇷 KRW</option>
-              <option value="INR">🇮🇳 INR</option>
+              <option value="SGD"> SGD</option>
+              <option value="MYR"> MYR</option>
+              <option value="IDR"> IDR</option>
+              <option value="THB"> THB</option>
+              <option value="PHP"> PHP</option>
+              <option value="VND"> VND</option>
+              <option value="CNY"> CNY</option>
+              <option value="JPY"> JPY</option>
+              <option value="KRW"> KRW</option>
+              <option value="INR"> INR</option>
 
-              <option value="AUD">🇦🇺 AUD</option>
-              <option value="NZD">🇳🇿 NZD</option>
+              <option value="AUD"> AUD</option>
+              <option value="NZD"> NZD</option>
             </select>
           </div>
 
@@ -1671,8 +1830,8 @@ export default function AdminPage() {
                 payoutStatus === "Active"
                   ? "text-green-400"
                   : payoutStatus === "Pending Verification"
-                  ? "text-yellow-400"
-                  : "text-red-400"
+                    ? "text-yellow-400"
+                    : "text-red-400"
               }`}
             >
               {payoutStatus === "not_connected" ||
@@ -1699,7 +1858,7 @@ export default function AdminPage() {
                   onChange={(e) => {
                     const selectedCode = e.target.value;
                     const selectedBank = paystackBanks.find(
-                      (bank) => bank.code === selectedCode
+                      (bank) => bank.code === selectedCode,
                     );
 
                     setPayoutBankCode(selectedCode);
@@ -1745,8 +1904,8 @@ export default function AdminPage() {
                   payoutMethod === "Bank Transfer"
                     ? "Account number"
                     : payoutMethod === "Mobile Money"
-                    ? "Mobile money number"
-                    : "Account / payout ID"
+                      ? "Mobile money number"
+                      : "Account / payout ID"
                 }
                 value={payoutAccountNumber}
                 onChange={(e) => setPayoutAccountNumber(e.target.value)}
@@ -1760,7 +1919,7 @@ export default function AdminPage() {
                   Payout account connected
                 </p>
                 <p className="text-sm text-zinc-400 mt-2">
-                  {payoutMethod} • {payoutProvider} • {payoutAccountName}
+                  {payoutMethod} \'95 {payoutProvider} \'95 {payoutAccountName}
                 </p>
 
                 <p className="text-xs text-zinc-500 mt-2">
@@ -1792,19 +1951,19 @@ export default function AdminPage() {
                 verificationStatus === "verified"
                   ? "text-green-400"
                   : verificationStatus === "pending"
-                  ? "text-yellow-400"
-                  : verificationStatus === "rejected"
-                  ? "text-red-400"
-                  : "text-zinc-300"
+                    ? "text-yellow-400"
+                    : verificationStatus === "rejected"
+                      ? "text-red-400"
+                      : "text-zinc-300"
               }`}
             >
               {verificationStatus === "verified"
-                ? `🟢 ${t.verified}`
+                ? ` ${t.verified}`
                 : verificationStatus === "pending"
-                ? `🟡 ${t.pendingVerification}`
-                : verificationStatus === "rejected"
-                ? `🔴 ${t.rejectedVerification}`
-                : `⚪ ${t.notStarted}`}
+                  ? ` ${t.pendingVerification}`
+                  : verificationStatus === "rejected"
+                    ? ` ${t.rejectedVerification}`
+                    : ` ${t.notStarted}`}
             </p>
 
             {verificationStatus === "pending" && (
@@ -1814,9 +1973,7 @@ export default function AdminPage() {
             )}
 
             {verificationStatus === "verified" && (
-              <p className="mt-3 text-sm text-green-400">
-                {t.verifiedMessage}
-              </p>
+              <p className="mt-3 text-sm text-green-400">{t.verifiedMessage}</p>
             )}
 
             {verificationStatus === "rejected" && (
@@ -1933,7 +2090,7 @@ export default function AdminPage() {
               <p className="text-zinc-500 text-sm">Payout destination</p>
               {payoutStatus === "Active" && paystackRecipientCode ? (
                 <p className="text-green-400 font-bold mt-1">
-                  {payoutMethod} • {payoutProvider}
+                  {payoutMethod} \'95 {payoutProvider}
                 </p>
               ) : (
                 <p className="text-red-400 font-bold mt-1">Not Connected</p>
@@ -1982,15 +2139,18 @@ export default function AdminPage() {
 
               {(!paystackRecipientCode || payoutStatus !== "Active") && (
                 <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl p-4 text-sm">
-                  Connect your payout account with Paystack before requesting a withdrawal.
+                  Connect your payout account with Paystack before requesting a
+                  withdrawal.
                 </div>
               )}
 
-{hasOpenWithdrawal && (
-  <div className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 rounded-xl p-4 text-sm">
-    You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.
-  </div>
-)}
+              {hasOpenWithdrawal && (
+                <div className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 rounded-xl p-4 text-sm">
+                  You already have a pending or approved withdrawal request. New
+                  withdrawal requests are locked until the current request is
+                  paid or rejected.
+                </div>
+              )}
               <button
                 onClick={requestWithdrawal}
                 disabled={
@@ -2005,10 +2165,10 @@ export default function AdminPage() {
                 {withdrawLoading
                   ? "Submitting..."
                   : verificationStatus !== "verified"
-                  ? t.verificationRequired
-                  : !paystackRecipientCode
-                  ? "Connect Payout Account"
-                  : t.requestPayout}
+                    ? t.verificationRequired
+                    : !paystackRecipientCode
+                      ? "Connect Payout Account"
+                      : t.requestPayout}
               </button>
             </div>
           </div>
@@ -2062,10 +2222,15 @@ export default function AdminPage() {
                       <div className="mt-2">
                         <span
                           className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${
-                            getWithdrawalStatusBadge(latestWithdrawal.status).className
+                            getWithdrawalStatusBadge(latestWithdrawal.status)
+                              .className
                           }`}
                         >
-                          Latest: {getWithdrawalStatusBadge(latestWithdrawal.status).label}
+                          Latest:{" "}
+                          {
+                            getWithdrawalStatusBadge(latestWithdrawal.status)
+                              .label
+                          }
                         </span>
                       </div>
                     )}
@@ -2077,11 +2242,13 @@ export default function AdminPage() {
                       </span>
 
                       <span className="bg-green-500/10 border border-green-500/30 px-3 py-1 rounded-full text-xs text-green-400 font-bold">
-                        Total withdrawn: {currency} {withdrawalPaidTotal.toFixed(2)}
+                        Total withdrawn: {currency}{" "}
+                        {withdrawalPaidTotal.toFixed(2)}
                       </span>
 
                       <span className="bg-purple-500/10 border border-purple-500/30 px-3 py-1 rounded-full text-xs text-purple-300 font-bold">
-                        Total requested: {currency} {withdrawalRequestedTotal.toFixed(2)}
+                        Total requested: {currency}{" "}
+                        {withdrawalRequestedTotal.toFixed(2)}
                       </span>
 
                       <span className="bg-yellow-500/10 border border-yellow-500/30 px-3 py-1 rounded-full text-xs text-yellow-400 font-bold">
@@ -2090,7 +2257,8 @@ export default function AdminPage() {
                     </div>
 
                     <p className="text-xs text-zinc-500 mt-3">
-                      Latest request: {latestWithdrawal?.created_at
+                      Latest request:{" "}
+                      {latestWithdrawal?.created_at
                         ? new Date(latestWithdrawal.created_at).toLocaleString()
                         : "Unknown"}
                     </p>
@@ -2099,21 +2267,26 @@ export default function AdminPage() {
 
                 <button
                   type="button"
-                  onClick={() => setIsWithdrawalHistoryExpanded((currentValue) => !currentValue)}
+                  onClick={() =>
+                    setIsWithdrawalHistoryExpanded(
+                      (currentValue) => !currentValue,
+                    )
+                  }
                   className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-4 py-2 rounded-xl text-sm font-bold"
                 >
-                  {withdrawalHistoryIsOpen ? "Hide Details ▲" : "View Details ▼"}
+                  {withdrawalHistoryIsOpen ? "Hide Details " : "View Details "}
                 </button>
               </div>
 
               {withdrawalHistoryIsOpen && (
                 <div className="mt-5 border-t border-zinc-800 pt-5 max-h-[600px] overflow-y-auto space-y-4 pr-2">
                   {sortedWithdrawalHistory.map((withdrawal) => {
-                    const statusBadge = getWithdrawalStatusBadge(withdrawal.status);
-                    const auditTrail = getWithdrawalAuditLogs(withdrawal.id);
-                    const isTimelineOpen = expandedWithdrawalTimelineIds.includes(
-                      withdrawal.id
+                    const statusBadge = getWithdrawalStatusBadge(
+                      withdrawal.status,
                     );
+                    const auditTrail = getWithdrawalAuditLogs(withdrawal.id);
+                    const isTimelineOpen =
+                      expandedWithdrawalTimelineIds.includes(withdrawal.id);
 
                     return (
                       <div
@@ -2124,7 +2297,7 @@ export default function AdminPage() {
                           <div>
                             <div className="flex flex-wrap items-center gap-3">
                               <h4 className="text-xl font-black text-white">
-                                {withdrawal.currency || currency} {" "}
+                                {withdrawal.currency || currency}{" "}
                                 {Number(withdrawal.amount || 0).toFixed(2)}
                               </h4>
 
@@ -2136,33 +2309,36 @@ export default function AdminPage() {
                             </div>
 
                             <p className="text-xs text-zinc-500 mt-2">
-                              Requested: {withdrawal.created_at
-                                ? new Date(withdrawal.created_at).toLocaleString()
+                              Requested:{" "}
+                              {withdrawal.created_at
+                                ? new Date(
+                                    withdrawal.created_at,
+                                  ).toLocaleString()
                                 : "No date"}
                             </p>
                           </div>
 
                           {withdrawal.status === "paid" && (
                             <span className="bg-green-600/20 text-green-400 px-4 py-2 rounded-xl font-semibold">
-                              ✅ Paid
+                              Paid
                             </span>
                           )}
 
                           {withdrawal.status === "approved" && (
                             <span className="bg-cyan-600/20 text-cyan-400 px-4 py-2 rounded-xl font-semibold">
-                              🔵 Approved by Blackline
+                              Approved by Blackline
                             </span>
                           )}
 
                           {withdrawal.status === "pending" && (
                             <span className="bg-yellow-500/10 text-yellow-400 px-4 py-2 rounded-xl font-semibold">
-                              🟡 Waiting for review
+                              Waiting for review
                             </span>
                           )}
 
                           {withdrawal.status === "rejected" && (
                             <span className="bg-red-600/20 text-red-400 px-4 py-2 rounded-xl font-semibold">
-                              🔴 Rejected
+                              Rejected
                             </span>
                           )}
                         </div>
@@ -2183,14 +2359,18 @@ export default function AdminPage() {
                           </div>
 
                           <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                            <p className="text-xs text-zinc-500">Account Name</p>
+                            <p className="text-xs text-zinc-500">
+                              Account Name
+                            </p>
                             <p className="text-zinc-300 font-semibold">
                               {withdrawal.account_name || "No account name"}
                             </p>
                           </div>
 
                           <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                            <p className="text-xs text-zinc-500">Account Number</p>
+                            <p className="text-xs text-zinc-500">
+                              Account Number
+                            </p>
                             <p className="text-zinc-300 font-semibold">
                               {withdrawal.account_number || "No account number"}
                             </p>
@@ -2200,7 +2380,9 @@ export default function AdminPage() {
                         <div className="mt-4 bg-black/40 border border-zinc-800 rounded-xl p-4">
                           <button
                             type="button"
-                            onClick={() => toggleWithdrawalTimeline(withdrawal.id)}
+                            onClick={() =>
+                              toggleWithdrawalTimeline(withdrawal.id)
+                            }
                             className="w-full flex items-center justify-between gap-3 text-left"
                           >
                             <span className="text-xs text-zinc-400 font-bold">
@@ -2208,7 +2390,7 @@ export default function AdminPage() {
                             </span>
 
                             <span className="text-xs text-zinc-500 font-bold">
-                              {isTimelineOpen ? "Hide ▲" : "Show ▼"}
+                              {isTimelineOpen ? "Hide " : "Show "}
                             </span>
                           </button>
 
@@ -2224,7 +2406,8 @@ export default function AdminPage() {
                                     <div className="absolute left-3 top-3 bottom-3 w-px bg-zinc-700" />
 
                                     {auditTrail.map((log) => {
-                                      const timelineDetails = getAuditTimelineDetails(log);
+                                      const timelineDetails =
+                                        getAuditTimelineDetails(log);
 
                                       return (
                                         <div key={log.id} className="relative">
@@ -2241,12 +2424,15 @@ export default function AdminPage() {
                                           </p>
 
                                           <p className="text-sm text-zinc-300 mt-1">
-                                            {log.description || "Activity updated"}
+                                            {log.description ||
+                                              "Activity updated"}
                                           </p>
 
                                           <p className="text-xs text-zinc-600 mt-1">
                                             {log.created_at
-                                              ? new Date(log.created_at).toLocaleString()
+                                              ? new Date(
+                                                  log.created_at,
+                                                ).toLocaleString()
                                               : "No date"}
                                           </p>
                                         </div>
@@ -2336,7 +2522,7 @@ function RequestColumn({
                 <div>
                   <h3 className="text-2xl font-bold">
                     {showQueueNumber
-                      ? `#${index + 1} — ${request.song}`
+                      ? `#${index + 1} \'97 ${request.song}`
                       : request.song}
                   </h3>
 
