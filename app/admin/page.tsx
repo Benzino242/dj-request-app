@@ -2889,13 +2889,13 @@ export default function AdminPage() {
             </div>
 
             {payoutStatus === "Active" && (
-  <div className="mt-5 bg-green-500/10 border border-green-500/30 rounded-xl p-4">
-    <p className="text-green-400 font-bold">
-      Payout account connected
-    </p>
-    <p className="text-sm text-zinc-400 mt-2">
-      {payoutMethod} - {payoutProvider} - {payoutAccountName}
-    </p>
+              <div className="mt-5 bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+                <p className="text-green-400 font-bold">
+                  Payout account connected
+                </p>
+                <p className="text-sm text-zinc-400 mt-2">
+                  {payoutMethod} - {payoutProvider} - {payoutAccountName}
+                </p>
 
                 <p className="text-xs text-zinc-500 mt-2">
                   Recipient Code:{" "}
@@ -3108,7 +3108,7 @@ export default function AdminPage() {
                 </div>
 
                 <p className="text-xs text-zinc-500 mt-4 leading-relaxed">
-                  Formula: Available balance = DJ earnings − pending/approved/paid withdrawals.
+                  Formula: Available balance = DJ earnings - pending/approved/paid withdrawals.
                 </p>
               </div>
             </div>
@@ -3123,16 +3123,15 @@ export default function AdminPage() {
               className="w-full p-4 rounded-xl bg-black border border-zinc-700"
             />
 
-<div className="bg-black border border-zinc-700 rounded-xl p-4">
-  <p className="text-zinc-500 text-sm">Payout destination</p>
-  {payoutStatus === "Active" && paystackRecipientCode ? (
-    <p className="text-green-400 font-bold mt-1">
-      {payoutMethod} - {payoutProvider}
-    </p>
-  ) : (
-    <p className="text-red-400 font-bold mt-1">Not Connected</p>
-  )}
-</div>
+            <div className="bg-black border border-zinc-700 rounded-xl p-4">
+              <p className="text-zinc-500 text-sm">Payout destination</p>
+              {payoutStatus === "Active" && paystackRecipientCode ? (
+                <p className="text-green-400 font-bold mt-1">
+                  {payoutMethod} - {payoutProvider}
+                </p>
+              ) : (
+                <p className="text-red-400 font-bold mt-1">Not Connected</p>
+              )}
             </div>
           </div>
 
@@ -3559,9 +3558,9 @@ function RequestColumn({
 
                 <div>
                   <h3 className="text-2xl font-bold">
-                  {showQueueNumber
-                    ? `#${index + 1} - ${request.song}`
-                    : request.song}
+                    {showQueueNumber
+                      ? `#${index + 1} - ${request.song}`
+                      : request.song}
                   </h3>
 
                   <p className="text-zinc-400 mt-1">{request.artist}</p>
