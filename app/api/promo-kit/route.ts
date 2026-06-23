@@ -12,6 +12,152 @@ const GREEN = rgb(0.18, 0.95, 0.35);
 const GRAY = rgb(0.42, 0.42, 0.48);
 const LIGHT_GRAY = rgb(0.94, 0.94, 0.94);
 
+type PromoPdfLanguage =
+  | "en"
+  | "id"
+  | "ms"
+  | "tl"
+  | "pt"
+  | "es"
+  | "fr"
+  | "de"
+  | "it"
+  | "nl";
+
+type PromoPdfText = {
+  requestASong: string;
+  scanQrCode: string;
+  scanHere: string;
+  requestFavoriteSong: string;
+  tipMoveHigher: string;
+  inTheQueue: string;
+  tipMoveHigherFull: string;
+  noAppRequired: string;
+  poweredByBlackline: string;
+};
+
+const promoPdfTranslations: Record<PromoPdfLanguage, PromoPdfText> = {
+  en: {
+    requestASong: "REQUEST A SONG",
+    scanQrCode: "SCAN THE QR CODE",
+    scanHere: "SCAN HERE",
+    requestFavoriteSong: "Request your favorite song",
+    tipMoveHigher: "Tip to move higher",
+    inTheQueue: "in the queue",
+    tipMoveHigherFull: "Tip to move higher in the queue",
+    noAppRequired: "No app required",
+    poweredByBlackline: "Powered by Blackline",
+  },
+  id: {
+    requestASong: "MINTA LAGU",
+    scanQrCode: "PINDAI KODE QR",
+    scanHere: "PINDAI DI SINI",
+    requestFavoriteSong: "Minta lagu favorit Anda",
+    tipMoveHigher: "Tip agar naik",
+    inTheQueue: "di antrean",
+    tipMoveHigherFull: "Tip agar naik di antrean",
+    noAppRequired: "Tanpa aplikasi",
+    poweredByBlackline: "Didukung oleh Blackline",
+  },
+  ms: {
+    requestASong: "MINTA LAGU",
+    scanQrCode: "IMBAS KOD QR",
+    scanHere: "IMBAS DI SINI",
+    requestFavoriteSong: "Minta lagu kegemaran anda",
+    tipMoveHigher: "Tip untuk naik",
+    inTheQueue: "dalam barisan",
+    tipMoveHigherFull: "Tip untuk naik dalam barisan",
+    noAppRequired: "Tiada app diperlukan",
+    poweredByBlackline: "Dikuasakan oleh Blackline",
+  },
+  tl: {
+    requestASong: "MAG-REQUEST NG KANTA",
+    scanQrCode: "I-SCAN ANG QR CODE",
+    scanHere: "SCAN DITO",
+    requestFavoriteSong: "I-request ang favorite song mo",
+    tipMoveHigher: "Mag-tip para umangat",
+    inTheQueue: "sa pila",
+    tipMoveHigherFull: "Mag-tip para umangat sa pila",
+    noAppRequired: "Walang app kailangan",
+    poweredByBlackline: "Powered by Blackline",
+  },
+  pt: {
+    requestASong: "PECA UMA MUSICA",
+    scanQrCode: "ESCANEIE O QR CODE",
+    scanHere: "ESCANEIE AQUI",
+    requestFavoriteSong: "Peca sua musica favorita",
+    tipMoveHigher: "De gorjeta para subir",
+    inTheQueue: "na fila",
+    tipMoveHigherFull: "De gorjeta para subir na fila",
+    noAppRequired: "Sem app necessario",
+    poweredByBlackline: "Desenvolvido por Blackline",
+  },
+  es: {
+    requestASong: "PIDE UNA CANCION",
+    scanQrCode: "ESCANEA EL CODIGO QR",
+    scanHere: "ESCANEA AQUI",
+    requestFavoriteSong: "Pide tu cancion favorita",
+    tipMoveHigher: "Da propina para subir",
+    inTheQueue: "en la cola",
+    tipMoveHigherFull: "Da propina para subir en la cola",
+    noAppRequired: "Sin app requerida",
+    poweredByBlackline: "Desarrollado por Blackline",
+  },
+  fr: {
+    requestASong: "DEMANDE UN SON",
+    scanQrCode: "SCANNE LE QR CODE",
+    scanHere: "SCANNE ICI",
+    requestFavoriteSong: "Demande ton son prefere",
+    tipMoveHigher: "Donne un pourboire",
+    inTheQueue: "pour monter",
+    tipMoveHigherFull: "Donne un pourboire pour monter",
+    noAppRequired: "Aucune app requise",
+    poweredByBlackline: "Propulse par Blackline",
+  },
+  de: {
+    requestASong: "SONG WUENSCHEN",
+    scanQrCode: "QR-CODE SCANNEN",
+    scanHere: "HIER SCANNEN",
+    requestFavoriteSong: "Wuensch dir deinen Lieblingssong",
+    tipMoveHigher: "Trinkgeld bringt dich",
+    inTheQueue: "nach oben",
+    tipMoveHigherFull: "Trinkgeld bringt dich nach oben",
+    noAppRequired: "Keine App noetig",
+    poweredByBlackline: "Powered by Blackline",
+  },
+  it: {
+    requestASong: "RICHIEDI UNA CANZONE",
+    scanQrCode: "SCANSIONA IL QR CODE",
+    scanHere: "SCANSIONA QUI",
+    requestFavoriteSong: "Richiedi la tua canzone preferita",
+    tipMoveHigher: "Lascia una mancia",
+    inTheQueue: "per salire",
+    tipMoveHigherFull: "Lascia una mancia per salire",
+    noAppRequired: "Nessuna app richiesta",
+    poweredByBlackline: "Powered by Blackline",
+  },
+  nl: {
+    requestASong: "VRAAG EEN NUMMER AAN",
+    scanQrCode: "SCAN DE QR-CODE",
+    scanHere: "SCAN HIER",
+    requestFavoriteSong: "Vraag je favoriete nummer aan",
+    tipMoveHigher: "Geef fooi om hoger",
+    inTheQueue: "te komen",
+    tipMoveHigherFull: "Geef fooi om hoger te komen",
+    noAppRequired: "Geen app nodig",
+    poweredByBlackline: "Powered by Blackline",
+  },
+};
+
+function getPromoPdfText(language: string | null) {
+  if (language && language in promoPdfTranslations) {
+    return promoPdfTranslations[language as PromoPdfLanguage];
+  }
+
+  return promoPdfTranslations.en;
+}
+
+
 
 type PromoKitType = "poster" | "table-tent" | "sticker" | "qr-png";
 
@@ -228,7 +374,7 @@ function drawPhoneIcon(page: PDFPage, x: number, y: number, scale = 1) {
   });
 }
 
-async function buildPosterPdf(requestUrl: string) {
+async function buildPosterPdf(requestUrl: string, texts: PromoPdfText) {
   const pdfDoc = await PDFDocument.create();
   const page = pdfDoc.addPage([595.28, 841.89]);
 
@@ -243,8 +389,8 @@ async function buildPosterPdf(requestUrl: string) {
     color: BLACK,
   });
 
-  drawCenteredText(page, "REQUEST A SONG", 700, 44, bold);
-  drawCenteredText(page, "SCAN THE QR CODE", 650, 20, bold, PURPLE);
+  drawCenteredText(page, texts.requestASong, 700, 44, bold);
+  drawCenteredText(page, texts.scanQrCode, 650, 20, bold, PURPLE);
 
   const qrBytes = await getQrPngBytes(requestUrl);
   const qrImage = await pdfDoc.embedPng(qrBytes);
@@ -268,15 +414,15 @@ async function buildPosterPdf(requestUrl: string) {
     height: qrSize,
   });
 
-  drawCenteredText(page, "Request your favorite song", 210, 23, bold);
-  drawCenteredText(page, "Tip to move higher in the queue", 174, 19, regular, GREEN);
-  drawCenteredText(page, "No app required", 142, 17, regular);
-  drawCenteredText(page, "Powered by Blackline", 60, 13, bold, PURPLE);
+  drawCenteredText(page, texts.requestFavoriteSong, 210, 23, bold);
+  drawCenteredText(page, texts.tipMoveHigherFull, 174, 19, regular, GREEN);
+  drawCenteredText(page, texts.noAppRequired, 142, 17, regular);
+  drawCenteredText(page, texts.poweredByBlackline, 60, 13, bold, PURPLE);
 
   return pdfDoc.save();
 }
 
-async function buildStickerPdf(requestUrl: string) {
+async function buildStickerPdf(requestUrl: string, texts: PromoPdfText) {
   const pdfDoc = await PDFDocument.create();
 
   const pageW = 340.16;
@@ -291,7 +437,7 @@ async function buildStickerPdf(requestUrl: string) {
 
   drawHeadphonesIcon(page, 40, 160, 0.65);
 
-  page.drawText("REQUEST", {
+  page.drawText(texts.requestASong.split(" ")[0] || "REQUEST", {
     x: 73,
     y: 165,
     size: 28,
@@ -299,7 +445,7 @@ async function buildStickerPdf(requestUrl: string) {
     color: WHITE,
   });
 
-  page.drawText("A SONG", {
+  page.drawText(texts.requestASong.replace(/^\S+\s*/, "") || "A SONG", {
     x: 36,
     y: 116,
     size: 42,
@@ -337,7 +483,7 @@ async function buildStickerPdf(requestUrl: string) {
 
   drawMusicIcon(page, 46, 76, 10);
 
-  page.drawText("Request your favorite song", {
+  page.drawText(texts.requestFavoriteSong, {
     x: 56,
     y: 68,
     size: 10.5,
@@ -347,7 +493,7 @@ async function buildStickerPdf(requestUrl: string) {
 
   drawArrowIcon(page, 46, 49, 10);
 
-  page.drawText("Tip to move higher", {
+  page.drawText(texts.tipMoveHigher, {
     x: 63,
     y: 47,
     size: 12.5,
@@ -355,7 +501,7 @@ async function buildStickerPdf(requestUrl: string) {
     color: GREEN,
   });
 
-  page.drawText("in the queue", {
+  page.drawText(texts.inTheQueue, {
     x: 63,
     y: 32,
     size: 12.5,
@@ -365,7 +511,7 @@ async function buildStickerPdf(requestUrl: string) {
 
   drawRoundedFill(page, 35, 6, 88, 16, 4, PURPLE);
 
-  page.drawText("No app required", {
+  page.drawText(texts.noAppRequired, {
     x: 43,
     y: 11,
     size: 8,
@@ -394,7 +540,7 @@ async function buildStickerPdf(requestUrl: string) {
 
   drawPhoneIcon(page, qrCardX + 12, qrCardY + 13, 0.75);
 
-  page.drawText("SCAN HERE", {
+  page.drawText(texts.scanHere, {
     x: qrCardX + 28,
     y: qrCardY + 19,
     size: 11,
@@ -405,7 +551,7 @@ async function buildStickerPdf(requestUrl: string) {
   return pdfDoc.save();
 }
 
-async function buildTableTentPdf(requestUrl: string) {
+async function buildTableTentPdf(requestUrl: string, texts: PromoPdfText) {
   const pdfDoc = await PDFDocument.create();
 
   const pageW = 595.28;
@@ -461,8 +607,8 @@ async function buildTableTentPdf(requestUrl: string) {
     color: PURPLE,
   });
 
-  drawCenteredText(page, "REQUEST", cardY + 555, 45, bold, WHITE, cardX, cardW);
-  drawCenteredText(page, "A SONG", cardY + 503, 45, bold, WHITE, cardX, cardW);
+  drawCenteredText(page, texts.requestASong.split(" ")[0] || "REQUEST", cardY + 555, 45, bold, WHITE, cardX, cardW);
+  drawCenteredText(page, texts.requestASong.replace(/^\S+\s*/, "") || "A SONG", cardY + 503, 45, bold, WHITE, cardX, cardW);
 
   page.drawRectangle({
     x: cardX + 104,
@@ -472,7 +618,7 @@ async function buildTableTentPdf(requestUrl: string) {
     color: PURPLE,
   });
 
-  page.drawText("SCAN HERE", {
+  page.drawText(texts.scanHere, {
     x: cardX + 127,
     y: cardY + 478,
     size: 19,
@@ -498,7 +644,7 @@ async function buildTableTentPdf(requestUrl: string) {
 
   drawMusicIcon(page, cardX + 110, cardY + 220, 9);
 
-  page.drawText("Request your favorite song", {
+  page.drawText(texts.requestFavoriteSong, {
     x: cardX + 126,
     y: cardY + 214,
     size: 12,
@@ -508,7 +654,7 @@ async function buildTableTentPdf(requestUrl: string) {
 
   drawArrowIcon(page, cardX + 110, cardY + 192, 9);
 
-  page.drawText("Tip to move higher", {
+  page.drawText(texts.tipMoveHigher, {
     x: cardX + 126,
     y: cardY + 191,
     size: 14,
@@ -516,7 +662,7 @@ async function buildTableTentPdf(requestUrl: string) {
     color: GREEN,
   });
 
-  page.drawText("in the queue", {
+  page.drawText(texts.inTheQueue, {
     x: cardX + 126,
     y: cardY + 173,
     size: 14,
@@ -575,6 +721,7 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const stageName = searchParams.get("stage") || "";
     const type = searchParams.get("type") || "";
+    const language = searchParams.get("lang");
 
     if (!stageName.trim()) {
       return NextResponse.json({ error: "Missing DJ stage name" }, { status: 400 });
@@ -592,6 +739,7 @@ export async function GET(request: NextRequest) {
     }
 
     const requestUrl = getRequestUrl(stageName);
+    const texts = getPromoPdfText(language);
 
     if (type === "qr-png") {
       const qrBytes = await getQrPngBytes(requestUrl, 2400);
@@ -610,13 +758,13 @@ export async function GET(request: NextRequest) {
     let filename: string;
 
     if (type === "poster") {
-      pdfBytes = await buildPosterPdf(requestUrl);
+      pdfBytes = await buildPosterPdf(requestUrl, texts);
       filename = `${stageName}-blackline-a4-poster.pdf`;
     } else if (type === "table-tent") {
-      pdfBytes = await buildTableTentPdf(requestUrl);
+      pdfBytes = await buildTableTentPdf(requestUrl, texts);
       filename = `${stageName}-blackline-table-tent.pdf`;
     } else {
-      pdfBytes = await buildStickerPdf(requestUrl);
+      pdfBytes = await buildStickerPdf(requestUrl, texts);
       filename = `${stageName}-blackline-laptop-sticker.pdf`;
     }
 

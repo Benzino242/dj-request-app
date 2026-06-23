@@ -28,7 +28,7 @@ export default function QRCodeBox({ stageName, language = "en", t }: Props) {
   ) =>
     `/api/promo-kit?stage=${encodeURIComponent(
       cleanStageName
-    )}&type=${type}`;
+    )}&type=${type}&lang=${encodeURIComponent(language)}`;
 
   return (
     <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl text-center">
