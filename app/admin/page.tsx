@@ -1444,6 +1444,7 @@ export default function AdminPage() {
     useState<number[]>([]);
   const [isWithdrawalHistoryExpanded, setIsWithdrawalHistoryExpanded] =
     useState(false);
+  const [isPaymentAuditExpanded, setIsPaymentAuditExpanded] = useState(false);
 
   const [language, setLanguage] = useState<Language>("en");
 
@@ -3417,101 +3418,120 @@ export default function AdminPage() {
       </div>
 
       <div className="mb-10">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-4">
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-purple-400 font-black">
-              Payment audit
-            </p>
-            <h2 className="text-3xl font-bold text-white mt-1">
-              Recent Payment References
-            </h2>
-            <p className="text-sm text-zinc-500 mt-2">
-              Use this when a guest says they paid. Match the Paystack reference
-              to the song request and payment row.
-            </p>
+        <button
+          type="button"
+          onClick={() => setIsPaymentAuditExpanded((current) => !current)}
+          className="w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-5 text-left hover:border-purple-500/50 transition"
+        >
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-purple-400 font-black">
+                Payment audit
+              </p>
+
+              <h2 className="text-2xl md:text-3xl font-bold text-white mt-1">
+                Recent Payment References
+              </h2>
+
+              <p className="text-sm text-zinc-500 mt-2">
+                Use this when a guest says they paid. Tap to{" "}
+                {isPaymentAuditExpanded ? "hide" : "view"} recent Paystack
+                references.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <span className="bg-black border border-zinc-800 px-4 py-2 rounded-full text-xs text-zinc-400 font-bold">
+                {latestPayments.length} latest
+              </span>
+
+              <span className="bg-purple-600 px-4 py-2 rounded-full text-sm text-white font-black">
+                {isPaymentAuditExpanded ? "Hide" : "View"} references
+              </span>
+            </div>
           </div>
+        </button>
 
-          <span className="bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-full text-xs text-zinc-400 font-bold">
-            Showing latest {latestPayments.length}
-          </span>
-        </div>
-
-        {latestPayments.length === 0 ? (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
-            <p className="text-zinc-500">No payments recorded yet.</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {latestPayments.map((payment) => (
-              <div
-                key={payment.id}
-                className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4"
-              >
-                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="bg-green-600/15 border border-green-600/30 text-green-400 px-3 py-1 rounded-full text-xs font-bold uppercase">
-                        {payment.status || "paid"}
-                      </span>
-
-                      <span className="bg-purple-600/15 border border-purple-600/30 text-purple-300 px-3 py-1 rounded-full text-xs font-bold uppercase">
-                        {payment.provider || "paystack"}
-                      </span>
-
-                      {payment.request_id && (
-                        <span className="bg-black/40 border border-zinc-800 text-zinc-300 px-3 py-1 rounded-full text-xs font-bold">
-                          Request #{payment.request_id}
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="text-lg font-black text-white mt-3 truncate">
-                      {payment.song || "Song not saved"}
-                    </h3>
-
-                    <p className="text-sm text-zinc-400 mt-1">
-                      {payment.artist || "Artist not saved"}
-                    </p>
-
-                    <p className="text-sm text-purple-300 mt-2">
-                      Guest: {payment.guest_name || "Guest not saved"}
-                    </p>
-
-                    <p className="text-xs text-zinc-600 mt-2">
-                      {payment.created_at
-                        ? new Date(payment.created_at).toLocaleString()
-                        : "No date"}
-                    </p>
-                  </div>
-
-                  <div className="lg:text-right shrink-0">
-                    <p className="text-2xl font-black text-green-400">
-                      {payment.currency || currency}{" "}
-                      {Number(payment.amount || 0).toFixed(2)}
-                    </p>
-
-                    <div className="bg-black/40 border border-zinc-800 rounded-xl p-3 mt-3 text-left lg:text-right">
-                      <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">
-                        Paystack reference
-                      </p>
-                      <p className="text-sm text-white font-mono break-all mt-1">
-                        {payment.provider_reference || "No reference saved"}
-                      </p>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          copyPaymentReference(payment.provider_reference)
-                        }
-                        className="mt-3 w-full lg:w-auto bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-xl text-sm font-bold transition"
-                      >
-                        Copy reference
-                      </button>
-                    </div>
-                  </div>
-                </div>
+        {isPaymentAuditExpanded && (
+          <div className="mt-4">
+            {latestPayments.length === 0 ? (
+              <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+                <p className="text-zinc-500">No payments recorded yet.</p>
               </div>
-            ))}
+            ) : (
+              <div className="space-y-3">
+                {latestPayments.map((payment) => (
+                  <div
+                    key={payment.id}
+                    className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4"
+                  >
+                    <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="bg-green-600/15 border border-green-600/30 text-green-400 px-3 py-1 rounded-full text-xs font-bold uppercase">
+                            {payment.status || "paid"}
+                          </span>
+
+                          <span className="bg-purple-600/15 border border-purple-600/30 text-purple-300 px-3 py-1 rounded-full text-xs font-bold uppercase">
+                            {payment.provider || "paystack"}
+                          </span>
+
+                          {payment.request_id && (
+                            <span className="bg-black/40 border border-zinc-800 text-zinc-300 px-3 py-1 rounded-full text-xs font-bold">
+                              Request #{payment.request_id}
+                            </span>
+                          )}
+                        </div>
+
+                        <h3 className="text-lg font-black text-white mt-3 truncate">
+                          {payment.song || "Song not saved"}
+                        </h3>
+
+                        <p className="text-sm text-zinc-400 mt-1">
+                          {payment.artist || "Artist not saved"}
+                        </p>
+
+                        <p className="text-sm text-purple-300 mt-2">
+                          Guest: {payment.guest_name || "Guest not saved"}
+                        </p>
+
+                        <p className="text-xs text-zinc-600 mt-2">
+                          {payment.created_at
+                            ? new Date(payment.created_at).toLocaleString()
+                            : "No date"}
+                        </p>
+                      </div>
+
+                      <div className="lg:text-right shrink-0">
+                        <p className="text-2xl font-black text-green-400">
+                          {payment.currency || currency}{" "}
+                          {Number(payment.amount || 0).toFixed(2)}
+                        </p>
+
+                        <div className="bg-black/40 border border-zinc-800 rounded-xl p-3 mt-3 text-left lg:text-right">
+                          <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">
+                            Paystack reference
+                          </p>
+                          <p className="text-sm text-white font-mono break-all mt-1">
+                            {payment.provider_reference || "No reference saved"}
+                          </p>
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              copyPaymentReference(payment.provider_reference)
+                            }
+                            className="mt-3 w-full lg:w-auto bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-xl text-sm font-bold transition"
+                          >
+                            Copy reference
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
