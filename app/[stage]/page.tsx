@@ -220,6 +220,10 @@ export default function StageRequestPage() {
   }, [dj?.id]);
 
   async function handlePayment() {
+    if (submitting) {
+      return;
+    }
+
     if (!dj) {
       alert("DJ profile not found");
       return;
@@ -239,19 +243,19 @@ export default function StageRequestPage() {
       alert("Please enter a valid tip amount");
       return;
     }
-    
+
     let finalArtwork = selectedArtwork;
     let finalAlbum = selectedAlbum;
-    
+
     if (!finalArtwork || !finalAlbum) {
       try {
         const response = await fetch(
           `/api/apple-search?q=${encodeURIComponent(`${song} ${artist}`)}`
         );
-    
+
         const data = await response.json();
         const firstTrack = data.tracks?.[0];
-    
+
         finalArtwork = firstTrack?.image || "";
         finalAlbum = firstTrack?.album || "";
       } catch (error) {
@@ -291,7 +295,51 @@ export default function StageRequestPage() {
       },
 
       onSuccess: async (transaction: any) => {
+        const paymentReference = transaction?.reference;
+
+        if (!paymentReference) {
+          console.error("PAYSTACK SUCCESS WITHOUT REFERENCE:", transaction);
+          alert(
+            "Payment succeeded, but no payment reference was returned. Please contact Blackline support."
+          );
+          setSubmitting(false);
+          return;
+        }
+
         try {
+          const { data: existingPayment, error: existingPaymentError } =
+            await supabase
+              .from("payments")
+              .select("id, request_id, provider_reference")
+              .eq("provider_reference", paymentReference)
+              .maybeSingle();
+
+          if (existingPaymentError) {
+            console.error("PAYMENT REFERENCE CHECK ERROR:", existingPaymentError);
+          }
+
+          if (existingPayment) {
+            console.warn("DUPLICATE PAYMENT CALLBACK IGNORED:", existingPayment);
+
+            await fetchRequests(dj.id);
+
+            alert(
+              `Payment already recorded. Reference: ${paymentReference}`
+            );
+
+            setName("");
+            setSong("");
+            setArtist("");
+            setSongSearch("");
+            setSongResults([]);
+            setSelectedArtwork("");
+            setSelectedAlbum("");
+            setTipAmount(10);
+            setDuplicateRequest(null);
+            setSubmitting(false);
+            return;
+          }
+
           let requestData;
           let error;
 
@@ -299,7 +347,7 @@ export default function StageRequestPage() {
             const newTipTotal =
               Number(duplicateRequest.tip_amount || 0) +
               Number(tipAmount || 0);
-          
+
             const result = await supabase
               .from("requests")
               .update({
@@ -310,11 +358,10 @@ export default function StageRequestPage() {
               .eq("id", duplicateRequest.id)
               .select()
               .single();
-          
+
             requestData = result.data;
             error = result.error;
           } else {
-            
             const result = await supabase
               .from("requests")
               .insert([
@@ -323,10 +370,10 @@ export default function StageRequestPage() {
                   name: name.trim(),
                   song: song.trim(),
                   artist: artist.trim(),
-              
+
                   artwork: finalArtwork,
                   album: finalAlbum,
-              
+
                   status: "pending",
                   tip_amount: tipAmount,
                   tip_currency: tipCurrency,
@@ -339,11 +386,17 @@ export default function StageRequestPage() {
             error = result.error;
           }
 
-          if (error) {
-            console.error(error);
-            alert("Failed to save request");
+          if (error || !requestData) {
+            console.error("REQUEST SAVE ERROR:", error);
+            alert(
+              `Payment succeeded, but the request could not be saved. Please contact Blackline support with this reference: ${paymentReference}`
+            );
             return;
           }
+
+          const paidAmount = Number(tipAmount || 0);
+          const platformFee = Number((paidAmount * 0.1).toFixed(2));
+          const djAmount = Number((paidAmount - platformFee).toFixed(2));
 
           const { error: paymentError } = await supabase.from("payments").insert([
             {
@@ -352,19 +405,23 @@ export default function StageRequestPage() {
               guest_name: name.trim(),
               song: song.trim(),
               artist: artist.trim(),
-              amount: tipAmount,
+              amount: paidAmount,
               currency: tipCurrency,
               status: "paid",
               provider: "paystack",
-              provider_reference: transaction.reference,
-              dj_amount: Number((tipAmount * 0.9).toFixed(2)),
-              platform_fee: Number((tipAmount * 0.1).toFixed(2)),
+              provider_reference: paymentReference,
+              dj_amount: djAmount,
+              platform_fee: platformFee,
               payout_status: "pending",
             },
           ]);
 
           if (paymentError) {
             console.error("PAYMENT INSERT ERROR:", paymentError);
+            alert(
+              `Your request was saved, but the payment record could not be stored. Please contact Blackline support with this reference: ${paymentReference}`
+            );
+            return;
           }
 
           await fetchRequests(dj.id);
@@ -372,13 +429,21 @@ export default function StageRequestPage() {
           setName("");
           setSong("");
           setArtist("");
+          setSongSearch("");
+          setSongResults([]);
+          setSelectedArtwork("");
+          setSelectedAlbum("");
           setTipAmount(10);
           setDuplicateRequest(null);
 
-          alert("Payment successful & request submitted!");
+          alert(
+            `Payment successful & request submitted! Reference: ${paymentReference}`
+          );
         } catch (err) {
-          console.error(err);
-          alert("Something went wrong");
+          console.error("PAYMENT SUCCESS HANDLER ERROR:", err);
+          alert(
+            `Payment succeeded, but something went wrong after payment. Please contact Blackline support with this reference: ${paymentReference}`
+          );
         } finally {
           setSubmitting(false);
         }
