@@ -101,12 +101,12 @@ async function markPaymentsAsPaidOutForWithdrawal(
     const nextStatus =
       nextPaidOutAmount >= djAmount ? "paid_out" : "partially_paid_out";
 
-    const { error: paymentUpdateError } = await supabaseAdmin
+    const { error: paymentUpdateError } = await (supabaseAdmin as any)
       .from("payments")
       .update({
         payout_paid_amount: nextPaidOutAmount,
         payout_status: nextStatus,
-      } as any)
+      })
       .eq("id", payment.id);
 
     if (paymentUpdateError) {
