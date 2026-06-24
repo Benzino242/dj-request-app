@@ -307,6 +307,28 @@ export default function StageRequestPage() {
         }
 
         try {
+          const verifyResponse = await fetch("/api/paystack/verify-transaction", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              reference: paymentReference,
+              expectedAmount: tipAmount,
+              expectedCurrency: tipCurrency,
+            }),
+          });
+
+          const verifyResult = await verifyResponse.json();
+
+          if (!verifyResponse.ok || !verifyResult.verified) {
+            console.error("PAYSTACK VERIFY ERROR:", verifyResult);
+            alert(
+              `Payment could not be verified yet. Please contact Blackline support with this reference: ${paymentReference}`
+            );
+            return;
+          }
+
           const { data: existingPayment, error: existingPaymentError } =
             await supabase
               .from("payments")
