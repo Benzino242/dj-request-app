@@ -143,6 +143,355 @@ type QuickSetupTranslation = {
   withdrawalsReadyMessage: string;
 };
 
+type BalanceExplainerTranslation = {
+  title: string;
+  leadBefore: string;
+  availableBalance: string;
+  leadAfter: string;
+  grossTitle: string;
+  grossBody: string;
+  djTitle: string;
+  djBody: string;
+  openTitle: string;
+  openBody: string;
+  verificationTitle: string;
+  verificationBody: string;
+  formula: string;
+};
+
+const balanceExplainerTranslations: Record<Language, BalanceExplainerTranslation> = {
+  "en": {
+    "title": "How your balance works",
+    "leadBefore": "Your",
+    "availableBalance": "available balance",
+    "leadAfter": "is your DJ earnings after the Blackline platform fee, minus any withdrawals that are pending, approved, or already paid.",
+    "grossTitle": "Gross earnings",
+    "grossBody": "Total paid requests before fees.",
+    "djTitle": "DJ earnings",
+    "djBody": "Your share after Blackline fees.",
+    "openTitle": "Open withdrawals",
+    "openBody": "Pending, approved, and paid withdrawals reduce available balance.",
+    "verificationTitle": "Verification",
+    "verificationBody": "You can take paid requests before approval. Withdrawals unlock after verification.",
+    "formula": "Formula: Available balance = DJ earnings - pending/approved/paid withdrawals."
+  },
+  "zh": {
+    "title": "余额如何计算",
+    "leadBefore": "你的",
+    "availableBalance": "可用余额",
+    "leadAfter": "是扣除 Blackline 平台费后的 DJ 收入，再减去待处理、已批准或已支付的提现。",
+    "grossTitle": "总收入",
+    "grossBody": "扣费前的所有付费点歌金额。",
+    "djTitle": "DJ 收入",
+    "djBody": "扣除 Blackline 费用后的你的收入。",
+    "openTitle": "提现记录",
+    "openBody": "待处理、已批准和已支付的提现会减少可用余额。",
+    "verificationTitle": "验证",
+    "verificationBody": "批准前你仍可接受付费点歌。验证后可提现。",
+    "formula": "公式：可用余额 = DJ 收入 - 待处理/已批准/已支付提现。"
+  },
+  "ja": {
+    "title": "残高の仕組み",
+    "leadBefore": "あなたの",
+    "availableBalance": "利用可能残高",
+    "leadAfter": "は、Blackline手数料を差し引いたDJ収益から、保留中・承認済み・支払い済みの出金を引いた金額です。",
+    "grossTitle": "総収益",
+    "grossBody": "手数料前のすべての有料リクエスト。",
+    "djTitle": "DJ収益",
+    "djBody": "Blackline手数料後のあなたの取り分。",
+    "openTitle": "出金分",
+    "openBody": "保留中、承認済み、支払い済みの出金は利用可能残高を減らします。",
+    "verificationTitle": "認証",
+    "verificationBody": "承認前でも有料リクエストは受けられます。出金は認証後に有効になります。",
+    "formula": "計算式：利用可能残高 = DJ収益 - 保留中/承認済み/支払い済み出金。"
+  },
+  "ko": {
+    "title": "잔액 계산 방식",
+    "leadBefore": "내",
+    "availableBalance": "사용 가능 잔액",
+    "leadAfter": "은 Blackline 플랫폼 수수료를 뺀 DJ 수익에서 대기, 승인, 지급된 출금을 뺀 금액입니다.",
+    "grossTitle": "총 수익",
+    "grossBody": "수수료 전 전체 유료 요청 금액입니다.",
+    "djTitle": "DJ 수익",
+    "djBody": "Blackline 수수료 후 내 몫입니다.",
+    "openTitle": "출금 내역",
+    "openBody": "대기, 승인, 지급된 출금은 사용 가능 잔액을 줄입니다.",
+    "verificationTitle": "인증",
+    "verificationBody": "승인 전에도 유료 요청을 받을 수 있습니다. 출금은 인증 후 열립니다.",
+    "formula": "공식: 사용 가능 잔액 = DJ 수익 - 대기/승인/지급된 출금."
+  },
+  "id": {
+    "title": "Cara kerja saldo Anda",
+    "leadBefore": "Saldo",
+    "availableBalance": "tersedia",
+    "leadAfter": "adalah pendapatan DJ setelah biaya platform Blackline, dikurangi penarikan yang pending, disetujui, atau sudah dibayar.",
+    "grossTitle": "Pendapatan kotor",
+    "grossBody": "Total request berbayar sebelum biaya.",
+    "djTitle": "Pendapatan DJ",
+    "djBody": "Bagian Anda setelah biaya Blackline.",
+    "openTitle": "Penarikan terbuka",
+    "openBody": "Penarikan pending, disetujui, dan dibayar mengurangi saldo tersedia.",
+    "verificationTitle": "Verifikasi",
+    "verificationBody": "Anda bisa menerima request berbayar sebelum disetujui. Penarikan terbuka setelah verifikasi.",
+    "formula": "Rumus: Saldo tersedia = pendapatan DJ - penarikan pending/disetujui/dibayar."
+  },
+  "ms": {
+    "title": "Cara baki anda dikira",
+    "leadBefore": "Baki",
+    "availableBalance": "tersedia",
+    "leadAfter": "ialah pendapatan DJ selepas yuran platform Blackline, ditolak pengeluaran yang pending, diluluskan atau sudah dibayar.",
+    "grossTitle": "Pendapatan kasar",
+    "grossBody": "Jumlah permintaan berbayar sebelum yuran.",
+    "djTitle": "Pendapatan DJ",
+    "djBody": "Bahagian anda selepas yuran Blackline.",
+    "openTitle": "Pengeluaran terbuka",
+    "openBody": "Pengeluaran pending, diluluskan dan dibayar mengurangkan baki tersedia.",
+    "verificationTitle": "Verifikasi",
+    "verificationBody": "Anda boleh menerima permintaan berbayar sebelum kelulusan. Pengeluaran dibuka selepas verifikasi.",
+    "formula": "Formula: Baki tersedia = pendapatan DJ - pengeluaran pending/diluluskan/dibayar."
+  },
+  "th": {
+    "title": "ยอดเงินของคุณคำนวณอย่างไร",
+    "leadBefore": "ยอด",
+    "availableBalance": "พร้อมใช้",
+    "leadAfter": "คือรายได้ DJ หลังหักค่าธรรมเนียม Blackline แล้วลบการถอนที่รอดำเนินการ อนุมัติแล้ว หรือจ่ายแล้ว",
+    "grossTitle": "รายได้รวม",
+    "grossBody": "คำขอเพลงแบบชำระเงินทั้งหมดก่อนหักค่าธรรมเนียม",
+    "djTitle": "รายได้ DJ",
+    "djBody": "ส่วนแบ่งของคุณหลังหักค่าธรรมเนียม Blackline",
+    "openTitle": "การถอนเงิน",
+    "openBody": "การถอนที่รอดำเนินการ อนุมัติแล้ว และจ่ายแล้วจะลดยอดพร้อมใช้",
+    "verificationTitle": "การยืนยัน",
+    "verificationBody": "คุณรับคำขอแบบชำระเงินได้ก่อนอนุมัติ การถอนจะปลดล็อกหลังการยืนยัน",
+    "formula": "สูตร: ยอดพร้อมใช้ = รายได้ DJ - การถอนที่รอดำเนินการ/อนุมัติแล้ว/จ่ายแล้ว"
+  },
+  "hi": {
+    "title": "आपका बैलेंस कैसे काम करता है",
+    "leadBefore": "आपका",
+    "availableBalance": "available balance",
+    "leadAfter": "Blackline platform fee के बाद DJ earnings है, जिसमें pending, approved या paid withdrawals घटा दी जाती हैं।",
+    "grossTitle": "Gross earnings",
+    "grossBody": "Fees से पहले कुल paid requests.",
+    "djTitle": "DJ earnings",
+    "djBody": "Blackline fees के बाद आपका हिस्सा.",
+    "openTitle": "Open withdrawals",
+    "openBody": "Pending, approved और paid withdrawals available balance कम करती हैं.",
+    "verificationTitle": "Verification",
+    "verificationBody": "Approval से पहले भी आप paid requests ले सकते हैं. Withdrawals verification के बाद unlock होती हैं.",
+    "formula": "Formula: Available balance = DJ earnings - pending/approved/paid withdrawals."
+  },
+  "ar": {
+    "title": "كيف يعمل رصيدك",
+    "leadBefore": "رصيدك",
+    "availableBalance": "المتاح",
+    "leadAfter": "هو أرباح DJ بعد رسوم منصة Blackline، ناقص أي سحوبات معلقة أو معتمدة أو مدفوعة.",
+    "grossTitle": "الإيرادات الإجمالية",
+    "grossBody": "إجمالي الطلبات المدفوعة قبل الرسوم.",
+    "djTitle": "أرباح DJ",
+    "djBody": "حصتك بعد رسوم Blackline.",
+    "openTitle": "السحوبات المفتوحة",
+    "openBody": "السحوبات المعلقة والمعتمدة والمدفوعة تقلل الرصيد المتاح.",
+    "verificationTitle": "التوثيق",
+    "verificationBody": "يمكنك استقبال الطلبات المدفوعة قبل الموافقة. السحب يفتح بعد التوثيق.",
+    "formula": "المعادلة: الرصيد المتاح = أرباح DJ - السحوبات المعلقة/المعتمدة/المدفوعة."
+  },
+  "vi": {
+    "title": "Cách số dư hoạt động",
+    "leadBefore": "Số dư",
+    "availableBalance": "khả dụng",
+    "leadAfter": "là thu nhập DJ sau phí nền tảng Blackline, trừ các khoản rút đang chờ, đã duyệt hoặc đã trả.",
+    "grossTitle": "Doanh thu gộp",
+    "grossBody": "Tổng yêu cầu trả phí trước phí.",
+    "djTitle": "Thu nhập DJ",
+    "djBody": "Phần của bạn sau phí Blackline.",
+    "openTitle": "Khoản rút mở",
+    "openBody": "Khoản rút đang chờ, đã duyệt và đã trả sẽ giảm số dư khả dụng.",
+    "verificationTitle": "Xác minh",
+    "verificationBody": "Bạn có thể nhận yêu cầu trả phí trước khi được duyệt. Rút tiền mở sau xác minh.",
+    "formula": "Công thức: Số dư khả dụng = thu nhập DJ - khoản rút đang chờ/đã duyệt/đã trả."
+  },
+  "tl": {
+    "title": "Paano gumagana ang balance mo",
+    "leadBefore": "Ang",
+    "availableBalance": "available balance",
+    "leadAfter": "mo ay DJ earnings pagkatapos ng Blackline platform fee, minus withdrawals na pending, approved, o paid na.",
+    "grossTitle": "Gross earnings",
+    "grossBody": "Kabuuang paid requests bago ang fees.",
+    "djTitle": "DJ earnings",
+    "djBody": "Share mo pagkatapos ng Blackline fees.",
+    "openTitle": "Open withdrawals",
+    "openBody": "Pending, approved, at paid withdrawals ay nagbabawas sa available balance.",
+    "verificationTitle": "Verification",
+    "verificationBody": "Pwede kang tumanggap ng paid requests bago ma-approve. Unlock ang withdrawals pagkatapos ng verification.",
+    "formula": "Formula: Available balance = DJ earnings - pending/approved/paid withdrawals."
+  },
+  "pt": {
+    "title": "Como o seu saldo funciona",
+    "leadBefore": "O seu",
+    "availableBalance": "saldo disponível",
+    "leadAfter": "é o ganho do DJ após a taxa da plataforma Blackline, menos levantamentos pendentes, aprovados ou já pagos.",
+    "grossTitle": "Ganhos brutos",
+    "grossBody": "Total de pedidos pagos antes das taxas.",
+    "djTitle": "Ganhos do DJ",
+    "djBody": "A sua parte após as taxas Blackline.",
+    "openTitle": "Levantamentos abertos",
+    "openBody": "Levantamentos pendentes, aprovados e pagos reduzem o saldo disponível.",
+    "verificationTitle": "Verificação",
+    "verificationBody": "Pode receber pedidos pagos antes da aprovação. Levantamentos desbloqueiam após verificação.",
+    "formula": "Fórmula: Saldo disponível = ganhos do DJ - levantamentos pendentes/aprovados/pagos."
+  },
+  "es": {
+    "title": "Cómo funciona tu saldo",
+    "leadBefore": "Tu",
+    "availableBalance": "saldo disponible",
+    "leadAfter": "es tu ganancia de DJ después de la comisión de Blackline, menos cualquier retiro pendiente, aprobado o ya pagado.",
+    "grossTitle": "Ganancias brutas",
+    "grossBody": "Total de solicitudes pagadas antes de comisiones.",
+    "djTitle": "Ganancias del DJ",
+    "djBody": "Tu parte después de las comisiones de Blackline.",
+    "openTitle": "Retiros abiertos",
+    "openBody": "Los retiros pendientes, aprobados y pagados reducen el saldo disponible.",
+    "verificationTitle": "Verificación",
+    "verificationBody": "Puedes recibir solicitudes pagadas antes de la aprobación. Los retiros se desbloquean después de la verificación.",
+    "formula": "Fórmula: Saldo disponible = ganancias del DJ - retiros pendientes/aprobados/pagados."
+  },
+  "fr": {
+    "title": "Comment fonctionne votre solde",
+    "leadBefore": "Votre",
+    "availableBalance": "solde disponible",
+    "leadAfter": "correspond à vos gains DJ après les frais Blackline, moins les retraits en attente, approuvés ou déjà payés.",
+    "grossTitle": "Gains bruts",
+    "grossBody": "Total des demandes payantes avant les frais.",
+    "djTitle": "Gains du DJ",
+    "djBody": "Votre part après les frais Blackline.",
+    "openTitle": "Retraits ouverts",
+    "openBody": "Les retraits en attente, approuvés et payés réduisent le solde disponible.",
+    "verificationTitle": "Vérification",
+    "verificationBody": "Vous pouvez recevoir des demandes payantes avant approbation. Les retraits se débloquent après vérification.",
+    "formula": "Formule : solde disponible = gains DJ - retraits en attente/approuvés/payés."
+  },
+  "de": {
+    "title": "So funktioniert dein Guthaben",
+    "leadBefore": "Dein",
+    "availableBalance": "verfügbares Guthaben",
+    "leadAfter": "sind deine DJ-Einnahmen nach der Blackline-Plattformgebühr, abzüglich ausstehender, genehmigter oder bereits bezahlter Auszahlungen.",
+    "grossTitle": "Bruttoeinnahmen",
+    "grossBody": "Alle bezahlten Anfragen vor Gebühren.",
+    "djTitle": "DJ-Einnahmen",
+    "djBody": "Dein Anteil nach Blackline-Gebühren.",
+    "openTitle": "Offene Auszahlungen",
+    "openBody": "Ausstehende, genehmigte und bezahlte Auszahlungen reduzieren das verfügbare Guthaben.",
+    "verificationTitle": "Verifizierung",
+    "verificationBody": "Du kannst vor der Freigabe bezahlte Anfragen annehmen. Auszahlungen werden nach der Verifizierung freigeschaltet.",
+    "formula": "Formel: Verfügbares Guthaben = DJ-Einnahmen - ausstehende/genehmigte/bezahlte Auszahlungen."
+  },
+  "ru": {
+    "title": "Как работает ваш баланс",
+    "leadBefore": "Ваш",
+    "availableBalance": "доступный баланс",
+    "leadAfter": "— это доход DJ после комиссии платформы Blackline, минус выводы со статусом ожидания, одобрено или оплачено.",
+    "grossTitle": "Валовой доход",
+    "grossBody": "Все платные заявки до вычета комиссий.",
+    "djTitle": "Доход DJ",
+    "djBody": "Ваша доля после комиссий Blackline.",
+    "openTitle": "Открытые выводы",
+    "openBody": "Ожидающие, одобренные и оплаченные выводы уменьшают доступный баланс.",
+    "verificationTitle": "Проверка",
+    "verificationBody": "Вы можете принимать платные заявки до одобрения. Выводы открываются после проверки.",
+    "formula": "Формула: доступный баланс = доход DJ - ожидающие/одобренные/оплаченные выводы."
+  },
+  "tr": {
+    "title": "Bakiyen nasıl çalışır",
+    "leadBefore": "Senin",
+    "availableBalance": "kullanılabilir bakiyen",
+    "leadAfter": "Blackline platform ücretinden sonraki DJ kazancındır; bekleyen, onaylanan veya ödenen çekimler düşülür.",
+    "grossTitle": "Brüt kazanç",
+    "grossBody": "Ücretlerden önceki toplam ücretli istekler.",
+    "djTitle": "DJ kazancı",
+    "djBody": "Blackline ücretlerinden sonraki payın.",
+    "openTitle": "Açık çekimler",
+    "openBody": "Bekleyen, onaylanan ve ödenen çekimler kullanılabilir bakiyeyi azaltır.",
+    "verificationTitle": "Doğrulama",
+    "verificationBody": "Onaydan önce ücretli istek alabilirsin. Çekimler doğrulamadan sonra açılır.",
+    "formula": "Formül: Kullanılabilir bakiye = DJ kazancı - bekleyen/onaylanan/ödenen çekimler."
+  },
+  "it": {
+    "title": "Come funziona il saldo",
+    "leadBefore": "Il tuo",
+    "availableBalance": "saldo disponibile",
+    "leadAfter": "è il guadagno DJ dopo la commissione Blackline, meno eventuali prelievi in attesa, approvati o già pagati.",
+    "grossTitle": "Guadagni lordi",
+    "grossBody": "Totale richieste pagate prima delle commissioni.",
+    "djTitle": "Guadagni DJ",
+    "djBody": "La tua parte dopo le commissioni Blackline.",
+    "openTitle": "Prelievi aperti",
+    "openBody": "Prelievi in attesa, approvati e pagati riducono il saldo disponibile.",
+    "verificationTitle": "Verifica",
+    "verificationBody": "Puoi ricevere richieste pagate prima dell’approvazione. I prelievi si sbloccano dopo la verifica.",
+    "formula": "Formula: saldo disponibile = guadagni DJ - prelievi in attesa/approvati/pagati."
+  },
+  "nl": {
+    "title": "Hoe je saldo werkt",
+    "leadBefore": "Je",
+    "availableBalance": "beschikbare saldo",
+    "leadAfter": "is je DJ-inkomsten na de Blackline-platformkosten, min openstaande, goedgekeurde of al betaalde opnames.",
+    "grossTitle": "Bruto inkomsten",
+    "grossBody": "Alle betaalde verzoeken vóór kosten.",
+    "djTitle": "DJ inkomsten",
+    "djBody": "Jouw deel na Blackline-kosten.",
+    "openTitle": "Open opnames",
+    "openBody": "Openstaande, goedgekeurde en betaalde opnames verlagen het beschikbare saldo.",
+    "verificationTitle": "Verificatie",
+    "verificationBody": "Je kunt betaalde verzoeken ontvangen vóór goedkeuring. Opnames worden ontgrendeld na verificatie.",
+    "formula": "Formule: beschikbaar saldo = DJ inkomsten - openstaande/goedgekeurde/betaalde opnames."
+  },
+  "pl": {
+    "title": "Jak działa saldo",
+    "leadBefore": "Twoje",
+    "availableBalance": "dostępne saldo",
+    "leadAfter": "to zarobki DJ po opłacie platformy Blackline, minus wypłaty oczekujące, zatwierdzone lub już zapłacone.",
+    "grossTitle": "Przychód brutto",
+    "grossBody": "Wszystkie płatne prośby przed opłatami.",
+    "djTitle": "Zarobki DJ",
+    "djBody": "Twoja część po opłatach Blackline.",
+    "openTitle": "Otwarte wypłaty",
+    "openBody": "Wypłaty oczekujące, zatwierdzone i zapłacone zmniejszają dostępne saldo.",
+    "verificationTitle": "Weryfikacja",
+    "verificationBody": "Możesz przyjmować płatne prośby przed zatwierdzeniem. Wypłaty odblokowują się po weryfikacji.",
+    "formula": "Formuła: dostępne saldo = zarobki DJ - wypłaty oczekujące/zatwierdzone/zapłacone."
+  },
+  "el": {
+    "title": "Πώς λειτουργεί το υπόλοιπο",
+    "leadBefore": "Το",
+    "availableBalance": "διαθέσιμο υπόλοιπο",
+    "leadAfter": "είναι τα κέρδη DJ μετά την προμήθεια Blackline, μείον αναλήψεις σε αναμονή, εγκεκριμένες ή πληρωμένες.",
+    "grossTitle": "Μικτά κέρδη",
+    "grossBody": "Σύνολο πληρωμένων αιτημάτων πριν τις χρεώσεις.",
+    "djTitle": "Κέρδη DJ",
+    "djBody": "Το μερίδιό σας μετά τις χρεώσεις Blackline.",
+    "openTitle": "Ανοιχτές αναλήψεις",
+    "openBody": "Αναλήψεις σε αναμονή, εγκεκριμένες και πληρωμένες μειώνουν το διαθέσιμο υπόλοιπο.",
+    "verificationTitle": "Επαλήθευση",
+    "verificationBody": "Μπορείτε να δέχεστε πληρωμένα αιτήματα πριν την έγκριση. Οι αναλήψεις ξεκλειδώνουν μετά την επαλήθευση.",
+    "formula": "Τύπος: διαθέσιμο υπόλοιπο = κέρδη DJ - αναλήψεις σε αναμονή/εγκεκριμένες/πληρωμένες."
+  },
+  "uk": {
+    "title": "Як працює ваш баланс",
+    "leadBefore": "Ваш",
+    "availableBalance": "доступний баланс",
+    "leadAfter": "— це дохід DJ після комісії платформи Blackline, мінус виведення в очікуванні, схвалені або вже виплачені.",
+    "grossTitle": "Валовий дохід",
+    "grossBody": "Усі платні запити до комісій.",
+    "djTitle": "Дохід DJ",
+    "djBody": "Ваша частка після комісій Blackline.",
+    "openTitle": "Відкриті виведення",
+    "openBody": "Виведення в очікуванні, схвалені та виплачені зменшують доступний баланс.",
+    "verificationTitle": "Верифікація",
+    "verificationBody": "Ви можете приймати платні запити до схвалення. Виведення відкривається після верифікації.",
+    "formula": "Формула: доступний баланс = дохід DJ - виведення в очікуванні/схвалені/виплачені."
+  }
+};
+
 const quickSetupTranslations: Record<Language, QuickSetupTranslation> = {
   "en": {
     "eyebrow": "Quick Setup",
@@ -1093,6 +1442,7 @@ export default function AdminPage() {
 
   const t = translations[language];
   const quickSetupText = quickSetupTranslations[language] || quickSetupTranslations.en;
+  const balanceText = balanceExplainerTranslations[language] || balanceExplainerTranslations.en;
 
   function getCurrentScrollY() {
     if (typeof window === "undefined") return 0;
@@ -3060,55 +3410,57 @@ export default function AdminPage() {
 
               <div>
                 <h4 className="text-lg font-black text-white">
-                  How your balance works
+                  {balanceText.title}
                 </h4>
 
                 <p className="text-sm text-zinc-400 mt-2 leading-relaxed">
-                  Your <span className="text-white font-semibold">available balance</span>{" "}
-                  is your DJ earnings after the Blackline platform fee, minus any
-                  withdrawals that are pending, approved, or already paid.
+                  {balanceText.leadBefore}{" "}
+                  <span className="text-white font-semibold">
+                    {balanceText.availableBalance}
+                  </span>{" "}
+                  {balanceText.leadAfter}
                 </p>
 
                 <div className="grid md:grid-cols-2 gap-3 mt-4">
                   <div className="bg-zinc-900/70 border border-zinc-800 rounded-xl p-3">
                     <p className="text-xs uppercase tracking-widest text-zinc-500 font-bold">
-                      Gross earnings
+                      {balanceText.grossTitle}
                     </p>
                     <p className="text-sm text-zinc-300 mt-1">
-                      Total paid requests before fees.
+                      {balanceText.grossBody}
                     </p>
                   </div>
 
                   <div className="bg-zinc-900/70 border border-zinc-800 rounded-xl p-3">
                     <p className="text-xs uppercase tracking-widest text-zinc-500 font-bold">
-                      DJ earnings
+                      {balanceText.djTitle}
                     </p>
                     <p className="text-sm text-zinc-300 mt-1">
-                      Your share after Blackline fees.
+                      {balanceText.djBody}
                     </p>
                   </div>
 
                   <div className="bg-zinc-900/70 border border-zinc-800 rounded-xl p-3">
                     <p className="text-xs uppercase tracking-widest text-zinc-500 font-bold">
-                      Open withdrawals
+                      {balanceText.openTitle}
                     </p>
                     <p className="text-sm text-zinc-300 mt-1">
-                      Pending, approved, and paid withdrawals reduce available balance.
+                      {balanceText.openBody}
                     </p>
                   </div>
 
                   <div className="bg-zinc-900/70 border border-zinc-800 rounded-xl p-3">
                     <p className="text-xs uppercase tracking-widest text-zinc-500 font-bold">
-                      Verification
+                      {balanceText.verificationTitle}
                     </p>
                     <p className="text-sm text-zinc-300 mt-1">
-                      You can take paid requests before approval. Withdrawals unlock after verification.
+                      {balanceText.verificationBody}
                     </p>
                   </div>
                 </div>
 
                 <p className="text-xs text-zinc-500 mt-4 leading-relaxed">
-                  Formula: Available balance = DJ earnings - pending/approved/paid withdrawals.
+                  {balanceText.formula}
                 </p>
               </div>
             </div>
