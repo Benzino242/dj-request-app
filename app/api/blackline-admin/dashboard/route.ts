@@ -106,7 +106,7 @@ async function markPaymentsAsPaidOutForWithdrawal(
       .update({
         payout_paid_amount: nextPaidOutAmount,
         payout_status: nextStatus,
-      })
+      } as any)
       .eq("id", payment.id);
 
     if (paymentUpdateError) {
@@ -179,10 +179,6 @@ export async function GET() {
       { status: 500 },
     );
   }
-
-  const djs = (allDjs || []).filter(
-    (dj) => dj.verification_status !== "removed",
-  );
 
   const djEarnings = (allDjs || []).map((dj) => {
     const djRequests = (requests || []).filter(
