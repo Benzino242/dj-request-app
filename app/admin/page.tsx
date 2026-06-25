@@ -2662,6 +2662,41 @@ export default function AdminPage() {
         <p className="text-zinc-400 mt-3 text-lg">{t.adminSubtitle}</p>
       </div>
 
+      {grouped.pending.length > 0 && (
+        <button
+          type="button"
+          onClick={() => scrollToQuickSetupTarget("queue")}
+          className="w-full mb-6 md:mb-8 text-left relative overflow-hidden bg-gradient-to-r from-yellow-500/20 via-zinc-900 to-yellow-500/10 border border-yellow-400/70 rounded-3xl p-4 md:p-5 shadow-[0_0_35px_rgba(250,204,21,0.25)] animate-pulse"
+        >
+          <div className="absolute -top-10 -right-10 w-28 h-28 bg-yellow-400/20 rounded-full blur-3xl" />
+
+          <div className="relative z-10 flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-yellow-400 text-black flex items-center justify-center text-2xl font-black shrink-0 shadow-[0_0_25px_rgba(250,204,21,0.45)]">
+              🚨
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <p className="text-xs uppercase tracking-[0.25em] text-yellow-300 font-black">
+                Action needed
+              </p>
+
+              <h2 className="text-xl md:text-2xl font-black text-white mt-1 leading-tight">
+                {grouped.pending.length} pending song{" "}
+                {grouped.pending.length === 1 ? "request" : "requests"} need review
+              </h2>
+
+              <p className="text-sm text-zinc-300 mt-1">
+                Tap here to jump straight to your request queue.
+              </p>
+            </div>
+
+            <div className="hidden sm:block bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-black">
+              Review now
+            </div>
+          </div>
+        </button>
+      )}
+
       <div className="bg-zinc-900 border border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.16)] rounded-3xl p-4 md:p-6 mb-10">
         <div className="mb-5">
           <p className="text-xs uppercase tracking-[0.3em] text-purple-400 font-black">
