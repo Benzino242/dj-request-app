@@ -434,7 +434,6 @@ export default function StageRequestPage() {
               provider_reference: paymentReference,
               dj_amount: djAmount,
               platform_fee: platformFee,
-              payout_status: "pending",
             },
           ]);
 
