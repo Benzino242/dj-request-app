@@ -67,6 +67,14 @@ export default function StageRequestPage() {
   const [duplicateRequest, setDuplicateRequest] = useState<Request | null>(null);
   const [language, setLanguage] = useState<Language>("en");
   const [submitting, setSubmitting] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState<{
+    song: string;
+    artist: string;
+    amount: number;
+    currency: string;
+    reference: string;
+    isBoost: boolean;
+  } | null>(null);
 
   const t = translations[language];
 
@@ -243,6 +251,8 @@ export default function StageRequestPage() {
       alert("Please enter a valid tip amount");
       return;
     }
+
+    setPaymentSuccess(null);
 
     let finalArtwork = selectedArtwork;
     let finalAlbum = selectedAlbum;
@@ -457,9 +467,19 @@ export default function StageRequestPage() {
           setTipAmount(10);
           setDuplicateRequest(null);
 
-          alert(
-            `Payment successful & request submitted! Reference: ${paymentReference}`
-          );
+          setPaymentSuccess({
+            song: requestData.song || song.trim(),
+            artist: requestData.artist || artist.trim(),
+            amount: paidAmount,
+            currency: tipCurrency,
+            reference: paymentReference,
+            isBoost: Boolean(duplicateRequest),
+          });
+
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
         } catch (err) {
           console.error("PAYMENT SUCCESS HANDLER ERROR:", err);
           alert(
@@ -586,6 +606,75 @@ export default function StageRequestPage() {
   </div>
 )}
 
+
+      {paymentSuccess && (
+        <div className="w-full max-w-md mb-8">
+          <div className="relative overflow-hidden bg-gradient-to-br from-green-950 via-zinc-900 to-black border border-green-500/60 rounded-3xl p-6 text-center shadow-[0_0_35px_rgba(34,197,94,0.25)]">
+            <div className="absolute -top-12 -right-12 w-32 h-32 bg-green-500/20 rounded-full blur-3xl" />
+            <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl" />
+
+            <div className="relative z-10">
+              <div className="w-16 h-16 mx-auto rounded-full bg-green-500/20 border border-green-400/40 flex items-center justify-center text-3xl mb-4">
+                ✅
+              </div>
+
+              <p className="text-xs uppercase tracking-[0.25em] text-green-300 font-black mb-2">
+                Payment received
+              </p>
+
+              <h2 className="text-3xl font-black text-white">
+                Request sent to the DJ
+              </h2>
+
+              <p className="text-zinc-400 text-sm mt-3 leading-relaxed">
+                {paymentSuccess.isBoost
+                  ? "Your boost was added to the existing request."
+                  : "Your song request has been added to the live queue."}
+              </p>
+
+              <div className="bg-black/40 border border-zinc-800 rounded-2xl p-4 mt-5 text-left">
+                <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">
+                  Song
+                </p>
+                <p className="text-white font-black text-lg mt-1">
+                  {paymentSuccess.song}
+                </p>
+                <p className="text-zinc-400 text-sm mt-1">
+                  {paymentSuccess.artist}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 mt-3">
+                <div className="bg-black/40 border border-zinc-800 rounded-2xl p-4">
+                  <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">
+                    Amount
+                  </p>
+                  <p className="text-green-400 font-black text-2xl mt-1">
+                    {paymentSuccess.currency} {paymentSuccess.amount.toFixed(2)}
+                  </p>
+                </div>
+
+                <div className="bg-black/40 border border-zinc-800 rounded-2xl p-4">
+                  <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">
+                    Paystack reference
+                  </p>
+                  <p className="text-white font-mono text-sm break-all mt-1">
+                    {paymentSuccess.reference}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setPaymentSuccess(null)}
+                className="mt-5 w-full bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-xl font-bold transition"
+              >
+                Request another song
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="bg-zinc-900 p-8 rounded-3xl shadow-2xl w-full max-w-md border border-zinc-800">
       <div className="flex justify-end mb-6">
