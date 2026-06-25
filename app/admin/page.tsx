@@ -1519,6 +1519,7 @@ export default function AdminPage() {
 
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
+  const [isQuickSetupExpanded, setIsQuickSetupExpanded] = useState(false);
   const isFetchingDashboardRef = useRef(false);
   const requestQueueRef = useRef<HTMLDivElement | null>(null);
   const liveControlsRef = useRef<HTMLDivElement | null>(null);
@@ -2447,6 +2448,16 @@ export default function AdminPage() {
       target: "withdrawals" as const,
     },
   ];
+
+  const quickSetupCompletedCount = [
+    hasProfileSetup,
+    hasPayoutSetup,
+    Boolean(dj?.is_live),
+    true,
+    grouped.pending.length === 0,
+    isVerificationApproved,
+  ].filter(Boolean).length;
+
   function toggleWithdrawalDetails(withdrawalId: number) {
     setExpandedWithdrawalIds((currentIds) =>
       currentIds.includes(withdrawalId)
@@ -2698,19 +2709,41 @@ export default function AdminPage() {
       )}
 
       <div className="bg-zinc-900 border border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.16)] rounded-3xl p-4 md:p-6 mb-10">
-        <div className="mb-5">
-          <p className="text-xs uppercase tracking-[0.3em] text-purple-400 font-black">
-            {quickSetupText.eyebrow}
-          </p>
-          <h2 className="text-2xl md:text-3xl font-black mt-2">
-            🎧 {quickSetupText.heading}
-          </h2>
-          <p className="text-sm md:text-base text-zinc-300 mt-2 max-w-3xl leading-relaxed">
-            {quickSetupText.subtitle}
-          </p>
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-5">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-purple-400 font-black">
+              {quickSetupText.eyebrow}
+            </p>
+
+            <h2 className="text-2xl md:text-3xl font-black mt-2">
+              🎧 {quickSetupText.heading}
+            </h2>
+
+            <p className="text-sm md:text-base text-zinc-300 mt-2 max-w-3xl leading-relaxed">
+              {quickSetupText.subtitle}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="bg-black/40 border border-zinc-800 text-zinc-300 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest">
+              {quickSetupCompletedCount}/6 done
+            </span>
+
+            <button
+              type="button"
+              onClick={() => setIsQuickSetupExpanded((current) => !current)}
+              className="md:hidden bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-full text-sm font-black transition"
+            >
+              {isQuickSetupExpanded ? "Hide steps" : "Show steps"}
+            </button>
+          </div>
         </div>
 
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3">
+        <div
+          className={`${
+            isQuickSetupExpanded ? "grid" : "hidden md:grid"
+          } md:grid-cols-2 xl:grid-cols-3 gap-3`}
+        >
           {quickSetupActions.map((action) => (
             <button
               key={action.number}
@@ -2759,7 +2792,11 @@ export default function AdminPage() {
         </div>
 
         {!isVerificationApproved && (
-          <div className="mt-4 bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 rounded-2xl p-4 text-sm leading-relaxed">
+          <div
+            className={`${
+              isQuickSetupExpanded ? "block" : "hidden md:block"
+            } mt-4 bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 rounded-2xl p-4 text-sm leading-relaxed`}
+          >
             {quickSetupText.verificationNote}
           </div>
         )}
