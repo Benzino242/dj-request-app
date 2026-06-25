@@ -4,6 +4,286 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "../../lib/supabase";
 
+type PaymentSuccessTranslation = {
+  paymentReceived: string;
+  requestSent: string;
+  boostAdded: string;
+  requestAdded: string;
+  song: string;
+  amount: string;
+  paystackReference: string;
+  done: string;
+  savedSupport: string;
+  beforePaymentReference: string;
+};
+
+const paymentSuccessTranslations: Record<Language, PaymentSuccessTranslation> = {
+  en: {
+    paymentReceived: "Payment received",
+    requestSent: "Request sent to the DJ",
+    boostAdded: "Your boost was added to the existing request.",
+    requestAdded: "Your song request has been added to the live queue.",
+    song: "Song",
+    amount: "Amount",
+    paystackReference: "Paystack reference",
+    done: "Done",
+    savedSupport: "Your request is saved. Keep this reference if you need support.",
+    beforePaymentReference: "After payment, you’ll receive a Paystack reference for support.",
+  },
+  zh: {
+    paymentReceived: "已收到付款",
+    requestSent: "请求已发送给DJ",
+    boostAdded: "你的加价已添加到现有请求。",
+    requestAdded: "你的歌曲请求已加入现场队列。",
+    song: "歌曲",
+    amount: "金额",
+    paystackReference: "Paystack参考号",
+    done: "完成",
+    savedSupport: "你的请求已保存。如需支持，请保留此参考号。",
+    beforePaymentReference: "付款后，你会收到一个用于支持的Paystack参考号。",
+  },
+  ja: {
+    paymentReceived: "支払いを受け取りました",
+    requestSent: "リクエストをDJに送信しました",
+    boostAdded: "既存のリクエストにブーストが追加されました。",
+    requestAdded: "曲のリクエストがライブキューに追加されました。",
+    song: "曲",
+    amount: "金額",
+    paystackReference: "Paystack参照番号",
+    done: "完了",
+    savedSupport: "リクエストは保存されました。サポートが必要な場合はこの参照番号を保管してください。",
+    beforePaymentReference: "支払い後、サポート用のPaystack参照番号を受け取ります。",
+  },
+  ko: {
+    paymentReceived: "결제가 확인되었습니다",
+    requestSent: "요청이 DJ에게 전송되었습니다",
+    boostAdded: "기존 요청에 부스트가 추가되었습니다.",
+    requestAdded: "곡 요청이 라이브 대기열에 추가되었습니다.",
+    song: "곡",
+    amount: "금액",
+    paystackReference: "Paystack 참조번호",
+    done: "완료",
+    savedSupport: "요청이 저장되었습니다. 지원이 필요하면 이 참조번호를 보관하세요.",
+    beforePaymentReference: "결제 후 지원용 Paystack 참조번호를 받게 됩니다.",
+  },
+  id: {
+    paymentReceived: "Pembayaran diterima",
+    requestSent: "Request dikirim ke DJ",
+    boostAdded: "Boost Anda ditambahkan ke request yang sudah ada.",
+    requestAdded: "Request lagu Anda sudah masuk ke antrean live.",
+    song: "Lagu",
+    amount: "Jumlah",
+    paystackReference: "Referensi Paystack",
+    done: "Selesai",
+    savedSupport: "Request Anda tersimpan. Simpan referensi ini jika perlu bantuan.",
+    beforePaymentReference: "Setelah pembayaran, Anda akan menerima referensi Paystack untuk bantuan.",
+  },
+  ms: {
+    paymentReceived: "Bayaran diterima",
+    requestSent: "Permintaan dihantar kepada DJ",
+    boostAdded: "Boost anda telah ditambah pada permintaan sedia ada.",
+    requestAdded: "Permintaan lagu anda telah masuk ke barisan live.",
+    song: "Lagu",
+    amount: "Jumlah",
+    paystackReference: "Rujukan Paystack",
+    done: "Selesai",
+    savedSupport: "Permintaan anda telah disimpan. Simpan rujukan ini jika perlukan bantuan.",
+    beforePaymentReference: "Selepas bayaran, anda akan menerima rujukan Paystack untuk bantuan.",
+  },
+  th: {
+    paymentReceived: "ได้รับการชำระเงินแล้ว",
+    requestSent: "ส่งคำขอไปยัง DJ แล้ว",
+    boostAdded: "เพิ่มบูสต์ให้คำขอเดิมแล้ว",
+    requestAdded: "เพิ่มคำขอเพลงของคุณเข้าในคิวสดแล้ว",
+    song: "เพลง",
+    amount: "จำนวนเงิน",
+    paystackReference: "รหัสอ้างอิง Paystack",
+    done: "เสร็จสิ้น",
+    savedSupport: "บันทึกคำขอของคุณแล้ว เก็บรหัสอ้างอิงนี้ไว้หากต้องการความช่วยเหลือ",
+    beforePaymentReference: "หลังชำระเงิน คุณจะได้รับรหัสอ้างอิง Paystack สำหรับการช่วยเหลือ",
+  },
+  hi: {
+    paymentReceived: "भुगतान प्राप्त हुआ",
+    requestSent: "रिक्वेस्ट DJ को भेज दी गई",
+    boostAdded: "आपका boost मौजूदा request में जोड़ दिया गया है.",
+    requestAdded: "आपकी song request live queue में जोड़ दी गई है.",
+    song: "Song",
+    amount: "Amount",
+    paystackReference: "Paystack reference",
+    done: "Done",
+    savedSupport: "आपकी request saved है. Support के लिए यह reference रखें.",
+    beforePaymentReference: "Payment के बाद आपको support के लिए Paystack reference मिलेगा.",
+  },
+  ar: {
+    paymentReceived: "تم استلام الدفع",
+    requestSent: "تم إرسال الطلب إلى DJ",
+    boostAdded: "تمت إضافة التعزيز إلى الطلب الموجود.",
+    requestAdded: "تمت إضافة طلب الأغنية إلى قائمة الانتظار المباشرة.",
+    song: "الأغنية",
+    amount: "المبلغ",
+    paystackReference: "مرجع Paystack",
+    done: "تم",
+    savedSupport: "تم حفظ طلبك. احتفظ بهذا المرجع إذا احتجت إلى دعم.",
+    beforePaymentReference: "بعد الدفع، ستحصل على مرجع Paystack للدعم.",
+  },
+  vi: {
+    paymentReceived: "Đã nhận thanh toán",
+    requestSent: "Yêu cầu đã gửi đến DJ",
+    boostAdded: "Boost của bạn đã được thêm vào yêu cầu hiện có.",
+    requestAdded: "Yêu cầu bài hát của bạn đã được thêm vào hàng đợi live.",
+    song: "Bài hát",
+    amount: "Số tiền",
+    paystackReference: "Mã tham chiếu Paystack",
+    done: "Xong",
+    savedSupport: "Yêu cầu của bạn đã được lưu. Hãy giữ mã này nếu cần hỗ trợ.",
+    beforePaymentReference: "Sau khi thanh toán, bạn sẽ nhận mã Paystack để được hỗ trợ.",
+  },
+  tl: {
+    paymentReceived: "Natanggap ang bayad",
+    requestSent: "Naipadala ang request sa DJ",
+    boostAdded: "Naidagdag ang boost mo sa existing request.",
+    requestAdded: "Naidagdag ang song request mo sa live queue.",
+    song: "Kanta",
+    amount: "Halaga",
+    paystackReference: "Paystack reference",
+    done: "Done",
+    savedSupport: "Naka-save na ang request mo. Itago ang reference na ito kung kailangan ng support.",
+    beforePaymentReference: "Pagkatapos magbayad, makakatanggap ka ng Paystack reference para sa support.",
+  },
+  pt: {
+    paymentReceived: "Pagamento recebido",
+    requestSent: "Pedido enviado ao DJ",
+    boostAdded: "O seu boost foi adicionado ao pedido existente.",
+    requestAdded: "O seu pedido de música foi adicionado à fila ao vivo.",
+    song: "Música",
+    amount: "Valor",
+    paystackReference: "Referência Paystack",
+    done: "Concluído",
+    savedSupport: "O seu pedido foi guardado. Guarde esta referência se precisar de suporte.",
+    beforePaymentReference: "Após o pagamento, receberá uma referência Paystack para suporte.",
+  },
+  es: {
+    paymentReceived: "Pago recibido",
+    requestSent: "Solicitud enviada al DJ",
+    boostAdded: "Tu boost se agregó a la solicitud existente.",
+    requestAdded: "Tu solicitud de canción se agregó a la cola en vivo.",
+    song: "Canción",
+    amount: "Monto",
+    paystackReference: "Referencia de Paystack",
+    done: "Listo",
+    savedSupport: "Tu solicitud está guardada. Conserva esta referencia si necesitas soporte.",
+    beforePaymentReference: "Después del pago, recibirás una referencia de Paystack para soporte.",
+  },
+  fr: {
+    paymentReceived: "Paiement reçu",
+    requestSent: "Demande envoyée au DJ",
+    boostAdded: "Votre boost a été ajouté à la demande existante.",
+    requestAdded: "Votre demande de chanson a été ajoutée à la file en direct.",
+    song: "Chanson",
+    amount: "Montant",
+    paystackReference: "Référence Paystack",
+    done: "Terminé",
+    savedSupport: "Votre demande est enregistrée. Gardez cette référence si vous avez besoin d’aide.",
+    beforePaymentReference: "Après le paiement, vous recevrez une référence Paystack pour le support.",
+  },
+  de: {
+    paymentReceived: "Zahlung erhalten",
+    requestSent: "Anfrage an den DJ gesendet",
+    boostAdded: "Dein Boost wurde zur bestehenden Anfrage hinzugefügt.",
+    requestAdded: "Dein Songwunsch wurde zur Live-Warteschlange hinzugefügt.",
+    song: "Song",
+    amount: "Betrag",
+    paystackReference: "Paystack-Referenz",
+    done: "Fertig",
+    savedSupport: "Deine Anfrage wurde gespeichert. Bewahre diese Referenz für den Support auf.",
+    beforePaymentReference: "Nach der Zahlung erhältst du eine Paystack-Referenz für den Support.",
+  },
+  ru: {
+    paymentReceived: "Платёж получен",
+    requestSent: "Запрос отправлен DJ",
+    boostAdded: "Ваш буст добавлен к существующему запросу.",
+    requestAdded: "Ваш запрос песни добавлен в live-очередь.",
+    song: "Песня",
+    amount: "Сумма",
+    paystackReference: "Ссылка Paystack",
+    done: "Готово",
+    savedSupport: "Ваш запрос сохранён. Сохраните эту ссылку для поддержки.",
+    beforePaymentReference: "После оплаты вы получите ссылку Paystack для поддержки.",
+  },
+  tr: {
+    paymentReceived: "Ödeme alındı",
+    requestSent: "İstek DJ’ye gönderildi",
+    boostAdded: "Boost mevcut isteğe eklendi.",
+    requestAdded: "Şarkı isteğin canlı kuyruğa eklendi.",
+    song: "Şarkı",
+    amount: "Tutar",
+    paystackReference: "Paystack referansı",
+    done: "Tamam",
+    savedSupport: "İsteğin kaydedildi. Destek gerekirse bu referansı sakla.",
+    beforePaymentReference: "Ödemeden sonra destek için bir Paystack referansı alacaksın.",
+  },
+  it: {
+    paymentReceived: "Pagamento ricevuto",
+    requestSent: "Richiesta inviata al DJ",
+    boostAdded: "Il tuo boost è stato aggiunto alla richiesta esistente.",
+    requestAdded: "La tua richiesta è stata aggiunta alla coda live.",
+    song: "Brano",
+    amount: "Importo",
+    paystackReference: "Riferimento Paystack",
+    done: "Fatto",
+    savedSupport: "La tua richiesta è salvata. Conserva questo riferimento per il supporto.",
+    beforePaymentReference: "Dopo il pagamento riceverai un riferimento Paystack per il supporto.",
+  },
+  nl: {
+    paymentReceived: "Betaling ontvangen",
+    requestSent: "Verzoek naar de DJ gestuurd",
+    boostAdded: "Je boost is toegevoegd aan het bestaande verzoek.",
+    requestAdded: "Je songverzoek is toegevoegd aan de live wachtrij.",
+    song: "Nummer",
+    amount: "Bedrag",
+    paystackReference: "Paystack-referentie",
+    done: "Klaar",
+    savedSupport: "Je verzoek is opgeslagen. Bewaar deze referentie voor support.",
+    beforePaymentReference: "Na betaling ontvang je een Paystack-referentie voor support.",
+  },
+  pl: {
+    paymentReceived: "Płatność otrzymana",
+    requestSent: "Prośba wysłana do DJ-a",
+    boostAdded: "Twój boost został dodany do istniejącej prośby.",
+    requestAdded: "Twoja prośba o piosenkę została dodana do kolejki live.",
+    song: "Piosenka",
+    amount: "Kwota",
+    paystackReference: "Referencja Paystack",
+    done: "Gotowe",
+    savedSupport: "Twoja prośba została zapisana. Zachowaj tę referencję w razie potrzeby wsparcia.",
+    beforePaymentReference: "Po płatności otrzymasz referencję Paystack do wsparcia.",
+  },
+  el: {
+    paymentReceived: "Η πληρωμή ελήφθη",
+    requestSent: "Το αίτημα στάλθηκε στον DJ",
+    boostAdded: "Το boost προστέθηκε στο υπάρχον αίτημα.",
+    requestAdded: "Το αίτημα τραγουδιού προστέθηκε στη live ουρά.",
+    song: "Τραγούδι",
+    amount: "Ποσό",
+    paystackReference: "Αναφορά Paystack",
+    done: "Τέλος",
+    savedSupport: "Το αίτημά σας αποθηκεύτηκε. Κρατήστε αυτή την αναφορά για υποστήριξη.",
+    beforePaymentReference: "Μετά την πληρωμή, θα λάβετε αναφορά Paystack για υποστήριξη.",
+  },
+  uk: {
+    paymentReceived: "Платіж отримано",
+    requestSent: "Запит надіслано DJ",
+    boostAdded: "Ваш boost додано до існуючого запиту.",
+    requestAdded: "Ваш запит пісні додано до live-черги.",
+    song: "Пісня",
+    amount: "Сума",
+    paystackReference: "Референс Paystack",
+    done: "Готово",
+    savedSupport: "Ваш запит збережено. Збережіть цей референс для підтримки.",
+    beforePaymentReference: "Після оплати ви отримаєте референс Paystack для підтримки.",
+  },
+};
+
 type Request = {
   id: number;
   dj_id: number;
@@ -77,6 +357,8 @@ export default function StageRequestPage() {
   } | null>(null);
 
   const t = translations[language];
+  const paymentText =
+    paymentSuccessTranslations[language] || paymentSuccessTranslations.en;
 
   const [nowPlaying, setNowPlaying] = useState<Request | null>(null);
   const [upNext, setUpNext] = useState<Request | null>(null);
@@ -619,22 +901,22 @@ export default function StageRequestPage() {
               </div>
 
               <p className="text-xs uppercase tracking-[0.25em] text-green-300 font-black mb-2">
-                Payment received
+                {paymentText.paymentReceived}
               </p>
 
               <h2 className="text-3xl font-black text-white">
-                Request sent to the DJ
+                {paymentText.requestSent}
               </h2>
 
               <p className="text-zinc-400 text-sm mt-3 leading-relaxed">
                 {paymentSuccess.isBoost
-                  ? "Your boost was added to the existing request."
-                  : "Your song request has been added to the live queue."}
+                  ? paymentText.boostAdded
+                  : paymentText.requestAdded}
               </p>
 
               <div className="bg-black/40 border border-zinc-800 rounded-2xl p-4 mt-5 text-left">
                 <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">
-                  Song
+                  {paymentText.song}
                 </p>
                 <p className="text-white font-black text-lg mt-1">
                   {paymentSuccess.song}
@@ -647,7 +929,7 @@ export default function StageRequestPage() {
               <div className="grid grid-cols-1 gap-3 mt-3">
                 <div className="bg-black/40 border border-zinc-800 rounded-2xl p-4">
                   <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">
-                    Amount
+                    {paymentText.amount}
                   </p>
                   <p className="text-green-400 font-black text-2xl mt-1">
                     {paymentSuccess.currency} {paymentSuccess.amount.toFixed(2)}
@@ -656,7 +938,7 @@ export default function StageRequestPage() {
 
                 <div className="bg-black/40 border border-zinc-800 rounded-2xl p-4">
                   <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">
-                    Paystack reference
+                    {paymentText.paystackReference}
                   </p>
                   <p className="text-white font-mono text-sm break-all mt-1">
                     {paymentSuccess.reference}
@@ -669,11 +951,11 @@ export default function StageRequestPage() {
                 onClick={() => setPaymentSuccess(null)}
                 className="mt-5 w-full bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-xl font-bold transition"
               >
-                Done
+                {paymentText.done}
               </button>
 
               <p className="text-xs text-zinc-500 mt-4 leading-relaxed">
-                Your request is saved. Keep this reference if you need support.
+                {paymentText.savedSupport}
               </p>
             </div>
           </div>
@@ -1223,7 +1505,7 @@ export default function StageRequestPage() {
             </button>
                 
                           <p className="text-xs text-purple-300 text-center mt-4 leading-relaxed">
-                            After payment, you’ll receive a Paystack reference for support.
+                            {paymentText.beforePaymentReference}
                           </p>
 
                           <p className="text-xs text-zinc-500 text-center mt-3 leading-relaxed">

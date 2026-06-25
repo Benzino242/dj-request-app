@@ -166,6 +166,263 @@ type BalanceExplainerTranslation = {
   formula: string;
 };
 
+type DashboardAlertTranslation = {
+  actionNeeded: string;
+  pendingRequestSingular: string;
+  pendingRequestPlural: string;
+  needReview: string;
+  tapToQueue: string;
+  reviewNow: string;
+  done: string;
+  showSteps: string;
+  hideSteps: string;
+};
+
+const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = {
+  en: {
+    actionNeeded: "Action needed",
+    pendingRequestSingular: "pending song request",
+    pendingRequestPlural: "pending song requests",
+    needReview: "need review",
+    tapToQueue: "Tap here to jump straight to your request queue.",
+    reviewNow: "Review now",
+    done: "done",
+    showSteps: "Show steps",
+    hideSteps: "Hide steps",
+  },
+  zh: {
+    actionNeeded: "需要操作",
+    pendingRequestSingular: "个待处理点歌",
+    pendingRequestPlural: "个待处理点歌",
+    needReview: "需要审核",
+    tapToQueue: "点此直接跳到你的点歌队列。",
+    reviewNow: "立即查看",
+    done: "已完成",
+    showSteps: "显示步骤",
+    hideSteps: "隐藏步骤",
+  },
+  ja: {
+    actionNeeded: "要対応",
+    pendingRequestSingular: "件の保留中リクエスト",
+    pendingRequestPlural: "件の保留中リクエスト",
+    needReview: "確認が必要です",
+    tapToQueue: "ここをタップしてリクエストキューへ移動します。",
+    reviewNow: "今すぐ確認",
+    done: "完了",
+    showSteps: "手順を表示",
+    hideSteps: "手順を隠す",
+  },
+  ko: {
+    actionNeeded: "조치 필요",
+    pendingRequestSingular: "개의 대기 곡 요청",
+    pendingRequestPlural: "개의 대기 곡 요청",
+    needReview: "확인이 필요합니다",
+    tapToQueue: "요청 대기열로 바로 이동하려면 탭하세요.",
+    reviewNow: "지금 확인",
+    done: "완료",
+    showSteps: "단계 보기",
+    hideSteps: "단계 숨기기",
+  },
+  id: {
+    actionNeeded: "Perlu aksi",
+    pendingRequestSingular: "request lagu pending",
+    pendingRequestPlural: "request lagu pending",
+    needReview: "perlu ditinjau",
+    tapToQueue: "Tap untuk langsung ke antrean request Anda.",
+    reviewNow: "Tinjau sekarang",
+    done: "selesai",
+    showSteps: "Tampilkan langkah",
+    hideSteps: "Sembunyikan langkah",
+  },
+  ms: {
+    actionNeeded: "Perlu tindakan",
+    pendingRequestSingular: "permintaan lagu pending",
+    pendingRequestPlural: "permintaan lagu pending",
+    needReview: "perlu disemak",
+    tapToQueue: "Tekan untuk terus ke barisan permintaan anda.",
+    reviewNow: "Semak sekarang",
+    done: "selesai",
+    showSteps: "Tunjuk langkah",
+    hideSteps: "Sembunyi langkah",
+  },
+  th: {
+    actionNeeded: "ต้องดำเนินการ",
+    pendingRequestSingular: "คำขอเพลงที่รออยู่",
+    pendingRequestPlural: "คำขอเพลงที่รออยู่",
+    needReview: "ต้องตรวจสอบ",
+    tapToQueue: "แตะเพื่อไปยังคิวคำขอของคุณทันที",
+    reviewNow: "ตรวจสอบตอนนี้",
+    done: "เสร็จแล้ว",
+    showSteps: "แสดงขั้นตอน",
+    hideSteps: "ซ่อนขั้นตอน",
+  },
+  hi: {
+    actionNeeded: "कार्रवाई चाहिए",
+    pendingRequestSingular: "pending song request",
+    pendingRequestPlural: "pending song requests",
+    needReview: "review चाहिए",
+    tapToQueue: "Request queue पर सीधे जाने के लिए tap करें.",
+    reviewNow: "अभी review करें",
+    done: "done",
+    showSteps: "Steps दिखाएं",
+    hideSteps: "Steps छिपाएं",
+  },
+  ar: {
+    actionNeeded: "يتطلب إجراء",
+    pendingRequestSingular: "طلب أغنية معلق",
+    pendingRequestPlural: "طلبات أغاني معلقة",
+    needReview: "تحتاج إلى مراجعة",
+    tapToQueue: "اضغط للانتقال مباشرة إلى قائمة الطلبات.",
+    reviewNow: "راجع الآن",
+    done: "مكتمل",
+    showSteps: "إظهار الخطوات",
+    hideSteps: "إخفاء الخطوات",
+  },
+  vi: {
+    actionNeeded: "Cần xử lý",
+    pendingRequestSingular: "yêu cầu bài hát đang chờ",
+    pendingRequestPlural: "yêu cầu bài hát đang chờ",
+    needReview: "cần xem lại",
+    tapToQueue: "Nhấn để chuyển thẳng đến hàng đợi yêu cầu.",
+    reviewNow: "Xem ngay",
+    done: "xong",
+    showSteps: "Hiện bước",
+    hideSteps: "Ẩn bước",
+  },
+  tl: {
+    actionNeeded: "Kailangan aksyon",
+    pendingRequestSingular: "pending song request",
+    pendingRequestPlural: "pending song requests",
+    needReview: "kailangang i-review",
+    tapToQueue: "I-tap para pumunta agad sa request queue.",
+    reviewNow: "Review ngayon",
+    done: "done",
+    showSteps: "Ipakita ang steps",
+    hideSteps: "Itago ang steps",
+  },
+  pt: {
+    actionNeeded: "Ação necessária",
+    pendingRequestSingular: "pedido de música pendente",
+    pendingRequestPlural: "pedidos de música pendentes",
+    needReview: "precisa de revisão",
+    tapToQueue: "Toque para ir direto à fila de pedidos.",
+    reviewNow: "Rever agora",
+    done: "concluído",
+    showSteps: "Mostrar passos",
+    hideSteps: "Ocultar passos",
+  },
+  es: {
+    actionNeeded: "Acción necesaria",
+    pendingRequestSingular: "solicitud de canción pendiente",
+    pendingRequestPlural: "solicitudes de canciones pendientes",
+    needReview: "necesita revisión",
+    tapToQueue: "Toca aquí para ir directo a tu cola de solicitudes.",
+    reviewNow: "Revisar ahora",
+    done: "listo",
+    showSteps: "Mostrar pasos",
+    hideSteps: "Ocultar pasos",
+  },
+  fr: {
+    actionNeeded: "Action nécessaire",
+    pendingRequestSingular: "demande de chanson en attente",
+    pendingRequestPlural: "demandes de chansons en attente",
+    needReview: "à vérifier",
+    tapToQueue: "Touchez ici pour aller directement à votre file de demandes.",
+    reviewNow: "Vérifier",
+    done: "terminé",
+    showSteps: "Afficher les étapes",
+    hideSteps: "Masquer les étapes",
+  },
+  de: {
+    actionNeeded: "Aktion nötig",
+    pendingRequestSingular: "ausstehender Songwunsch",
+    pendingRequestPlural: "ausstehende Songwünsche",
+    needReview: "muss geprüft werden",
+    tapToQueue: "Tippe hier, um direkt zur Anfrage-Warteschlange zu springen.",
+    reviewNow: "Jetzt prüfen",
+    done: "erledigt",
+    showSteps: "Schritte anzeigen",
+    hideSteps: "Schritte ausblenden",
+  },
+  ru: {
+    actionNeeded: "Требуется действие",
+    pendingRequestSingular: "ожидающий запрос песни",
+    pendingRequestPlural: "ожидающих запроса песни",
+    needReview: "нужно проверить",
+    tapToQueue: "Нажмите, чтобы перейти прямо к очереди запросов.",
+    reviewNow: "Проверить",
+    done: "готово",
+    showSteps: "Показать шаги",
+    hideSteps: "Скрыть шаги",
+  },
+  tr: {
+    actionNeeded: "İşlem gerekli",
+    pendingRequestSingular: "bekleyen şarkı isteği",
+    pendingRequestPlural: "bekleyen şarkı isteği",
+    needReview: "incelenmeli",
+    tapToQueue: "İstek kuyruğuna gitmek için dokun.",
+    reviewNow: "Şimdi incele",
+    done: "tamamlandı",
+    showSteps: "Adımları göster",
+    hideSteps: "Adımları gizle",
+  },
+  it: {
+    actionNeeded: "Azione richiesta",
+    pendingRequestSingular: "richiesta brano in attesa",
+    pendingRequestPlural: "richieste brani in attesa",
+    needReview: "da controllare",
+    tapToQueue: "Tocca qui per andare alla coda richieste.",
+    reviewNow: "Controlla ora",
+    done: "completato",
+    showSteps: "Mostra passaggi",
+    hideSteps: "Nascondi passaggi",
+  },
+  nl: {
+    actionNeeded: "Actie nodig",
+    pendingRequestSingular: "openstaand songverzoek",
+    pendingRequestPlural: "openstaande songverzoeken",
+    needReview: "moet worden bekeken",
+    tapToQueue: "Tik om direct naar je verzoekwachtrij te gaan.",
+    reviewNow: "Nu bekijken",
+    done: "klaar",
+    showSteps: "Stappen tonen",
+    hideSteps: "Stappen verbergen",
+  },
+  pl: {
+    actionNeeded: "Wymagana akcja",
+    pendingRequestSingular: "oczekująca prośba o piosenkę",
+    pendingRequestPlural: "oczekujące prośby o piosenki",
+    needReview: "wymaga sprawdzenia",
+    tapToQueue: "Dotknij, aby przejść prosto do kolejki próśb.",
+    reviewNow: "Sprawdź teraz",
+    done: "gotowe",
+    showSteps: "Pokaż kroki",
+    hideSteps: "Ukryj kroki",
+  },
+  el: {
+    actionNeeded: "Απαιτείται ενέργεια",
+    pendingRequestSingular: "εκκρεμές αίτημα τραγουδιού",
+    pendingRequestPlural: "εκκρεμή αιτήματα τραγουδιών",
+    needReview: "χρειάζεται έλεγχο",
+    tapToQueue: "Πατήστε για να πάτε απευθείας στην ουρά αιτημάτων.",
+    reviewNow: "Έλεγχος τώρα",
+    done: "ολοκληρώθηκε",
+    showSteps: "Εμφάνιση βημάτων",
+    hideSteps: "Απόκρυψη βημάτων",
+  },
+  uk: {
+    actionNeeded: "Потрібна дія",
+    pendingRequestSingular: "очікуваний запит пісні",
+    pendingRequestPlural: "очікувані запити пісень",
+    needReview: "потрібно переглянути",
+    tapToQueue: "Натисніть, щоб перейти прямо до черги запитів.",
+    reviewNow: "Переглянути",
+    done: "готово",
+    showSteps: "Показати кроки",
+    hideSteps: "Сховати кроки",
+  },
+};
+
 const balanceExplainerTranslations: Record<Language, BalanceExplainerTranslation> = {
   "en": {
     "title": "How your balance works",
@@ -1450,6 +1707,8 @@ export default function AdminPage() {
 
   const t = translations[language];
   const quickSetupText = quickSetupTranslations[language] || quickSetupTranslations.en;
+  const dashboardAlertText =
+    dashboardAlertTranslations[language] || dashboardAlertTranslations.en;
   const balanceText = balanceExplainerTranslations[language] || balanceExplainerTranslations.en;
 
   function getCurrentScrollY() {
@@ -2688,21 +2947,24 @@ export default function AdminPage() {
 
             <div className="min-w-0 flex-1">
               <p className="text-xs uppercase tracking-[0.25em] text-yellow-300 font-black">
-                Action needed
+                {dashboardAlertText.actionNeeded}
               </p>
 
               <h2 className="text-xl md:text-2xl font-black text-white mt-1 leading-tight">
-                {grouped.pending.length} pending song{" "}
-                {grouped.pending.length === 1 ? "request" : "requests"} need review
+                {grouped.pending.length}{" "}
+                {grouped.pending.length === 1
+                  ? dashboardAlertText.pendingRequestSingular
+                  : dashboardAlertText.pendingRequestPlural}{" "}
+                {dashboardAlertText.needReview}
               </h2>
 
               <p className="text-sm text-zinc-300 mt-1">
-                Tap here to jump straight to your request queue.
+                {dashboardAlertText.tapToQueue}
               </p>
             </div>
 
             <div className="hidden sm:block bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-black">
-              Review now
+              {dashboardAlertText.reviewNow}
             </div>
           </div>
         </button>
@@ -2726,7 +2988,7 @@ export default function AdminPage() {
 
           <div className="flex items-center gap-3">
             <span className="bg-black/40 border border-zinc-800 text-zinc-300 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest">
-              {quickSetupCompletedCount}/6 done
+              {quickSetupCompletedCount}/6 {dashboardAlertText.done}
             </span>
 
             <button
@@ -2734,7 +2996,9 @@ export default function AdminPage() {
               onClick={() => setIsQuickSetupExpanded((current) => !current)}
               className="md:hidden bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-full text-sm font-black transition"
             >
-              {isQuickSetupExpanded ? "Hide steps" : "Show steps"}
+              {isQuickSetupExpanded
+                ? dashboardAlertText.hideSteps
+                : dashboardAlertText.showSteps}
             </button>
           </div>
         </div>
