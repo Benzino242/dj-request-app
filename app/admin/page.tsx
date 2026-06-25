@@ -2878,58 +2878,60 @@ export default function AdminPage() {
 
   return (
     <main className="min-h-screen bg-black text-white p-3 md:p-6">
-      <div className="flex items-center justify-between mb-6">
-        <button
-          onClick={handleLogout}
-          className="bg-zinc-800 hover:bg-zinc-700 px-5 py-3 rounded-xl text-sm font-semibold"
-        >
-          {t.logout}
-        </button>
+      <div className="flex flex-col-reverse md:flex-row md:items-center md:justify-between gap-4 mb-6 md:mb-10">
+        <div className="text-center md:text-left">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-purple-500 leading-tight">
+            <span className="md:hidden">
+              {dj.stage_name?.toUpperCase()} Dashboard
+            </span>
 
-        <select
-          value={language}
-          onChange={(e) => setLanguage(e.target.value as Language)}
-          className="bg-black border border-zinc-700 rounded-xl px-4 py-2 text-sm"
-        >
-          <option value="en">🇺🇸 English</option>
-          <option value="zh">🇨🇳 中文</option>
-          <option value="ja">🇯🇵 日本語</option>
-          <option value="ko">🇰🇷 한국어</option>
-          <option value="id">🇮🇩 Bahasa Indonesia</option>
-          <option value="ms">🇲🇾 Bahasa Melayu</option>
-          <option value="th">🇹🇭 ไทย</option>
-          <option value="hi">🇮🇳 हिन्दी</option>
-          <option value="ar">🇦🇪 العربية</option>
-          <option value="vi">🇻🇳 Tiếng Việt</option>
-          <option value="tl">🇵🇭 Tagalog</option>
-          <option value="pt">🇧🇷 Português</option>
-          <option value="es">🇪🇸 Español</option>
-          <option value="fr">🇫🇷 Français</option>
-          <option value="de">🇩🇪 Deutsch</option>
-          <option value="ru">🇷🇺 Русский</option>
-          <option value="tr">🇹🇷 Türkçe</option>
-          <option value="it">🇮🇹 Italiano</option>
-          <option value="nl">🇳🇱 Nederlands</option>
-          <option value="pl">🇵🇱 Polski</option>
-          <option value="el">🇬🇷 Ελληνικά</option>
-          <option value="uk">🇺🇦 Українська</option>
-        </select>
-      </div>
+            <span className="hidden md:inline">
+              {dj.stage_name?.toUpperCase()} Dashboard
+            </span>
+          </h1>
 
-      <div className="text-center md:text-left mb-10">
-        <h1 className="text-4xl md:text-6xl font-black text-purple-500 leading-tight">
-          <span className="md:hidden">
-            {dj.stage_name?.toUpperCase()}
-            <br />
-            Dashboard
-          </span>
+          <p className="text-zinc-400 mt-2 md:mt-3 text-sm md:text-lg">
+            {t.adminSubtitle}
+          </p>
+        </div>
 
-          <span className="hidden md:inline">
-            {dj.stage_name?.toUpperCase()} Dashboard
-          </span>
-        </h1>
+        <div className="flex items-center justify-between md:justify-end gap-3">
+          <button
+            onClick={handleLogout}
+            className="bg-zinc-800 hover:bg-zinc-700 px-4 py-3 md:px-5 rounded-xl text-sm font-semibold"
+          >
+            {t.logout}
+          </button>
 
-        <p className="text-zinc-400 mt-3 text-lg">{t.adminSubtitle}</p>
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value as Language)}
+            className="bg-black border border-zinc-700 rounded-xl px-3 py-3 md:px-4 md:py-2 text-sm min-w-0 max-w-[220px]"
+          >
+            <option value="en">🇺🇸 English</option>
+            <option value="zh">🇨🇳 中文</option>
+            <option value="ja">🇯🇵 日本語</option>
+            <option value="ko">🇰🇷 한국어</option>
+            <option value="id">🇮🇩 Bahasa Indonesia</option>
+            <option value="ms">🇲🇾 Bahasa Melayu</option>
+            <option value="th">🇹🇭 ไทย</option>
+            <option value="hi">🇮🇳 हिन्दी</option>
+            <option value="ar">🇦🇪 العربية</option>
+            <option value="vi">🇻🇳 Tiếng Việt</option>
+            <option value="tl">🇵🇭 Tagalog</option>
+            <option value="pt">🇧🇷 Português</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="de">🇩🇪 Deutsch</option>
+            <option value="ru">🇷🇺 Русский</option>
+            <option value="tr">🇹🇷 Türkçe</option>
+            <option value="it">🇮🇹 Italiano</option>
+            <option value="nl">🇳🇱 Nederlands</option>
+            <option value="pl">🇵🇱 Polski</option>
+            <option value="el">🇬🇷 Ελληνικά</option>
+            <option value="uk">🇺🇦 Українська</option>
+          </select>
+        </div>
       </div>
 
       {grouped.pending.length > 0 && (
