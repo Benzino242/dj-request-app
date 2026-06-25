@@ -669,8 +669,12 @@ export default function StageRequestPage() {
                 onClick={() => setPaymentSuccess(null)}
                 className="mt-5 w-full bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-xl font-bold transition"
               >
-                Request another song
+                Done
               </button>
+
+              <p className="text-xs text-zinc-500 mt-4 leading-relaxed">
+                Your request is saved. Keep this reference if you need support.
+              </p>
             </div>
           </div>
         </div>
