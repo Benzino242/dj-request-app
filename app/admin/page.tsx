@@ -3144,11 +3144,11 @@ export default function AdminPage() {
           actionLoadingId={actionLoadingId}
           t={t}
           buttons={(request) => (
-            <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
               <button
                 disabled={actionLoadingId === request.id}
                 onClick={() => updateStatus(request.id, "accepted")}
-                className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl disabled:bg-zinc-700"
+                className="w-full bg-green-600 hover:bg-green-700 px-5 py-4 md:py-3 rounded-xl text-lg md:text-base font-bold disabled:bg-zinc-700"
               >
                 {t.accept}
               </button>
@@ -3156,11 +3156,11 @@ export default function AdminPage() {
               <button
                 disabled={actionLoadingId === request.id}
                 onClick={() => updateStatus(request.id, "rejected")}
-                className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl disabled:bg-zinc-700"
+                className="w-full bg-red-600 hover:bg-red-700 px-5 py-4 md:py-3 rounded-xl text-lg md:text-base font-bold disabled:bg-zinc-700"
               >
                 {t.reject}
               </button>
-            </>
+            </div>
           )}
         />
 
