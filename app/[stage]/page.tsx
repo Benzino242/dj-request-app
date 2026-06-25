@@ -1222,7 +1222,11 @@ export default function StageRequestPage() {
                 : `${t.pay} ${tipCurrency} ${tipAmount || 0} ${t.andRequest}`}
             </button>
                 
-                          <p className="text-xs text-zinc-500 text-center mt-4 leading-relaxed">
+                          <p className="text-xs text-purple-300 text-center mt-4 leading-relaxed">
+                            After payment, you’ll receive a Paystack reference for support.
+                          </p>
+
+                          <p className="text-xs text-zinc-500 text-center mt-3 leading-relaxed">
                             {t.boostingDisclaimer}
                           </p>
                         </div>
