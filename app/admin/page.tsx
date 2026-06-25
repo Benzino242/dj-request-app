@@ -176,6 +176,9 @@ type DashboardAlertTranslation = {
   done: string;
   showSteps: string;
   hideSteps: string;
+  showAllHistory: string;
+  showLessHistory: string;
+  playedHistoryRetentionNote: string;
 };
 
 const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = {
@@ -189,6 +192,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "done",
     showSteps: "Show steps",
     hideSteps: "Hide steps",
+    showAllHistory: "Show all history",
+    showLessHistory: "Show less",
+    playedHistoryRetentionNote: "Played history shown here covers the last 30 days. Older records are kept safely for payment and support audit.",
   },
   zh: {
     actionNeeded: "需要操作",
@@ -200,6 +206,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "已完成",
     showSteps: "显示步骤",
     hideSteps: "隐藏步骤",
+    showAllHistory: "显示全部历史",
+    showLessHistory: "显示更少",
+    playedHistoryRetentionNote: "这里显示最近30天的播放历史。更早的记录会安全保留，用于付款和支持审核。",
   },
   ja: {
     actionNeeded: "要対応",
@@ -211,6 +220,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "完了",
     showSteps: "手順を表示",
     hideSteps: "手順を隠す",
+    showAllHistory: "履歴をすべて表示",
+    showLessHistory: "少なく表示",
+    playedHistoryRetentionNote: "ここには過去30日間の再生履歴が表示されます。古い記録は支払いとサポート確認のため安全に保管されます。",
   },
   ko: {
     actionNeeded: "조치 필요",
@@ -222,6 +234,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "완료",
     showSteps: "단계 보기",
     hideSteps: "단계 숨기기",
+    showAllHistory: "전체 기록 보기",
+    showLessHistory: "적게 보기",
+    playedHistoryRetentionNote: "여기에는 최근 30일 재생 기록이 표시됩니다. 이전 기록은 결제 및 지원 확인을 위해 안전하게 보관됩니다.",
   },
   id: {
     actionNeeded: "Perlu aksi",
@@ -233,6 +248,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "selesai",
     showSteps: "Tampilkan langkah",
     hideSteps: "Sembunyikan langkah",
+    showAllHistory: "Tampilkan semua riwayat",
+    showLessHistory: "Tampilkan lebih sedikit",
+    playedHistoryRetentionNote: "Riwayat yang tampil di sini mencakup 30 hari terakhir. Catatan lama tetap disimpan aman untuk audit pembayaran dan bantuan.",
   },
   ms: {
     actionNeeded: "Perlu tindakan",
@@ -244,6 +262,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "selesai",
     showSteps: "Tunjuk langkah",
     hideSteps: "Sembunyi langkah",
+    showAllHistory: "Tunjuk semua sejarah",
+    showLessHistory: "Tunjuk kurang",
+    playedHistoryRetentionNote: "Sejarah yang dipaparkan di sini meliputi 30 hari terakhir. Rekod lama disimpan dengan selamat untuk audit bayaran dan sokongan.",
   },
   th: {
     actionNeeded: "ต้องดำเนินการ",
@@ -255,6 +276,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "เสร็จแล้ว",
     showSteps: "แสดงขั้นตอน",
     hideSteps: "ซ่อนขั้นตอน",
+    showAllHistory: "แสดงประวัติทั้งหมด",
+    showLessHistory: "แสดงน้อยลง",
+    playedHistoryRetentionNote: "ประวัติที่แสดงที่นี่เป็นของ 30 วันที่ผ่านมา รายการเก่าจะถูกเก็บไว้อย่างปลอดภัยสำหรับการตรวจสอบการชำระเงินและการช่วยเหลือ",
   },
   hi: {
     actionNeeded: "कार्रवाई चाहिए",
@@ -266,6 +290,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "done",
     showSteps: "Steps दिखाएं",
     hideSteps: "Steps छिपाएं",
+    showAllHistory: "पूरी history दिखाएं",
+    showLessHistory: "कम दिखाएं",
+    playedHistoryRetentionNote: "यहाँ पिछले 30 दिनों की played history दिखाई जाती है. पुराने records payment और support audit के लिए सुरक्षित रखे जाते हैं.",
   },
   ar: {
     actionNeeded: "يتطلب إجراء",
@@ -277,6 +304,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "مكتمل",
     showSteps: "إظهار الخطوات",
     hideSteps: "إخفاء الخطوات",
+    showAllHistory: "إظهار كل السجل",
+    showLessHistory: "إظهار أقل",
+    playedHistoryRetentionNote: "يعرض هذا القسم سجل التشغيل لآخر 30 يومًا. يتم حفظ السجلات الأقدم بأمان لتدقيق الدفع والدعم.",
   },
   vi: {
     actionNeeded: "Cần xử lý",
@@ -288,6 +318,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "xong",
     showSteps: "Hiện bước",
     hideSteps: "Ẩn bước",
+    showAllHistory: "Hiện tất cả lịch sử",
+    showLessHistory: "Hiện ít hơn",
+    playedHistoryRetentionNote: "Lịch sử hiển thị ở đây là trong 30 ngày gần nhất. Bản ghi cũ được giữ an toàn để kiểm tra thanh toán và hỗ trợ.",
   },
   tl: {
     actionNeeded: "Kailangan aksyon",
@@ -299,6 +332,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "done",
     showSteps: "Ipakita ang steps",
     hideSteps: "Itago ang steps",
+    showAllHistory: "Ipakita lahat ng history",
+    showLessHistory: "Ipakita nang mas kaunti",
+    playedHistoryRetentionNote: "Ang history na ipinapakita dito ay para sa huling 30 araw. Ang mas lumang records ay ligtas na naka-save para sa payment at support audit.",
   },
   pt: {
     actionNeeded: "Ação necessária",
@@ -310,6 +346,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "concluído",
     showSteps: "Mostrar passos",
     hideSteps: "Ocultar passos",
+    showAllHistory: "Mostrar todo o histórico",
+    showLessHistory: "Mostrar menos",
+    playedHistoryRetentionNote: "O histórico mostrado aqui cobre os últimos 30 dias. Registos antigos ficam guardados em segurança para auditoria de pagamentos e suporte.",
   },
   es: {
     actionNeeded: "Acción necesaria",
@@ -321,6 +360,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "listo",
     showSteps: "Mostrar pasos",
     hideSteps: "Ocultar pasos",
+    showAllHistory: "Mostrar todo el historial",
+    showLessHistory: "Mostrar menos",
+    playedHistoryRetentionNote: "El historial mostrado aquí cubre los últimos 30 días. Los registros antiguos se conservan de forma segura para auditoría de pagos y soporte.",
   },
   fr: {
     actionNeeded: "Action nécessaire",
@@ -332,6 +374,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "terminé",
     showSteps: "Afficher les étapes",
     hideSteps: "Masquer les étapes",
+    showAllHistory: "Afficher tout l’historique",
+    showLessHistory: "Afficher moins",
+    playedHistoryRetentionNote: "L’historique affiché ici couvre les 30 derniers jours. Les anciens enregistrements sont conservés pour l’audit des paiements et le support.",
   },
   de: {
     actionNeeded: "Aktion nötig",
@@ -343,6 +388,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "erledigt",
     showSteps: "Schritte anzeigen",
     hideSteps: "Schritte ausblenden",
+    showAllHistory: "Gesamten Verlauf anzeigen",
+    showLessHistory: "Weniger anzeigen",
+    playedHistoryRetentionNote: "Der hier angezeigte Verlauf umfasst die letzten 30 Tage. Ältere Datensätze werden für Zahlungs- und Supportprüfungen sicher aufbewahrt.",
   },
   ru: {
     actionNeeded: "Требуется действие",
@@ -354,6 +402,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "готово",
     showSteps: "Показать шаги",
     hideSteps: "Скрыть шаги",
+    showAllHistory: "Показать всю историю",
+    showLessHistory: "Показать меньше",
+    playedHistoryRetentionNote: "Здесь отображается история за последние 30 дней. Более старые записи безопасно сохраняются для проверки платежей и поддержки.",
   },
   tr: {
     actionNeeded: "İşlem gerekli",
@@ -365,6 +416,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "tamamlandı",
     showSteps: "Adımları göster",
     hideSteps: "Adımları gizle",
+    showAllHistory: "Tüm geçmişi göster",
+    showLessHistory: "Daha az göster",
+    playedHistoryRetentionNote: "Burada son 30 günün geçmişi gösterilir. Eski kayıtlar ödeme ve destek denetimi için güvenli şekilde saklanır.",
   },
   it: {
     actionNeeded: "Azione richiesta",
@@ -376,6 +430,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "completato",
     showSteps: "Mostra passaggi",
     hideSteps: "Nascondi passaggi",
+    showAllHistory: "Mostra tutta la cronologia",
+    showLessHistory: "Mostra meno",
+    playedHistoryRetentionNote: "La cronologia mostrata qui copre gli ultimi 30 giorni. I record più vecchi sono conservati per audit pagamenti e supporto.",
   },
   nl: {
     actionNeeded: "Actie nodig",
@@ -387,6 +444,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "klaar",
     showSteps: "Stappen tonen",
     hideSteps: "Stappen verbergen",
+    showAllHistory: "Alle geschiedenis tonen",
+    showLessHistory: "Minder tonen",
+    playedHistoryRetentionNote: "De geschiedenis die hier wordt getoond beslaat de laatste 30 dagen. Oudere records worden veilig bewaard voor betalings- en supportcontrole.",
   },
   pl: {
     actionNeeded: "Wymagana akcja",
@@ -398,6 +458,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "gotowe",
     showSteps: "Pokaż kroki",
     hideSteps: "Ukryj kroki",
+    showAllHistory: "Pokaż całą historię",
+    showLessHistory: "Pokaż mniej",
+    playedHistoryRetentionNote: "Pokazana tutaj historia obejmuje ostatnie 30 dni. Starsze rekordy są bezpiecznie przechowywane do kontroli płatności i wsparcia.",
   },
   el: {
     actionNeeded: "Απαιτείται ενέργεια",
@@ -409,6 +472,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "ολοκληρώθηκε",
     showSteps: "Εμφάνιση βημάτων",
     hideSteps: "Απόκρυψη βημάτων",
+    showAllHistory: "Εμφάνιση όλου του ιστορικού",
+    showLessHistory: "Εμφάνιση λιγότερων",
+    playedHistoryRetentionNote: "Το ιστορικό που εμφανίζεται εδώ καλύπτει τις τελευταίες 30 ημέρες. Παλαιότερες εγγραφές φυλάσσονται για έλεγχο πληρωμών και υποστήριξη.",
   },
   uk: {
     actionNeeded: "Потрібна дія",
@@ -420,6 +486,9 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     done: "готово",
     showSteps: "Показати кроки",
     hideSteps: "Сховати кроки",
+    showAllHistory: "Показати всю історію",
+    showLessHistory: "Показати менше",
+    playedHistoryRetentionNote: "Тут показано історію за останні 30 днів. Старіші записи безпечно зберігаються для перевірки платежів і підтримки.",
   },
 };
 
@@ -1779,6 +1848,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const [isQuickSetupExpanded, setIsQuickSetupExpanded] = useState(false);
+  const [showAllPlayedHistory, setShowAllPlayedHistory] = useState(false);
   const isFetchingDashboardRef = useRef(false);
   const requestQueueRef = useRef<HTMLDivElement | null>(null);
   const liveControlsRef = useRef<HTMLDivElement | null>(null);
@@ -2576,6 +2646,19 @@ export default function AdminPage() {
     };
   }, [requests]);
 
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const recentPlayedHistory = grouped.finished.filter((request) => {
+    if (!request.created_at) return true;
+
+    return new Date(request.created_at) >= thirtyDaysAgo;
+  });
+
+  const visiblePlayedHistory = showAllPlayedHistory
+    ? recentPlayedHistory
+    : recentPlayedHistory.slice(0, 5);
+
   const currency = payments[0]?.currency || requests[0]?.tip_currency || "GHS";
 
   const grossRevenue = payments.reduce(
@@ -3279,23 +3362,33 @@ export default function AdminPage() {
           buttons={() => null}
         />
 
-        <RequestColumn
-          title={`${t.playedHistory} (${grouped.finished.length})`}
-          titleColor="text-blue-400"
-          requests={grouped.finished}
-          borderColor="border-blue-700"
-          actionLoadingId={actionLoadingId}
-          t={t}
-          buttons={(request) => (
+        <div>
+          <RequestColumn
+            title={`${t.playedHistory} (${recentPlayedHistory.length})`}
+            titleColor="text-blue-400"
+            requests={visiblePlayedHistory}
+            borderColor="border-blue-700"
+            actionLoadingId={actionLoadingId}
+            t={t}
+            buttons={() => null}
+          />
+
+          {recentPlayedHistory.length > 5 && (
             <button
-              disabled={actionLoadingId === request.id}
-              onClick={() => deleteRequest(request.id)}
-              className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:bg-zinc-800"
+              type="button"
+              onClick={() => setShowAllPlayedHistory((current) => !current)}
+              className="mt-4 w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-5 py-4 rounded-xl font-bold text-zinc-200 transition"
             >
-              {t.delete}
+              {showAllPlayedHistory
+                ? dashboardAlertText.showLessHistory
+                : dashboardAlertText.showAllHistory}
             </button>
           )}
-        />
+
+          <p className="mt-3 text-xs md:text-sm text-zinc-500 leading-relaxed">
+            {dashboardAlertText.playedHistoryRetentionNote}
+          </p>
+        </div>
       </div>
 
       <div ref={qrCodeSectionRef} className="scroll-mt-6 mb-12">
