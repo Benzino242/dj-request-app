@@ -2870,39 +2870,41 @@ export default function AdminPage() {
           actionLoadingId={actionLoadingId}
           t={t}
           buttons={(request) => (
-            <>
-              <button
-                disabled={actionLoadingId === request.id}
-                onClick={() => moveRequest(request.id, "up")}
-                className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl"
-              >
-                {t.up}
-              </button>
-
-              <button
-                disabled={actionLoadingId === request.id}
-                onClick={() => moveRequest(request.id, "down")}
-                className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl"
-              >
-                {t.down}
-              </button>
-
+            <div className="w-full">
               <button
                 disabled={actionLoadingId === request.id}
                 onClick={() => updateStatus(request.id, "played")}
-                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl disabled:bg-zinc-700"
+                className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 px-5 py-4 md:py-3 rounded-xl text-lg md:text-base font-bold disabled:bg-zinc-700"
               >
                 {t.markPlayed}
               </button>
 
-              <button
-                disabled={actionLoadingId === request.id}
-                onClick={() => deleteRequest(request.id)}
-                className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:bg-zinc-800"
-              >
-                {t.delete}
-              </button>
-            </>
+              <div className="grid grid-cols-3 gap-3 mt-3 md:flex md:flex-wrap">
+                <button
+                  disabled={actionLoadingId === request.id}
+                  onClick={() => moveRequest(request.id, "up")}
+                  className="bg-zinc-700 hover:bg-zinc-600 px-4 py-3 md:py-2 rounded-xl disabled:bg-zinc-800"
+                >
+                  {t.up}
+                </button>
+
+                <button
+                  disabled={actionLoadingId === request.id}
+                  onClick={() => moveRequest(request.id, "down")}
+                  className="bg-zinc-700 hover:bg-zinc-600 px-4 py-3 md:py-2 rounded-xl disabled:bg-zinc-800"
+                >
+                  {t.down}
+                </button>
+
+                <button
+                  disabled={actionLoadingId === request.id}
+                  onClick={() => deleteRequest(request.id)}
+                  className="bg-zinc-800 hover:bg-zinc-700 px-4 py-3 md:py-2 rounded-xl text-zinc-300 disabled:bg-zinc-900"
+                >
+                  {t.delete}
+                </button>
+              </div>
+            </div>
           )}
         />
 
