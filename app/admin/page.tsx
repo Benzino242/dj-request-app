@@ -2424,8 +2424,9 @@ export default function AdminPage() {
       message: grouped.pending.length > 0 ? quickSetupText.acceptRequestsMessage : quickSetupText.watchQueueMessage,
       status: grouped.pending.length > 0 ? quickSetupText.actionNeeded : quickSetupText.queue,
       className: grouped.pending.length > 0
-        ? "border-yellow-500/50 bg-yellow-500/10"
+        ? "border-yellow-400 bg-yellow-500/10 shadow-[0_0_35px_rgba(250,204,21,0.35)] animate-pulse"
         : "border-zinc-700 bg-black/30",
+      attention: grouped.pending.length > 0,
       target: "queue" as const,
     },
     {
@@ -2680,9 +2681,17 @@ export default function AdminPage() {
               key={action.number}
               type="button"
               onClick={() => scrollToQuickSetupTarget(action.target)}
-              className={`text-left border rounded-2xl p-4 transition hover:scale-[1.01] active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-purple-500/70 ${action.className}`}
+              className={`relative overflow-hidden text-left border rounded-2xl p-4 transition hover:scale-[1.01] active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-purple-500/70 ${action.className}`}
             >
-              <div className="flex items-start gap-4">
+              {action.attention && (
+                <div className="absolute inset-0 pointer-events-none rounded-2xl bg-yellow-400/10 animate-ping" />
+              )}
+
+              {action.attention && (
+                <div className="absolute right-3 top-3 h-3 w-3 rounded-full bg-yellow-300 shadow-[0_0_18px_rgba(250,204,21,0.95)] animate-ping" />
+              )}
+
+              <div className="relative z-10 flex items-start gap-4">
                 <div className="w-10 h-10 rounded-full bg-black/50 border border-white/10 flex items-center justify-center shrink-0 font-black text-purple-300">
                   {action.number}
                 </div>
@@ -2694,7 +2703,13 @@ export default function AdminPage() {
                       <h3 className="text-white font-black">{action.title}</h3>
                     </div>
 
-                    <span className="text-[10px] font-black uppercase tracking-widest bg-black/30 border border-white/10 rounded-full px-2 py-1 text-zinc-300">
+                    <span
+                      className={`text-[10px] font-black uppercase tracking-widest rounded-full px-2 py-1 ${
+                        action.attention
+                          ? "bg-yellow-400 text-black border border-yellow-200 shadow-[0_0_18px_rgba(250,204,21,0.55)] animate-bounce"
+                          : "bg-black/30 border border-white/10 text-zinc-300"
+                      }`}
+                    >
                       {action.status}
                     </span>
                   </div>
