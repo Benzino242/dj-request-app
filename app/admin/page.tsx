@@ -2404,7 +2404,37 @@ export default function AdminPage() {
     const currentScrollY = getCurrentScrollY();
 
     setActionLoadingId(id);
-    await supabase.from("requests").update({ status }).eq("id", id);
+
+    if (status === "played" && dj?.id) {
+      const { error: clearNowPlayingError } = await supabase
+        .from("requests")
+        .update({ status: "finished" })
+        .eq("dj_id", dj.id)
+        .eq("status", "played")
+        .neq("id", id);
+
+      if (clearNowPlayingError) {
+        console.error("CLEAR NOW PLAYING ERROR:", clearNowPlayingError);
+        alert(clearNowPlayingError.message);
+        setActionLoadingId(null);
+        restoreScrollPosition(currentScrollY);
+        return;
+      }
+    }
+
+    const { error } = await supabase
+      .from("requests")
+      .update({ status })
+      .eq("id", id);
+
+    if (error) {
+      console.error("UPDATE REQUEST STATUS ERROR:", error);
+      alert(error.message);
+      setActionLoadingId(null);
+      restoreScrollPosition(currentScrollY);
+      return;
+    }
+
     await fetchDashboardData();
     setActionLoadingId(null);
 
@@ -3246,25 +3276,7 @@ export default function AdminPage() {
           borderColor="border-purple-700"
           actionLoadingId={actionLoadingId}
           t={t}
-          buttons={(request) => (
-            <>
-              <button
-                disabled={actionLoadingId === request.id}
-                onClick={() => updateStatus(request.id, "finished")}
-                className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-xl disabled:bg-zinc-800"
-              >
-                {t.clearNowPlaying}
-              </button>
-
-              <button
-                disabled={actionLoadingId === request.id}
-                onClick={() => deleteRequest(request.id)}
-                className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded-xl disabled:bg-zinc-800"
-              >
-                {t.delete}
-              </button>
-            </>
-          )}
+          buttons={() => null}
         />
 
         <RequestColumn
