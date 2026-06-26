@@ -1094,7 +1094,7 @@ export default function StageRequestPage() {
 )}
             
 
-<h1 className="text-5xl font-black mb-3 text-purple-400 uppercase tracking-wide drop-shadow-[0_0_18px_rgba(168,85,247,0.45)]">
+<h1 className="mx-auto mb-3 max-w-full px-2 text-center text-[clamp(2.25rem,10vw,4.5rem)] font-black uppercase leading-[0.95] tracking-wide text-purple-400 drop-shadow-[0_0_18px_rgba(168,85,247,0.45)] break-words [overflow-wrap:anywhere]">
   {dj.stage_name}
 </h1>
 
