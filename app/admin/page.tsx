@@ -3359,7 +3359,15 @@ export default function AdminPage() {
           borderColor="border-purple-700"
           actionLoadingId={actionLoadingId}
           t={t}
-          buttons={() => null}
+          buttons={(request) => (
+            <button
+              disabled={actionLoadingId === request.id}
+              onClick={() => updateStatus(request.id, "finished")}
+              className="w-full md:w-auto bg-purple-600 hover:bg-purple-700 px-5 py-4 md:py-3 rounded-xl text-lg md:text-base font-bold disabled:bg-zinc-800"
+            >
+              {t.clearNowPlaying}
+            </button>
+          )}
         />
 
         <div>
