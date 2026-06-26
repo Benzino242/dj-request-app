@@ -1878,6 +1878,7 @@ export default function AdminPage() {
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const [isQuickSetupExpanded, setIsQuickSetupExpanded] = useState(false);
   const [showAllPlayedHistory, setShowAllPlayedHistory] = useState(false);
+  const [nowPlayingClockTick, setNowPlayingClockTick] = useState(0);
   const isFetchingDashboardRef = useRef(false);
   const requestQueueRef = useRef<HTMLDivElement | null>(null);
   const liveControlsRef = useRef<HTMLDivElement | null>(null);
@@ -2435,6 +2436,10 @@ export default function AdminPage() {
       refreshDashboardIfVisible();
     }, 10000);
 
+    const nowPlayingClockInterval = setInterval(() => {
+      setNowPlayingClockTick((currentTick) => currentTick + 1);
+    }, 5000);
+
     const handleVisibleRefresh = () => {
       if (document.visibilityState === "hidden") {
         saveDashboardScrollPosition();
@@ -2521,6 +2526,7 @@ export default function AdminPage() {
 
     return () => {
       clearInterval(refreshInterval);
+      clearInterval(nowPlayingClockInterval);
       document.removeEventListener("visibilitychange", handleVisibleRefresh);
       supabase.removeChannel(requestsChannel);
       supabase.removeChannel(paymentsChannel);
@@ -2701,6 +2707,8 @@ export default function AdminPage() {
   }
 
   const grouped = useMemo(() => {
+    void nowPlayingClockTick;
+
     const activeNowPlaying = requests.filter(isNowPlayingStillActive);
     const finishedHistory = requests.filter(
       (request) => request.status === "finished" || isExpiredNowPlaying(request),
@@ -2713,7 +2721,7 @@ export default function AdminPage() {
       played: activeNowPlaying,
       finished: finishedHistory,
     };
-  }, [requests]);
+  }, [requests, nowPlayingClockTick]);
 
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
