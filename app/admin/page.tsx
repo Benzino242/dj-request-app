@@ -6391,6 +6391,50 @@ export default function AdminPage() {
             <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
               <p className="text-zinc-500">{t.noWithdrawalRequestsYet}</p>
             </div>
+          ) : !withdrawalHistoryIsOpen ? (
+            <button
+              type="button"
+              onClick={() => setIsWithdrawalHistoryExpanded(true)}
+              className="w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-cyan-500/50 p-4 rounded-2xl text-left transition"
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.18em] text-cyan-400 font-black">
+                    {adminUiText.withdrawalHistory}
+                  </p>
+
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {latestWithdrawal && (
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${
+                          getWithdrawalStatusBadge(latestWithdrawal.status)
+                            .className
+                        }`}
+                      >
+                        {adminUiText.latestLabel}: {" "}
+                        {getWithdrawalStatusBadge(latestWithdrawal.status).label}
+                      </span>
+                    )}
+
+                    <span className="bg-black/40 border border-zinc-800 px-3 py-1 rounded-full text-xs text-zinc-300 font-bold">
+                      {sortedWithdrawalHistory.length} {sortedWithdrawalHistory.length === 1 ? adminUiText.withdrawalSingular : adminUiText.withdrawalPlural}
+                    </span>
+
+                    <span className="bg-green-500/10 border border-green-500/30 px-3 py-1 rounded-full text-xs text-green-400 font-bold">
+                      {adminUiText.totalWithdrawn}: {currency} {withdrawalPaidTotal.toFixed(2)}
+                    </span>
+
+                    <span className="bg-yellow-500/10 border border-yellow-500/30 px-3 py-1 rounded-full text-xs text-yellow-400 font-bold">
+                      {adminUiText.available}: {currency} {availableBalance.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+
+                <span className="bg-cyan-600 hover:bg-cyan-700 px-5 py-3 rounded-xl text-sm text-white font-black text-center">
+                  {adminUiText.viewDetails}
+                </span>
+              </div>
+            </button>
           ) : (
             <div className="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
@@ -6465,7 +6509,7 @@ export default function AdminPage() {
                   }
                   className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-4 py-2 rounded-xl text-sm font-bold"
                 >
-                  {withdrawalHistoryIsOpen ? adminUiText.hideDetails : adminUiText.viewDetails}
+                  {adminUiText.hideDetails}
                 </button>
               </div>
 
