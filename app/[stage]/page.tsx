@@ -284,6 +284,8 @@ const paymentSuccessTranslations: Record<Language, PaymentSuccessTranslation> = 
   },
 };
 
+const NOW_PLAYING_DURATION_MS = 5 * 60 * 1000;
+
 type Request = {
   id: number;
   dj_id: number;
@@ -364,6 +366,7 @@ export default function StageRequestPage() {
   const [nowPlaying, setNowPlaying] = useState<Request | null>(null);
   const [upNext, setUpNext] = useState<Request | null>(null);
   const [flashAlert, setFlashAlert] = useState(false);
+  const [nowPlayingClockTick, setNowPlayingClockTick] = useState(0);
 
   const previousNowPlayingId = useRef<number | null>(null);
   const songSearchBoxRef = useRef<HTMLDivElement | null>(null);
@@ -383,9 +386,25 @@ export default function StageRequestPage() {
 
     if (Number.isNaN(playedAtTime)) return false;
 
-    const fiveMinutesInMs = 5 * 60 * 1000;
+    return Date.now() - playedAtTime < NOW_PLAYING_DURATION_MS;
+  }
 
-    return Date.now() - playedAtTime < fiveMinutesInMs;
+  function getNowPlayingRemainingMs(request: Request) {
+    if (request.status !== "played" || !request.played_at) return 0;
+
+    const playedAtTime = new Date(request.played_at).getTime();
+
+    if (Number.isNaN(playedAtTime)) return 0;
+
+    return Math.max(0, NOW_PLAYING_DURATION_MS - (Date.now() - playedAtTime));
+  }
+
+  function formatNowPlayingRemaining(request: Request) {
+    const totalSeconds = Math.ceil(getNowPlayingRemainingMs(request) / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+
+    return `${minutes}:${String(seconds).padStart(2, "0")}`;
   }
 
   useEffect(() => {
@@ -468,6 +487,25 @@ export default function StageRequestPage() {
       previousNowPlayingId.current = null;
     }
   }
+
+  useEffect(() => {
+    if (!nowPlaying) return;
+
+    const nowPlayingClockInterval = setInterval(() => {
+      setNowPlayingClockTick((currentTick) => currentTick + 1);
+    }, 1000);
+
+    return () => clearInterval(nowPlayingClockInterval);
+  }, [nowPlaying?.id]);
+
+  useEffect(() => {
+    if (!nowPlaying) return;
+
+    if (!isNowPlayingStillActive(nowPlaying)) {
+      setNowPlaying(null);
+      previousNowPlayingId.current = null;
+    }
+  }, [nowPlaying, nowPlayingClockTick]);
 
   useEffect(() => {
     fetchDJ();
@@ -896,6 +934,11 @@ export default function StageRequestPage() {
         <p className="text-xs text-white/70 mt-4">
           {t.requestedBy} {nowPlaying.name}
         </p>
+
+        <div className="inline-flex items-center gap-2 mt-4 bg-black/40 border border-white/20 text-white px-4 py-2 rounded-full text-xs font-bold">
+          <span>⏳</span>
+          <span>Expires in {formatNowPlayingRemaining(nowPlaying)}</span>
+        </div>
       </div>
     </div>
   </div>

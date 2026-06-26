@@ -137,6 +137,24 @@ function isExpiredNowPlaying(request: SongRequest) {
   return Date.now() - playedAtTime >= NOW_PLAYING_DURATION_MS;
 }
 
+function getNowPlayingRemainingMs(request: SongRequest) {
+  if (request.status !== "played" || !request.played_at) return 0;
+
+  const playedAtTime = new Date(request.played_at).getTime();
+
+  if (Number.isNaN(playedAtTime)) return 0;
+
+  return Math.max(0, NOW_PLAYING_DURATION_MS - (Date.now() - playedAtTime));
+}
+
+function formatNowPlayingRemaining(request: SongRequest) {
+  const totalSeconds = Math.ceil(getNowPlayingRemainingMs(request) / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
 type QuickSetupTranslation = {
   eyebrow: string;
   heading: string;
@@ -2438,7 +2456,7 @@ export default function AdminPage() {
 
     const nowPlayingClockInterval = setInterval(() => {
       setNowPlayingClockTick((currentTick) => currentTick + 1);
-    }, 5000);
+    }, 1000);
 
     const handleVisibleRefresh = () => {
       if (document.visibilityState === "hidden") {
@@ -4615,6 +4633,13 @@ function RequestColumn({
                   <p className="text-purple-400 mt-2">
                     {t.requestedBy} {request.name}
                   </p>
+
+                  {request.status === "played" && isNowPlayingStillActive(request) && (
+                    <div className="inline-flex items-center gap-2 mt-3 bg-purple-600/15 border border-purple-500/40 text-purple-200 px-3 py-2 rounded-full text-xs md:text-sm font-bold">
+                      <span>⏳</span>
+                      <span>Expires in {formatNowPlayingRemaining(request)}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
