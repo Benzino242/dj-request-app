@@ -25,6 +25,7 @@ type SongRequest = {
   tip_currency: string;
   queue_position?: number | null;
   created_at?: string;
+  played_at?: string | null;
 };
 
 type Payment = {
@@ -107,6 +108,34 @@ type PaystackBank = {
   slug?: string;
   type?: string;
 };
+
+const NOW_PLAYING_DURATION_MS = 5 * 60 * 1000;
+
+function getNowPlayingCutoffIso() {
+  return new Date(Date.now() - NOW_PLAYING_DURATION_MS).toISOString();
+}
+
+function isNowPlayingStillActive(request: SongRequest) {
+  if (request.status !== "played" || !request.played_at) return false;
+
+  const playedAtTime = new Date(request.played_at).getTime();
+
+  if (Number.isNaN(playedAtTime)) return false;
+
+  return Date.now() - playedAtTime < NOW_PLAYING_DURATION_MS;
+}
+
+function isExpiredNowPlaying(request: SongRequest) {
+  if (request.status !== "played") return false;
+
+  if (!request.played_at) return true;
+
+  const playedAtTime = new Date(request.played_at).getTime();
+
+  if (Number.isNaN(playedAtTime)) return true;
+
+  return Date.now() - playedAtTime >= NOW_PLAYING_DURATION_MS;
+}
 
 type QuickSetupTranslation = {
   eyebrow: string;
@@ -2281,6 +2310,35 @@ export default function AdminPage() {
     setProfileImage(data.publicUrl);
   }
 
+  async function finishExpiredNowPlaying(djId: number) {
+    const cutoffIso = getNowPlayingCutoffIso();
+
+    const { error: expiredPlayedError } = await supabase
+      .from("requests")
+      .update({ status: "finished" })
+      .eq("dj_id", djId)
+      .eq("status", "played")
+      .lt("played_at", cutoffIso);
+
+    if (expiredPlayedError) {
+      console.error("EXPIRE NOW PLAYING ERROR:", expiredPlayedError);
+    }
+
+    const { error: missingPlayedAtError } = await supabase
+      .from("requests")
+      .update({ status: "finished" })
+      .eq("dj_id", djId)
+      .eq("status", "played")
+      .is("played_at", null);
+
+    if (missingPlayedAtError) {
+      console.error(
+        "EXPIRE NOW PLAYING MISSING PLAYED_AT ERROR:",
+        missingPlayedAtError,
+      );
+    }
+  }
+
   async function fetchDashboardData(targetDj?: DJ | null) {
     if (isFetchingDashboardRef.current) {
       return;
@@ -2363,6 +2421,7 @@ export default function AdminPage() {
 
       const scrollBeforeRefresh = getCurrentScrollY();
 
+      await finishExpiredNowPlaying(activeDj.id);
       await fetchDashboardData(activeDj);
 
       if (scrollBeforeRefresh > 0) {
@@ -2642,12 +2701,17 @@ export default function AdminPage() {
   }
 
   const grouped = useMemo(() => {
+    const activeNowPlaying = requests.filter(isNowPlayingStillActive);
+    const finishedHistory = requests.filter(
+      (request) => request.status === "finished" || isExpiredNowPlaying(request),
+    );
+
     return {
       pending: requests.filter((r) => r.status === "pending"),
       accepted: requests.filter((r) => r.status === "accepted"),
       rejected: requests.filter((r) => r.status === "rejected"),
-      played: requests.filter((r) => r.status === "played"),
-      finished: requests.filter((r) => r.status === "finished"),
+      played: activeNowPlaying,
+      finished: finishedHistory,
     };
   }, [requests]);
 
