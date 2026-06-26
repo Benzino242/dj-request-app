@@ -3858,6 +3858,7 @@ export default function AdminPage() {
     useState<number[]>([]);
   const [isWithdrawalHistoryExpanded, setIsWithdrawalHistoryExpanded] =
     useState(false);
+  const [isEarningsExpanded, setIsEarningsExpanded] = useState(false);
   const [isPaymentAuditExpanded, setIsPaymentAuditExpanded] = useState(false);
 
   const [language, setLanguage] = useState<Language>("en");
@@ -6046,37 +6047,77 @@ export default function AdminPage() {
       </div>
 
       <div className="mb-10">
-        <h2 className="text-3xl font-bold mb-4 text-green-400">
-          {t.earningsOverview}
-        </h2>
+        <button
+          type="button"
+          onClick={() => setIsEarningsExpanded((currentValue) => !currentValue)}
+          className="w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-5 text-left hover:border-green-500/50 transition"
+        >
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-green-400 font-black">
+                {t.earningsOverview}
+              </p>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard
-            title={t.grossRevenue}
-            value={`${currency} ${grossRevenue.toFixed(2)}`}
-            color="text-green-400"
-          />
+              <h2 className="text-4xl md:text-5xl font-black text-cyan-400 mt-2">
+                {currency} {netEarnings.toFixed(2)}
+              </h2>
 
-          <StatCard
-            title={t.djEarnings}
-            value={`${currency} ${netEarnings.toFixed(2)}`}
-            color="text-cyan-400"
-          />
+              <p className="text-sm text-zinc-500 mt-2">{t.djEarnings}</p>
+            </div>
 
-          <StatCard
-            title={t.platformRevenue}
-            value={`${currency} ${serviceFees.toFixed(2)}`}
-            color="text-zinc-300"
-          />
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-black/40 border border-zinc-800 rounded-2xl px-4 py-3">
+                <p className="text-xs text-zinc-500">{t.availableBalance}</p>
+                <p className="text-lg md:text-xl font-black text-yellow-400 mt-1">
+                  {currency} {availableBalance.toFixed(2)}
+                </p>
+              </div>
 
-          <StatCard
-            title={t.pendingPayouts}
-            value={pendingPayouts}
-            color="text-yellow-400"
-          />
-        </div>
+              <div className="bg-black/40 border border-zinc-800 rounded-2xl px-4 py-3">
+                <p className="text-xs text-zinc-500">{t.pendingPayouts}</p>
+                <p className="text-lg md:text-xl font-black text-yellow-400 mt-1">
+                  {pendingPayouts}
+                </p>
+              </div>
+            </div>
 
-        <p className="text-xs text-zinc-500 mt-3">{t.platformRevenueNote}</p>
+            <span className="bg-green-600 px-4 py-2 rounded-full text-sm text-white font-black text-center">
+              {isEarningsExpanded ? adminUiText.hideDetails : adminUiText.viewDetails}
+            </span>
+          </div>
+        </button>
+
+        {isEarningsExpanded && (
+          <div className="mt-4 bg-zinc-900/40 border border-zinc-800 rounded-3xl p-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <StatCard
+                title={t.grossRevenue}
+                value={`${currency} ${grossRevenue.toFixed(2)}`}
+                color="text-green-400"
+              />
+
+              <StatCard
+                title={t.djEarnings}
+                value={`${currency} ${netEarnings.toFixed(2)}`}
+                color="text-cyan-400"
+              />
+
+              <StatCard
+                title={t.platformRevenue}
+                value={`${currency} ${serviceFees.toFixed(2)}`}
+                color="text-zinc-300"
+              />
+
+              <StatCard
+                title={t.pendingPayouts}
+                value={pendingPayouts}
+                color="text-yellow-400"
+              />
+            </div>
+
+            <p className="text-xs text-zinc-500 mt-3">{t.platformRevenueNote}</p>
+          </div>
+        )}
       </div>
 
       <div className="mb-10">
