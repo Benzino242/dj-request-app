@@ -3861,6 +3861,8 @@ export default function AdminPage() {
   const [isEarningsExpanded, setIsEarningsExpanded] = useState(false);
   const [isBalanceGuideExpanded, setIsBalanceGuideExpanded] = useState(false);
   const [isPaymentAuditExpanded, setIsPaymentAuditExpanded] = useState(false);
+  const [isProfileDetailsExpanded, setIsProfileDetailsExpanded] = useState(false);
+  const [isPayoutSetupExpanded, setIsPayoutSetupExpanded] = useState(false);
 
   const [language, setLanguage] = useState<Language>("en");
 
@@ -5603,446 +5605,539 @@ export default function AdminPage() {
         )}
       </div>
 
-      <div
-        ref={profileSectionRef}
-        className="scroll-mt-6 bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-10"
-      >
-        <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-purple-400 mb-8 text-center">
-          {t.djProfileSettings}
-        </h2>
+      <div ref={profileSectionRef} className="scroll-mt-6 mb-10">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 md:p-7">
+          <button
+            type="button"
+            onClick={() => setIsProfileDetailsExpanded((current) => !current)}
+            className="w-full text-left"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-4 min-w-0">
+                {profileImage ? (
+                  <img
+                    src={profileImage}
+                    alt="DJ Profile"
+                    className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover border-4 border-purple-600 flex-shrink-0"
+                  />
+                ) : (
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-zinc-800 border-4 border-zinc-700 flex items-center justify-center text-zinc-500 text-xs flex-shrink-0">
+                    {t.noImage}
+                  </div>
+                )}
 
-        <div className="space-y-6">
-          <div className="flex flex-col items-center">
-            {profileImage ? (
-              <img
-                src={profileImage}
-                alt="DJ Profile"
-                className="w-32 h-32 rounded-full object-cover border-4 border-purple-600 mb-4"
-              />
-            ) : (
-              <div className="w-32 h-32 rounded-full bg-zinc-800 border-4 border-zinc-700 flex items-center justify-center text-zinc-500 mb-4">
-                {t.noImage}
+                <div className="min-w-0">
+                  <p className="text-xs uppercase tracking-[0.2em] text-purple-400 font-black">
+                    {quickSetupText.profileReadyTitle}
+                  </p>
+
+                  <h2 className="text-2xl md:text-4xl font-black text-white mt-1">
+                    {t.djProfileSettings}
+                  </h2>
+
+                  <p className="text-sm text-zinc-500 mt-2 leading-relaxed break-words">
+                    {[eventName, venue, instagram ? `@${instagram.replace(/^@/, "")}` : ""]
+                      .filter(Boolean)
+                      .join(" · ") || quickSetupText.profileTodoMessage}
+                  </p>
+                </div>
               </div>
-            )}
 
-            <label className="bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-xl cursor-pointer font-semibold">
-              {t.uploadProfilePhoto}
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) handleProfileImageUpload(file);
-                }}
-              />
-            </label>
+              <span className="bg-purple-600 px-5 py-3 rounded-full text-sm text-white font-black text-center">
+                {isProfileDetailsExpanded ? adminUiText.hideDetails : adminUiText.viewDetails}
+              </span>
+            </div>
+          </button>
 
-            {profileImage && (
-              <button
-                type="button"
-                onClick={() => setProfileImage("")}
-                className="mt-3 bg-zinc-700 hover:bg-zinc-600 px-5 py-3 rounded-xl font-semibold"
-              >
-                {t.removePhoto}
-              </button>
-            )}
-          </div>
+          {isProfileDetailsExpanded && (
+            <div className="mt-6 border-t border-zinc-800 pt-6 space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <label className="bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-xl cursor-pointer font-semibold text-center">
+                  {t.uploadProfilePhoto}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleProfileImageUpload(file);
+                    }}
+                  />
+                </label>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder={t.eventNamePlaceholder}
-              value={eventName}
-              onChange={(e) => setEventName(e.target.value)}
-              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            />
+                {profileImage && (
+                  <button
+                    type="button"
+                    onClick={() => setProfileImage("")}
+                    className="bg-zinc-700 hover:bg-zinc-600 px-5 py-3 rounded-xl font-semibold"
+                  >
+                    {t.removePhoto}
+                  </button>
+                )}
+              </div>
 
-            <input
-              type="text"
-              placeholder={t.venuePlaceholder}
-              value={venue}
-              onChange={(e) => setVenue(e.target.value)}
-              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            />
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder={t.cityPlaceholder}
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            />
-
-            <input
-              type="text"
-              placeholder={t.instagramPlaceholder}
-              value={instagram}
-              onChange={(e) => setInstagram(e.target.value)}
-              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            />
-          </div>
-
-          <div className="border-t border-zinc-800 pt-6">
-            <h3 className="text-2xl font-bold text-cyan-400 mb-2">
-              {t.marketplacePayoutSetup}
-            </h3>
-
-            <p className="text-zinc-400 text-sm mb-4">
-              {t.marketplacePayoutDescription}
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <select
-              value={country}
-              onChange={(e) => {
-                const selectedCountry = e.target.value;
-                const nextCurrency = getCurrencyForCountry(selectedCountry);
-
-                setCountry(selectedCountry);
-                setPreferredCurrency(nextCurrency);
-                setPayoutBankCode("");
-                setPaystackBanks([]);
-
-                if (payoutMethod === "Bank Transfer") {
-                  loadPaystackBanks(nextCurrency);
-                }
-              }}
-              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            >
-              <option value="">{t.selectCountry}</option>
-
-              <option value="Ghana"> Ghana</option>
-              <option value="Nigeria"> Nigeria</option>
-              <option value="Kenya"> Kenya</option>
-              <option value="South Africa"> South Africa</option>
-
-              <option value="United Kingdom"> United Kingdom</option>
-              <option value="United States"> United States</option>
-              <option value="Canada"> Canada</option>
-
-              <option value="Germany"> Germany</option>
-              <option value="France"> France</option>
-              <option value="Spain"> Spain</option>
-              <option value="Italy"> Italy</option>
-              <option value="Netherlands"> Netherlands</option>
-              <option value="Poland"> Poland</option>
-              <option value="Greece"> Greece</option>
-              <option value="Ukraine"> Ukraine</option>
-              <option value="Turkey"> Turkey</option>
-
-              <option value="UAE"> UAE</option>
-              <option value="Qatar"> Qatar</option>
-              <option value="Saudi Arabia"> Saudi Arabia</option>
-
-              <option value="Singapore"> Singapore</option>
-              <option value="Malaysia"> Malaysia</option>
-              <option value="Indonesia"> Indonesia</option>
-              <option value="Thailand"> Thailand</option>
-              <option value="Philippines"> Philippines</option>
-              <option value="Vietnam"> Vietnam</option>
-              <option value="China"> China</option>
-              <option value="Japan"> Japan</option>
-              <option value="South Korea"> South Korea</option>
-              <option value="India"> India</option>
-
-              <option value="Australia"> Australia</option>
-              <option value="New Zealand"> New Zealand</option>
-
-              <option value="Brazil"> Brazil</option>
-              <option value="Mexico"> Mexico</option>
-            </select>
-
-            <select
-              value={preferredCurrency}
-              onChange={(e) => {
-                const nextCurrency = e.target.value;
-                setPreferredCurrency(nextCurrency);
-                setPayoutBankCode("");
-                setPaystackBanks([]);
-
-                if (payoutMethod === "Bank Transfer") {
-                  loadPaystackBanks(nextCurrency);
-                }
-              }}
-              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            >
-              <option value="GHS"> GHS</option>
-              <option value="NGN"> NGN</option>
-              <option value="KES"> KES</option>
-              <option value="ZAR"> ZAR</option>
-
-              <option value="USD"> USD</option>
-              <option value="CAD"> CAD</option>
-              <option value="MXN"> MXN</option>
-              <option value="BRL"> BRL</option>
-
-              <option value="EUR"> EUR</option>
-              <option value="GBP"> GBP</option>
-              <option value="PLN"> PLN</option>
-              <option value="UAH"> UAH</option>
-              <option value="TRY"> TRY</option>
-
-              <option value="AED"> AED</option>
-              <option value="QAR"> QAR</option>
-              <option value="SAR"> SAR</option>
-
-              <option value="SGD"> SGD</option>
-              <option value="MYR"> MYR</option>
-              <option value="IDR"> IDR</option>
-              <option value="THB"> THB</option>
-              <option value="PHP"> PHP</option>
-              <option value="VND"> VND</option>
-              <option value="CNY"> CNY</option>
-              <option value="JPY"> JPY</option>
-              <option value="KRW"> KRW</option>
-              <option value="INR"> INR</option>
-
-              <option value="AUD"> AUD</option>
-              <option value="NZD"> NZD</option>
-            </select>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <input
-              type="email"
-              placeholder={t.payoutEmail}
-              value={payoutEmail}
-              onChange={(e) => setPayoutEmail(e.target.value)}
-              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            />
-
-            <select
-              value={payoutMethod}
-              onChange={(e) => {
-                const nextMethod = e.target.value;
-                setPayoutMethod(nextMethod);
-                setPayoutBankCode("");
-
-                if (nextMethod === "Mobile Money") {
-                  setPayoutProvider("MTN");
-                }
-
-                if (nextMethod === "Bank Transfer") {
-                  setPayoutProvider("");
-                  loadPaystackBanks(preferredCurrency);
-                }
-              }}
-              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            >
-              <option value="Bank Transfer">{t.bankTransfer}</option>
-              <option value="PayPal">{t.paypal}</option>
-              <option value="Mobile Money">{t.mobileMoney}</option>
-              <option value="Stripe Connect">{t.stripeConnect}</option>
-            </select>
-          </div>
-
-          <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-4">
-            <p className="text-zinc-400 text-sm">{t.payoutStatus}</p>
-
-            <p
-              className={`font-bold mt-1 ${
-                payoutStatus === "Active"
-                  ? "text-green-400"
-                  : payoutStatus === "Pending Verification"
-                    ? "text-yellow-400"
-                    : "text-red-400"
-              }`}
-            >
-{getPayoutStatusLabel(payoutStatus)}
-            </p>
-
-            <div className="grid md:grid-cols-3 gap-4 mt-5">
-              {payoutMethod === "Mobile Money" ? (
-                <select
-                  value={payoutProvider}
-                  onChange={(e) => setPayoutProvider(e.target.value)}
-                  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-                >
-                  <option value="MTN">MTN Mobile Money</option>
-                  <option value="Telecel">Telecel Cash</option>
-                  <option value="AirtelTigo">AirtelTigo Money</option>
-                </select>
-              ) : payoutMethod === "Bank Transfer" ? (
-                <select
-                  value={payoutBankCode}
-                  onChange={(e) => {
-                    const selectedCode = e.target.value;
-                    const selectedBank = paystackBanks.find(
-                      (bank) => bank.code === selectedCode,
-                    );
-
-                    setPayoutBankCode(selectedCode);
-                    setPayoutProvider(selectedBank?.name || "");
-                  }}
-                  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-                >
-                  <option value="">
-                    {banksLoading ? adminUiText.loadingBanks : adminUiText.selectBank}
-                  </option>
-
-                  {paystackBanks.map((bank) => (
-                    <option key={bank.code} value={bank.code}>
-                      {bank.name}
-                    </option>
-                  ))}
-                </select>
-              ) : (
+              <div className="grid md:grid-cols-2 gap-4">
                 <input
                   type="text"
-                  placeholder={
-                    payoutMethod === "PayPal"
-                      ? adminUiText.paypalEmailOrProvider
-                      : adminUiText.payoutProvider
-                  }
-                  value={payoutProvider}
-                  onChange={(e) => setPayoutProvider(e.target.value)}
+                  placeholder={t.eventNamePlaceholder}
+                  value={eventName}
+                  onChange={(e) => setEventName(e.target.value)}
                   className="w-full p-4 rounded-xl bg-black border border-zinc-700"
                 />
-              )}
+
+                <input
+                  type="text"
+                  placeholder={t.venuePlaceholder}
+                  value={venue}
+                  onChange={(e) => setVenue(e.target.value)}
+                  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  placeholder={t.cityPlaceholder}
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+                />
+
+                <input
+                  type="text"
+                  placeholder={t.instagramPlaceholder}
+                  value={instagram}
+                  onChange={(e) => setInstagram(e.target.value)}
+                  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+                />
+              </div>
 
               <input
                 type="text"
-                placeholder={adminUiText.accountName}
-                value={payoutAccountName}
-                onChange={(e) => setPayoutAccountName(e.target.value)}
+                placeholder={t.profileImageUrlPlaceholder}
+                value={profileImage}
+                onChange={(e) => setProfileImage(e.target.value)}
                 className="w-full p-4 rounded-xl bg-black border border-zinc-700"
               />
 
-              <input
-                type="text"
-                placeholder={
-                  payoutMethod === "Bank Transfer"
-                    ? adminUiText.accountNumber
-                    : payoutMethod === "Mobile Money"
-                      ? adminUiText.mobileMoneyNumber
-                      : adminUiText.accountPayoutId
-                }
-                value={payoutAccountNumber}
-                onChange={(e) => setPayoutAccountNumber(e.target.value)}
+              <textarea
+                placeholder={t.djBioPlaceholder}
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                rows={4}
                 className="w-full p-4 rounded-xl bg-black border border-zinc-700"
               />
             </div>
+          )}
 
-            {payoutStatus === "Active" && (
-              <div className="mt-5 bg-green-500/10 border border-green-500/30 rounded-xl p-4">
-                <p className="text-green-400 font-bold">
-                  {adminUiText.payoutAccountConnected}
-                </p>
-                <p className="text-sm text-zinc-400 mt-2">
-                  {payoutMethod} - {payoutProvider} - {payoutAccountName}
-                </p>
-
-                <p className="text-xs text-zinc-500 mt-2">
-                  {adminUiText.recipientCode}: {" "}
-                  <span className="text-zinc-300">
-                    {paystackRecipientCode || adminUiText.notCreatedYet}
-                  </span>
-                </p>
-              </div>
-            )}
-
+          <div className="mt-6 border-t border-zinc-800 pt-6">
             <button
               type="button"
-              onClick={connectPayoutAccount}
-              disabled={connectingPayout}
-              className="mt-5 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-50"
+              onClick={() => setIsPayoutSetupExpanded((current) => !current)}
+              className="w-full text-left bg-black/30 border border-zinc-800 rounded-2xl p-4 md:p-5 hover:border-cyan-500/50 transition"
             >
-              {connectingPayout
-                ? adminUiText.connectingToPaystack
-                : t.connectAccount}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.2em] text-cyan-400 font-black">
+                    {t.marketplacePayoutSetup}
+                  </p>
+
+                  <h3 className="text-xl md:text-2xl font-black text-white mt-1">
+                    {payoutStatus === "Active"
+                      ? adminUiText.payoutAccountConnected
+                      : adminUiText.connectPayoutAccount}
+                  </h3>
+
+                  <p className="text-sm text-zinc-500 mt-2 leading-relaxed">
+                    {payoutStatus === "Active"
+                      ? `${payoutMethod} · ${payoutProvider || adminUiText.notConnected} · ${payoutAccountName || adminUiText.accountName}`
+                      : t.marketplacePayoutDescription}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-black border ${
+                      payoutStatus === "Active"
+                        ? "bg-green-500/10 border-green-500/30 text-green-400"
+                        : "bg-red-500/10 border-red-500/30 text-red-400"
+                    }`}
+                  >
+                    {getPayoutStatusLabel(payoutStatus)}
+                  </span>
+
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-black border ${
+                      verificationStatus === "verified"
+                        ? "bg-green-500/10 border-green-500/30 text-green-400"
+                        : verificationStatus === "pending"
+                          ? "bg-yellow-500/10 border-yellow-500/30 text-yellow-400"
+                          : verificationStatus === "rejected"
+                            ? "bg-red-500/10 border-red-500/30 text-red-400"
+                            : "bg-zinc-700/40 border-zinc-600 text-zinc-300"
+                    }`}
+                  >
+                    {verificationStatus === "verified"
+                      ? t.verified
+                      : verificationStatus === "pending"
+                        ? t.pendingVerification
+                        : verificationStatus === "rejected"
+                          ? t.rejectedVerification
+                          : t.notStarted}
+                  </span>
+
+                  <span className="bg-zinc-800 px-4 py-2 rounded-full text-xs text-white font-black">
+                    {isPayoutSetupExpanded ? adminUiText.hideDetails : adminUiText.viewDetails}
+                  </span>
+                </div>
+              </div>
             </button>
-          </div>
 
-          <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-4">
-            <p className="text-zinc-400 text-sm">{t.verificationStatus}</p>
-
-            <p
-              className={`font-bold mt-3 ${
-                verificationStatus === "verified"
-                  ? "text-green-400"
-                  : verificationStatus === "pending"
-                    ? "text-yellow-400"
-                    : verificationStatus === "rejected"
-                      ? "text-red-400"
-                      : "text-zinc-300"
-              }`}
-            >
-              {verificationStatus === "verified"
-                ? ` ${t.verified}`
-                : verificationStatus === "pending"
-                  ? ` ${t.pendingVerification}`
-                  : verificationStatus === "rejected"
-                    ? ` ${t.rejectedVerification}`
-                    : ` ${t.notStarted}`}
-            </p>
-
-            {verificationStatus === "pending" && (
-              <p className="mt-3 text-sm text-zinc-400">
-                {t.pendingVerificationMessage}
-              </p>
-            )}
-
-            {verificationStatus === "verified" && (
-              <p className="mt-3 text-sm text-green-400">{t.verifiedMessage}</p>
-            )}
-
-            {verificationStatus === "rejected" && (
-              <div>
-                <p className="mt-3 text-sm text-red-400">
-                  {t.rejectedVerificationMessage}
+            {isPayoutSetupExpanded && (
+              <div className="mt-5 space-y-5">
+                <p className="text-zinc-400 text-sm leading-relaxed">
+                  {t.marketplacePayoutDescription}
                 </p>
 
-                <button
-                  type="button"
-                  onClick={() => setVerificationStatus("pending")}
-                  className="mt-3 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700"
-                >
-                  {t.resubmitVerification}
-                </button>
-              </div>
-            )}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <select
+                    value={country}
+                    onChange={(e) => {
+                      const selectedCountry = e.target.value;
+                      const nextCurrency = getCurrencyForCountry(selectedCountry);
 
-            {verificationStatus === "not_started" && (
-              <button
-                type="button"
-                onClick={() => setVerificationStatus("pending")}
-                className="mt-3 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700"
-              >
-                {t.submitVerification}
-              </button>
+                      setCountry(selectedCountry);
+                      setPreferredCurrency(nextCurrency);
+                      setPayoutBankCode("");
+                      setPaystackBanks([]);
+
+                      if (payoutMethod === "Bank Transfer") {
+                        loadPaystackBanks(nextCurrency);
+                      }
+                    }}
+                    className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+                  >
+                    <option value="">{t.selectCountry}</option>
+
+                    <option value="Ghana"> Ghana</option>
+                    <option value="Nigeria"> Nigeria</option>
+                    <option value="Kenya"> Kenya</option>
+                    <option value="South Africa"> South Africa</option>
+
+                    <option value="United Kingdom"> United Kingdom</option>
+                    <option value="United States"> United States</option>
+                    <option value="Canada"> Canada</option>
+
+                    <option value="Germany"> Germany</option>
+                    <option value="France"> France</option>
+                    <option value="Spain"> Spain</option>
+                    <option value="Italy"> Italy</option>
+                    <option value="Netherlands"> Netherlands</option>
+                    <option value="Poland"> Poland</option>
+                    <option value="Greece"> Greece</option>
+                    <option value="Ukraine"> Ukraine</option>
+                    <option value="Turkey"> Turkey</option>
+
+                    <option value="UAE"> UAE</option>
+                    <option value="Qatar"> Qatar</option>
+                    <option value="Saudi Arabia"> Saudi Arabia</option>
+
+                    <option value="Singapore"> Singapore</option>
+                    <option value="Malaysia"> Malaysia</option>
+                    <option value="Indonesia"> Indonesia</option>
+                    <option value="Thailand"> Thailand</option>
+                    <option value="Philippines"> Philippines</option>
+                    <option value="Vietnam"> Vietnam</option>
+                    <option value="China"> China</option>
+                    <option value="Japan"> Japan</option>
+                    <option value="South Korea"> South Korea</option>
+                    <option value="India"> India</option>
+
+                    <option value="Australia"> Australia</option>
+                    <option value="New Zealand"> New Zealand</option>
+
+                    <option value="Brazil"> Brazil</option>
+                    <option value="Mexico"> Mexico</option>
+                  </select>
+
+                  <select
+                    value={preferredCurrency}
+                    onChange={(e) => {
+                      const nextCurrency = e.target.value;
+                      setPreferredCurrency(nextCurrency);
+                      setPayoutBankCode("");
+                      setPaystackBanks([]);
+
+                      if (payoutMethod === "Bank Transfer") {
+                        loadPaystackBanks(nextCurrency);
+                      }
+                    }}
+                    className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+                  >
+                    <option value="GHS"> GHS</option>
+                    <option value="NGN"> NGN</option>
+                    <option value="KES"> KES</option>
+                    <option value="ZAR"> ZAR</option>
+
+                    <option value="USD"> USD</option>
+                    <option value="CAD"> CAD</option>
+                    <option value="MXN"> MXN</option>
+                    <option value="BRL"> BRL</option>
+
+                    <option value="EUR"> EUR</option>
+                    <option value="GBP"> GBP</option>
+                    <option value="PLN"> PLN</option>
+                    <option value="UAH"> UAH</option>
+                    <option value="TRY"> TRY</option>
+
+                    <option value="AED"> AED</option>
+                    <option value="QAR"> QAR</option>
+                    <option value="SAR"> SAR</option>
+
+                    <option value="SGD"> SGD</option>
+                    <option value="MYR"> MYR</option>
+                    <option value="IDR"> IDR</option>
+                    <option value="THB"> THB</option>
+                    <option value="PHP"> PHP</option>
+                    <option value="VND"> VND</option>
+                    <option value="CNY"> CNY</option>
+                    <option value="JPY"> JPY</option>
+                    <option value="KRW"> KRW</option>
+                    <option value="INR"> INR</option>
+
+                    <option value="AUD"> AUD</option>
+                    <option value="NZD"> NZD</option>
+                  </select>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <input
+                    type="email"
+                    placeholder={t.payoutEmail}
+                    value={payoutEmail}
+                    onChange={(e) => setPayoutEmail(e.target.value)}
+                    className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+                  />
+
+                  <select
+                    value={payoutMethod}
+                    onChange={(e) => {
+                      const nextMethod = e.target.value;
+                      setPayoutMethod(nextMethod);
+                      setPayoutBankCode("");
+
+                      if (nextMethod === "Mobile Money") {
+                        setPayoutProvider("MTN");
+                      }
+
+                      if (nextMethod === "Bank Transfer") {
+                        setPayoutProvider("");
+                        loadPaystackBanks(preferredCurrency);
+                      }
+                    }}
+                    className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+                  >
+                    <option value="Bank Transfer">{t.bankTransfer}</option>
+                    <option value="PayPal">{t.paypal}</option>
+                    <option value="Mobile Money">{t.mobileMoney}</option>
+                    <option value="Stripe Connect">{t.stripeConnect}</option>
+                  </select>
+                </div>
+
+                <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-4">
+                  <p className="text-zinc-400 text-sm">{t.payoutStatus}</p>
+
+                  <p
+                    className={`font-bold mt-1 ${
+                      payoutStatus === "Active"
+                        ? "text-green-400"
+                        : payoutStatus === "Pending Verification"
+                          ? "text-yellow-400"
+                          : "text-red-400"
+                    }`}
+                  >
+                    {getPayoutStatusLabel(payoutStatus)}
+                  </p>
+
+                  <div className="grid md:grid-cols-3 gap-4 mt-5">
+                    {payoutMethod === "Mobile Money" ? (
+                      <select
+                        value={payoutProvider}
+                        onChange={(e) => setPayoutProvider(e.target.value)}
+                        className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+                      >
+                        <option value="MTN">MTN Mobile Money</option>
+                        <option value="Telecel">Telecel Cash</option>
+                        <option value="AirtelTigo">AirtelTigo Money</option>
+                      </select>
+                    ) : payoutMethod === "Bank Transfer" ? (
+                      <select
+                        value={payoutBankCode}
+                        onChange={(e) => {
+                          const selectedCode = e.target.value;
+                          const selectedBank = paystackBanks.find(
+                            (bank) => bank.code === selectedCode,
+                          );
+
+                          setPayoutBankCode(selectedCode);
+                          setPayoutProvider(selectedBank?.name || "");
+                        }}
+                        className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+                      >
+                        <option value="">
+                          {banksLoading ? adminUiText.loadingBanks : adminUiText.selectBank}
+                        </option>
+
+                        {paystackBanks.map((bank) => (
+                          <option key={bank.code} value={bank.code}>
+                            {bank.name}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type="text"
+                        placeholder={
+                          payoutMethod === "PayPal"
+                            ? adminUiText.paypalEmailOrProvider
+                            : adminUiText.payoutProvider
+                        }
+                        value={payoutProvider}
+                        onChange={(e) => setPayoutProvider(e.target.value)}
+                        className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+                      />
+                    )}
+
+                    <input
+                      type="text"
+                      placeholder={adminUiText.accountName}
+                      value={payoutAccountName}
+                      onChange={(e) => setPayoutAccountName(e.target.value)}
+                      className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+                    />
+
+                    <input
+                      type="text"
+                      placeholder={
+                        payoutMethod === "Bank Transfer"
+                          ? adminUiText.accountNumber
+                          : payoutMethod === "Mobile Money"
+                            ? adminUiText.mobileMoneyNumber
+                            : adminUiText.accountPayoutId
+                      }
+                      value={payoutAccountNumber}
+                      onChange={(e) => setPayoutAccountNumber(e.target.value)}
+                      className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+                    />
+                  </div>
+
+                  {payoutStatus === "Active" && (
+                    <div className="mt-5 bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+                      <p className="text-green-400 font-bold">
+                        {adminUiText.payoutAccountConnected}
+                      </p>
+                      <p className="text-sm text-zinc-400 mt-2">
+                        {payoutMethod} - {payoutProvider} - {payoutAccountName}
+                      </p>
+
+                      <p className="text-xs text-zinc-500 mt-2">
+                        {adminUiText.recipientCode}: {" "}
+                        <span className="text-zinc-300">
+                          {paystackRecipientCode || adminUiText.notCreatedYet}
+                        </span>
+                      </p>
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={connectPayoutAccount}
+                    disabled={connectingPayout}
+                    className="mt-5 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-50"
+                  >
+                    {connectingPayout
+                      ? adminUiText.connectingToPaystack
+                      : t.connectAccount}
+                  </button>
+                </div>
+
+                <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-4">
+                  <p className="text-zinc-400 text-sm">{t.verificationStatus}</p>
+
+                  <p
+                    className={`font-bold mt-3 ${
+                      verificationStatus === "verified"
+                        ? "text-green-400"
+                        : verificationStatus === "pending"
+                          ? "text-yellow-400"
+                          : verificationStatus === "rejected"
+                            ? "text-red-400"
+                            : "text-zinc-300"
+                    }`}
+                  >
+                    {verificationStatus === "verified"
+                      ? ` ${t.verified}`
+                      : verificationStatus === "pending"
+                        ? ` ${t.pendingVerification}`
+                        : verificationStatus === "rejected"
+                          ? ` ${t.rejectedVerification}`
+                          : ` ${t.notStarted}`}
+                  </p>
+
+                  {verificationStatus === "pending" && (
+                    <p className="mt-3 text-sm text-zinc-400">
+                      {t.pendingVerificationMessage}
+                    </p>
+                  )}
+
+                  {verificationStatus === "verified" && (
+                    <p className="mt-3 text-sm text-green-400">{t.verifiedMessage}</p>
+                  )}
+
+                  {verificationStatus === "rejected" && (
+                    <div>
+                      <p className="mt-3 text-sm text-red-400">
+                        {t.rejectedVerificationMessage}
+                      </p>
+
+                      <button
+                        type="button"
+                        onClick={() => setVerificationStatus("pending")}
+                        className="mt-3 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700"
+                      >
+                        {t.resubmitVerification}
+                      </button>
+                    </div>
+                  )}
+
+                  {verificationStatus === "not_started" && (
+                    <button
+                      type="button"
+                      onClick={() => setVerificationStatus("pending")}
+                      className="mt-3 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700"
+                    >
+                      {t.submitVerification}
+                    </button>
+                  )}
+                </div>
+              </div>
             )}
           </div>
 
-          <input
-            type="text"
-            placeholder={t.profileImageUrlPlaceholder}
-            value={profileImage}
-            onChange={(e) => setProfileImage(e.target.value)}
-            className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-          />
-
-          <textarea
-            placeholder={t.djBioPlaceholder}
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            rows={5}
-            className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-          />
-
-          <button
-            onClick={saveProfile}
-            disabled={savingProfile}
-            className="bg-purple-600 hover:bg-purple-700 px-8 py-4 rounded-xl font-bold text-lg disabled:opacity-50"
-          >
-            {savingProfile ? t.saving : t.saveProfile}
-          </button>
+          {(isProfileDetailsExpanded || isPayoutSetupExpanded) && (
+            <div className="mt-6 border-t border-zinc-800 pt-6">
+              <button
+                onClick={saveProfile}
+                disabled={savingProfile}
+                className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 px-8 py-4 rounded-xl font-bold text-lg disabled:opacity-50"
+              >
+                {savingProfile ? t.saving : t.saveProfile}
+              </button>
+            </div>
+          )}
 
           {profileMessage && (
-            <p className="text-green-400 font-semibold">{profileMessage}</p>
+            <p className="text-green-400 font-semibold mt-4">{profileMessage}</p>
           )}
         </div>
       </div>
