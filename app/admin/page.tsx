@@ -1954,6 +1954,7 @@ export default function AdminPage() {
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
   const [isQuickSetupExpanded, setIsQuickSetupExpanded] = useState(false);
   const [showAllPlayedHistory, setShowAllPlayedHistory] = useState(false);
+  const [isQrCodeExpanded, setIsQrCodeExpanded] = useState(false);
   const [nowPlayingClockTick, setNowPlayingClockTick] = useState(0);
   const isFetchingDashboardRef = useRef(false);
   const requestQueueRef = useRef<HTMLDivElement | null>(null);
@@ -1968,6 +1969,10 @@ export default function AdminPage() {
   function scrollToQuickSetupTarget(
     target: "profile" | "payout" | "live" | "qr" | "queue" | "withdrawals",
   ) {
+    if (target === "qr") {
+      setIsQrCodeExpanded(true);
+    }
+
     const targetMap = {
       profile: profileSectionRef,
       payout: profileSectionRef,
@@ -3556,7 +3561,37 @@ export default function AdminPage() {
       </div>
 
       <div ref={qrCodeSectionRef} className="scroll-mt-6 mb-12">
-        <QRCodeBox stageName={dj.stage_name} language={language} t={t} />
+        <button
+          type="button"
+          onClick={() => setIsQrCodeExpanded((current) => !current)}
+          className="w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-5 md:p-7 text-left hover:border-purple-500/60 transition"
+        >
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-purple-400 font-black">
+                QR code
+              </p>
+
+              <h2 className="text-2xl md:text-4xl font-black text-purple-400 mt-1">
+                {quickSetupText.shareQrTitle}
+              </h2>
+
+              <p className="text-sm text-zinc-500 mt-2 leading-relaxed">
+                {quickSetupText.shareQrMessage}
+              </p>
+            </div>
+
+            <span className="bg-purple-600 px-5 py-3 rounded-full text-sm text-white font-black text-center">
+              {isQrCodeExpanded ? "Hide QR" : "Show QR"}
+            </span>
+          </div>
+        </button>
+
+        {isQrCodeExpanded && (
+          <div className="mt-4">
+            <QRCodeBox stageName={dj.stage_name} language={language} t={t} />
+          </div>
+        )}
       </div>
 
       <div
