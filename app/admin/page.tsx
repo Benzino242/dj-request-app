@@ -2790,7 +2790,7 @@ export default function AdminPage() {
 
   const visiblePlayedHistory = showAllPlayedHistory
     ? recentPlayedHistory
-    : recentPlayedHistory.slice(0, 5);
+    : recentPlayedHistory.slice(0, 1);
 
   const currency = payments[0]?.currency || requests[0]?.tip_currency || "GHS";
 
@@ -3517,7 +3517,7 @@ export default function AdminPage() {
             buttons={() => null}
           />
 
-          {recentPlayedHistory.length > 5 && (
+          {recentPlayedHistory.length > 1 && (
             <button
               type="button"
               onClick={() => setShowAllPlayedHistory((current) => !current)}
