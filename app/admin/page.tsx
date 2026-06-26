@@ -262,6 +262,10 @@ type DashboardAlertTranslation = {
   showLessHistory: string;
   playedHistoryRetentionNote: string;
   playedAt: string;
+  expiresIn: string;
+  qrCode: string;
+  showQr: string;
+  hideQr: string;
 };
 
 const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = {
@@ -279,6 +283,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "Show less",
     playedHistoryRetentionNote: "Played history shown here covers the last 30 days. Older records are kept safely for payment and support audit.",
     playedAt: "Played at",
+    expiresIn: "Expires in",
+    qrCode: "QR code",
+    showQr: "Show QR",
+    hideQr: "Hide QR",
   },
   zh: {
     actionNeeded: "需要操作",
@@ -294,6 +302,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "显示更少",
     playedHistoryRetentionNote: "这里显示最近30天的播放历史。更早的记录会安全保留，用于付款和支持审核。",
     playedAt: "播放时间",
+    expiresIn: "剩余",
+    qrCode: "二维码",
+    showQr: "显示二维码",
+    hideQr: "隐藏二维码",
   },
   ja: {
     actionNeeded: "要対応",
@@ -309,6 +321,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "少なく表示",
     playedHistoryRetentionNote: "ここには過去30日間の再生履歴が表示されます。古い記録は支払いとサポート確認のため安全に保管されます。",
     playedAt: "再生時刻",
+    expiresIn: "残り",
+    qrCode: "QRコード",
+    showQr: "QRを表示",
+    hideQr: "QRを隠す",
   },
   ko: {
     actionNeeded: "조치 필요",
@@ -324,6 +340,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "적게 보기",
     playedHistoryRetentionNote: "여기에는 최근 30일 재생 기록이 표시됩니다. 이전 기록은 결제 및 지원 확인을 위해 안전하게 보관됩니다.",
     playedAt: "재생 시간",
+    expiresIn: "남은 시간",
+    qrCode: "QR 코드",
+    showQr: "QR 보기",
+    hideQr: "QR 숨기기",
   },
   id: {
     actionNeeded: "Perlu aksi",
@@ -339,6 +359,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "Tampilkan lebih sedikit",
     playedHistoryRetentionNote: "Riwayat yang tampil di sini mencakup 30 hari terakhir. Catatan lama tetap disimpan aman untuk audit pembayaran dan bantuan.",
     playedAt: "Diputar pada",
+    expiresIn: "Berakhir dalam",
+    qrCode: "Kode QR",
+    showQr: "Tampilkan QR",
+    hideQr: "Sembunyikan QR",
   },
   ms: {
     actionNeeded: "Perlu tindakan",
@@ -354,6 +378,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "Tunjuk kurang",
     playedHistoryRetentionNote: "Sejarah yang dipaparkan di sini meliputi 30 hari terakhir. Rekod lama disimpan dengan selamat untuk audit bayaran dan sokongan.",
     playedAt: "Dimainkan pada",
+    expiresIn: "Tamat dalam",
+    qrCode: "Kod QR",
+    showQr: "Tunjuk QR",
+    hideQr: "Sembunyi QR",
   },
   th: {
     actionNeeded: "ต้องดำเนินการ",
@@ -369,6 +397,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "แสดงน้อยลง",
     playedHistoryRetentionNote: "ประวัติที่แสดงที่นี่เป็นของ 30 วันที่ผ่านมา รายการเก่าจะถูกเก็บไว้อย่างปลอดภัยสำหรับการตรวจสอบการชำระเงินและการช่วยเหลือ",
     playedAt: "เล่นเมื่อ",
+    expiresIn: "เหลือเวลา",
+    qrCode: "รหัส QR",
+    showQr: "แสดง QR",
+    hideQr: "ซ่อน QR",
   },
   hi: {
     actionNeeded: "कार्रवाई चाहिए",
@@ -384,6 +416,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "कम दिखाएं",
     playedHistoryRetentionNote: "यहाँ पिछले 30 दिनों की played history दिखाई जाती है. पुराने records payment और support audit के लिए सुरक्षित रखे जाते हैं.",
     playedAt: "चलाया गया",
+    expiresIn: "समाप्त होने में",
+    qrCode: "QR कोड",
+    showQr: "QR दिखाएं",
+    hideQr: "QR छिपाएं",
   },
   ar: {
     actionNeeded: "يتطلب إجراء",
@@ -399,6 +435,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "إظهار أقل",
     playedHistoryRetentionNote: "يعرض هذا القسم سجل التشغيل لآخر 30 يومًا. يتم حفظ السجلات الأقدم بأمان لتدقيق الدفع والدعم.",
     playedAt: "تم التشغيل في",
+    expiresIn: "ينتهي خلال",
+    qrCode: "رمز QR",
+    showQr: "إظهار QR",
+    hideQr: "إخفاء QR",
   },
   vi: {
     actionNeeded: "Cần xử lý",
@@ -414,6 +454,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "Hiện ít hơn",
     playedHistoryRetentionNote: "Lịch sử hiển thị ở đây là trong 30 ngày gần nhất. Bản ghi cũ được giữ an toàn để kiểm tra thanh toán và hỗ trợ.",
     playedAt: "Đã phát lúc",
+    expiresIn: "Hết sau",
+    qrCode: "Mã QR",
+    showQr: "Hiện QR",
+    hideQr: "Ẩn QR",
   },
   tl: {
     actionNeeded: "Kailangan aksyon",
@@ -429,6 +473,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "Ipakita nang mas kaunti",
     playedHistoryRetentionNote: "Ang history na ipinapakita dito ay para sa huling 30 araw. Ang mas lumang records ay ligtas na naka-save para sa payment at support audit.",
     playedAt: "Na-play noong",
+    expiresIn: "Mag-e-expire sa",
+    qrCode: "QR code",
+    showQr: "Ipakita ang QR",
+    hideQr: "Itago ang QR",
   },
   pt: {
     actionNeeded: "Ação necessária",
@@ -444,6 +492,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "Mostrar menos",
     playedHistoryRetentionNote: "O histórico mostrado aqui cobre os últimos 30 dias. Registos antigos ficam guardados em segurança para auditoria de pagamentos e suporte.",
     playedAt: "Tocado em",
+    expiresIn: "Expira em",
+    qrCode: "Código QR",
+    showQr: "Mostrar QR",
+    hideQr: "Ocultar QR",
   },
   es: {
     actionNeeded: "Acción necesaria",
@@ -459,6 +511,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "Mostrar menos",
     playedHistoryRetentionNote: "El historial mostrado aquí cubre los últimos 30 días. Los registros antiguos se conservan de forma segura para auditoría de pagos y soporte.",
     playedAt: "Reproducido a las",
+    expiresIn: "Expira en",
+    qrCode: "Código QR",
+    showQr: "Mostrar QR",
+    hideQr: "Ocultar QR",
   },
   fr: {
     actionNeeded: "Action nécessaire",
@@ -474,6 +530,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "Afficher moins",
     playedHistoryRetentionNote: "L’historique affiché ici couvre les 30 derniers jours. Les anciens enregistrements sont conservés pour l’audit des paiements et le support.",
     playedAt: "Joué à",
+    expiresIn: "Expire dans",
+    qrCode: "QR code",
+    showQr: "Afficher le QR",
+    hideQr: "Masquer le QR",
   },
   de: {
     actionNeeded: "Aktion nötig",
@@ -489,6 +549,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "Weniger anzeigen",
     playedHistoryRetentionNote: "Der hier angezeigte Verlauf umfasst die letzten 30 Tage. Ältere Datensätze werden für Zahlungs- und Supportprüfungen sicher aufbewahrt.",
     playedAt: "Gespielt um",
+    expiresIn: "Läuft ab in",
+    qrCode: "QR-Code",
+    showQr: "QR anzeigen",
+    hideQr: "QR ausblenden",
   },
   ru: {
     actionNeeded: "Требуется действие",
@@ -504,6 +568,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "Показать меньше",
     playedHistoryRetentionNote: "Здесь отображается история за последние 30 дней. Более старые записи безопасно сохраняются для проверки платежей и поддержки.",
     playedAt: "Воспроизведено",
+    expiresIn: "Истекает через",
+    qrCode: "QR-код",
+    showQr: "Показать QR",
+    hideQr: "Скрыть QR",
   },
   tr: {
     actionNeeded: "İşlem gerekli",
@@ -519,6 +587,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "Daha az göster",
     playedHistoryRetentionNote: "Burada son 30 günün geçmişi gösterilir. Eski kayıtlar ödeme ve destek denetimi için güvenli şekilde saklanır.",
     playedAt: "Çalındığı zaman",
+    expiresIn: "Kalan süre",
+    qrCode: "QR kodu",
+    showQr: "QR göster",
+    hideQr: "QR gizle",
   },
   it: {
     actionNeeded: "Azione richiesta",
@@ -534,6 +606,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "Mostra meno",
     playedHistoryRetentionNote: "La cronologia mostrata qui copre gli ultimi 30 giorni. I record più vecchi sono conservati per audit pagamenti e supporto.",
     playedAt: "Riprodotto alle",
+    expiresIn: "Scade tra",
+    qrCode: "Codice QR",
+    showQr: "Mostra QR",
+    hideQr: "Nascondi QR",
   },
   nl: {
     actionNeeded: "Actie nodig",
@@ -549,6 +625,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "Minder tonen",
     playedHistoryRetentionNote: "De geschiedenis die hier wordt getoond beslaat de laatste 30 dagen. Oudere records worden veilig bewaard voor betalings- en supportcontrole.",
     playedAt: "Gespeeld om",
+    expiresIn: "Verloopt over",
+    qrCode: "QR-code",
+    showQr: "QR tonen",
+    hideQr: "QR verbergen",
   },
   pl: {
     actionNeeded: "Wymagana akcja",
@@ -564,6 +644,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "Pokaż mniej",
     playedHistoryRetentionNote: "Pokazana tutaj historia obejmuje ostatnie 30 dni. Starsze rekordy są bezpiecznie przechowywane do kontroli płatności i wsparcia.",
     playedAt: "Odtworzono o",
+    expiresIn: "Wygasa za",
+    qrCode: "Kod QR",
+    showQr: "Pokaż QR",
+    hideQr: "Ukryj QR",
   },
   el: {
     actionNeeded: "Απαιτείται ενέργεια",
@@ -579,6 +663,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "Εμφάνιση λιγότερων",
     playedHistoryRetentionNote: "Το ιστορικό που εμφανίζεται εδώ καλύπτει τις τελευταίες 30 ημέρες. Παλαιότερες εγγραφές φυλάσσονται για έλεγχο πληρωμών και υποστήριξη.",
     playedAt: "Παίχτηκε στις",
+    expiresIn: "Λήγει σε",
+    qrCode: "Κωδικός QR",
+    showQr: "Εμφάνιση QR",
+    hideQr: "Απόκρυψη QR",
   },
   uk: {
     actionNeeded: "Потрібна дія",
@@ -594,6 +682,10 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showLessHistory: "Показати менше",
     playedHistoryRetentionNote: "Тут показано історію за останні 30 днів. Старіші записи безпечно зберігаються для перевірки платежів і підтримки.",
     playedAt: "Відтворено",
+    expiresIn: "Закінчиться через",
+    qrCode: "QR-код",
+    showQr: "Показати QR",
+    hideQr: "Сховати QR",
   },
 };
 
@@ -3517,6 +3609,7 @@ export default function AdminPage() {
           borderColor="border-purple-700"
           actionLoadingId={actionLoadingId}
           t={t}
+          expiresInLabel={dashboardAlertText.expiresIn}
           buttons={(request) => (
             <button
               disabled={actionLoadingId === request.id}
@@ -3569,7 +3662,7 @@ export default function AdminPage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-purple-400 font-black">
-                QR code
+                {dashboardAlertText.qrCode}
               </p>
 
               <h2 className="text-2xl md:text-4xl font-black text-purple-400 mt-1">
@@ -3582,7 +3675,7 @@ export default function AdminPage() {
             </div>
 
             <span className="bg-purple-600 px-5 py-3 rounded-full text-sm text-white font-black text-center">
-              {isQrCodeExpanded ? "Hide QR" : "Show QR"}
+              {isQrCodeExpanded ? dashboardAlertText.hideQr : dashboardAlertText.showQr}
             </span>
           </div>
         </button>
@@ -4678,6 +4771,7 @@ function RequestColumn({
   showPlayedAt = false,
   compactCards = false,
   playedAtLabel = "Played at",
+  expiresInLabel = "Expires in",
 }: {
   title: string;
   titleColor: string;
@@ -4690,6 +4784,7 @@ function RequestColumn({
   showPlayedAt?: boolean;
   compactCards?: boolean;
   playedAtLabel?: string;
+  expiresInLabel?: string;
 }) {
   return (
     <section>
@@ -4783,7 +4878,7 @@ function RequestColumn({
                   {request.status === "played" && isNowPlayingStillActive(request) && (
                     <div className="inline-flex items-center gap-2 mt-3 bg-purple-600/15 border border-purple-500/40 text-purple-200 px-3 py-2 rounded-full text-xs md:text-sm font-bold">
                       <span>⏳</span>
-                      <span>Expires in {formatNowPlayingRemaining(request)}</span>
+                      <span>{expiresInLabel} {formatNowPlayingRemaining(request)}</span>
                     </div>
                   )}
                 </div>

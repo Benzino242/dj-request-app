@@ -286,6 +286,35 @@ const paymentSuccessTranslations: Record<Language, PaymentSuccessTranslation> = 
 
 const NOW_PLAYING_DURATION_MS = 5 * 60 * 1000;
 
+type NowPlayingCountdownTranslation = {
+  expiresIn: string;
+};
+
+const nowPlayingCountdownTranslations: Record<Language, NowPlayingCountdownTranslation> = {
+  en: { expiresIn: "Expires in" },
+  zh: { expiresIn: "剩余" },
+  ja: { expiresIn: "残り" },
+  ko: { expiresIn: "남은 시간" },
+  id: { expiresIn: "Berakhir dalam" },
+  ms: { expiresIn: "Tamat dalam" },
+  th: { expiresIn: "เหลือเวลา" },
+  hi: { expiresIn: "समाप्त होने में" },
+  ar: { expiresIn: "ينتهي خلال" },
+  vi: { expiresIn: "Hết sau" },
+  tl: { expiresIn: "Mag-e-expire sa" },
+  pt: { expiresIn: "Expira em" },
+  es: { expiresIn: "Expira en" },
+  fr: { expiresIn: "Expire dans" },
+  de: { expiresIn: "Läuft ab in" },
+  ru: { expiresIn: "Истекает через" },
+  tr: { expiresIn: "Kalan süre" },
+  it: { expiresIn: "Scade tra" },
+  nl: { expiresIn: "Verloopt over" },
+  pl: { expiresIn: "Wygasa za" },
+  el: { expiresIn: "Λήγει σε" },
+  uk: { expiresIn: "Закінчиться через" },
+};
+
 type Request = {
   id: number;
   dj_id: number;
@@ -362,6 +391,8 @@ export default function StageRequestPage() {
   const t = translations[language];
   const paymentText =
     paymentSuccessTranslations[language] || paymentSuccessTranslations.en;
+  const nowPlayingCountdownText =
+    nowPlayingCountdownTranslations[language] || nowPlayingCountdownTranslations.en;
 
   const [nowPlaying, setNowPlaying] = useState<Request | null>(null);
   const [upNext, setUpNext] = useState<Request | null>(null);
@@ -937,7 +968,7 @@ export default function StageRequestPage() {
 
         <div className="inline-flex items-center gap-2 mt-4 bg-black/40 border border-white/20 text-white px-4 py-2 rounded-full text-xs font-bold">
           <span>⏳</span>
-          <span>Expires in {formatNowPlayingRemaining(nowPlaying)}</span>
+          <span>{nowPlayingCountdownText.expiresIn} {formatNowPlayingRemaining(nowPlaying)}</span>
         </div>
       </div>
     </div>
