@@ -3512,6 +3512,7 @@ export default function AdminPage() {
             actionLoadingId={actionLoadingId}
             t={t}
             showPlayedAt
+            compactCards
             playedAtLabel={dashboardAlertText.playedAt}
             buttons={() => null}
           />
@@ -4620,6 +4621,7 @@ function RequestColumn({
   actionLoadingId,
   t,
   showPlayedAt = false,
+  compactCards = false,
   playedAtLabel = "Played at",
 }: {
   title: string;
@@ -4631,6 +4633,7 @@ function RequestColumn({
   actionLoadingId: number | null;
   t: (typeof translations)[Language];
   showPlayedAt?: boolean;
+  compactCards?: boolean;
   playedAtLabel?: string;
 }) {
   return (
@@ -4647,39 +4650,77 @@ function RequestColumn({
         {requests.map((request, index) => (
           <div
             key={request.id}
-            className={`bg-zinc-900 border ${borderColor} p-5 rounded-2xl`}
+            className={`bg-zinc-900 border ${borderColor} ${
+              compactCards ? "p-3 md:p-4 rounded-xl md:rounded-2xl" : "p-5 rounded-2xl"
+            }`}
           >
-            <div className="flex justify-between items-start gap-3">
-              <div className="flex items-start gap-3">
+            <div className={`flex justify-between items-start ${compactCards ? "gap-2" : "gap-3"}`}>
+              <div className={`flex items-start min-w-0 ${compactCards ? "gap-2.5" : "gap-3"}`}>
                 {request.artwork && (
                   <img
                     src={request.artwork}
                     alt={request.song}
-                    className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                    className={
+                      compactCards
+                        ? "w-12 h-12 md:w-14 md:h-14 rounded-lg object-cover flex-shrink-0"
+                        : "w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                    }
                   />
                 )}
 
-                <div>
-                  <h3 className="text-2xl font-bold">
+                <div className="min-w-0">
+                  <h3
+                    className={
+                      compactCards
+                        ? "text-lg md:text-xl font-bold leading-tight break-words"
+                        : "text-2xl font-bold"
+                    }
+                  >
                     {showQueueNumber
                       ? `#${index + 1} - ${request.song}`
                       : request.song}
                   </h3>
 
-                  <p className="text-zinc-400 mt-1">{request.artist}</p>
+                  <p
+                    className={
+                      compactCards
+                        ? "text-sm text-zinc-400 mt-0.5 leading-snug break-words"
+                        : "text-zinc-400 mt-1"
+                    }
+                  >
+                    {request.artist}
+                  </p>
 
                   {request.album && (
-                    <p className="text-xs text-zinc-500 mt-1">
+                    <p
+                      className={
+                        compactCards
+                          ? "text-[11px] md:text-xs text-zinc-500 mt-0.5 leading-snug break-words"
+                          : "text-xs text-zinc-500 mt-1"
+                      }
+                    >
                       {request.album}
                     </p>
                   )}
 
-                  <p className="text-purple-400 mt-2">
+                  <p
+                    className={
+                      compactCards
+                        ? "text-sm text-purple-400 mt-1 leading-snug break-words"
+                        : "text-purple-400 mt-2"
+                    }
+                  >
                     {t.requestedBy} {request.name}
                   </p>
 
                   {showPlayedAt && request.played_at && formatPlayedAt(request.played_at) && (
-                    <p className="text-xs md:text-sm text-blue-300 mt-2 font-semibold">
+                    <p
+                      className={
+                        compactCards
+                          ? "text-[11px] md:text-xs text-blue-300 mt-1 font-semibold"
+                          : "text-xs md:text-sm text-blue-300 mt-2 font-semibold"
+                      }
+                    >
                       {playedAtLabel} {formatPlayedAt(request.played_at)}
                     </p>
                   )}
@@ -4693,7 +4734,7 @@ function RequestColumn({
                 </div>
               </div>
 
-              <div className="flex flex-col items-end gap-2">
+              <div className={`flex flex-col items-end flex-shrink-0 ${compactCards ? "gap-1.5" : "gap-2"}`}>
                 {showQueueNumber && index === 0 && (
                   <span className="bg-purple-600 px-3 py-1 rounded-full text-xs font-bold">
                     {t.nextUp}
@@ -4701,22 +4742,36 @@ function RequestColumn({
                 )}
 
                 {request.tip_amount >= 50 && (
-                  <span className="bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold">
+                  <span
+                    className={
+                      compactCards
+                        ? "bg-yellow-500 text-black px-2.5 py-0.5 rounded-full text-[10px] md:text-xs font-bold"
+                        : "bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold"
+                    }
+                  >
                     {t.vip}
                   </span>
                 )}
 
-                <div className="bg-green-700 px-4 py-2 rounded-xl font-bold whitespace-nowrap text-sm md:text-base">
+                <div
+                  className={
+                    compactCards
+                      ? "bg-green-700 px-3 py-1.5 rounded-xl font-bold whitespace-nowrap text-xs md:text-sm"
+                      : "bg-green-700 px-4 py-2 rounded-xl font-bold whitespace-nowrap text-sm md:text-base"
+                  }
+                >
                   {request.tip_currency} {request.tip_amount}
                 </div>
               </div>
             </div>
 
             {actionLoadingId === request.id && (
-              <p className="text-zinc-500 text-sm mt-3">{t.updating}</p>
+              <p className={`text-zinc-500 text-sm ${compactCards ? "mt-2" : "mt-3"}`}>{t.updating}</p>
             )}
 
-            <div className="flex flex-wrap gap-3 mt-5">{buttons(request)}</div>
+            <div className={`flex flex-wrap ${compactCards ? "gap-2 mt-3" : "gap-3 mt-5"}`}>
+              {buttons(request)}
+            </div>
           </div>
         ))}
       </div>
