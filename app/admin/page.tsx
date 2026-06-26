@@ -170,6 +170,26 @@ function formatPlayedAt(value?: string | null) {
   });
 }
 
+function getPlayedHistoryTime(request: SongRequest) {
+  const playedAtTime = request.played_at
+    ? new Date(request.played_at).getTime()
+    : Number.NaN;
+
+  if (!Number.isNaN(playedAtTime)) {
+    return playedAtTime;
+  }
+
+  const createdAtTime = request.created_at
+    ? new Date(request.created_at).getTime()
+    : Number.NaN;
+
+  if (!Number.isNaN(createdAtTime)) {
+    return createdAtTime;
+  }
+
+  return 0;
+}
+
 type QuickSetupTranslation = {
   eyebrow: string;
   heading: string;
@@ -2782,11 +2802,11 @@ export default function AdminPage() {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const recentPlayedHistory = grouped.finished.filter((request) => {
-    if (!request.created_at) return true;
-
-    return new Date(request.created_at) >= thirtyDaysAgo;
-  });
+  const recentPlayedHistory = grouped.finished
+    .filter((request) => getPlayedHistoryTime(request) >= thirtyDaysAgo.getTime())
+    .sort((firstRequest, secondRequest) =>
+      getPlayedHistoryTime(secondRequest) - getPlayedHistoryTime(firstRequest),
+    );
 
   const visiblePlayedHistory = showAllPlayedHistory
     ? recentPlayedHistory
