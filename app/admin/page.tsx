@@ -268,6 +268,1897 @@ type DashboardAlertTranslation = {
   hideQr: string;
 };
 
+
+type AdminUiTranslation = {
+  paymentAudit: string;
+  recentPaymentReferences: string;
+  paymentAuditBodyView: string;
+  paymentAuditBodyHide: string;
+  latest: string;
+  viewReferences: string;
+  hideReferences: string;
+  noPaymentsRecordedYet: string;
+  requestNumber: string;
+  songNotSaved: string;
+  artistNotSaved: string;
+  guest: string;
+  guestNotSaved: string;
+  noDate: string;
+  paystackReference: string;
+  noReferenceSaved: string;
+  copyReference: string;
+  noPaymentReferenceFound: string;
+  paymentReferenceCopied: string;
+  failedConnectPayout: string;
+  payoutConnectedAlert: string;
+  active: string;
+  pendingVerificationStatus: string;
+  rejectedStatus: string;
+  notStartedStatus: string;
+  updatedStatus: string;
+  pendingStatus: string;
+  approvedStatus: string;
+  paidStatus: string;
+  unknownStatus: string;
+  withdrawalHistory: string;
+  latestLabel: string;
+  withdrawalSingular: string;
+  withdrawalPlural: string;
+  totalWithdrawn: string;
+  totalRequested: string;
+  available: string;
+  latestRequest: string;
+  unknown: string;
+  viewDetails: string;
+  hideDetails: string;
+  payoutAccountConnected: string;
+  recipientCode: string;
+  notCreatedYet: string;
+  loadingBanks: string;
+  selectBank: string;
+  paypalEmailOrProvider: string;
+  payoutProvider: string;
+  accountName: string;
+  accountNumber: string;
+  mobileMoneyNumber: string;
+  accountPayoutId: string;
+  connectingToPaystack: string;
+  payoutDestination: string;
+  notConnected: string;
+  notProvided: string;
+  connectPayoutAccount: string;
+  connectPayoutBeforeWithdrawal: string;
+  existingWithdrawalLocked: string;
+  submitting: string;
+  verificationRequiredBeforeWithdrawal: string;
+  alreadyOpenWithdrawalAlert: string;
+  enterValidWithdrawalAmount: string;
+  insufficientAvailableBalance: string;
+  requested: string;
+  method: string;
+  provider: string;
+  bankTransfer: string;
+  noProvider: string;
+  noAccountName: string;
+  noAccountNumber: string;
+  paid: string;
+  approvedByBlackline: string;
+  waitingForReview: string;
+  rejected: string;
+  withdrawalActivityTimeline: string;
+  hide: string;
+  show: string;
+  noStatusUpdatesYet: string;
+  activityUpdated: string;
+};
+
+const adminUiTranslations: Record<Language, AdminUiTranslation> = {
+  "en": {
+    "paymentAudit": "Payment audit",
+    "recentPaymentReferences": "Recent Payment References",
+    "paymentAuditBodyView": "Use this when a guest says they paid. Tap to view recent Paystack references.",
+    "paymentAuditBodyHide": "Use this when a guest says they paid. Tap to hide recent Paystack references.",
+    "latest": "latest",
+    "viewReferences": "View references",
+    "hideReferences": "Hide references",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "Active",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "Rejected",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "Pending",
+    "approvedStatus": "Approved",
+    "paidStatus": "Paid",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "Withdrawal History",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "View Details",
+    "hideDetails": "Hide Details",
+    "payoutAccountConnected": "Payout account connected",
+    "recipientCode": "Recipient Code",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "Not Connected",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "Connect Payout Account",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "Submitting...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "Paid",
+    "approvedByBlackline": "Approved by Blackline",
+    "waitingForReview": "Waiting for review",
+    "rejected": "Rejected",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "Hide",
+    "show": "Show",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  },
+  "zh": {
+    "paymentAudit": "付款审核",
+    "recentPaymentReferences": "最近付款参考号",
+    "paymentAuditBodyView": "当客人说已经付款时使用这里。点击查看最近的 Paystack 参考号。",
+    "paymentAuditBodyHide": "当客人说已经付款时使用这里。点击隐藏最近的 Paystack 参考号。",
+    "latest": "最新",
+    "viewReferences": "查看参考号",
+    "hideReferences": "隐藏参考号",
+    "noPaymentsRecordedYet": "还没有付款记录。",
+    "requestNumber": "请求 #",
+    "songNotSaved": "歌曲未保存",
+    "artistNotSaved": "艺人未保存",
+    "guest": "客人",
+    "guestNotSaved": "客人未保存",
+    "noDate": "无日期",
+    "paystackReference": "Paystack 参考号",
+    "noReferenceSaved": "未保存参考号",
+    "copyReference": "复制参考号",
+    "noPaymentReferenceFound": "此付款没有找到参考号。",
+    "paymentReferenceCopied": "付款参考号已复制",
+    "failedConnectPayout": "连接收款账户失败。",
+    "payoutConnectedAlert": "收款账户已连接。",
+    "active": "已启用",
+    "pendingVerificationStatus": "等待验证",
+    "rejectedStatus": "已拒绝",
+    "notStartedStatus": "未开始",
+    "updatedStatus": "已更新",
+    "pendingStatus": "待处理",
+    "approvedStatus": "已批准",
+    "paidStatus": "已支付",
+    "unknownStatus": "未知",
+    "withdrawalHistory": "提现历史",
+    "latestLabel": "最新",
+    "withdrawalSingular": "笔提现",
+    "withdrawalPlural": "笔提现",
+    "totalWithdrawn": "已提现总额",
+    "totalRequested": "申请总额",
+    "available": "可用",
+    "latestRequest": "最新申请",
+    "unknown": "未知",
+    "viewDetails": "查看详情",
+    "hideDetails": "隐藏详情",
+    "payoutAccountConnected": "收款账户已连接",
+    "recipientCode": "收款人代码",
+    "notCreatedYet": "尚未创建",
+    "loadingBanks": "正在加载银行...",
+    "selectBank": "选择银行",
+    "paypalEmailOrProvider": "PayPal 邮箱或服务商",
+    "payoutProvider": "收款服务商",
+    "accountName": "账户名称",
+    "accountNumber": "账号",
+    "mobileMoneyNumber": "移动支付号码",
+    "accountPayoutId": "账户 / 收款 ID",
+    "connectingToPaystack": "正在连接 Paystack...",
+    "payoutDestination": "收款目的地",
+    "notConnected": "未连接",
+    "notProvided": "未提供",
+    "connectPayoutAccount": "连接收款账户",
+    "connectPayoutBeforeWithdrawal": "申请提现前，请先用 Paystack 连接你的收款账户。",
+    "existingWithdrawalLocked": "你已有待处理或已批准的提现申请。当前申请支付或拒绝前，新的提现申请会被锁定。",
+    "submitting": "正在提交...",
+    "verificationRequiredBeforeWithdrawal": "申请提现前需要完成验证。",
+    "alreadyOpenWithdrawalAlert": "你已有待处理或已批准的提现申请。请等它被支付或拒绝后再创建新的申请。",
+    "enterValidWithdrawalAmount": "请输入有效的提现金额",
+    "insufficientAvailableBalance": "可用余额不足",
+    "requested": "申请时间",
+    "method": "方式",
+    "provider": "服务商",
+    "bankTransfer": "银行转账",
+    "noProvider": "无服务商",
+    "noAccountName": "无账户名称",
+    "noAccountNumber": "无账号",
+    "paid": "已支付",
+    "approvedByBlackline": "Blackline 已批准",
+    "waitingForReview": "等待审核",
+    "rejected": "已拒绝",
+    "withdrawalActivityTimeline": "提现活动时间线",
+    "hide": "隐藏",
+    "show": "显示",
+    "noStatusUpdatesYet": "还没有状态更新。",
+    "activityUpdated": "活动已更新"
+  },
+  "ja": {
+    "paymentAudit": "支払い確認",
+    "recentPaymentReferences": "最近の支払い参照番号",
+    "paymentAuditBodyView": "ゲストが支払ったと言った時に使用します。タップして最近の Paystack 参照番号を表示します。",
+    "paymentAuditBodyHide": "ゲストが支払ったと言った時に使用します。タップして最近の Paystack 参照番号を隠します。",
+    "latest": "最新",
+    "viewReferences": "参照番号を表示",
+    "hideReferences": "参照番号を隠す",
+    "noPaymentsRecordedYet": "まだ支払い記録はありません。",
+    "requestNumber": "リクエスト #",
+    "songNotSaved": "曲が保存されていません",
+    "artistNotSaved": "アーティストが保存されていません",
+    "guest": "ゲスト",
+    "guestNotSaved": "ゲストが保存されていません",
+    "noDate": "日付なし",
+    "paystackReference": "Paystack 参照番号",
+    "noReferenceSaved": "参照番号が保存されていません",
+    "copyReference": "参照番号をコピー",
+    "noPaymentReferenceFound": "この支払いの参照番号が見つかりません。",
+    "paymentReferenceCopied": "支払い参照番号をコピーしました",
+    "failedConnectPayout": "受取口座の接続に失敗しました。",
+    "payoutConnectedAlert": "受取口座が接続されました。",
+    "active": "有効",
+    "pendingVerificationStatus": "認証待ち",
+    "rejectedStatus": "拒否済み",
+    "notStartedStatus": "未開始",
+    "updatedStatus": "更新済み",
+    "pendingStatus": "保留中",
+    "approvedStatus": "承認済み",
+    "paidStatus": "支払い済み",
+    "unknownStatus": "不明",
+    "withdrawalHistory": "出金履歴",
+    "latestLabel": "最新",
+    "withdrawalSingular": "件の出金",
+    "withdrawalPlural": "件の出金",
+    "totalWithdrawn": "出金済み合計",
+    "totalRequested": "申請合計",
+    "available": "利用可能",
+    "latestRequest": "最新申請",
+    "unknown": "不明",
+    "viewDetails": "詳細を表示",
+    "hideDetails": "詳細を隠す",
+    "payoutAccountConnected": "受取口座が接続済み",
+    "recipientCode": "受取人コード",
+    "notCreatedYet": "未作成",
+    "loadingBanks": "銀行を読み込み中...",
+    "selectBank": "銀行を選択",
+    "paypalEmailOrProvider": "PayPalメールまたはプロバイダー",
+    "payoutProvider": "受取プロバイダー",
+    "accountName": "口座名義",
+    "accountNumber": "口座番号",
+    "mobileMoneyNumber": "モバイルマネー番号",
+    "accountPayoutId": "口座 / 受取ID",
+    "connectingToPaystack": "Paystack に接続中...",
+    "payoutDestination": "受取先",
+    "notConnected": "未接続",
+    "notProvided": "未入力",
+    "connectPayoutAccount": "受取口座を接続",
+    "connectPayoutBeforeWithdrawal": "出金申請の前に Paystack で受取口座を接続してください。",
+    "existingWithdrawalLocked": "保留中または承認済みの出金申請があります。現在の申請が支払われるか拒否されるまで新しい出金はロックされます。",
+    "submitting": "送信中...",
+    "verificationRequiredBeforeWithdrawal": "出金申請には認証が必要です。",
+    "alreadyOpenWithdrawalAlert": "保留中または承認済みの出金申請があります。支払いまたは拒否されるまでお待ちください。",
+    "enterValidWithdrawalAmount": "有効な出金額を入力してください",
+    "insufficientAvailableBalance": "利用可能残高が不足しています",
+    "requested": "申請日時",
+    "method": "方法",
+    "provider": "プロバイダー",
+    "bankTransfer": "銀行振込",
+    "noProvider": "プロバイダーなし",
+    "noAccountName": "口座名義なし",
+    "noAccountNumber": "口座番号なし",
+    "paid": "支払い済み",
+    "approvedByBlackline": "Blackline が承認済み",
+    "waitingForReview": "確認待ち",
+    "rejected": "拒否済み",
+    "withdrawalActivityTimeline": "出金アクティビティ履歴",
+    "hide": "隠す",
+    "show": "表示",
+    "noStatusUpdatesYet": "まだステータス更新はありません。",
+    "activityUpdated": "アクティビティが更新されました"
+  },
+  "ko": {
+    "paymentAudit": "결제 확인",
+    "recentPaymentReferences": "최근 결제 참조번호",
+    "paymentAuditBodyView": "게스트가 결제했다고 말할 때 사용하세요. 탭해서 최근 Paystack 참조번호를 봅니다.",
+    "paymentAuditBodyHide": "게스트가 결제했다고 말할 때 사용하세요. 탭해서 최근 Paystack 참조번호를 숨깁니다.",
+    "latest": "최신",
+    "viewReferences": "참조번호 보기",
+    "hideReferences": "참조번호 숨기기",
+    "noPaymentsRecordedYet": "아직 결제 기록이 없습니다.",
+    "requestNumber": "요청 #",
+    "songNotSaved": "곡이 저장되지 않음",
+    "artistNotSaved": "아티스트가 저장되지 않음",
+    "guest": "게스트",
+    "guestNotSaved": "게스트가 저장되지 않음",
+    "noDate": "날짜 없음",
+    "paystackReference": "Paystack 참조번호",
+    "noReferenceSaved": "참조번호가 저장되지 않음",
+    "copyReference": "참조번호 복사",
+    "noPaymentReferenceFound": "이 결제의 참조번호를 찾을 수 없습니다.",
+    "paymentReferenceCopied": "결제 참조번호가 복사되었습니다",
+    "failedConnectPayout": "지급 계정 연결에 실패했습니다.",
+    "payoutConnectedAlert": "지급 계정이 연결되었습니다.",
+    "active": "활성",
+    "pendingVerificationStatus": "인증 대기",
+    "rejectedStatus": "거절됨",
+    "notStartedStatus": "시작 안 됨",
+    "updatedStatus": "업데이트됨",
+    "pendingStatus": "대기 중",
+    "approvedStatus": "승인됨",
+    "paidStatus": "지급됨",
+    "unknownStatus": "알 수 없음",
+    "withdrawalHistory": "출금 내역",
+    "latestLabel": "최신",
+    "withdrawalSingular": "건 출금",
+    "withdrawalPlural": "건 출금",
+    "totalWithdrawn": "총 출금액",
+    "totalRequested": "총 요청액",
+    "available": "사용 가능",
+    "latestRequest": "최근 요청",
+    "unknown": "알 수 없음",
+    "viewDetails": "상세 보기",
+    "hideDetails": "상세 숨기기",
+    "payoutAccountConnected": "지급 계정 연결됨",
+    "recipientCode": "수취인 코드",
+    "notCreatedYet": "아직 생성되지 않음",
+    "loadingBanks": "은행 불러오는 중...",
+    "selectBank": "은행 선택",
+    "paypalEmailOrProvider": "PayPal 이메일 또는 제공업체",
+    "payoutProvider": "지급 제공업체",
+    "accountName": "계정 이름",
+    "accountNumber": "계좌 번호",
+    "mobileMoneyNumber": "모바일 머니 번호",
+    "accountPayoutId": "계정 / 지급 ID",
+    "connectingToPaystack": "Paystack 연결 중...",
+    "payoutDestination": "지급 대상",
+    "notConnected": "연결 안 됨",
+    "notProvided": "제공되지 않음",
+    "connectPayoutAccount": "지급 계정 연결",
+    "connectPayoutBeforeWithdrawal": "출금 요청 전에 Paystack으로 지급 계정을 연결하세요.",
+    "existingWithdrawalLocked": "대기 중이거나 승인된 출금 요청이 있습니다. 현재 요청이 지급되거나 거절될 때까지 새 출금 요청은 잠깁니다.",
+    "submitting": "제출 중...",
+    "verificationRequiredBeforeWithdrawal": "출금 요청 전 인증이 필요합니다.",
+    "alreadyOpenWithdrawalAlert": "대기 중이거나 승인된 출금 요청이 있습니다. 지급 또는 거절될 때까지 기다려 주세요.",
+    "enterValidWithdrawalAmount": "올바른 출금 금액을 입력하세요",
+    "insufficientAvailableBalance": "사용 가능 잔액이 부족합니다",
+    "requested": "요청됨",
+    "method": "방법",
+    "provider": "제공업체",
+    "bankTransfer": "은행 송금",
+    "noProvider": "제공업체 없음",
+    "noAccountName": "계정 이름 없음",
+    "noAccountNumber": "계좌 번호 없음",
+    "paid": "지급됨",
+    "approvedByBlackline": "Blackline 승인됨",
+    "waitingForReview": "검토 대기 중",
+    "rejected": "거절됨",
+    "withdrawalActivityTimeline": "출금 활동 타임라인",
+    "hide": "숨기기",
+    "show": "보기",
+    "noStatusUpdatesYet": "아직 상태 업데이트가 없습니다.",
+    "activityUpdated": "활동이 업데이트되었습니다"
+  },
+  "id": {
+    "paymentAudit": "Audit pembayaran",
+    "recentPaymentReferences": "Referensi Pembayaran Terbaru",
+    "paymentAuditBodyView": "Gunakan ini saat tamu bilang sudah membayar. Tap untuk melihat referensi Paystack terbaru.",
+    "paymentAuditBodyHide": "Gunakan ini saat tamu bilang sudah membayar. Tap untuk menyembunyikan referensi Paystack terbaru.",
+    "latest": "terbaru",
+    "viewReferences": "Lihat referensi",
+    "hideReferences": "Sembunyikan referensi",
+    "noPaymentsRecordedYet": "Belum ada pembayaran tercatat.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Lagu belum tersimpan",
+    "artistNotSaved": "Artis belum tersimpan",
+    "guest": "Tamu",
+    "guestNotSaved": "Tamu belum tersimpan",
+    "noDate": "Tidak ada tanggal",
+    "paystackReference": "Referensi Paystack",
+    "noReferenceSaved": "Referensi belum tersimpan",
+    "copyReference": "Salin referensi",
+    "noPaymentReferenceFound": "Referensi pembayaran tidak ditemukan untuk pembayaran ini.",
+    "paymentReferenceCopied": "Referensi pembayaran disalin",
+    "failedConnectPayout": "Gagal menghubungkan akun payout.",
+    "payoutConnectedAlert": "Akun payout terhubung.",
+    "active": "Aktif",
+    "pendingVerificationStatus": "Menunggu verifikasi",
+    "rejectedStatus": "Ditolak",
+    "notStartedStatus": "Belum dimulai",
+    "updatedStatus": "Diperbarui",
+    "pendingStatus": "Pending",
+    "approvedStatus": "Disetujui",
+    "paidStatus": "Dibayar",
+    "unknownStatus": "Tidak diketahui",
+    "withdrawalHistory": "Riwayat Penarikan",
+    "latestLabel": "Terbaru",
+    "withdrawalSingular": "penarikan",
+    "withdrawalPlural": "penarikan",
+    "totalWithdrawn": "Total ditarik",
+    "totalRequested": "Total diminta",
+    "available": "Tersedia",
+    "latestRequest": "Request terbaru",
+    "unknown": "Tidak diketahui",
+    "viewDetails": "Lihat detail",
+    "hideDetails": "Sembunyikan detail",
+    "payoutAccountConnected": "Akun payout terhubung",
+    "recipientCode": "Kode penerima",
+    "notCreatedYet": "Belum dibuat",
+    "loadingBanks": "Memuat bank...",
+    "selectBank": "Pilih bank",
+    "paypalEmailOrProvider": "Email PayPal atau provider",
+    "payoutProvider": "Provider payout",
+    "accountName": "Nama akun",
+    "accountNumber": "Nomor akun",
+    "mobileMoneyNumber": "Nomor mobile money",
+    "accountPayoutId": "Akun / ID payout",
+    "connectingToPaystack": "Menghubungkan ke Paystack...",
+    "payoutDestination": "Tujuan payout",
+    "notConnected": "Belum terhubung",
+    "notProvided": "Belum diisi",
+    "connectPayoutAccount": "Hubungkan Akun Payout",
+    "connectPayoutBeforeWithdrawal": "Hubungkan akun payout dengan Paystack sebelum meminta penarikan.",
+    "existingWithdrawalLocked": "Anda sudah memiliki request penarikan pending atau disetujui. Request baru terkunci sampai request saat ini dibayar atau ditolak.",
+    "submitting": "Mengirim...",
+    "verificationRequiredBeforeWithdrawal": "Verifikasi diperlukan sebelum penarikan dapat diminta.",
+    "alreadyOpenWithdrawalAlert": "Anda sudah memiliki request penarikan pending atau disetujui. Tunggu sampai dibayar atau ditolak sebelum membuat yang baru.",
+    "enterValidWithdrawalAmount": "Masukkan jumlah penarikan yang valid",
+    "insufficientAvailableBalance": "Saldo tersedia tidak cukup",
+    "requested": "Diminta",
+    "method": "Metode",
+    "provider": "Provider",
+    "bankTransfer": "Transfer bank",
+    "noProvider": "Tidak ada provider",
+    "noAccountName": "Tidak ada nama akun",
+    "noAccountNumber": "Tidak ada nomor akun",
+    "paid": "Dibayar",
+    "approvedByBlackline": "Disetujui Blackline",
+    "waitingForReview": "Menunggu review",
+    "rejected": "Ditolak",
+    "withdrawalActivityTimeline": "Timeline aktivitas penarikan",
+    "hide": "Sembunyikan",
+    "show": "Tampilkan",
+    "noStatusUpdatesYet": "Belum ada update status.",
+    "activityUpdated": "Aktivitas diperbarui"
+  },
+  "ms": {
+    "paymentAudit": "Audit bayaran",
+    "recentPaymentReferences": "Rujukan Bayaran Terkini",
+    "paymentAuditBodyView": "Gunakan ini apabila tetamu berkata mereka sudah bayar. Tekan untuk lihat rujukan Paystack terkini.",
+    "paymentAuditBodyHide": "Gunakan ini apabila tetamu berkata mereka sudah bayar. Tekan untuk sembunyikan rujukan Paystack terkini.",
+    "latest": "terkini",
+    "viewReferences": "Lihat rujukan",
+    "hideReferences": "Sembunyi rujukan",
+    "noPaymentsRecordedYet": "Belum ada bayaran direkodkan.",
+    "requestNumber": "Permintaan #",
+    "songNotSaved": "Lagu belum disimpan",
+    "artistNotSaved": "Artis belum disimpan",
+    "guest": "Tetamu",
+    "guestNotSaved": "Tetamu belum disimpan",
+    "noDate": "Tiada tarikh",
+    "paystackReference": "Rujukan Paystack",
+    "noReferenceSaved": "Tiada rujukan disimpan",
+    "copyReference": "Salin rujukan",
+    "noPaymentReferenceFound": "Rujukan bayaran tidak ditemui untuk bayaran ini.",
+    "paymentReferenceCopied": "Rujukan bayaran disalin",
+    "failedConnectPayout": "Gagal menyambung akaun bayaran.",
+    "payoutConnectedAlert": "Akaun bayaran disambungkan.",
+    "active": "Aktif",
+    "pendingVerificationStatus": "Menunggu verifikasi",
+    "rejectedStatus": "Ditolak",
+    "notStartedStatus": "Belum bermula",
+    "updatedStatus": "Dikemas kini",
+    "pendingStatus": "Pending",
+    "approvedStatus": "Diluluskan",
+    "paidStatus": "Dibayar",
+    "unknownStatus": "Tidak diketahui",
+    "withdrawalHistory": "Sejarah Pengeluaran",
+    "latestLabel": "Terkini",
+    "withdrawalSingular": "pengeluaran",
+    "withdrawalPlural": "pengeluaran",
+    "totalWithdrawn": "Jumlah dikeluarkan",
+    "totalRequested": "Jumlah diminta",
+    "available": "Tersedia",
+    "latestRequest": "Permintaan terkini",
+    "unknown": "Tidak diketahui",
+    "viewDetails": "Lihat butiran",
+    "hideDetails": "Sembunyi butiran",
+    "payoutAccountConnected": "Akaun bayaran disambungkan",
+    "recipientCode": "Kod penerima",
+    "notCreatedYet": "Belum dibuat",
+    "loadingBanks": "Memuatkan bank...",
+    "selectBank": "Pilih bank",
+    "paypalEmailOrProvider": "Emel PayPal atau penyedia",
+    "payoutProvider": "Penyedia bayaran",
+    "accountName": "Nama akaun",
+    "accountNumber": "Nombor akaun",
+    "mobileMoneyNumber": "Nombor mobile money",
+    "accountPayoutId": "Akaun / ID bayaran",
+    "connectingToPaystack": "Menyambung ke Paystack...",
+    "payoutDestination": "Destinasi bayaran",
+    "notConnected": "Belum disambung",
+    "notProvided": "Belum diberi",
+    "connectPayoutAccount": "Sambung Akaun Bayaran",
+    "connectPayoutBeforeWithdrawal": "Sambungkan akaun bayaran dengan Paystack sebelum meminta pengeluaran.",
+    "existingWithdrawalLocked": "Anda sudah ada permintaan pengeluaran pending atau diluluskan. Permintaan baru dikunci sehingga permintaan semasa dibayar atau ditolak.",
+    "submitting": "Menghantar...",
+    "verificationRequiredBeforeWithdrawal": "Verifikasi diperlukan sebelum pengeluaran boleh diminta.",
+    "alreadyOpenWithdrawalAlert": "Anda sudah ada permintaan pengeluaran pending atau diluluskan. Tunggu sehingga dibayar atau ditolak sebelum membuat yang baru.",
+    "enterValidWithdrawalAmount": "Masukkan jumlah pengeluaran yang sah",
+    "insufficientAvailableBalance": "Baki tersedia tidak mencukupi",
+    "requested": "Diminta",
+    "method": "Kaedah",
+    "provider": "Penyedia",
+    "bankTransfer": "Pindahan bank",
+    "noProvider": "Tiada penyedia",
+    "noAccountName": "Tiada nama akaun",
+    "noAccountNumber": "Tiada nombor akaun",
+    "paid": "Dibayar",
+    "approvedByBlackline": "Diluluskan oleh Blackline",
+    "waitingForReview": "Menunggu semakan",
+    "rejected": "Ditolak",
+    "withdrawalActivityTimeline": "Garis masa aktiviti pengeluaran",
+    "hide": "Sembunyi",
+    "show": "Tunjuk",
+    "noStatusUpdatesYet": "Belum ada kemas kini status.",
+    "activityUpdated": "Aktiviti dikemas kini"
+  },
+  "th": {
+    "paymentAudit": "ตรวจสอบการชำระเงิน",
+    "recentPaymentReferences": "รหัสอ้างอิงการชำระเงินล่าสุด",
+    "paymentAuditBodyView": "ใช้เมื่อแขกบอกว่าจ่ายแล้ว แตะเพื่อดูรหัสอ้างอิง Paystack ล่าสุด",
+    "paymentAuditBodyHide": "ใช้เมื่อแขกบอกว่าจ่ายแล้ว แตะเพื่อซ่อนรหัสอ้างอิง Paystack ล่าสุด",
+    "latest": "ล่าสุด",
+    "viewReferences": "ดูรหัสอ้างอิง",
+    "hideReferences": "ซ่อนรหัสอ้างอิง",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "ใช้งานอยู่",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "ถูกปฏิเสธ",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "รอดำเนินการ",
+    "approvedStatus": "อนุมัติแล้ว",
+    "paidStatus": "จ่ายแล้ว",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "ประวัติการถอน",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "ดูรายละเอียด",
+    "hideDetails": "ซ่อนรายละเอียด",
+    "payoutAccountConnected": "เชื่อมต่อบัญชีรับเงินแล้ว",
+    "recipientCode": "รหัสผู้รับ",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "ยังไม่เชื่อมต่อ",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "เชื่อมต่อบัญชีรับเงิน",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "กำลังส่ง...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "จ่ายแล้ว",
+    "approvedByBlackline": "Blackline อนุมัติแล้ว",
+    "waitingForReview": "รอตรวจสอบ",
+    "rejected": "ถูกปฏิเสธ",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "ซ่อน",
+    "show": "แสดง",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  },
+  "hi": {
+    "paymentAudit": "भुगतान ऑडिट",
+    "recentPaymentReferences": "हाल के भुगतान संदर्भ",
+    "paymentAuditBodyView": "जब guest कहे कि उन्होंने भुगतान किया है, इसे उपयोग करें. हाल के Paystack reference देखने के लिए tap करें.",
+    "paymentAuditBodyHide": "जब guest कहे कि उन्होंने भुगतान किया है, इसे उपयोग करें. हाल के Paystack reference छिपाने के लिए tap करें.",
+    "latest": "नवीनतम",
+    "viewReferences": "Reference देखें",
+    "hideReferences": "Reference छिपाएं",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "Active",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "Rejected",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "Pending",
+    "approvedStatus": "Approved",
+    "paidStatus": "Paid",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "निकासी इतिहास",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "Details देखें",
+    "hideDetails": "Details छिपाएं",
+    "payoutAccountConnected": "Payout account connected",
+    "recipientCode": "Recipient Code",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "Connected नहीं",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "Payout Account जोड़ें",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "Submitting...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "Paid",
+    "approvedByBlackline": "Blackline से approved",
+    "waitingForReview": "Review का इंतज़ार",
+    "rejected": "Rejected",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "Hide",
+    "show": "Show",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  },
+  "ar": {
+    "paymentAudit": "تدقيق الدفع",
+    "recentPaymentReferences": "مراجع الدفع الأخيرة",
+    "paymentAuditBodyView": "استخدم هذا عندما يقول الضيف إنه دفع. اضغط لعرض مراجع Paystack الأخيرة.",
+    "paymentAuditBodyHide": "استخدم هذا عندما يقول الضيف إنه دفع. اضغط لإخفاء مراجع Paystack الأخيرة.",
+    "latest": "الأحدث",
+    "viewReferences": "عرض المراجع",
+    "hideReferences": "إخفاء المراجع",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "نشط",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "مرفوض",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "معلق",
+    "approvedStatus": "موافق عليه",
+    "paidStatus": "مدفوع",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "سجل السحب",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "عرض التفاصيل",
+    "hideDetails": "إخفاء التفاصيل",
+    "payoutAccountConnected": "حساب الدفع متصل",
+    "recipientCode": "رمز المستلم",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "غير متصل",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "ربط حساب الدفع",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "جارٍ الإرسال...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "مدفوع",
+    "approvedByBlackline": "تمت الموافقة من Blackline",
+    "waitingForReview": "بانتظار المراجعة",
+    "rejected": "مرفوض",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "إخفاء",
+    "show": "إظهار",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  },
+  "vi": {
+    "paymentAudit": "Kiểm tra thanh toán",
+    "recentPaymentReferences": "Mã tham chiếu thanh toán gần đây",
+    "paymentAuditBodyView": "Dùng khi khách nói đã thanh toán. Nhấn để xem mã Paystack gần đây.",
+    "paymentAuditBodyHide": "Dùng khi khách nói đã thanh toán. Nhấn để ẩn mã Paystack gần đây.",
+    "latest": "mới nhất",
+    "viewReferences": "Xem mã tham chiếu",
+    "hideReferences": "Ẩn mã tham chiếu",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "Đang hoạt động",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "Bị từ chối",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "Đang chờ",
+    "approvedStatus": "Đã duyệt",
+    "paidStatus": "Đã trả",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "Lịch sử rút tiền",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "Xem chi tiết",
+    "hideDetails": "Ẩn chi tiết",
+    "payoutAccountConnected": "Tài khoản nhận tiền đã kết nối",
+    "recipientCode": "Mã người nhận",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "Chưa kết nối",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "Kết nối tài khoản nhận tiền",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "Đang gửi...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "Đã trả",
+    "approvedByBlackline": "Blackline đã duyệt",
+    "waitingForReview": "Đang chờ xem xét",
+    "rejected": "Bị từ chối",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "Ẩn",
+    "show": "Hiện",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  },
+  "tl": {
+    "paymentAudit": "Payment audit",
+    "recentPaymentReferences": "Recent Payment References",
+    "paymentAuditBodyView": "Gamitin ito kapag sinabi ng guest na nagbayad na sila. I-tap para makita ang recent Paystack references.",
+    "paymentAuditBodyHide": "Gamitin ito kapag sinabi ng guest na nagbayad na sila. I-tap para itago ang recent Paystack references.",
+    "latest": "latest",
+    "viewReferences": "View references",
+    "hideReferences": "Hide references",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "Active",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "Rejected",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "Pending",
+    "approvedStatus": "Approved",
+    "paidStatus": "Paid",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "Withdrawal History",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "View Details",
+    "hideDetails": "Hide Details",
+    "payoutAccountConnected": "Payout account connected",
+    "recipientCode": "Recipient Code",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "Not Connected",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "Connect Payout Account",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "Submitting...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "Paid",
+    "approvedByBlackline": "Approved by Blackline",
+    "waitingForReview": "Waiting for review",
+    "rejected": "Rejected",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "Hide",
+    "show": "Show",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  },
+  "pt": {
+    "paymentAudit": "Auditoria de pagamento",
+    "recentPaymentReferences": "Referências de pagamento recentes",
+    "paymentAuditBodyView": "Use isto quando um convidado disser que pagou. Toque para ver referências Paystack recentes.",
+    "paymentAuditBodyHide": "Use isto quando um convidado disser que pagou. Toque para ocultar referências Paystack recentes.",
+    "latest": "recentes",
+    "viewReferences": "Ver referências",
+    "hideReferences": "Ocultar referências",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "Ativo",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "Rejeitado",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "Pendente",
+    "approvedStatus": "Aprovado",
+    "paidStatus": "Pago",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "Histórico de levantamentos",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "Ver detalhes",
+    "hideDetails": "Ocultar detalhes",
+    "payoutAccountConnected": "Conta de pagamento conectada",
+    "recipientCode": "Código do destinatário",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "Não conectado",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "Conectar conta de pagamento",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "A enviar...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "Pago",
+    "approvedByBlackline": "Aprovado pela Blackline",
+    "waitingForReview": "A aguardar revisão",
+    "rejected": "Rejeitado",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "Ocultar",
+    "show": "Mostrar",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  },
+  "es": {
+    "paymentAudit": "Auditoría de pago",
+    "recentPaymentReferences": "Referencias de pago recientes",
+    "paymentAuditBodyView": "Úsalo cuando un invitado diga que pagó. Toca para ver referencias recientes de Paystack.",
+    "paymentAuditBodyHide": "Úsalo cuando un invitado diga que pagó. Toca para ocultar referencias recientes de Paystack.",
+    "latest": "recientes",
+    "viewReferences": "Ver referencias",
+    "hideReferences": "Ocultar referencias",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "Activo",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "Rechazado",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "Pendiente",
+    "approvedStatus": "Aprobado",
+    "paidStatus": "Pagado",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "Historial de retiros",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "Ver detalles",
+    "hideDetails": "Ocultar detalles",
+    "payoutAccountConnected": "Cuenta de pago conectada",
+    "recipientCode": "Código de destinatario",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "No conectado",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "Conectar cuenta de pago",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "Enviando...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "Pagado",
+    "approvedByBlackline": "Aprobado por Blackline",
+    "waitingForReview": "Esperando revisión",
+    "rejected": "Rechazado",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "Ocultar",
+    "show": "Mostrar",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  },
+  "fr": {
+    "paymentAudit": "Audit de paiement",
+    "recentPaymentReferences": "Références de paiement récentes",
+    "paymentAuditBodyView": "Utilisez ceci quand un invité dit avoir payé. Touchez pour voir les références Paystack récentes.",
+    "paymentAuditBodyHide": "Utilisez ceci quand un invité dit avoir payé. Touchez pour masquer les références Paystack récentes.",
+    "latest": "récentes",
+    "viewReferences": "Voir les références",
+    "hideReferences": "Masquer les références",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "Actif",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "Rejeté",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "En attente",
+    "approvedStatus": "Approuvé",
+    "paidStatus": "Payé",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "Historique des retraits",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "Voir les détails",
+    "hideDetails": "Masquer les détails",
+    "payoutAccountConnected": "Compte de paiement connecté",
+    "recipientCode": "Code destinataire",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "Non connecté",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "Connecter le compte de paiement",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "Envoi...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "Payé",
+    "approvedByBlackline": "Approuvé par Blackline",
+    "waitingForReview": "En attente de vérification",
+    "rejected": "Rejeté",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "Masquer",
+    "show": "Afficher",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  },
+  "de": {
+    "paymentAudit": "Zahlungsprüfung",
+    "recentPaymentReferences": "Aktuelle Zahlungsreferenzen",
+    "paymentAuditBodyView": "Nutze dies, wenn ein Gast sagt, dass er bezahlt hat. Tippe, um aktuelle Paystack-Referenzen zu sehen.",
+    "paymentAuditBodyHide": "Nutze dies, wenn ein Gast sagt, dass er bezahlt hat. Tippe, um aktuelle Paystack-Referenzen auszublenden.",
+    "latest": "aktuell",
+    "viewReferences": "Referenzen anzeigen",
+    "hideReferences": "Referenzen ausblenden",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "Aktiv",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "Abgelehnt",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "Ausstehend",
+    "approvedStatus": "Genehmigt",
+    "paidStatus": "Bezahlt",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "Auszahlungsverlauf",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "Details anzeigen",
+    "hideDetails": "Details ausblenden",
+    "payoutAccountConnected": "Auszahlungskonto verbunden",
+    "recipientCode": "Empfängercode",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "Nicht verbunden",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "Auszahlungskonto verbinden",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "Wird gesendet...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "Bezahlt",
+    "approvedByBlackline": "Von Blackline genehmigt",
+    "waitingForReview": "Wartet auf Prüfung",
+    "rejected": "Abgelehnt",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "Ausblenden",
+    "show": "Anzeigen",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  },
+  "ru": {
+    "paymentAudit": "Проверка платежей",
+    "recentPaymentReferences": "Последние платежные ссылки",
+    "paymentAuditBodyView": "Используйте, когда гость говорит, что оплатил. Нажмите, чтобы посмотреть последние ссылки Paystack.",
+    "paymentAuditBodyHide": "Используйте, когда гость говорит, что оплатил. Нажмите, чтобы скрыть последние ссылки Paystack.",
+    "latest": "последние",
+    "viewReferences": "Показать ссылки",
+    "hideReferences": "Скрыть ссылки",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "Активно",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "Отклонено",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "Ожидает",
+    "approvedStatus": "Одобрено",
+    "paidStatus": "Оплачено",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "История выводов",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "Показать детали",
+    "hideDetails": "Скрыть детали",
+    "payoutAccountConnected": "Счет выплат подключен",
+    "recipientCode": "Код получателя",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "Не подключено",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "Подключить счет выплат",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "Отправка...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "Оплачено",
+    "approvedByBlackline": "Одобрено Blackline",
+    "waitingForReview": "Ожидает проверки",
+    "rejected": "Отклонено",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "Скрыть",
+    "show": "Показать",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  },
+  "tr": {
+    "paymentAudit": "Ödeme denetimi",
+    "recentPaymentReferences": "Son ödeme referansları",
+    "paymentAuditBodyView": "Misafir ödeme yaptığını söylediğinde bunu kullan. Son Paystack referanslarını görmek için dokun.",
+    "paymentAuditBodyHide": "Misafir ödeme yaptığını söylediğinde bunu kullan. Son Paystack referanslarını gizlemek için dokun.",
+    "latest": "son",
+    "viewReferences": "Referansları göster",
+    "hideReferences": "Referansları gizle",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "Aktif",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "Reddedildi",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "Bekliyor",
+    "approvedStatus": "Onaylandı",
+    "paidStatus": "Ödendi",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "Para çekme geçmişi",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "Detayları göster",
+    "hideDetails": "Detayları gizle",
+    "payoutAccountConnected": "Ödeme hesabı bağlı",
+    "recipientCode": "Alıcı kodu",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "Bağlı değil",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "Ödeme hesabını bağla",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "Gönderiliyor...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "Ödendi",
+    "approvedByBlackline": "Blackline onayladı",
+    "waitingForReview": "İnceleme bekliyor",
+    "rejected": "Reddedildi",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "Gizle",
+    "show": "Göster",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  },
+  "it": {
+    "paymentAudit": "Controllo pagamenti",
+    "recentPaymentReferences": "Riferimenti pagamento recenti",
+    "paymentAuditBodyView": "Usalo quando un ospite dice di aver pagato. Tocca per vedere i riferimenti Paystack recenti.",
+    "paymentAuditBodyHide": "Usalo quando un ospite dice di aver pagato. Tocca per nascondere i riferimenti Paystack recenti.",
+    "latest": "recenti",
+    "viewReferences": "Vedi riferimenti",
+    "hideReferences": "Nascondi riferimenti",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "Attivo",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "Rifiutato",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "In attesa",
+    "approvedStatus": "Approvato",
+    "paidStatus": "Pagato",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "Storico prelievi",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "Vedi dettagli",
+    "hideDetails": "Nascondi dettagli",
+    "payoutAccountConnected": "Account pagamento connesso",
+    "recipientCode": "Codice destinatario",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "Non connesso",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "Connetti account pagamento",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "Invio...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "Pagato",
+    "approvedByBlackline": "Approvato da Blackline",
+    "waitingForReview": "In attesa di controllo",
+    "rejected": "Rifiutato",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "Nascondi",
+    "show": "Mostra",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  },
+  "nl": {
+    "paymentAudit": "Betalingscontrole",
+    "recentPaymentReferences": "Recente betalingsreferenties",
+    "paymentAuditBodyView": "Gebruik dit wanneer een gast zegt dat hij heeft betaald. Tik om recente Paystack-referenties te bekijken.",
+    "paymentAuditBodyHide": "Gebruik dit wanneer een gast zegt dat hij heeft betaald. Tik om recente Paystack-referenties te verbergen.",
+    "latest": "laatste",
+    "viewReferences": "Referenties bekijken",
+    "hideReferences": "Referenties verbergen",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "Actief",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "Afgewezen",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "In behandeling",
+    "approvedStatus": "Goedgekeurd",
+    "paidStatus": "Betaald",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "Opnamegeschiedenis",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "Details bekijken",
+    "hideDetails": "Details verbergen",
+    "payoutAccountConnected": "Uitbetaalaccount verbonden",
+    "recipientCode": "Ontvangercode",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "Niet verbonden",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "Uitbetaalaccount verbinden",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "Verzenden...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "Betaald",
+    "approvedByBlackline": "Goedgekeurd door Blackline",
+    "waitingForReview": "Wacht op beoordeling",
+    "rejected": "Afgewezen",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "Verbergen",
+    "show": "Tonen",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  },
+  "pl": {
+    "paymentAudit": "Kontrola płatności",
+    "recentPaymentReferences": "Ostatnie referencje płatności",
+    "paymentAuditBodyView": "Użyj tego, gdy gość mówi, że zapłacił. Dotknij, aby zobaczyć ostatnie referencje Paystack.",
+    "paymentAuditBodyHide": "Użyj tego, gdy gość mówi, że zapłacił. Dotknij, aby ukryć ostatnie referencje Paystack.",
+    "latest": "ostatnie",
+    "viewReferences": "Pokaż referencje",
+    "hideReferences": "Ukryj referencje",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "Aktywne",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "Odrzucone",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "Oczekuje",
+    "approvedStatus": "Zatwierdzone",
+    "paidStatus": "Zapłacone",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "Historia wypłat",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "Pokaż szczegóły",
+    "hideDetails": "Ukryj szczegóły",
+    "payoutAccountConnected": "Konto wypłat połączone",
+    "recipientCode": "Kod odbiorcy",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "Nie połączono",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "Połącz konto wypłat",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "Wysyłanie...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "Zapłacone",
+    "approvedByBlackline": "Zatwierdzone przez Blackline",
+    "waitingForReview": "Czeka na sprawdzenie",
+    "rejected": "Odrzucone",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "Ukryj",
+    "show": "Pokaż",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  },
+  "el": {
+    "paymentAudit": "Έλεγχος πληρωμών",
+    "recentPaymentReferences": "Πρόσφατες αναφορές πληρωμών",
+    "paymentAuditBodyView": "Χρησιμοποιήστε το όταν ένας επισκέπτης λέει ότι πλήρωσε. Πατήστε για να δείτε πρόσφατες αναφορές Paystack.",
+    "paymentAuditBodyHide": "Χρησιμοποιήστε το όταν ένας επισκέπτης λέει ότι πλήρωσε. Πατήστε για να αποκρύψετε πρόσφατες αναφορές Paystack.",
+    "latest": "πρόσφατα",
+    "viewReferences": "Προβολή αναφορών",
+    "hideReferences": "Απόκρυψη αναφορών",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "Ενεργό",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "Απορρίφθηκε",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "Σε αναμονή",
+    "approvedStatus": "Εγκεκριμένο",
+    "paidStatus": "Πληρωμένο",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "Ιστορικό αναλήψεων",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "Προβολή λεπτομερειών",
+    "hideDetails": "Απόκρυψη λεπτομερειών",
+    "payoutAccountConnected": "Ο λογαριασμός πληρωμής συνδέθηκε",
+    "recipientCode": "Κωδικός παραλήπτη",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "Μη συνδεδεμένο",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "Σύνδεση λογαριασμού πληρωμής",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "Υποβολή...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "Πληρωμένο",
+    "approvedByBlackline": "Εγκρίθηκε από Blackline",
+    "waitingForReview": "Αναμονή ελέγχου",
+    "rejected": "Απορρίφθηκε",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "Απόκρυψη",
+    "show": "Εμφάνιση",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  },
+  "uk": {
+    "paymentAudit": "Перевірка платежів",
+    "recentPaymentReferences": "Останні платіжні референси",
+    "paymentAuditBodyView": "Використовуйте, коли гість каже, що оплатив. Натисніть, щоб переглянути останні референси Paystack.",
+    "paymentAuditBodyHide": "Використовуйте, коли гість каже, що оплатив. Натисніть, щоб сховати останні референси Paystack.",
+    "latest": "останні",
+    "viewReferences": "Показати референси",
+    "hideReferences": "Сховати референси",
+    "noPaymentsRecordedYet": "No payments recorded yet.",
+    "requestNumber": "Request #",
+    "songNotSaved": "Song not saved",
+    "artistNotSaved": "Artist not saved",
+    "guest": "Guest",
+    "guestNotSaved": "Guest not saved",
+    "noDate": "No date",
+    "paystackReference": "Paystack reference",
+    "noReferenceSaved": "No reference saved",
+    "copyReference": "Copy reference",
+    "noPaymentReferenceFound": "No payment reference found for this payment.",
+    "paymentReferenceCopied": "Payment reference copied",
+    "failedConnectPayout": "Failed to connect payout account.",
+    "payoutConnectedAlert": "Payout account connected.",
+    "active": "Активно",
+    "pendingVerificationStatus": "Pending verification",
+    "rejectedStatus": "Відхилено",
+    "notStartedStatus": "Not started",
+    "updatedStatus": "Updated",
+    "pendingStatus": "Очікує",
+    "approvedStatus": "Схвалено",
+    "paidStatus": "Виплачено",
+    "unknownStatus": "Unknown",
+    "withdrawalHistory": "Історія виведень",
+    "latestLabel": "Latest",
+    "withdrawalSingular": "withdrawal",
+    "withdrawalPlural": "withdrawals",
+    "totalWithdrawn": "Total withdrawn",
+    "totalRequested": "Total requested",
+    "available": "Available",
+    "latestRequest": "Latest request",
+    "unknown": "Unknown",
+    "viewDetails": "Показати деталі",
+    "hideDetails": "Сховати деталі",
+    "payoutAccountConnected": "Рахунок виплат підключено",
+    "recipientCode": "Код отримувача",
+    "notCreatedYet": "Not created yet",
+    "loadingBanks": "Loading banks...",
+    "selectBank": "Select bank",
+    "paypalEmailOrProvider": "PayPal email or provider",
+    "payoutProvider": "Payout provider",
+    "accountName": "Account name",
+    "accountNumber": "Account number",
+    "mobileMoneyNumber": "Mobile money number",
+    "accountPayoutId": "Account / payout ID",
+    "connectingToPaystack": "Connecting to Paystack...",
+    "payoutDestination": "Payout destination",
+    "notConnected": "Не підключено",
+    "notProvided": "Not provided",
+    "connectPayoutAccount": "Підключити рахунок виплат",
+    "connectPayoutBeforeWithdrawal": "Connect your payout account with Paystack before requesting a withdrawal.",
+    "existingWithdrawalLocked": "You already have a pending or approved withdrawal request. New withdrawal requests are locked until the current request is paid or rejected.",
+    "submitting": "Надсилання...",
+    "verificationRequiredBeforeWithdrawal": "Verification required before withdrawals can be requested.",
+    "alreadyOpenWithdrawalAlert": "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
+    "enterValidWithdrawalAmount": "Enter a valid withdrawal amount",
+    "insufficientAvailableBalance": "Insufficient available balance",
+    "requested": "Requested",
+    "method": "Method",
+    "provider": "Provider",
+    "bankTransfer": "Bank Transfer",
+    "noProvider": "No provider",
+    "noAccountName": "No account name",
+    "noAccountNumber": "No account number",
+    "paid": "Виплачено",
+    "approvedByBlackline": "Схвалено Blackline",
+    "waitingForReview": "Очікує перевірки",
+    "rejected": "Відхилено",
+    "withdrawalActivityTimeline": "Withdrawal Activity Timeline",
+    "hide": "Сховати",
+    "show": "Показати",
+    "noStatusUpdatesYet": "No status updates yet.",
+    "activityUpdated": "Activity updated"
+  }
+};
+
 const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = {
   en: {
     actionNeeded: "Action needed",
@@ -1975,6 +3866,7 @@ export default function AdminPage() {
   const quickSetupText = quickSetupTranslations[language] || quickSetupTranslations.en;
   const dashboardAlertText =
     dashboardAlertTranslations[language] || dashboardAlertTranslations.en;
+  const adminUiText = adminUiTranslations[language] || adminUiTranslations.en;
   const balanceText = balanceExplainerTranslations[language] || balanceExplainerTranslations.en;
 
   function getCurrentScrollY() {
@@ -1992,6 +3884,38 @@ export default function AdminPage() {
     window.setTimeout(() => {
       window.scrollTo({ top: scrollY, behavior: "auto" });
     }, 50);
+  }
+
+
+  function getPayoutStatusLabel(status?: string | null) {
+    if (!status || status === "not_connected" || status === "Not Connected") {
+      return adminUiText.notConnected;
+    }
+
+    if (status === "Active") return adminUiText.active;
+    if (status === "Pending Verification") return adminUiText.pendingVerificationStatus;
+    if (status === "rejected") return adminUiText.rejectedStatus;
+
+    return status;
+  }
+
+  function getAdminStatusLabel(status?: string | null) {
+    if (!status) return adminUiText.unknownStatus;
+
+    const normalizedStatus = status.toLowerCase();
+
+    if (normalizedStatus === "pending") return adminUiText.pendingStatus;
+    if (normalizedStatus === "approved") return adminUiText.approvedStatus;
+    if (normalizedStatus === "paid") return adminUiText.paidStatus;
+    if (normalizedStatus === "rejected") return adminUiText.rejectedStatus;
+    if (normalizedStatus === "active") return adminUiText.active;
+    if (normalizedStatus === "not_started") return adminUiText.notStartedStatus;
+
+    return status
+      .replace(/_/g, " ")
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   }
 
   function getCurrencyForCountry(selectedCountry: string) {
@@ -2397,7 +4321,7 @@ export default function AdminPage() {
 
       if (!response.ok) {
         console.error("CREATE RECIPIENT ERROR:", result);
-        alert(result.error || "Failed to connect payout account.");
+        alert(result.error || adminUiText.failedConnectPayout);
         setConnectingPayout(false);
         return;
       }
@@ -2407,12 +4331,10 @@ export default function AdminPage() {
       setPaystackRecipientCode(result.recipientCode || "");
       setConnectingPayout(false);
 
-      alert(
-        `Payout account connected. Recipient code: ${result.recipientCode}`,
-      );
+      alert(`${adminUiText.payoutConnectedAlert} ${adminUiText.recipientCode}: ${result.recipientCode}`);
     } catch (error) {
       console.error("CONNECT PAYOUT ERROR:", error);
-      alert("Failed to connect payout account.");
+      alert(adminUiText.failedConnectPayout);
       setConnectingPayout(false);
     }
   }
@@ -2805,14 +4727,12 @@ export default function AdminPage() {
     if (!dj) return;
 
     if (hasOpenWithdrawal) {
-      alert(
-        "You already have a pending or approved withdrawal request. Please wait until it is paid or rejected before creating a new one.",
-      );
+      alert(adminUiText.alreadyOpenWithdrawalAlert);
       return;
     }
 
     if (verificationStatus !== "verified") {
-      alert("Verification required before withdrawals can be requested.");
+      alert(adminUiText.verificationRequiredBeforeWithdrawal);
       return;
     }
 
@@ -2824,23 +4744,21 @@ export default function AdminPage() {
       !payoutAccountNumber ||
       !paystackRecipientCode
     ) {
-      alert(
-        "Please connect your payout account before requesting a withdrawal.",
-      );
+      alert(adminUiText.connectPayoutBeforeWithdrawal);
       return;
     }
 
     const amount = Number(withdrawAmount);
 
     if (!amount || amount <= 0) {
-      alert("Enter a valid withdrawal amount");
+      alert(adminUiText.enterValidWithdrawalAmount);
       return;
     }
 
     const availableBalance = netEarnings - totalWithdrawals;
 
     if (amount > availableBalance) {
-      alert("Insufficient available balance");
+      alert(adminUiText.insufficientAvailableBalance);
       return;
     }
 
@@ -2934,13 +4852,13 @@ export default function AdminPage() {
 
   async function copyPaymentReference(reference?: string | null) {
     if (!reference) {
-      alert("No payment reference found for this payment.");
+      alert(adminUiText.noPaymentReferenceFound);
       return;
     }
 
     try {
       await navigator.clipboard.writeText(reference);
-      alert(`Payment reference copied: ${reference}`);
+      alert(`${adminUiText.paymentReferenceCopied}: ${reference}`);
     } catch (error) {
       console.error("COPY PAYMENT REFERENCE ERROR:", error);
       alert(reference);
@@ -3105,13 +5023,9 @@ export default function AdminPage() {
   }
 
   function formatStatusText(status?: string | null) {
-    if (!status) return "Updated";
+    if (!status) return adminUiText.updatedStatus;
 
-    return status
-      .replace(/_/g, " ")
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
+    return getAdminStatusLabel(status);
   }
 
   function getAuditTimelineDetails(log: AuditLog) {
@@ -3171,34 +5085,34 @@ export default function AdminPage() {
   function getWithdrawalStatusBadge(status?: string | null) {
     if (status === "pending") {
       return {
-        label: " Pending",
+        label: adminUiText.pendingStatus,
         className: "bg-yellow-500/10 border-yellow-500/30 text-yellow-400",
       };
     }
 
     if (status === "approved") {
       return {
-        label: " Approved",
+        label: adminUiText.approvedStatus,
         className: "bg-blue-500/10 border-blue-500/30 text-blue-400",
       };
     }
 
     if (status === "paid") {
       return {
-        label: " Paid",
+        label: adminUiText.paidStatus,
         className: "bg-green-500/10 border-green-500/30 text-green-400",
       };
     }
 
     if (status === "rejected") {
       return {
-        label: " Rejected",
+        label: adminUiText.rejectedStatus,
         className: "bg-red-500/10 border-red-500/30 text-red-400",
       };
     }
 
     return {
-      label: status || "Unknown",
+      label: status || adminUiText.unknownStatus,
       className: "bg-zinc-500/10 border-zinc-500/30 text-zinc-400",
     };
   }
@@ -3936,11 +5850,7 @@ export default function AdminPage() {
                     : "text-red-400"
               }`}
             >
-              {payoutStatus === "not_connected" ||
-              payoutStatus === "Not Connected" ||
-              !payoutStatus
-                ? t.notConnected
-                : payoutStatus}
+{getPayoutStatusLabel(payoutStatus)}
             </p>
 
             <div className="grid md:grid-cols-3 gap-4 mt-5">
@@ -3969,7 +5879,7 @@ export default function AdminPage() {
                   className="w-full p-4 rounded-xl bg-black border border-zinc-700"
                 >
                   <option value="">
-                    {banksLoading ? "Loading banks..." : "Select bank"}
+                    {banksLoading ? adminUiText.loadingBanks : adminUiText.selectBank}
                   </option>
 
                   {paystackBanks.map((bank) => (
@@ -3983,8 +5893,8 @@ export default function AdminPage() {
                   type="text"
                   placeholder={
                     payoutMethod === "PayPal"
-                      ? "PayPal email or provider"
-                      : "Payout provider"
+                      ? adminUiText.paypalEmailOrProvider
+                      : adminUiText.payoutProvider
                   }
                   value={payoutProvider}
                   onChange={(e) => setPayoutProvider(e.target.value)}
@@ -3994,7 +5904,7 @@ export default function AdminPage() {
 
               <input
                 type="text"
-                placeholder="Account name"
+                placeholder={adminUiText.accountName}
                 value={payoutAccountName}
                 onChange={(e) => setPayoutAccountName(e.target.value)}
                 className="w-full p-4 rounded-xl bg-black border border-zinc-700"
@@ -4004,10 +5914,10 @@ export default function AdminPage() {
                 type="text"
                 placeholder={
                   payoutMethod === "Bank Transfer"
-                    ? "Account number"
+                    ? adminUiText.accountNumber
                     : payoutMethod === "Mobile Money"
-                      ? "Mobile money number"
-                      : "Account / payout ID"
+                      ? adminUiText.mobileMoneyNumber
+                      : adminUiText.accountPayoutId
                 }
                 value={payoutAccountNumber}
                 onChange={(e) => setPayoutAccountNumber(e.target.value)}
@@ -4018,16 +5928,16 @@ export default function AdminPage() {
             {payoutStatus === "Active" && (
               <div className="mt-5 bg-green-500/10 border border-green-500/30 rounded-xl p-4">
                 <p className="text-green-400 font-bold">
-                  Payout account connected
+                  {adminUiText.payoutAccountConnected}
                 </p>
                 <p className="text-sm text-zinc-400 mt-2">
                   {payoutMethod} - {payoutProvider} - {payoutAccountName}
                 </p>
 
                 <p className="text-xs text-zinc-500 mt-2">
-                  Recipient Code:{" "}
+                  {adminUiText.recipientCode}: {" "}
                   <span className="text-zinc-300">
-                    {paystackRecipientCode || "Not created yet"}
+                    {paystackRecipientCode || adminUiText.notCreatedYet}
                   </span>
                 </p>
               </div>
@@ -4040,7 +5950,7 @@ export default function AdminPage() {
               className="mt-5 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-50"
             >
               {connectingPayout
-                ? "Connecting to Paystack..."
+                ? adminUiText.connectingToPaystack
                 : t.connectAccount}
             </button>
           </div>
@@ -4178,27 +6088,27 @@ export default function AdminPage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-purple-400 font-black">
-                Payment audit
+                {adminUiText.paymentAudit}
               </p>
 
               <h2 className="text-2xl md:text-3xl font-bold text-white mt-1">
-                Recent Payment References
+                {adminUiText.recentPaymentReferences}
               </h2>
 
               <p className="text-sm text-zinc-500 mt-2">
-                Use this when a guest says they paid. Tap to{" "}
-                {isPaymentAuditExpanded ? "hide" : "view"} recent Paystack
-                references.
+                {isPaymentAuditExpanded
+                  ? adminUiText.paymentAuditBodyHide
+                  : adminUiText.paymentAuditBodyView}
               </p>
             </div>
 
             <div className="flex items-center gap-3">
               <span className="bg-black border border-zinc-800 px-4 py-2 rounded-full text-xs text-zinc-400 font-bold">
-                {latestPayments.length} latest
+                {latestPayments.length} {adminUiText.latest}
               </span>
 
               <span className="bg-purple-600 px-4 py-2 rounded-full text-sm text-white font-black">
-                {isPaymentAuditExpanded ? "Hide" : "View"} references
+                {isPaymentAuditExpanded ? adminUiText.hideReferences : adminUiText.viewReferences}
               </span>
             </div>
           </div>
@@ -4208,7 +6118,7 @@ export default function AdminPage() {
           <div className="mt-4">
             {latestPayments.length === 0 ? (
               <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
-                <p className="text-zinc-500">No payments recorded yet.</p>
+                <p className="text-zinc-500">{adminUiText.noPaymentsRecordedYet}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -4221,7 +6131,7 @@ export default function AdminPage() {
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="bg-green-600/15 border border-green-600/30 text-green-400 px-3 py-1 rounded-full text-xs font-bold uppercase">
-                            {payment.status || "paid"}
+                            {getAdminStatusLabel(payment.status || "paid")}
                           </span>
 
                           <span className="bg-purple-600/15 border border-purple-600/30 text-purple-300 px-3 py-1 rounded-full text-xs font-bold uppercase">
@@ -4230,27 +6140,27 @@ export default function AdminPage() {
 
                           {payment.request_id && (
                             <span className="bg-black/40 border border-zinc-800 text-zinc-300 px-3 py-1 rounded-full text-xs font-bold">
-                              Request #{payment.request_id}
+                              {adminUiText.requestNumber}{payment.request_id}
                             </span>
                           )}
                         </div>
 
                         <h3 className="text-lg font-black text-white mt-3 truncate">
-                          {payment.song || "Song not saved"}
+                          {payment.song || adminUiText.songNotSaved}
                         </h3>
 
                         <p className="text-sm text-zinc-400 mt-1">
-                          {payment.artist || "Artist not saved"}
+                          {payment.artist || adminUiText.artistNotSaved}
                         </p>
 
                         <p className="text-sm text-purple-300 mt-2">
-                          Guest: {payment.guest_name || "Guest not saved"}
+                          {adminUiText.guest}: {payment.guest_name || adminUiText.guestNotSaved}
                         </p>
 
                         <p className="text-xs text-zinc-600 mt-2">
                           {payment.created_at
                             ? new Date(payment.created_at).toLocaleString()
-                            : "No date"}
+                            : adminUiText.noDate}
                         </p>
                       </div>
 
@@ -4262,10 +6172,10 @@ export default function AdminPage() {
 
                         <div className="bg-black/40 border border-zinc-800 rounded-xl p-3 mt-3 text-left lg:text-right">
                           <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">
-                            Paystack reference
+                            {adminUiText.paystackReference}
                           </p>
                           <p className="text-sm text-white font-mono break-all mt-1">
-                            {payment.provider_reference || "No reference saved"}
+                            {payment.provider_reference || adminUiText.noReferenceSaved}
                           </p>
 
                           <button
@@ -4275,7 +6185,7 @@ export default function AdminPage() {
                             }
                             className="mt-3 w-full lg:w-auto bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-xl text-sm font-bold transition"
                           >
-                            Copy reference
+                            {adminUiText.copyReference}
                           </button>
                         </div>
                       </div>
@@ -4372,13 +6282,13 @@ export default function AdminPage() {
             />
 
             <div className="bg-black border border-zinc-700 rounded-xl p-4">
-              <p className="text-zinc-500 text-sm">Payout destination</p>
+              <p className="text-zinc-500 text-sm">{adminUiText.payoutDestination}</p>
               {payoutStatus === "Active" && paystackRecipientCode ? (
                 <p className="text-green-400 font-bold mt-1">
                   {payoutMethod} - {payoutProvider}
                 </p>
               ) : (
-                <p className="text-red-400 font-bold mt-1">Not Connected</p>
+                <p className="text-red-400 font-bold mt-1">{adminUiText.notConnected}</p>
               )}
             </div>
           </div>
@@ -4386,21 +6296,21 @@ export default function AdminPage() {
           {payoutStatus === "Active" && (
             <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-4 mb-4">
               <p className="text-sm text-zinc-400">
-                Account name:{" "}
+                {adminUiText.accountName}: {" "}
                 <span className="text-white font-semibold">
-                  {payoutAccountName || "Not provided"}
+                  {payoutAccountName || adminUiText.notProvided}
                 </span>
               </p>
               <p className="text-sm text-zinc-400 mt-1">
-                Account number:{" "}
+                {adminUiText.accountNumber}: {" "}
                 <span className="text-white font-semibold">
-                  {payoutAccountNumber || "Not provided"}
+                  {payoutAccountNumber || adminUiText.notProvided}
                 </span>
               </p>
               <p className="text-sm text-zinc-400 mt-1">
-                Recipient code:{" "}
+                {adminUiText.recipientCode}: {" "}
                 <span className="text-white font-semibold">
-                  {paystackRecipientCode || "Not created yet"}
+                  {paystackRecipientCode || adminUiText.notCreatedYet}
                 </span>
               </p>
             </div>
@@ -4424,16 +6334,13 @@ export default function AdminPage() {
 
               {(!paystackRecipientCode || payoutStatus !== "Active") && (
                 <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl p-4 text-sm">
-                  Connect your payout account with Paystack before requesting a
-                  withdrawal.
+                  {adminUiText.connectPayoutBeforeWithdrawal}
                 </div>
               )}
 
               {hasOpenWithdrawal && (
                 <div className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 rounded-xl p-4 text-sm">
-                  You already have a pending or approved withdrawal request. New
-                  withdrawal requests are locked until the current request is
-                  paid or rejected.
+                  {adminUiText.existingWithdrawalLocked}
                 </div>
               )}
               <button
@@ -4448,11 +6355,11 @@ export default function AdminPage() {
                 className="bg-cyan-600 hover:bg-cyan-700 px-8 py-4 rounded-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {withdrawLoading
-                  ? "Submitting..."
+                  ? adminUiText.submitting
                   : verificationStatus !== "verified"
                     ? t.verificationRequired
                     : !paystackRecipientCode
-                      ? "Connect Payout Account"
+                      ? adminUiText.connectPayoutAccount
                       : t.requestPayout}
               </button>
             </div>
@@ -4477,7 +6384,7 @@ export default function AdminPage() {
           </div>
 
           <h3 className="text-2xl font-bold text-white mb-4">
-            Withdrawal History
+            {adminUiText.withdrawalHistory}
           </h3>
 
           {withdrawals.length === 0 ? (
@@ -4511,7 +6418,7 @@ export default function AdminPage() {
                               .className
                           }`}
                         >
-                          Latest:{" "}
+                          {adminUiText.latestLabel}: {" "}
                           {
                             getWithdrawalStatusBadge(latestWithdrawal.status)
                               .label
@@ -4522,30 +6429,29 @@ export default function AdminPage() {
 
                     <div className="flex flex-wrap gap-2 mt-3">
                       <span className="bg-black/40 border border-zinc-800 px-3 py-1 rounded-full text-xs text-zinc-300 font-bold">
-                        {sortedWithdrawalHistory.length} withdrawal
-                        {sortedWithdrawalHistory.length === 1 ? "" : "s"}
+                        {sortedWithdrawalHistory.length} {sortedWithdrawalHistory.length === 1 ? adminUiText.withdrawalSingular : adminUiText.withdrawalPlural}
                       </span>
 
                       <span className="bg-green-500/10 border border-green-500/30 px-3 py-1 rounded-full text-xs text-green-400 font-bold">
-                        Total withdrawn: {currency}{" "}
+                        {adminUiText.totalWithdrawn}: {currency}{" "}
                         {withdrawalPaidTotal.toFixed(2)}
                       </span>
 
                       <span className="bg-purple-500/10 border border-purple-500/30 px-3 py-1 rounded-full text-xs text-purple-300 font-bold">
-                        Total requested: {currency}{" "}
+                        {adminUiText.totalRequested}: {currency}{" "}
                         {withdrawalRequestedTotal.toFixed(2)}
                       </span>
 
                       <span className="bg-yellow-500/10 border border-yellow-500/30 px-3 py-1 rounded-full text-xs text-yellow-400 font-bold">
-                        Available: {currency} {availableBalance.toFixed(2)}
+                        {adminUiText.available}: {currency} {availableBalance.toFixed(2)}
                       </span>
                     </div>
 
                     <p className="text-xs text-zinc-500 mt-3">
-                      Latest request:{" "}
+                      {adminUiText.latestRequest}: {" "}
                       {latestWithdrawal?.created_at
                         ? new Date(latestWithdrawal.created_at).toLocaleString()
-                        : "Unknown"}
+                        : adminUiText.unknown}
                     </p>
                   </div>
                 </div>
@@ -4559,7 +6465,7 @@ export default function AdminPage() {
                   }
                   className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-4 py-2 rounded-xl text-sm font-bold"
                 >
-                  {withdrawalHistoryIsOpen ? "Hide Details " : "View Details "}
+                  {withdrawalHistoryIsOpen ? adminUiText.hideDetails : adminUiText.viewDetails}
                 </button>
               </div>
 
@@ -4594,70 +6500,70 @@ export default function AdminPage() {
                             </div>
 
                             <p className="text-xs text-zinc-500 mt-2">
-                              Requested:{" "}
+                              {adminUiText.requested}: {" "}
                               {withdrawal.created_at
                                 ? new Date(
                                     withdrawal.created_at,
                                   ).toLocaleString()
-                                : "No date"}
+                                : adminUiText.noDate}
                             </p>
                           </div>
 
                           {withdrawal.status === "paid" && (
                             <span className="bg-green-600/20 text-green-400 px-4 py-2 rounded-xl font-semibold">
-                              Paid
+                              {adminUiText.paid}
                             </span>
                           )}
 
                           {withdrawal.status === "approved" && (
                             <span className="bg-cyan-600/20 text-cyan-400 px-4 py-2 rounded-xl font-semibold">
-                              Approved by Blackline
+                              {adminUiText.approvedByBlackline}
                             </span>
                           )}
 
                           {withdrawal.status === "pending" && (
                             <span className="bg-yellow-500/10 text-yellow-400 px-4 py-2 rounded-xl font-semibold">
-                              Waiting for review
+                              {adminUiText.waitingForReview}
                             </span>
                           )}
 
                           {withdrawal.status === "rejected" && (
                             <span className="bg-red-600/20 text-red-400 px-4 py-2 rounded-xl font-semibold">
-                              Rejected
+                              {adminUiText.rejected}
                             </span>
                           )}
                         </div>
 
                         <div className="grid md:grid-cols-4 gap-3 mt-4">
                           <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                            <p className="text-xs text-zinc-500">Method</p>
+                            <p className="text-xs text-zinc-500">{adminUiText.method}</p>
                             <p className="text-zinc-300 font-semibold">
-                              {withdrawal.payout_method || "Bank Transfer"}
+                              {withdrawal.payout_method || adminUiText.bankTransfer}
                             </p>
                           </div>
 
                           <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                            <p className="text-xs text-zinc-500">Provider</p>
+                            <p className="text-xs text-zinc-500">{adminUiText.provider}</p>
                             <p className="text-zinc-300 font-semibold">
-                              {withdrawal.provider || "No provider"}
-                            </p>
-                          </div>
-
-                          <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
-                            <p className="text-xs text-zinc-500">
-                              Account Name
-                            </p>
-                            <p className="text-zinc-300 font-semibold">
-                              {withdrawal.account_name || "No account name"}
+                              {withdrawal.provider || adminUiText.noProvider}
                             </p>
                           </div>
 
                           <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
                             <p className="text-xs text-zinc-500">
-                              Account Number
+                              {adminUiText.accountName}
                             </p>
                             <p className="text-zinc-300 font-semibold">
-                              {withdrawal.account_number || "No account number"}
+                              {withdrawal.account_name || adminUiText.noAccountName}
+                            </p>
+                          </div>
+
+                          <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                            <p className="text-xs text-zinc-500">
+                              {adminUiText.accountNumber}
+                            </p>
+                            <p className="text-zinc-300 font-semibold">
+                              {withdrawal.account_number || adminUiText.noAccountNumber}
                             </p>
                           </div>
                         </div>
@@ -4671,11 +6577,11 @@ export default function AdminPage() {
                             className="w-full flex items-center justify-between gap-3 text-left"
                           >
                             <span className="text-xs text-zinc-400 font-bold">
-                              Withdrawal Activity Timeline ({auditTrail.length})
+                              {adminUiText.withdrawalActivityTimeline} ({auditTrail.length})
                             </span>
 
                             <span className="text-xs text-zinc-500 font-bold">
-                              {isTimelineOpen ? "Hide " : "Show "}
+                              {isTimelineOpen ? adminUiText.hide : adminUiText.show}
                             </span>
                           </button>
 
@@ -4683,7 +6589,7 @@ export default function AdminPage() {
                             <div className="mt-4">
                               {auditTrail.length === 0 ? (
                                 <p className="text-sm text-zinc-500">
-                                  No status updates yet.
+                                  {adminUiText.noStatusUpdatesYet}
                                 </p>
                               ) : (
                                 <div className="max-h-44 overflow-y-auto pr-2">
@@ -4710,7 +6616,7 @@ export default function AdminPage() {
 
                                           <p className="text-sm text-zinc-300 mt-1">
                                             {log.description ||
-                                              "Activity updated"}
+                                              adminUiText.activityUpdated}
                                           </p>
 
                                           <p className="text-xs text-zinc-600 mt-1">
@@ -4718,7 +6624,7 @@ export default function AdminPage() {
                                               ? new Date(
                                                   log.created_at,
                                                 ).toLocaleString()
-                                              : "No date"}
+                                              : adminUiText.noDate}
                                           </p>
                                         </div>
                                       );
