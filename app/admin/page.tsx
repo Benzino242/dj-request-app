@@ -155,6 +155,21 @@ function formatNowPlayingRemaining(request: SongRequest) {
   return `${minutes}:${String(seconds).padStart(2, "0")}`;
 }
 
+function formatPlayedAt(value?: string | null) {
+  if (!value) return "";
+
+  const playedAtDate = new Date(value);
+
+  if (Number.isNaN(playedAtDate.getTime())) return "";
+
+  return playedAtDate.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 type QuickSetupTranslation = {
   eyebrow: string;
   heading: string;
@@ -226,6 +241,7 @@ type DashboardAlertTranslation = {
   showAllHistory: string;
   showLessHistory: string;
   playedHistoryRetentionNote: string;
+  playedAt: string;
 };
 
 const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = {
@@ -242,6 +258,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "Show all history",
     showLessHistory: "Show less",
     playedHistoryRetentionNote: "Played history shown here covers the last 30 days. Older records are kept safely for payment and support audit.",
+    playedAt: "Played at",
   },
   zh: {
     actionNeeded: "需要操作",
@@ -256,6 +273,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "显示全部历史",
     showLessHistory: "显示更少",
     playedHistoryRetentionNote: "这里显示最近30天的播放历史。更早的记录会安全保留，用于付款和支持审核。",
+    playedAt: "播放时间",
   },
   ja: {
     actionNeeded: "要対応",
@@ -270,6 +288,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "履歴をすべて表示",
     showLessHistory: "少なく表示",
     playedHistoryRetentionNote: "ここには過去30日間の再生履歴が表示されます。古い記録は支払いとサポート確認のため安全に保管されます。",
+    playedAt: "再生時刻",
   },
   ko: {
     actionNeeded: "조치 필요",
@@ -284,6 +303,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "전체 기록 보기",
     showLessHistory: "적게 보기",
     playedHistoryRetentionNote: "여기에는 최근 30일 재생 기록이 표시됩니다. 이전 기록은 결제 및 지원 확인을 위해 안전하게 보관됩니다.",
+    playedAt: "재생 시간",
   },
   id: {
     actionNeeded: "Perlu aksi",
@@ -298,6 +318,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "Tampilkan semua riwayat",
     showLessHistory: "Tampilkan lebih sedikit",
     playedHistoryRetentionNote: "Riwayat yang tampil di sini mencakup 30 hari terakhir. Catatan lama tetap disimpan aman untuk audit pembayaran dan bantuan.",
+    playedAt: "Diputar pada",
   },
   ms: {
     actionNeeded: "Perlu tindakan",
@@ -312,6 +333,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "Tunjuk semua sejarah",
     showLessHistory: "Tunjuk kurang",
     playedHistoryRetentionNote: "Sejarah yang dipaparkan di sini meliputi 30 hari terakhir. Rekod lama disimpan dengan selamat untuk audit bayaran dan sokongan.",
+    playedAt: "Dimainkan pada",
   },
   th: {
     actionNeeded: "ต้องดำเนินการ",
@@ -326,6 +348,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "แสดงประวัติทั้งหมด",
     showLessHistory: "แสดงน้อยลง",
     playedHistoryRetentionNote: "ประวัติที่แสดงที่นี่เป็นของ 30 วันที่ผ่านมา รายการเก่าจะถูกเก็บไว้อย่างปลอดภัยสำหรับการตรวจสอบการชำระเงินและการช่วยเหลือ",
+    playedAt: "เล่นเมื่อ",
   },
   hi: {
     actionNeeded: "कार्रवाई चाहिए",
@@ -340,6 +363,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "पूरी history दिखाएं",
     showLessHistory: "कम दिखाएं",
     playedHistoryRetentionNote: "यहाँ पिछले 30 दिनों की played history दिखाई जाती है. पुराने records payment और support audit के लिए सुरक्षित रखे जाते हैं.",
+    playedAt: "चलाया गया",
   },
   ar: {
     actionNeeded: "يتطلب إجراء",
@@ -354,6 +378,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "إظهار كل السجل",
     showLessHistory: "إظهار أقل",
     playedHistoryRetentionNote: "يعرض هذا القسم سجل التشغيل لآخر 30 يومًا. يتم حفظ السجلات الأقدم بأمان لتدقيق الدفع والدعم.",
+    playedAt: "تم التشغيل في",
   },
   vi: {
     actionNeeded: "Cần xử lý",
@@ -368,6 +393,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "Hiện tất cả lịch sử",
     showLessHistory: "Hiện ít hơn",
     playedHistoryRetentionNote: "Lịch sử hiển thị ở đây là trong 30 ngày gần nhất. Bản ghi cũ được giữ an toàn để kiểm tra thanh toán và hỗ trợ.",
+    playedAt: "Đã phát lúc",
   },
   tl: {
     actionNeeded: "Kailangan aksyon",
@@ -382,6 +408,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "Ipakita lahat ng history",
     showLessHistory: "Ipakita nang mas kaunti",
     playedHistoryRetentionNote: "Ang history na ipinapakita dito ay para sa huling 30 araw. Ang mas lumang records ay ligtas na naka-save para sa payment at support audit.",
+    playedAt: "Na-play noong",
   },
   pt: {
     actionNeeded: "Ação necessária",
@@ -396,6 +423,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "Mostrar todo o histórico",
     showLessHistory: "Mostrar menos",
     playedHistoryRetentionNote: "O histórico mostrado aqui cobre os últimos 30 dias. Registos antigos ficam guardados em segurança para auditoria de pagamentos e suporte.",
+    playedAt: "Tocado em",
   },
   es: {
     actionNeeded: "Acción necesaria",
@@ -410,6 +438,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "Mostrar todo el historial",
     showLessHistory: "Mostrar menos",
     playedHistoryRetentionNote: "El historial mostrado aquí cubre los últimos 30 días. Los registros antiguos se conservan de forma segura para auditoría de pagos y soporte.",
+    playedAt: "Reproducido a las",
   },
   fr: {
     actionNeeded: "Action nécessaire",
@@ -424,6 +453,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "Afficher tout l’historique",
     showLessHistory: "Afficher moins",
     playedHistoryRetentionNote: "L’historique affiché ici couvre les 30 derniers jours. Les anciens enregistrements sont conservés pour l’audit des paiements et le support.",
+    playedAt: "Joué à",
   },
   de: {
     actionNeeded: "Aktion nötig",
@@ -438,6 +468,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "Gesamten Verlauf anzeigen",
     showLessHistory: "Weniger anzeigen",
     playedHistoryRetentionNote: "Der hier angezeigte Verlauf umfasst die letzten 30 Tage. Ältere Datensätze werden für Zahlungs- und Supportprüfungen sicher aufbewahrt.",
+    playedAt: "Gespielt um",
   },
   ru: {
     actionNeeded: "Требуется действие",
@@ -452,6 +483,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "Показать всю историю",
     showLessHistory: "Показать меньше",
     playedHistoryRetentionNote: "Здесь отображается история за последние 30 дней. Более старые записи безопасно сохраняются для проверки платежей и поддержки.",
+    playedAt: "Воспроизведено",
   },
   tr: {
     actionNeeded: "İşlem gerekli",
@@ -466,6 +498,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "Tüm geçmişi göster",
     showLessHistory: "Daha az göster",
     playedHistoryRetentionNote: "Burada son 30 günün geçmişi gösterilir. Eski kayıtlar ödeme ve destek denetimi için güvenli şekilde saklanır.",
+    playedAt: "Çalındığı zaman",
   },
   it: {
     actionNeeded: "Azione richiesta",
@@ -480,6 +513,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "Mostra tutta la cronologia",
     showLessHistory: "Mostra meno",
     playedHistoryRetentionNote: "La cronologia mostrata qui copre gli ultimi 30 giorni. I record più vecchi sono conservati per audit pagamenti e supporto.",
+    playedAt: "Riprodotto alle",
   },
   nl: {
     actionNeeded: "Actie nodig",
@@ -494,6 +528,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "Alle geschiedenis tonen",
     showLessHistory: "Minder tonen",
     playedHistoryRetentionNote: "De geschiedenis die hier wordt getoond beslaat de laatste 30 dagen. Oudere records worden veilig bewaard voor betalings- en supportcontrole.",
+    playedAt: "Gespeeld om",
   },
   pl: {
     actionNeeded: "Wymagana akcja",
@@ -508,6 +543,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "Pokaż całą historię",
     showLessHistory: "Pokaż mniej",
     playedHistoryRetentionNote: "Pokazana tutaj historia obejmuje ostatnie 30 dni. Starsze rekordy są bezpiecznie przechowywane do kontroli płatności i wsparcia.",
+    playedAt: "Odtworzono o",
   },
   el: {
     actionNeeded: "Απαιτείται ενέργεια",
@@ -522,6 +558,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "Εμφάνιση όλου του ιστορικού",
     showLessHistory: "Εμφάνιση λιγότερων",
     playedHistoryRetentionNote: "Το ιστορικό που εμφανίζεται εδώ καλύπτει τις τελευταίες 30 ημέρες. Παλαιότερες εγγραφές φυλάσσονται για έλεγχο πληρωμών και υποστήριξη.",
+    playedAt: "Παίχτηκε στις",
   },
   uk: {
     actionNeeded: "Потрібна дія",
@@ -536,6 +573,7 @@ const dashboardAlertTranslations: Record<Language, DashboardAlertTranslation> = 
     showAllHistory: "Показати всю історію",
     showLessHistory: "Показати менше",
     playedHistoryRetentionNote: "Тут показано історію за останні 30 днів. Старіші записи безпечно зберігаються для перевірки платежів і підтримки.",
+    playedAt: "Відтворено",
   },
 };
 
@@ -3473,6 +3511,8 @@ export default function AdminPage() {
             borderColor="border-blue-700"
             actionLoadingId={actionLoadingId}
             t={t}
+            showPlayedAt
+            playedAtLabel={dashboardAlertText.playedAt}
             buttons={() => null}
           />
 
@@ -4579,6 +4619,8 @@ function RequestColumn({
   showQueueNumber = false,
   actionLoadingId,
   t,
+  showPlayedAt = false,
+  playedAtLabel = "Played at",
 }: {
   title: string;
   titleColor: string;
@@ -4588,6 +4630,8 @@ function RequestColumn({
   showQueueNumber?: boolean;
   actionLoadingId: number | null;
   t: (typeof translations)[Language];
+  showPlayedAt?: boolean;
+  playedAtLabel?: string;
 }) {
   return (
     <section>
@@ -4633,6 +4677,12 @@ function RequestColumn({
                   <p className="text-purple-400 mt-2">
                     {t.requestedBy} {request.name}
                   </p>
+
+                  {showPlayedAt && request.played_at && formatPlayedAt(request.played_at) && (
+                    <p className="text-xs md:text-sm text-blue-300 mt-2 font-semibold">
+                      {playedAtLabel} {formatPlayedAt(request.played_at)}
+                    </p>
+                  )}
 
                   {request.status === "played" && isNowPlayingStillActive(request) && (
                     <div className="inline-flex items-center gap-2 mt-3 bg-purple-600/15 border border-purple-500/40 text-purple-200 px-3 py-2 rounded-full text-xs md:text-sm font-bold">
