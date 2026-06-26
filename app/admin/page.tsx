@@ -2492,9 +2492,14 @@ export default function AdminPage() {
       }
     }
 
+    const updatePayload =
+      status === "played"
+        ? { status, played_at: new Date().toISOString() }
+        : { status };
+
     const { error } = await supabase
       .from("requests")
-      .update({ status })
+      .update(updatePayload)
       .eq("id", id);
 
     if (error) {

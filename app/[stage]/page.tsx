@@ -296,6 +296,7 @@ type Request = {
 
   status: string;
   created_at: string;
+  played_at?: string | null;
   tip_amount: number;
   tip_currency: string;
 };
@@ -375,6 +376,18 @@ export default function StageRequestPage() {
     return (index + 1) * minutesPerSong;
   }
 
+  function isNowPlayingStillActive(request: Request) {
+    if (request.status !== "played" || !request.played_at) return false;
+
+    const playedAtTime = new Date(request.played_at).getTime();
+
+    if (Number.isNaN(playedAtTime)) return false;
+
+    const fiveMinutesInMs = 5 * 60 * 1000;
+
+    return Date.now() - playedAtTime < fiveMinutesInMs;
+  }
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent | TouchEvent) {
       if (
@@ -430,7 +443,7 @@ export default function StageRequestPage() {
     const allRequests = (data || []) as Request[];
     setRequests(allRequests);
 
-    const latestPlayed = allRequests.find((request) => request.status === "played");
+    const latestPlayed = allRequests.find(isNowPlayingStillActive);
     const nextAccepted = allRequests.find(
       (request) => request.status === "accepted"
     );
