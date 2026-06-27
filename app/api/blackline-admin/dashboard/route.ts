@@ -121,14 +121,17 @@ async function markAlertAsSent({
   description: string;
   metadata: Record<string, unknown>;
 }) {
-  const { error } = await supabaseAdmin.from("audit_logs").insert([
-    {
-      action_type: String(actionType),
-      entity_type: String(entityType),
-      entity_id: Number(entityId),
-      description: String(description),
-    },
-  ]);
+  const auditLogPayload = {
+    action_type: actionType,
+    entity_type: entityType,
+    entity_id: Number(entityId),
+    description,
+    metadata,
+  };
+
+  const { error } = await (supabaseAdmin as any)
+    .from("audit_logs")
+    .insert([auditLogPayload]);
 
   if (error) {
     console.error("BLACKLINE ALERT AUDIT LOG ERROR:", error.message);
