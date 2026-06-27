@@ -123,11 +123,10 @@ async function markAlertAsSent({
 }) {
   const { error } = await supabaseAdmin.from("audit_logs").insert([
     {
-      action_type: actionType,
-      entity_type: entityType,
+      action_type: String(actionType),
+      entity_type: String(entityType),
       entity_id: Number(entityId),
-      description,
-      metadata,
+      description: String(description),
     },
   ]);
 
