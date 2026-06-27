@@ -162,7 +162,7 @@ function getPromoPdfText(language: string | null) {
 type PromoKitType = "poster" | "table-tent" | "sticker" | "counter-card" | "qr-png";
 
 function getRequestUrl(stageName: string) {
-  return `https://dj-request-app-topaz.vercel.app/${stageName
+  return `https://blacklinedj.com/${stageName
     .toLowerCase()
     .trim()}`;
 }

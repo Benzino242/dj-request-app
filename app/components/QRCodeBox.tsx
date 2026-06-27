@@ -20,7 +20,7 @@ export default function QRCodeBox({ stageName, language = "en", t }: Props) {
   const [promoKitOpen, setPromoKitOpen] = useState(false);
 
   const cleanStageName = stageName.toLowerCase();
-  const requestUrl = `https://dj-request-app-topaz.vercel.app/${cleanStageName}`;
+  const requestUrl = `https://blacklinedj.com/${cleanStageName}`;
   const promoT = getPromoTranslation(language);
 
   const promoKitUrl = (
