@@ -270,6 +270,9 @@ export default function VerificationDashboardClient() {
  (withdrawal) => withdrawal.status === "rejected",
  ).length;
 
+ const withdrawalActionCount = pendingWithdrawals + approvedWithdrawals;
+ const adminActionCount = pendingCount + withdrawalActionCount;
+
  const totalGrossRevenue = djEarnings.reduce(
  (sum, item) => sum + Number(item.grossRevenue || 0),
  0,
@@ -1053,6 +1056,25 @@ export default function VerificationDashboardClient() {
  items: DJ[],
  ) {
  const isCollapsed = collapsedDjGroups.includes(groupId);
+ const isPriorityEmptyGroup =
+ groupId === "pending" || groupId === "withdrawal-action";
+
+ if (items.length === 0 && isPriorityEmptyGroup) {
+ return (
+ <div className="bg-zinc-900/70 border border-zinc-800 rounded-2xl p-4">
+ <div className="flex items-center justify-between gap-3">
+ <div>
+ <h3 className="text-lg font-black text-white">{title} (0)</h3>
+ <p className="text-sm text-zinc-500 mt-1">Nothing needs attention here right now.</p>
+ </div>
+
+ <span className="bg-green-500/10 border border-green-500/30 text-green-400 px-3 py-1 rounded-full text-xs font-bold shrink-0">
+ Clear
+ </span>
+ </div>
+ </div>
+ );
+ }
 
  return (
  <div className="bg-black/30 border border-zinc-800 rounded-3xl overflow-hidden">
@@ -1149,8 +1171,8 @@ export default function VerificationDashboardClient() {
  }
 
  return (
- <main className="min-h-screen bg-black text-white p-6">
- <h1 className="text-5xl font-black text-purple-500 mb-3">
+ <main className="min-h-screen bg-black text-white px-4 py-6 md:p-6">
+ <h1 className="text-4xl md:text-5xl font-black text-purple-500 mb-3">
  Blackline Admin Dashboard
  </h1>
 
@@ -1158,56 +1180,123 @@ export default function VerificationDashboardClient() {
  Manage DJ verification, earnings, payouts, and withdrawal activity.
  </p>
 
- <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
- <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
- <p className="text-zinc-400 text-sm">Pending DJs</p>
+ <div
+ className={`mb-6 border rounded-3xl p-5 ${
+ adminActionCount > 0
+ ? "bg-yellow-500/10 border-yellow-500/40 shadow-[0_0_35px_rgba(250,204,21,0.18)]"
+ : "bg-green-500/10 border-green-500/30"
+ }`}
+ >
+ <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+ <div>
+ <p
+ className={`text-xs uppercase tracking-[0.25em] font-black ${
+ adminActionCount > 0 ? "text-yellow-400" : "text-green-400"
+ }`}
+ >
+ Action Needed
+ </p>
+
+ <h2 className="text-2xl md:text-3xl font-black text-white mt-2">
+ {adminActionCount > 0
+ ? `${adminActionCount} item${adminActionCount === 1 ? "" : "s"} need review`
+ : "All clear right now"}
+ </h2>
+
+ <p className="text-sm text-zinc-400 mt-2">
+ {pendingCount} DJs pending · {withdrawalActionCount} withdrawals pending/approved
+ </p>
+ </div>
+
+ <div className="flex flex-col sm:flex-row gap-3">
+ <a
+ href="#dj-verification-management"
+ className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 px-4 py-3 rounded-xl text-sm font-bold text-center"
+ >
+ Review DJs
+ </a>
+
+ <a
+ href="#withdrawal-requests"
+ className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 px-4 py-3 rounded-xl text-sm font-bold text-center"
+ >
+ Review Withdrawals
+ </a>
+ </div>
+ </div>
+ </div>
+
+ <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 mb-10">
+ <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
+ <div>
+ <p className="text-xs uppercase tracking-[0.25em] text-purple-400 font-black">
+ Dashboard Summary
+ </p>
+ <h2 className="text-2xl font-black mt-1">Blackline overview</h2>
+ </div>
+
+ <span className="bg-black/40 border border-zinc-800 rounded-full px-4 py-2 text-xs text-zinc-400 font-bold">
+ {totalCount} active DJs
+ </span>
+ </div>
+
+ <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+ <div className="bg-black/40 border border-zinc-800 rounded-2xl p-3">
+ <p className="text-zinc-500 text-xs">Pending DJs</p>
  <p className="text-2xl font-black text-yellow-400">{pendingCount}</p>
  </div>
 
- <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
- <p className="text-zinc-400 text-sm">Verified DJs</p>
+ <div className="bg-black/40 border border-zinc-800 rounded-2xl p-3">
+ <p className="text-zinc-500 text-xs">Verified DJs</p>
  <p className="text-2xl font-black text-green-400">{verifiedCount}</p>
  </div>
 
- <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
- <p className="text-zinc-400 text-sm">Rejected DJs</p>
- <p className="text-2xl font-black text-red-400">{rejectedCount}</p>
+ <div className="bg-black/40 border border-zinc-800 rounded-2xl p-3">
+ <p className="text-zinc-500 text-xs">Pending withdrawals</p>
+ <p className="text-2xl font-black text-yellow-400">{pendingWithdrawals}</p>
  </div>
 
- <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
- <p className="text-zinc-400 text-sm">Total DJs</p>
- <p className="text-2xl font-black text-white">{totalCount}</p>
+ <div className="bg-black/40 border border-zinc-800 rounded-2xl p-3">
+ <p className="text-zinc-500 text-xs">Approved withdrawals</p>
+ <p className="text-2xl font-black text-cyan-400">{approvedWithdrawals}</p>
  </div>
  </div>
 
- <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
- <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
- <p className="text-zinc-400 text-sm">Total Gross Revenue</p>
- <p className="text-2xl font-black text-green-400">
+ <details className="mt-4 bg-black/30 border border-zinc-800 rounded-2xl p-4">
+ <summary className="cursor-pointer text-sm font-bold text-zinc-300">
+ Revenue details
+ </summary>
+
+ <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+ <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+ <p className="text-zinc-500 text-xs">Gross revenue</p>
+ <p className="font-black text-green-400">
  {dashboardCurrency} {totalGrossRevenue.toFixed(2)}
  </p>
  </div>
 
- <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
- <p className="text-zinc-400 text-sm">Platform Revenue</p>
- <p className="text-2xl font-black text-purple-400">
+ <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+ <p className="text-zinc-500 text-xs">Platform revenue</p>
+ <p className="font-black text-purple-400">
  {dashboardCurrency} {totalPlatformRevenue.toFixed(2)}
  </p>
  </div>
 
- <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
- <p className="text-zinc-400 text-sm">DJ Earnings</p>
- <p className="text-2xl font-black text-cyan-400">
+ <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+ <p className="text-zinc-500 text-xs">DJ earnings</p>
+ <p className="font-black text-cyan-400">
  {dashboardCurrency} {totalDjRevenue.toFixed(2)}
  </p>
  </div>
 
- <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
- <p className="text-zinc-400 text-sm">Available Balances</p>
- <p className="text-2xl font-black text-yellow-400">
+ <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+ <p className="text-zinc-500 text-xs">Available balances</p>
+ <p className="font-black text-yellow-400">
  {dashboardCurrency} {totalAvailableBalance.toFixed(2)}
  </p>
  </div>
+ </div>
+ </details>
  </div>
 
  <section className="mb-14">
@@ -1276,7 +1365,7 @@ export default function VerificationDashboardClient() {
  </div>
  </section>
 
- <section className="mb-14">
+ <section id="dj-verification-management" className="mb-14 scroll-mt-6">
  <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-5">
  <div>
  <h2 className="text-3xl font-black">DJ Verification Management</h2>
@@ -1321,7 +1410,7 @@ export default function VerificationDashboardClient() {
  </div>
  </section>
 
- <section>
+ <section id="withdrawal-requests" className="scroll-mt-6">
  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
  <div>
  <h2 className="text-3xl font-black">Withdrawal Requests</h2>
@@ -1332,7 +1421,7 @@ export default function VerificationDashboardClient() {
 
  <button
  onClick={exportWithdrawalsCSV}
- className="bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-xl font-bold"
+ className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-4 py-2 rounded-xl text-sm font-bold text-zinc-200"
  >
  Export CSV
  </button>
