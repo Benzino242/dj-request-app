@@ -95,7 +95,7 @@ async function hasAlertAlreadyBeenSent({
     .select("id")
     .eq("action_type", actionType)
     .eq("entity_type", entityType)
-    .eq("entity_id", String(entityId))
+    .eq("entity_id", Number(entityId))
     .limit(1);
 
   if (error) {
@@ -125,7 +125,7 @@ async function markAlertAsSent({
     {
       action_type: actionType,
       entity_type: entityType,
-      entity_id: String(entityId),
+      entity_id: Number(entityId),
       description,
       metadata,
     },
