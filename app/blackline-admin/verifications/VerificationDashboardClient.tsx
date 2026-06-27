@@ -1180,27 +1180,16 @@ export default function VerificationDashboardClient() {
  Manage DJ verification, earnings, payouts, and withdrawal activity.
  </p>
 
- <div
- className={`mb-6 border rounded-3xl p-5 ${
- adminActionCount > 0
- ? "bg-yellow-500/10 border-yellow-500/40 shadow-[0_0_35px_rgba(250,204,21,0.18)]"
- : "bg-green-500/10 border-green-500/30"
- }`}
- >
+ {adminActionCount > 0 ? (
+ <div className="mb-6 border rounded-3xl p-5 bg-yellow-500/10 border-yellow-500/40 shadow-[0_0_35px_rgba(250,204,21,0.18)]">
  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
  <div>
- <p
- className={`text-xs uppercase tracking-[0.25em] font-black ${
- adminActionCount > 0 ? "text-yellow-400" : "text-green-400"
- }`}
- >
+ <p className="text-xs uppercase tracking-[0.25em] font-black text-yellow-400">
  Action Needed
  </p>
 
  <h2 className="text-2xl md:text-3xl font-black text-white mt-2">
- {adminActionCount > 0
- ? `${adminActionCount} item${adminActionCount === 1 ? "" : "s"} need review`
- : "All clear right now"}
+ {adminActionCount} item{adminActionCount === 1 ? "" : "s"} need review
  </h2>
 
  <p className="text-sm text-zinc-400 mt-2">
@@ -1225,6 +1214,27 @@ export default function VerificationDashboardClient() {
  </div>
  </div>
  </div>
+ ) : (
+ <div className="mb-6 border border-green-500/30 bg-green-500/10 rounded-2xl p-4">
+ <div className="flex items-center justify-between gap-4">
+ <div>
+ <p className="text-xs uppercase tracking-[0.25em] font-black text-green-400">
+ Action Needed
+ </p>
+
+ <h2 className="text-xl font-black text-white mt-1">All clear</h2>
+ </div>
+
+ <span className="shrink-0 bg-green-500/10 border border-green-500/30 text-green-400 px-3 py-1 rounded-full text-xs font-black">
+ 0 pending
+ </span>
+ </div>
+
+ <p className="text-sm text-zinc-400 mt-2">
+ 0 DJs pending · 0 withdrawals pending/approved
+ </p>
+ </div>
+ )}
 
  <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 mb-10">
  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
@@ -1421,36 +1431,36 @@ export default function VerificationDashboardClient() {
 
  <button
  onClick={exportWithdrawalsCSV}
- className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-4 py-2 rounded-xl text-sm font-bold text-zinc-200"
+ className="self-start bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-4 py-2 rounded-xl text-sm font-bold text-zinc-200"
  >
  Export CSV
  </button>
  </div>
 
- <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
- <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
- <p className="text-zinc-400 text-sm">Pending</p>
+ <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+ <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-3">
+ <p className="text-zinc-400 text-xs">Pending</p>
  <p className="text-2xl font-black text-yellow-400">
  {pendingWithdrawals}
  </p>
  </div>
 
- <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
- <p className="text-zinc-400 text-sm">Approved</p>
+ <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-3">
+ <p className="text-zinc-400 text-xs">Approved</p>
  <p className="text-2xl font-black text-cyan-400">
  {approvedWithdrawals}
  </p>
  </div>
 
- <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
- <p className="text-zinc-400 text-sm">Paid</p>
+ <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-3">
+ <p className="text-zinc-400 text-xs">Paid</p>
  <p className="text-2xl font-black text-green-400">
  {paidWithdrawals}
  </p>
  </div>
 
- <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
- <p className="text-zinc-400 text-sm">Rejected</p>
+ <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-3">
+ <p className="text-zinc-400 text-xs">Rejected</p>
  <p className="text-2xl font-black text-red-400">
  {rejectedWithdrawals}
  </p>
@@ -1462,7 +1472,7 @@ export default function VerificationDashboardClient() {
  placeholder=" Search DJ withdrawals..."
  value={withdrawalSearch}
  onChange={(e) => setWithdrawalSearch(e.target.value)}
- className="w-full p-4 rounded-2xl bg-zinc-800 border-2 border-purple-500 text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500 mb-6"
+ className="w-full p-3 rounded-2xl bg-zinc-800 border-2 border-purple-500 text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500 mb-5"
  />
 
  <div className="max-h-[850px] overflow-y-auto space-y-4 pr-2">
