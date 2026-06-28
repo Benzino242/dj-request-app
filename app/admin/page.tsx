@@ -4726,7 +4726,27 @@ export default function AdminPage() {
     setActionLoadingId(null);
     restoreScrollPosition(currentScrollY);
   }
+  async function triggerWithdrawalRequestAlert(withdrawalId: number) {
+    try {
+      const response = await fetch("/api/blackline-admin/dashboard", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          entityType: "withdrawal",
+          id: withdrawalId,
+        }),
+      });
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("WITHDRAWAL ALERT FAILED:", errorText);
+      }
+    } catch (error) {
+      console.error("WITHDRAWAL ALERT ERROR:", error);
+    }
+  }
   async function requestWithdrawal() {
     if (!dj) return;
 
@@ -4770,7 +4790,9 @@ export default function AdminPage() {
 
     setWithdrawLoading(true);
 
-    const { error } = await supabase.from("withdrawals").insert([
+    const { data: createdWithdrawal, error } = await supabase
+    .from("withdrawals")
+    .insert([
       {
         dj_id: dj.id,
         dj_name: dj.stage_name,
@@ -4782,13 +4804,21 @@ export default function AdminPage() {
         provider: payoutProvider,
         status: "pending",
       },
-    ]);
+    ])
+    .select("id")
+    .single();
 
     if (error) {
       console.error("WITHDRAWAL ERROR:", error);
       alert(error.message || JSON.stringify(error));
       setWithdrawLoading(false);
       return;
+    }
+
+    if (createdWithdrawal?.id) {
+      await triggerWithdrawalRequestAlert(createdWithdrawal.id);
+    } else {
+      console.error("WITHDRAWAL ALERT SKIPPED: Missing withdrawal id");
     }
 
     alert("Withdrawal request submitted");
