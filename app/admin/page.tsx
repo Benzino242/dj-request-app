@@ -80,6 +80,7 @@ type AuditLog = {
 type DJ = {
   id: number;
   stage_name: string;
+  stage_slug?: string | null;
   email: string | null;
   user_id: string;
   bio?: string | null;
@@ -5630,7 +5631,11 @@ export default function AdminPage() {
 
         {isQrCodeExpanded && (
           <div className="mt-4">
-            <QRCodeBox stageName={dj.stage_name} language={language} t={t} />
+            <QRCodeBox
+  stageName={dj.stage_slug || dj.stage_name}
+  language={language}
+  t={t}
+/>
           </div>
         )}
       </div>
