@@ -61,6 +61,8 @@ export default function SignupPage() {
     () => cleanStageNameForUrl(stageName),
     [stageName],
   );
+  const stageNameIsReserved =
+  cleanStageName.length > 0 && RESERVED_STAGE_NAMES.has(cleanStageName);
 
   async function handleSignup(e: FormEvent) {
     e.preventDefault();
@@ -193,14 +195,18 @@ export default function SignupPage() {
               required
             />
 
-            {cleanStageName && (
-              <p className="text-xs text-zinc-500 mt-2">
-                Your public request page will be:{" "}
-                <span className="text-purple-400">
-                  blacklinedj.com/{cleanStageName}
-                </span>
-              </p>
-            )}
+{cleanStageName && stageNameIsReserved ? (
+  <p className="text-xs text-red-400 mt-2">
+    This stage name is reserved. Please choose another one.
+  </p>
+) : cleanStageName ? (
+  <p className="text-xs text-zinc-500 mt-2">
+    Your public request page will be:{" "}
+    <span className="text-purple-400">
+      blacklinedj.com/{cleanStageName}
+    </span>
+  </p>
+) : null}
           </div>
 
           <input
@@ -269,7 +275,7 @@ export default function SignupPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || stageNameIsReserved}
             className="w-full bg-purple-600 hover:bg-purple-700 p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
           >
             {loading ? "Creating Account..." : "Create DJ Account"}
