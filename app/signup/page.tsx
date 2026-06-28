@@ -1,26 +1,33 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabase";
 
-async function triggerDjSignupAlert(userId: string) {
+const RESERVED_STAGE_NAMES = new Set([
+  "admin",
+  "api",
+  "login",
+  "signup",
+  "reset-password",
+  "update-password",
+  "blackline-admin",
+  "blackline",
+  "support",
+  "www",
+]);
+
+function cleanStageNameForUrl(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+async function triggerDjSignupAlert(djId: number) {
   try {
-    const { data: createdDj, error: lookupError } = await supabase
-      .from("djs")
-      .select("id")
-      .eq("user_id", userId)
-      .maybeSingle();
-
-    if (lookupError) {
-      console.error("DJ SIGNUP ALERT LOOKUP ERROR:", lookupError.message);
-      return;
-    }
-
-    if (!createdDj?.id) {
-      console.error("DJ SIGNUP ALERT SKIPPED: Missing DJ id");
-      return;
-    }
-
     const response = await fetch("/api/blackline-admin/dashboard", {
       method: "POST",
       headers: {
@@ -28,7 +35,7 @@ async function triggerDjSignupAlert(userId: string) {
       },
       body: JSON.stringify({
         entityType: "dj",
-        id: createdDj.id,
+        id: djId,
       }),
     });
 
@@ -50,18 +57,54 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  const cleanStageName = useMemo(
+    () => cleanStageNameForUrl(stageName),
+    [stageName],
+  );
+
   async function handleSignup(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
-    const cleanStageName = stageName
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, "");
-
     if (!cleanStageName) {
       setMessage("Please enter a valid stage name.");
+      setLoading(false);
+      return;
+    }
+
+    if (cleanStageName.length < 3) {
+      setMessage("Stage name must be at least 3 characters.");
+      setLoading(false);
+      return;
+    }
+
+    if (cleanStageName.length > 30) {
+      setMessage("Stage name must be 30 characters or less.");
+      setLoading(false);
+      return;
+    }
+
+    if (RESERVED_STAGE_NAMES.has(cleanStageName)) {
+      setMessage("This stage name is reserved. Please choose another one.");
+      setLoading(false);
+      return;
+    }
+
+    const { data: existingDj, error: stageNameCheckError } = await supabase
+      .from("djs")
+      .select("id")
+      .eq("stage_name", cleanStageName)
+      .maybeSingle();
+
+    if (stageNameCheckError) {
+      setMessage(stageNameCheckError.message);
+      setLoading(false);
+      return;
+    }
+
+    if (existingDj) {
+      setMessage("This stage name is already taken. Please choose another one.");
       setLoading(false);
       return;
     }
@@ -90,13 +133,18 @@ export default function SignupPage() {
       return;
     }
 
-    const { error: profileError } = await supabase.from("djs").insert([
-      {
-        stage_name: cleanStageName,
-        email: email.trim(),
-        user_id: userId,
-      },
-    ]);
+    const { data: createdDj, error: profileError } = await supabase
+      .from("djs")
+      .insert([
+        {
+          stage_name: cleanStageName,
+          email: email.trim(),
+          user_id: userId,
+          verification_status: "not_started",
+        },
+      ])
+      .select("id")
+      .single();
 
     if (profileError) {
       setMessage(profileError.message);
@@ -104,7 +152,11 @@ export default function SignupPage() {
       return;
     }
 
-    await triggerDjSignupAlert(userId);
+    if (createdDj?.id) {
+      await triggerDjSignupAlert(createdDj.id);
+    } else {
+      console.error("DJ SIGNUP ALERT SKIPPED: Missing DJ id");
+    }
 
     setMessage("Account created! Redirecting to dashboard...");
 
@@ -131,14 +183,25 @@ export default function SignupPage() {
         </p>
 
         <form onSubmit={handleSignup} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Stage name e.g. djbenzino"
-            value={stageName}
-            onChange={(e) => setStageName(e.target.value)}
-            className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            required
-          />
+          <div>
+            <input
+              type="text"
+              placeholder="Stage name e.g. djbenzino"
+              value={stageName}
+              onChange={(e) => setStageName(e.target.value)}
+              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+              required
+            />
+
+            {cleanStageName && (
+              <p className="text-xs text-zinc-500 mt-2">
+                Your public request page will be:{" "}
+                <span className="text-purple-400">
+                  blacklinedj.com/{cleanStageName}
+                </span>
+              </p>
+            )}
+          </div>
 
           <input
             type="email"
