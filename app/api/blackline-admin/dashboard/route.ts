@@ -26,6 +26,7 @@ type AlertPayload = {
   entityType?: AlertEntityType;
   id?: number | string;
 };
+type SupabaseAdminClient = any;
 
 function escapeHtml(value: unknown) {
   return String(value ?? "")
@@ -85,7 +86,7 @@ async function hasAlertAlreadyBeenSent({
   entityType,
   entityId,
 }: {
-  supabaseAdmin: ReturnType<typeof createClient>;
+  supabaseAdmin: SupabaseAdminClient;
   actionType: string;
   entityType: AlertEntityType;
   entityId: number | string;
@@ -114,7 +115,7 @@ async function markAlertAsSent({
   description,
   metadata,
 }: {
-  supabaseAdmin: ReturnType<typeof createClient>;
+  supabaseAdmin: SupabaseAdminClient;
   actionType: string;
   entityType: AlertEntityType;
   entityId: number | string;
@@ -142,7 +143,7 @@ async function sendDjVerificationAlert({
   supabaseAdmin,
   dj,
 }: {
-  supabaseAdmin: ReturnType<typeof createClient>;
+  supabaseAdmin: SupabaseAdminClient;
   dj: Record<string, unknown>;
 }) {
   const djId = dj.id as number | string | undefined;
@@ -232,7 +233,7 @@ async function sendWithdrawalAlert({
   supabaseAdmin,
   withdrawal,
 }: {
-  supabaseAdmin: ReturnType<typeof createClient>;
+  supabaseAdmin: SupabaseAdminClient;
   withdrawal: Record<string, unknown>;
 }) {
   const withdrawalId = withdrawal.id as number | string | undefined;
@@ -342,7 +343,7 @@ async function sendOutstandingActionAlerts({
   djs,
   withdrawals,
 }: {
-  supabaseAdmin: ReturnType<typeof createClient>;
+  supabaseAdmin: SupabaseAdminClient;
   djs: Record<string, unknown>[];
   withdrawals: Record<string, unknown>[];
 }) {
