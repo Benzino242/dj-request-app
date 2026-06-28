@@ -281,7 +281,7 @@ export default function SignupPage() {
           <div>
             <input
               type="text"
-              placeholder="Your Blackline link e.g. dj-don-dada"
+              placeholder="Link name e.g. dj-don-dada"
               value={stageSlug}
               onChange={(e) => {
                 setSlugWasEdited(true);
