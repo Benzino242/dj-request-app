@@ -335,6 +335,7 @@ type Request = {
 type DJ = {
   id: number;
   stage_name: string;
+  stage_slug?: string | null;
   email: string | null;
   profile_image: string | null;
   bio: string | null;
@@ -347,7 +348,7 @@ type DJ = {
 
 export default function StageRequestPage() {
   const params = useParams();
-  const stage = String(params.stage || "").toLowerCase();
+  const stage = String(params.stage || "").trim().toLowerCase();
 
   const [dj, setDj] = useState<DJ | null>(null);
   const [djLoading, setDjLoading] = useState(true);
@@ -463,8 +464,8 @@ export default function StageRequestPage() {
     const { data, error } = await supabase
   .from("djs")
   .select("*")
-  .ilike("stage_name", stage)
-  .single();
+  .eq("stage_slug", stage)
+  .maybeSingle();
 
     if (error || !data) {
       console.error("DJ not found:", error);
