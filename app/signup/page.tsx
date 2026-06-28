@@ -141,7 +141,7 @@ export default function SignupPage() {
     }
 
     if (!cleanStageSlug) {
-      setMessage("Please enter a valid public URL name.");
+      setMessage("Please enter a valid Blackline link.");
       setLoading(false);
       return;
     }
@@ -263,7 +263,7 @@ export default function SignupPage() {
           <div>
             <input
               type="text"
-              placeholder="DJ display name e.g. DJ Benzino"
+              placeholder="DJ name e.g. DJ Don Dada"
               value={stageName}
               onChange={(e) => {
                 setStageName(e.target.value);
@@ -274,14 +274,14 @@ export default function SignupPage() {
             />
 
             <p className="text-xs text-zinc-500 mt-2">
-              This is the name guests will see on your request page.
+            Guests will see this name on your request page.
             </p>
           </div>
 
           <div>
             <input
               type="text"
-              placeholder="Public URL name e.g. benzino-nyc"
+              placeholder="Your Blackline link e.g. dj-don-dada"
               value={stageSlug}
               onChange={(e) => {
                 setSlugWasEdited(true);
@@ -314,15 +314,14 @@ export default function SignupPage() {
               </p>
             ) : cleanStageSlug ? (
               <p className="text-xs text-zinc-500 mt-2">
-                Your public request page will be:{" "}
+                Guests will scan/open:{" "}
                 <span className="text-purple-400">
                   blacklinedj.com/{cleanStageSlug}
                 </span>
               </p>
             ) : (
               <p className="text-xs text-zinc-500 mt-2">
-                This must be unique. DJs can share the same display name, but not
-                the same public URL.
+              This is your unique page link. You can change it if the suggested link is already taken.
               </p>
             )}
           </div>
