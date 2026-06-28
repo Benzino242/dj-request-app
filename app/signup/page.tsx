@@ -1,7 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { type FormEvent, useState } from "react";
 import { supabase } from "../../lib/supabase";
+
+async function triggerDjSignupAlert(userId: string) {
+  try {
+    const { data: createdDj, error: lookupError } = await supabase
+      .from("djs")
+      .select("id")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (lookupError) {
+      console.error("DJ SIGNUP ALERT LOOKUP ERROR:", lookupError.message);
+      return;
+    }
+
+    if (!createdDj?.id) {
+      console.error("DJ SIGNUP ALERT SKIPPED: Missing DJ id");
+      return;
+    }
+
+    const response = await fetch("/api/blackline-admin/dashboard", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        entityType: "dj",
+        id: createdDj.id,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("DJ SIGNUP ALERT FAILED:", errorText);
+    }
+  } catch (error) {
+    console.error("DJ SIGNUP ALERT ERROR:", error);
+  }
+}
 
 export default function SignupPage() {
   const [stageName, setStageName] = useState("");
@@ -12,7 +50,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  async function handleSignup(e: React.FormEvent) {
+  async function handleSignup(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
     setMessage("");
@@ -21,6 +59,12 @@ export default function SignupPage() {
       .trim()
       .toLowerCase()
       .replace(/\s+/g, "");
+
+    if (!cleanStageName) {
+      setMessage("Please enter a valid stage name.");
+      setLoading(false);
+      return;
+    }
 
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
@@ -59,6 +103,8 @@ export default function SignupPage() {
       setLoading(false);
       return;
     }
+
+    await triggerDjSignupAlert(userId);
 
     setMessage("Account created! Redirecting to dashboard...");
 
