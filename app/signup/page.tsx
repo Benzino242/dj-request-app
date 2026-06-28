@@ -3,7 +3,7 @@
 import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabase";
 
-const RESERVED_STAGE_NAMES = new Set([
+const RESERVED_STAGE_SLUGS = new Set([
   "admin",
   "api",
   "login",
@@ -16,9 +16,9 @@ const RESERVED_STAGE_NAMES = new Set([
   "www",
 ]);
 
-type StageNameAvailability = "idle" | "checking" | "available" | "taken";
+type SlugAvailability = "idle" | "checking" | "available" | "taken";
 
-function cleanStageNameForUrl(value: string) {
+function cleanSlugForUrl(value: string) {
   return value
     .trim()
     .toLowerCase()
@@ -52,77 +52,82 @@ async function triggerDjSignupAlert(djId: number) {
 
 export default function SignupPage() {
   const [stageName, setStageName] = useState("");
+  const [stageSlug, setStageSlug] = useState("");
+  const [slugWasEdited, setSlugWasEdited] = useState(false);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [stageNameAvailability, setStageNameAvailability] =
-    useState<StageNameAvailability>("idle");
+  const [slugAvailability, setSlugAvailability] =
+    useState<SlugAvailability>("idle");
 
-  const cleanStageName = useMemo(
-    () => cleanStageNameForUrl(stageName),
-    [stageName],
-  );
+  const cleanStageName = stageName.trim();
 
-  const stageNameIsReserved =
-    cleanStageName.length > 0 && RESERVED_STAGE_NAMES.has(cleanStageName);
+  const cleanStageSlug = useMemo(() => cleanSlugForUrl(stageSlug), [stageSlug]);
 
-  const stageNameTooShort =
-    cleanStageName.length > 0 && cleanStageName.length < 3;
+  const slugIsReserved =
+    cleanStageSlug.length > 0 && RESERVED_STAGE_SLUGS.has(cleanStageSlug);
 
-  const stageNameTooLong = cleanStageName.length > 30;
+  const slugTooShort = cleanStageSlug.length > 0 && cleanStageSlug.length < 3;
 
-  const stageNameIsChecking = stageNameAvailability === "checking";
-  const stageNameIsTaken = stageNameAvailability === "taken";
+  const slugTooLong = cleanStageSlug.length > 30;
+
+  const slugIsChecking = slugAvailability === "checking";
+  const slugIsTaken = slugAvailability === "taken";
 
   const signupDisabled =
     loading ||
-    stageNameIsReserved ||
-    stageNameTooShort ||
-    stageNameTooLong ||
-    stageNameIsChecking ||
-    stageNameIsTaken;
+    !cleanStageName ||
+    !cleanStageSlug ||
+    slugIsReserved ||
+    slugTooShort ||
+    slugTooLong ||
+    slugIsChecking ||
+    slugIsTaken;
+
+  useEffect(() => {
+    if (slugWasEdited) return;
+
+    const suggestedSlug = cleanSlugForUrl(stageName);
+    setStageSlug(suggestedSlug);
+  }, [stageName, slugWasEdited]);
 
   useEffect(() => {
     let cancelled = false;
 
-    if (
-      !cleanStageName ||
-      stageNameIsReserved ||
-      stageNameTooShort ||
-      stageNameTooLong
-    ) {
-      setStageNameAvailability("idle");
+    if (!cleanStageSlug || slugIsReserved || slugTooShort || slugTooLong) {
+      setSlugAvailability("idle");
       return;
     }
 
-    setStageNameAvailability("checking");
+    setSlugAvailability("checking");
 
     const timeoutId = window.setTimeout(async () => {
       const { data, error } = await supabase
         .from("djs")
         .select("id")
-        .eq("stage_name", cleanStageName)
+        .eq("stage_slug", cleanStageSlug)
         .maybeSingle();
 
       if (cancelled) return;
 
       if (error) {
-        console.error("STAGE NAME CHECK ERROR:", error.message);
-        setStageNameAvailability("idle");
+        console.error("STAGE SLUG CHECK ERROR:", error.message);
+        setSlugAvailability("idle");
         return;
       }
 
-      setStageNameAvailability(data ? "taken" : "available");
+      setSlugAvailability(data ? "taken" : "available");
     }, 400);
 
     return () => {
       cancelled = true;
       window.clearTimeout(timeoutId);
     };
-  }, [cleanStageName, stageNameIsReserved, stageNameTooShort, stageNameTooLong]);
+  }, [cleanStageSlug, slugIsReserved, slugTooShort, slugTooLong]);
 
   async function handleSignup(e: FormEvent) {
     e.preventDefault();
@@ -130,43 +135,49 @@ export default function SignupPage() {
     setMessage("");
 
     if (!cleanStageName) {
-      setMessage("Please enter a valid stage name.");
+      setMessage("Please enter your DJ display name.");
       setLoading(false);
       return;
     }
 
-    if (cleanStageName.length < 3) {
-      setMessage("Stage name must be at least 3 characters.");
+    if (!cleanStageSlug) {
+      setMessage("Please enter a valid public URL name.");
       setLoading(false);
       return;
     }
 
-    if (cleanStageName.length > 30) {
-      setMessage("Stage name must be 30 characters or less.");
+    if (cleanStageSlug.length < 3) {
+      setMessage("Public URL name must be at least 3 characters.");
       setLoading(false);
       return;
     }
 
-    if (RESERVED_STAGE_NAMES.has(cleanStageName)) {
-      setMessage("This stage name is reserved. Please choose another one.");
+    if (cleanStageSlug.length > 30) {
+      setMessage("Public URL name must be 30 characters or less.");
       setLoading(false);
       return;
     }
 
-    const { data: existingDj, error: stageNameCheckError } = await supabase
+    if (RESERVED_STAGE_SLUGS.has(cleanStageSlug)) {
+      setMessage("This public URL name is reserved. Please choose another one.");
+      setLoading(false);
+      return;
+    }
+
+    const { data: existingDj, error: slugCheckError } = await supabase
       .from("djs")
       .select("id")
-      .eq("stage_name", cleanStageName)
+      .eq("stage_slug", cleanStageSlug)
       .maybeSingle();
 
-    if (stageNameCheckError) {
-      setMessage(stageNameCheckError.message);
+    if (slugCheckError) {
+      setMessage(slugCheckError.message);
       setLoading(false);
       return;
     }
 
     if (existingDj) {
-      setMessage("This stage name is already taken. Please choose another one.");
+      setMessage("This public URL name is already taken. Please choose another one.");
       setLoading(false);
       return;
     }
@@ -200,6 +211,7 @@ export default function SignupPage() {
       .insert([
         {
           stage_name: cleanStageName,
+          stage_slug: cleanStageSlug,
           email: email.trim(),
           user_id: userId,
           verification_status: "not_started",
@@ -223,10 +235,12 @@ export default function SignupPage() {
     setMessage("Account created! Redirecting to dashboard...");
 
     setStageName("");
+    setStageSlug("");
+    setSlugWasEdited(false);
     setEmail("");
     setPassword("");
     setShowPassword(false);
-    setStageNameAvailability("idle");
+    setSlugAvailability("idle");
     setLoading(false);
 
     setTimeout(() => {
@@ -249,7 +263,7 @@ export default function SignupPage() {
           <div>
             <input
               type="text"
-              placeholder="Stage name e.g. djbenzino"
+              placeholder="DJ display name e.g. DJ Benzino"
               value={stageName}
               onChange={(e) => {
                 setStageName(e.target.value);
@@ -259,34 +273,58 @@ export default function SignupPage() {
               required
             />
 
-            {cleanStageName && stageNameIsReserved ? (
+            <p className="text-xs text-zinc-500 mt-2">
+              This is the name guests will see on your request page.
+            </p>
+          </div>
+
+          <div>
+            <input
+              type="text"
+              placeholder="Public URL name e.g. benzino-nyc"
+              value={stageSlug}
+              onChange={(e) => {
+                setSlugWasEdited(true);
+                setStageSlug(cleanSlugForUrl(e.target.value));
+                setMessage("");
+              }}
+              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+              required
+            />
+
+            {cleanStageSlug && slugIsReserved ? (
               <p className="text-xs text-red-400 mt-2">
-                This stage name is reserved. Please choose another one.
+                This public URL name is reserved. Please choose another one.
               </p>
-            ) : cleanStageName && stageNameTooShort ? (
+            ) : cleanStageSlug && slugTooShort ? (
               <p className="text-xs text-red-400 mt-2">
-                Stage name must be at least 3 characters.
+                Public URL name must be at least 3 characters.
               </p>
-            ) : cleanStageName && stageNameTooLong ? (
+            ) : cleanStageSlug && slugTooLong ? (
               <p className="text-xs text-red-400 mt-2">
-                Stage name must be 30 characters or less.
+                Public URL name must be 30 characters or less.
               </p>
-            ) : cleanStageName && stageNameIsChecking ? (
+            ) : cleanStageSlug && slugIsChecking ? (
               <p className="text-xs text-zinc-500 mt-2">
-                Checking stage name availability...
+                Checking public URL availability...
               </p>
-            ) : cleanStageName && stageNameIsTaken ? (
+            ) : cleanStageSlug && slugIsTaken ? (
               <p className="text-xs text-red-400 mt-2">
-                This stage name is already taken. Please choose another one.
+                This public URL name is already taken. Please choose another one.
               </p>
-            ) : cleanStageName ? (
+            ) : cleanStageSlug ? (
               <p className="text-xs text-zinc-500 mt-2">
                 Your public request page will be:{" "}
                 <span className="text-purple-400">
-                  blacklinedj.com/{cleanStageName}
+                  blacklinedj.com/{cleanStageSlug}
                 </span>
               </p>
-            ) : null}
+            ) : (
+              <p className="text-xs text-zinc-500 mt-2">
+                This must be unique. DJs can share the same display name, but not
+                the same public URL.
+              </p>
+            )}
           </div>
 
           <input
