@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabase";
 
 const RESERVED_STAGE_NAMES = new Set([
@@ -15,6 +15,8 @@ const RESERVED_STAGE_NAMES = new Set([
   "support",
   "www",
 ]);
+
+type StageNameAvailability = "idle" | "checking" | "available" | "taken";
 
 function cleanStageNameForUrl(value: string) {
   return value
@@ -56,13 +58,71 @@ export default function SignupPage() {
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [stageNameAvailability, setStageNameAvailability] =
+    useState<StageNameAvailability>("idle");
 
   const cleanStageName = useMemo(
     () => cleanStageNameForUrl(stageName),
     [stageName],
   );
+
   const stageNameIsReserved =
-  cleanStageName.length > 0 && RESERVED_STAGE_NAMES.has(cleanStageName);
+    cleanStageName.length > 0 && RESERVED_STAGE_NAMES.has(cleanStageName);
+
+  const stageNameTooShort =
+    cleanStageName.length > 0 && cleanStageName.length < 3;
+
+  const stageNameTooLong = cleanStageName.length > 30;
+
+  const stageNameIsChecking = stageNameAvailability === "checking";
+  const stageNameIsTaken = stageNameAvailability === "taken";
+
+  const signupDisabled =
+    loading ||
+    stageNameIsReserved ||
+    stageNameTooShort ||
+    stageNameTooLong ||
+    stageNameIsChecking ||
+    stageNameIsTaken;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (
+      !cleanStageName ||
+      stageNameIsReserved ||
+      stageNameTooShort ||
+      stageNameTooLong
+    ) {
+      setStageNameAvailability("idle");
+      return;
+    }
+
+    setStageNameAvailability("checking");
+
+    const timeoutId = window.setTimeout(async () => {
+      const { data, error } = await supabase
+        .from("djs")
+        .select("id")
+        .eq("stage_name", cleanStageName)
+        .maybeSingle();
+
+      if (cancelled) return;
+
+      if (error) {
+        console.error("STAGE NAME CHECK ERROR:", error.message);
+        setStageNameAvailability("idle");
+        return;
+      }
+
+      setStageNameAvailability(data ? "taken" : "available");
+    }, 400);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeoutId);
+    };
+  }, [cleanStageName, stageNameIsReserved, stageNameTooShort, stageNameTooLong]);
 
   async function handleSignup(e: FormEvent) {
     e.preventDefault();
@@ -166,6 +226,7 @@ export default function SignupPage() {
     setEmail("");
     setPassword("");
     setShowPassword(false);
+    setStageNameAvailability("idle");
     setLoading(false);
 
     setTimeout(() => {
@@ -190,30 +251,52 @@ export default function SignupPage() {
               type="text"
               placeholder="Stage name e.g. djbenzino"
               value={stageName}
-              onChange={(e) => setStageName(e.target.value)}
+              onChange={(e) => {
+                setStageName(e.target.value);
+                setMessage("");
+              }}
               className="w-full p-4 rounded-xl bg-black border border-zinc-700"
               required
             />
 
-{cleanStageName && stageNameIsReserved ? (
-  <p className="text-xs text-red-400 mt-2">
-    This stage name is reserved. Please choose another one.
-  </p>
-) : cleanStageName ? (
-  <p className="text-xs text-zinc-500 mt-2">
-    Your public request page will be:{" "}
-    <span className="text-purple-400">
-      blacklinedj.com/{cleanStageName}
-    </span>
-  </p>
-) : null}
+            {cleanStageName && stageNameIsReserved ? (
+              <p className="text-xs text-red-400 mt-2">
+                This stage name is reserved. Please choose another one.
+              </p>
+            ) : cleanStageName && stageNameTooShort ? (
+              <p className="text-xs text-red-400 mt-2">
+                Stage name must be at least 3 characters.
+              </p>
+            ) : cleanStageName && stageNameTooLong ? (
+              <p className="text-xs text-red-400 mt-2">
+                Stage name must be 30 characters or less.
+              </p>
+            ) : cleanStageName && stageNameIsChecking ? (
+              <p className="text-xs text-zinc-500 mt-2">
+                Checking stage name availability...
+              </p>
+            ) : cleanStageName && stageNameIsTaken ? (
+              <p className="text-xs text-red-400 mt-2">
+                This stage name is already taken. Please choose another one.
+              </p>
+            ) : cleanStageName ? (
+              <p className="text-xs text-zinc-500 mt-2">
+                Your public request page will be:{" "}
+                <span className="text-purple-400">
+                  blacklinedj.com/{cleanStageName}
+                </span>
+              </p>
+            ) : null}
           </div>
 
           <input
             type="email"
             placeholder="Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setMessage("");
+            }}
             className="w-full p-4 rounded-xl bg-black border border-zinc-700"
             required
           />
@@ -223,7 +306,10 @@ export default function SignupPage() {
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setMessage("");
+              }}
               className="w-full p-4 pr-14 rounded-xl bg-black border border-zinc-700"
               required
             />
@@ -275,7 +361,7 @@ export default function SignupPage() {
 
           <button
             type="submit"
-            disabled={loading || stageNameIsReserved}
+            disabled={signupDisabled}
             className="w-full bg-purple-600 hover:bg-purple-700 p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
           >
             {loading ? "Creating Account..." : "Create DJ Account"}
