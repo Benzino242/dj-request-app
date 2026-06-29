@@ -4153,27 +4153,45 @@ export default function AdminPage() {
       return;
     }
 
-    setDj(data as DJ);
+    let loadedDj = data as DJ;
 
-    setDjDisplayName(data.stage_name || "");
-    setBio(data.bio || "");
-    setCity(data.city || "");
-    setInstagram(data.instagram || "");
-    setProfileImage(data.profile_image || "");
-    setEventName(data.event_name || "");
-    setVenue(data.venue || "");
+    if (loadedDj.verification_status === "rejected" && loadedDj.is_live) {
+      const { error: offlineRejectedError } = await supabase
+        .from("djs")
+        .update({ is_live: false })
+        .eq("id", loadedDj.id);
 
-    setCountry(data.country || "");
-    setPreferredCurrency(data.preferred_currency || "GHS");
-    setPayoutEmail(data.payout_email || "");
-    setPayoutMethod(data.payout_method || "Mobile Money");
-    setPayoutStatus(data.payout_status || "not_connected");
-    setPayoutProvider(data.payout_provider || "MTN");
-    setPayoutAccountName(data.payout_account_name || "");
-    setPayoutAccountNumber(data.payout_account_number || "");
-    setPayoutBankCode(data.payout_bank_code || "");
-    setPaystackRecipientCode(data.paystack_recipient_code || "");
-    setVerificationStatus(data.verification_status || "not_started");
+      if (offlineRejectedError) {
+        console.error("REJECTED DJ OFFLINE UPDATE ERROR:", offlineRejectedError);
+      } else {
+        loadedDj = {
+          ...loadedDj,
+          is_live: false,
+        };
+      }
+    }
+
+    setDj(loadedDj);
+
+    setDjDisplayName(loadedDj.stage_name || "");
+    setBio(loadedDj.bio || "");
+    setCity(loadedDj.city || "");
+    setInstagram(loadedDj.instagram || "");
+    setProfileImage(loadedDj.profile_image || "");
+    setEventName(loadedDj.event_name || "");
+    setVenue(loadedDj.venue || "");
+
+    setCountry(loadedDj.country || "");
+    setPreferredCurrency(loadedDj.preferred_currency || "GHS");
+    setPayoutEmail(loadedDj.payout_email || "");
+    setPayoutMethod(loadedDj.payout_method || "Mobile Money");
+    setPayoutStatus(loadedDj.payout_status || "not_connected");
+    setPayoutProvider(loadedDj.payout_provider || "MTN");
+    setPayoutAccountName(loadedDj.payout_account_name || "");
+    setPayoutAccountNumber(loadedDj.payout_account_number || "");
+    setPayoutBankCode(loadedDj.payout_bank_code || "");
+    setPaystackRecipientCode(loadedDj.paystack_recipient_code || "");
+    setVerificationStatus(loadedDj.verification_status || "not_started");
 
     setAuthLoading(false);
   }
@@ -4214,6 +4232,15 @@ export default function AdminPage() {
     if (!dj) return;
 
     const nextLiveStatus = !dj.is_live;
+    const currentVerificationStatus =
+      dj.verification_status || verificationStatus || "not_started";
+
+    if (nextLiveStatus && currentVerificationStatus === "rejected") {
+      alert(
+        "This account cannot go live because verification was rejected. Please update your details and resubmit verification.",
+      );
+      return;
+    }
 
     const { error } = await supabase
       .from("djs")
@@ -4660,6 +4687,14 @@ export default function AdminPage() {
   async function updateStatus(id: number, status: RequestStatus) {
     const currentScrollY = getCurrentScrollY();
 
+    if (verificationStatus === "rejected" && ["accepted", "played"].includes(status)) {
+      alert(
+        "This account cannot accept or play requests because verification was rejected. Please update your details and resubmit verification.",
+      );
+      restoreScrollPosition(currentScrollY);
+      return;
+    }
+
     setActionLoadingId(id);
 
     if (status === "played" && dj?.id) {
@@ -4971,6 +5006,9 @@ export default function AdminPage() {
 
   const isVerificationApproved = verificationStatus === "verified";
   const isVerificationPending = verificationStatus === "pending";
+  const isVerificationRejected = verificationStatus === "rejected";
+  const rejectedVerificationNotice =
+    "Verification was rejected. This account cannot go live or take paid requests until Blackline approves it. Update your profile and payout details, then resubmit verification.";
 
   const quickSetupActions = [
     {
@@ -4997,13 +5035,27 @@ export default function AdminPage() {
     },
     {
       number: "3",
-      icon: dj?.is_live ? "🟢" : "🔴",
-      title: dj?.is_live ? quickSetupText.liveTitle : quickSetupText.openRequestsTitle,
-      message: dj?.is_live ? quickSetupText.liveMessage : quickSetupText.openRequestsMessage,
-      status: dj?.is_live ? quickSetupText.liveNow : quickSetupText.goLive,
-      className: dj?.is_live
-        ? "border-green-500/40 bg-green-500/10"
-        : "border-green-500/50 bg-green-500/10",
+      icon: isVerificationRejected ? "⛔" : dj?.is_live ? "🟢" : "🔴",
+      title: isVerificationRejected
+        ? "Requests locked"
+        : dj?.is_live
+          ? quickSetupText.liveTitle
+          : quickSetupText.openRequestsTitle,
+      message: isVerificationRejected
+        ? "Verification was rejected. Resubmit verification before going live again."
+        : dj?.is_live
+          ? quickSetupText.liveMessage
+          : quickSetupText.openRequestsMessage,
+      status: isVerificationRejected
+        ? adminUiText.rejectedStatus
+        : dj?.is_live
+          ? quickSetupText.liveNow
+          : quickSetupText.goLive,
+      className: isVerificationRejected
+        ? "border-red-500/50 bg-red-500/10"
+        : dj?.is_live
+          ? "border-green-500/40 bg-green-500/10"
+          : "border-green-500/50 bg-green-500/10",
       target: "live" as const,
     },
     {
@@ -5029,19 +5081,31 @@ export default function AdminPage() {
     },
     {
       number: "6",
-      icon: isVerificationApproved ? "✅" : "🛡️",
-      title: isVerificationApproved ? quickSetupText.withdrawalsUnlockedTitle : quickSetupText.verificationTitle,
+      icon: isVerificationApproved ? "✅" : isVerificationRejected ? "⛔" : "🛡️",
+      title: isVerificationApproved
+        ? quickSetupText.withdrawalsUnlockedTitle
+        : isVerificationRejected
+          ? adminUiText.rejectedStatus
+          : quickSetupText.verificationTitle,
       message: isVerificationApproved
         ? hasPayoutSetup
           ? quickSetupText.withdrawalsReadyMessage
           : quickSetupText.connectPayoutMessage
-        : isVerificationPending
-          ? quickSetupText.verificationPendingMessage
-          : quickSetupText.verificationNotStartedMessage,
-      status: isVerificationApproved ? quickSetupText.unlocked : quickSetupText.requestsAllowed,
+        : isVerificationRejected
+          ? "Update your details and resubmit verification. Requests and withdrawals stay locked until approval."
+          : isVerificationPending
+            ? quickSetupText.verificationPendingMessage
+            : quickSetupText.verificationNotStartedMessage,
+      status: isVerificationApproved
+        ? quickSetupText.unlocked
+        : isVerificationRejected
+          ? adminUiText.rejectedStatus
+          : quickSetupText.requestsAllowed,
       className: isVerificationApproved
         ? "border-green-500/40 bg-green-500/10"
-        : "border-yellow-500/40 bg-yellow-500/10",
+        : isVerificationRejected
+          ? "border-red-500/50 bg-red-500/10"
+          : "border-yellow-500/40 bg-yellow-500/10",
       target: "withdrawals" as const,
     },
   ];
@@ -5434,9 +5498,15 @@ export default function AdminPage() {
           <div
             className={`${
               isQuickSetupExpanded ? "block" : "hidden md:block"
-            } mt-4 bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 rounded-2xl p-4 text-sm leading-relaxed`}
+            } mt-4 rounded-2xl p-4 text-sm leading-relaxed ${
+              isVerificationRejected
+                ? "bg-red-500/10 border border-red-500/30 text-red-300"
+                : "bg-yellow-500/10 border border-yellow-500/30 text-yellow-300"
+            }`}
           >
-            {quickSetupText.verificationNote}
+            {isVerificationRejected
+              ? rejectedVerificationNotice
+              : quickSetupText.verificationNote}
           </div>
         )}
       </div>
@@ -5463,36 +5533,57 @@ export default function AdminPage() {
       <div
         ref={liveControlsRef}
         className={`scroll-mt-6 border rounded-3xl p-4 md:p-6 mb-10 ${
-          dj.is_live
-            ? "bg-green-950 border-green-700"
-            : "bg-zinc-900 border-zinc-800"
+          isVerificationRejected
+            ? "bg-red-950/30 border-red-700/50"
+            : dj.is_live
+              ? "bg-green-950 border-green-700"
+              : "bg-zinc-900 border-zinc-800"
         }`}
       >
         <div className="flex flex-col gap-4">
           <div>
             <h2
               className={`text-2xl md:text-3xl font-bold ${
-                dj.is_live ? "text-green-400" : "text-zinc-300"
+                isVerificationRejected
+                  ? "text-red-400"
+                  : dj.is_live
+                    ? "text-green-400"
+                    : "text-zinc-300"
               }`}
             >
-              {dj.is_live ? t.liveNow : t.offline}
+              {isVerificationRejected
+                ? adminUiText.rejectedStatus
+                : dj.is_live
+                  ? t.liveNow
+                  : t.offline}
             </h2>
 
             <p className="text-zinc-400 mt-2 text-sm md:text-base">
-              {dj.is_live ? t.liveGuestsMessage : t.offlineGuestsMessage}
+              {isVerificationRejected
+                ? "This account cannot go live or take paid requests until Blackline approves verification."
+                : dj.is_live
+                  ? t.liveGuestsMessage
+                  : t.offlineGuestsMessage}
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={toggleLiveStatus}
-              className={`w-full px-3 md:px-6 py-4 rounded-xl font-bold text-sm md:text-lg whitespace-nowrap ${
+              disabled={isVerificationRejected && !dj.is_live}
+              className={`w-full px-3 md:px-6 py-4 rounded-xl font-bold text-sm md:text-lg whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed ${
                 dj.is_live
                   ? "bg-red-600 hover:bg-red-700"
-                  : "bg-green-600 hover:bg-green-700"
+                  : isVerificationRejected
+                    ? "bg-zinc-700 text-zinc-300"
+                    : "bg-green-600 hover:bg-green-700"
               }`}
             >
-              {dj.is_live ? t.goOffline : t.goLive}
+              {dj.is_live
+                ? t.goOffline
+                : isVerificationRejected
+                  ? adminUiText.rejectedStatus
+                  : t.goLive}
             </button>
 
             <button
