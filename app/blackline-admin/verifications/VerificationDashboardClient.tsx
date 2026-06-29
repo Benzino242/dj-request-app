@@ -6,6 +6,7 @@ import { supabase } from "../../../lib/supabase";
 type DJ = {
  id: number;
  stage_name: string;
+ stage_slug?: string | null;
  email: string | null;
  country?: string | null;
  preferred_currency?: string | null;
@@ -758,6 +759,16 @@ export default function VerificationDashboardClient() {
  expandedDjIds.includes(dj.id) ||
  (shouldAutoExpand && !collapsedPriorityDjIds.includes(dj.id));
  const verificationBadge = getVerificationStatusBadge(dj.verification_status);
+ const publicStageSlug = (dj.stage_slug || dj.stage_name || "")
+ .toLowerCase()
+ .trim()
+ .replace(/\s+/g, "-")
+ .replace(/[^a-z0-9-]/g, "")
+ .replace(/-+/g, "-")
+ .replace(/^-|-$/g, "");
+ const publicRequestUrl = publicStageSlug
+ ? `https://blacklinedj.com/${publicStageSlug}`
+ : "";
 
  return (
  <div
@@ -811,6 +822,20 @@ export default function VerificationDashboardClient() {
  </span>
  )}
  </div>
+
+ {publicRequestUrl && (
+ <p className="text-sm text-purple-400 mt-2 break-all">
+ Blackline link:{" "}
+ <a
+ href={publicRequestUrl}
+ target="_blank"
+ rel="noopener noreferrer"
+ className="hover:text-purple-300 underline underline-offset-4"
+ >
+ {publicRequestUrl}
+ </a>
+ </p>
+ )}
  </div>
  </div>
 
@@ -829,6 +854,22 @@ export default function VerificationDashboardClient() {
  <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
  <p className="text-xs text-zinc-500">Email</p>
  <p className="font-bold text-white">{dj.email || "No email"}</p>
+ </div>
+
+ <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+ <p className="text-xs text-zinc-500">Blackline Link</p>
+ {publicRequestUrl ? (
+ <a
+ href={publicRequestUrl}
+ target="_blank"
+ rel="noopener noreferrer"
+ className="font-bold text-purple-400 hover:text-purple-300 break-all underline underline-offset-4"
+ >
+ {publicRequestUrl}
+ </a>
+ ) : (
+ <p className="font-bold text-zinc-500">No public link</p>
+ )}
  </div>
 
  <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
