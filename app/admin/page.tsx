@@ -5202,6 +5202,45 @@ export default function AdminPage() {
     );
   }
 
+  if (dj.verification_status === "removed") {
+    return (
+      <main className="min-h-screen bg-black text-white flex items-center justify-center p-6">
+        <div className="bg-zinc-900 border border-red-500/40 rounded-3xl p-8 max-w-xl text-center shadow-[0_0_40px_rgba(239,68,68,0.15)]">
+          <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-red-500/10 border border-red-500/40 flex items-center justify-center text-3xl">
+            🚫
+          </div>
+
+          <h1 className="text-4xl font-black text-red-400 mb-4">
+            Account Removed
+          </h1>
+
+          <p className="text-zinc-300 leading-relaxed">
+            This DJ account has been removed from Blackline.
+          </p>
+
+          <p className="text-zinc-500 text-sm mt-3 leading-relaxed">
+            Please contact Blackline support if you believe this is a mistake.
+          </p>
+
+          <a
+            href="mailto:support@blacklinedj.com"
+            className="mt-6 inline-flex items-center justify-center bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-xl font-bold transition"
+          >
+            Contact Support
+          </a>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="mt-3 block mx-auto text-zinc-500 hover:text-white text-sm font-semibold transition"
+          >
+            Log out
+          </button>
+        </div>
+      </main>
+    );
+  }
+
   if (loading) {
     return (
       <main className="min-h-screen bg-black text-white flex items-center justify-center">
