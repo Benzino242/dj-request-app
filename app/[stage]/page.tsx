@@ -396,6 +396,19 @@ export default function StageRequestPage() {
   const nowPlayingCountdownText =
     nowPlayingCountdownTranslations[language] || nowPlayingCountdownTranslations.en;
 
+  const djVerificationStatus = String(
+    dj?.verification_status || "not_started"
+  ).toLowerCase();
+  const isRejectedDJ = djVerificationStatus === "rejected";
+  const canAcceptRequests = Boolean(dj?.is_live) && !isRejectedDJ;
+  const requestsClosedTitle = isRejectedDJ ? "Requests locked" : t.requestsClosed;
+  const requestsClosedMessage = isRejectedDJ
+    ? "This DJ is not accepting song requests right now. Please check back later."
+    : "This DJ is currently offline. Please check back when they go live.";
+  const requestsClosedAlert = isRejectedDJ
+    ? "Requests are currently locked for this DJ. Please check back later."
+    : "This DJ is currently offline. Please try again when they are live.";
+
   const [nowPlaying, setNowPlaying] = useState<Request | null>(null);
   const [upNext, setUpNext] = useState<Request | null>(null);
   const [flashAlert, setFlashAlert] = useState(false);
@@ -614,8 +627,8 @@ export default function StageRequestPage() {
       return;
     }
 
-    if (!dj.is_live) {
-      alert("This DJ is currently offline. Please try again when they are live.");
+    if (!canAcceptRequests) {
+      alert(requestsClosedAlert);
       return;
     }
 
@@ -1099,7 +1112,7 @@ export default function StageRequestPage() {
     src={dj.profile_image}
     alt={dj.stage_name}
     className={`w-28 h-28 rounded-full object-cover mx-auto mb-4 border-4 ${
-      dj.is_live
+      canAcceptRequests
         ? "border-purple-500 shadow-[0_0_40px_rgba(168,85,247,0.55)]"
         : "border-purple-600"
     }`}
@@ -1113,10 +1126,10 @@ export default function StageRequestPage() {
 
           <div
             className={`inline-block px-4 py-2 rounded-full text-sm font-bold mb-4 ${
-              dj.is_live ? "bg-green-600 text-white" : "bg-red-600 text-white"
+              canAcceptRequests ? "bg-green-600 text-white" : "bg-red-600 text-white"
             }`}
           >
-            {dj.is_live ? t.liveNow : t.offline}
+            {canAcceptRequests ? t.liveNow : t.offline}
           </div>
 
           {dj.event_name && (
@@ -1158,11 +1171,27 @@ export default function StageRequestPage() {
 )}
         </div>
 
-        {!dj.is_live && (
-          <div className="bg-red-950 border border-red-700 p-4 rounded-2xl mb-6 text-center">
-            <p className="text-red-200 font-semibold">
-              This DJ is currently offline. Requests are closed.
-            </p>
+        {!canAcceptRequests && (
+          <div className="relative overflow-hidden bg-red-950 border border-red-700 p-5 rounded-3xl mb-6 text-center shadow-[0_0_25px_rgba(239,68,68,0.18)]">
+            <div className="absolute -top-10 -right-10 w-28 h-28 bg-red-500/20 rounded-full blur-2xl" />
+
+            <div className="relative z-10">
+              <div className="w-14 h-14 mx-auto rounded-full bg-red-500/20 border border-red-400/40 flex items-center justify-center text-2xl mb-4">
+                🔒
+              </div>
+
+              <p className="text-red-200 text-xs font-black uppercase tracking-[0.2em] mb-2">
+                {requestsClosedTitle}
+              </p>
+
+              <h2 className="text-2xl font-black text-white">
+                Requests are closed
+              </h2>
+
+              <p className="text-red-100/80 text-sm mt-3 leading-relaxed">
+                {requestsClosedMessage}
+              </p>
+            </div>
           </div>
         )}
 
@@ -1192,7 +1221,7 @@ export default function StageRequestPage() {
             placeholder={t.yourName}
             value={name}
             onChange={(e) => setName(e.target.value)}
-            disabled={!dj.is_live}
+            disabled={!canAcceptRequests}
           />
 
 <div
@@ -1243,7 +1272,7 @@ export default function StageRequestPage() {
         setSongSearchLoading(false);
       }
     }}
-    disabled={!dj.is_live}
+    disabled={!canAcceptRequests}
   />
 
 {songResults.length > 0 && (
@@ -1445,7 +1474,7 @@ export default function StageRequestPage() {
       }
     }
   }}
-  disabled={!dj.is_live}
+  disabled={!canAcceptRequests}
 />
 
   {!song.trim() && artist.trim() && songResults.length > 0 && (
@@ -1520,7 +1549,7 @@ export default function StageRequestPage() {
               value={tipCurrency}
               onChange={(e) => setTipCurrency(e.target.value)}
               className="p-4 rounded-xl bg-black border border-zinc-700"
-              disabled={!dj.is_live}
+              disabled={!canAcceptRequests}
             >
               <option value="GHS">🇬🇭 GHS</option>
               <option value="USD">🇺🇸 USD</option>
@@ -1555,7 +1584,7 @@ export default function StageRequestPage() {
               onChange={(e) => setTipAmount(Number(e.target.value))}
               className="p-4 rounded-xl bg-black border border-zinc-700"
               placeholder="Tip Amount"
-              disabled={!dj.is_live}
+              disabled={!canAcceptRequests}
             />
           </div>
 
@@ -1577,7 +1606,7 @@ export default function StageRequestPage() {
           onClick={() =>
             setTipAmount((current) => Number(current || 0) + boost)
           }
-          disabled={!dj.is_live}
+          disabled={!canAcceptRequests}
           className="bg-purple-700 hover:bg-purple-600 px-3 py-3 rounded-xl font-bold text-sm disabled:opacity-40 transition-all hover:scale-105"
         >
           +{tipCurrency}
@@ -1592,10 +1621,10 @@ export default function StageRequestPage() {
                 
           <button
               onClick={handlePayment}
-              disabled={submitting || !dj.is_live || tipCurrency !== "GHS"}
+              disabled={submitting || !canAcceptRequests || tipCurrency !== "GHS"}
               className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
             >
-              {!dj.is_live
+              {!canAcceptRequests
                 ? t.requestsClosed
                 : tipCurrency !== "GHS"
                 ? `${tipCurrency} payments are coming soon. Please use GHS for now.`
