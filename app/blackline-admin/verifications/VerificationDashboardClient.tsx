@@ -856,26 +856,11 @@ export default function VerificationDashboardClient() {
  <p className="font-bold text-white">{dj.email || "No email"}</p>
  </div>
 
- <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
- <p className="text-xs text-zinc-500">Blackline Link</p>
- {publicRequestUrl ? (
- <a
- href={publicRequestUrl}
- target="_blank"
- rel="noopener noreferrer"
- className="font-bold text-purple-400 hover:text-purple-300 break-all underline underline-offset-4"
- >
- {publicRequestUrl}
- </a>
- ) : (
- <p className="font-bold text-zinc-500">No public link</p>
- )}
- </div>
 
  <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
  <p className="text-xs text-zinc-500">Country / Currency</p>
  <p className="font-bold text-white">
- {dj.country || "No country"} " {" "}
+ {dj.country || "No country"} ·{" "}
  {dj.preferred_currency || "No currency"}
  </p>
  </div>
