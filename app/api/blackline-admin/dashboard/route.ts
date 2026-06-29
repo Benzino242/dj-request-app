@@ -41,6 +41,16 @@ function formatAmount(currency: unknown, amount: unknown) {
   return `${String(currency || "GHS")} ${Number(amount || 0).toFixed(2)}`;
 }
 
+function cleanSlugForUrl(value: unknown) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 function isAlertEmailReady() {
   return Boolean(resendApiKey && blacklineAlertEmail && blacklineAlertFrom);
 }
@@ -168,6 +178,10 @@ async function sendDjVerificationAlert({
   if (alreadySent) return false;
 
   const stageName = String(dj.stage_name || "Unknown DJ");
+  const stageSlug = cleanSlugForUrl(dj.stage_slug || dj.stage_name);
+  const publicRequestUrl = stageSlug
+    ? `https://blacklinedj.com/${stageSlug}`
+    : "Not available";
   const email = String(dj.email || "No email");
   const country = String(dj.country || "Not set");
   const currency = String(dj.preferred_currency || "Not set");
@@ -180,7 +194,8 @@ async function sendDjVerificationAlert({
       <p>A DJ account needs review in the Blackline admin dashboard.</p>
 
       <div style="padding: 16px; border: 1px solid #ddd; border-radius: 12px; background: #f7f7f7;">
-        <p><strong>Stage name:</strong> ${escapeHtml(stageName)}</p>
+        <p><strong>DJ name:</strong> ${escapeHtml(stageName)}</p>
+        <p><strong>Blackline link:</strong> ${escapeHtml(publicRequestUrl)}</p>
         <p><strong>Email:</strong> ${escapeHtml(email)}</p>
         <p><strong>Country:</strong> ${escapeHtml(country)}</p>
         <p><strong>Preferred currency:</strong> ${escapeHtml(currency)}</p>
@@ -198,7 +213,8 @@ async function sendDjVerificationAlert({
   const text = `
 New DJ needs verification
 
-Stage name: ${stageName}
+DJ name: ${stageName}
+Blackline link: ${publicRequestUrl}
 Email: ${email}
 Country: ${country}
 Preferred currency: ${currency}
@@ -220,6 +236,8 @@ ${ADMIN_URL}
       metadata: {
         dj_id: djId,
         stage_name: stageName,
+        stage_slug: stageSlug,
+        public_request_url: publicRequestUrl,
         email,
         status,
       },
