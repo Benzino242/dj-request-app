@@ -3823,6 +3823,7 @@ export default function AdminPage() {
   const [dj, setDj] = useState<DJ | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
 
+  const [djDisplayName, setDjDisplayName] = useState("");
   const [bio, setBio] = useState("");
   const [city, setCity] = useState("");
   const [instagram, setInstagram] = useState("");
@@ -3873,6 +3874,10 @@ export default function AdminPage() {
     dashboardAlertTranslations[language] || dashboardAlertTranslations.en;
   const adminUiText = adminUiTranslations[language] || adminUiTranslations.en;
   const balanceText = balanceExplainerTranslations[language] || balanceExplainerTranslations.en;
+  const publicStageSlug = dj?.stage_slug || dj?.stage_name || "";
+  const publicRequestUrl = publicStageSlug
+    ? `https://blacklinedj.com/${publicStageSlug}`
+    : "";
 
   function getCurrentScrollY() {
     if (typeof window === "undefined") return 0;
@@ -4150,6 +4155,7 @@ export default function AdminPage() {
 
     setDj(data as DJ);
 
+    setDjDisplayName(data.stage_name || "");
     setBio(data.bio || "");
     setCity(data.city || "");
     setInstagram(data.instagram || "");
@@ -4350,9 +4356,18 @@ export default function AdminPage() {
     setSavingProfile(true);
     setProfileMessage("");
 
+    const cleanDjDisplayName = djDisplayName.trim();
+
+    if (!cleanDjDisplayName) {
+      setProfileMessage("DJ name is required.");
+      setSavingProfile(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from("djs")
       .update({
+        stage_name: cleanDjDisplayName,
         bio,
         city,
         instagram,
@@ -4383,6 +4398,7 @@ export default function AdminPage() {
     }
 
     setDj(data as DJ);
+    setDjDisplayName(data.stage_name || cleanDjDisplayName);
 
     setProfileMessage("Profile updated successfully.");
     setSavingProfile(false);
@@ -4392,7 +4408,13 @@ export default function AdminPage() {
     if (!dj) return;
 
     const fileExt = file.name.split(".").pop();
-    const fileName = `${dj.stage_name}-${Date.now()}.${fileExt}`;
+    const profileImageFileBase = (dj.stage_slug || dj.stage_name || "dj")
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+
+    const fileName = `${profileImageFileBase || "dj"}-${Date.now()}.${fileExt}`;
 
     const { error: uploadError } = await supabase.storage
       .from("dj-profile-images")
@@ -5686,6 +5708,51 @@ export default function AdminPage() {
 
           {isProfileDetailsExpanded && (
             <div className="mt-6 border-t border-zinc-800 pt-6 space-y-5">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs uppercase tracking-[0.2em] text-purple-400 font-black mb-2">
+                    DJ name
+                  </label>
+
+                  <input
+                    type="text"
+                    placeholder="DJ name e.g. DJ Benzino"
+                    value={djDisplayName}
+                    onChange={(e) => setDjDisplayName(e.target.value)}
+                    className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+                  />
+
+                  <p className="text-xs text-zinc-500 mt-2">
+                    Guests will see this name on your request page.
+                  </p>
+                </div>
+
+                <div>
+                  <p className="block text-xs uppercase tracking-[0.2em] text-zinc-500 font-black mb-2">
+                    Blackline link
+                  </p>
+
+                  {publicRequestUrl ? (
+                    <a
+                      href={publicRequestUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block w-full p-4 rounded-xl bg-black border border-zinc-700 text-purple-400 hover:text-purple-300 font-bold break-all"
+                    >
+                      {publicRequestUrl}
+                    </a>
+                  ) : (
+                    <div className="w-full p-4 rounded-xl bg-black border border-zinc-700 text-zinc-500 font-bold">
+                      Link not available
+                    </div>
+                  )}
+
+                  <p className="text-xs text-zinc-500 mt-2">
+                    This link stays the same when you edit your DJ name.
+                  </p>
+                </div>
+              </div>
+
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <label className="bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-xl cursor-pointer font-semibold text-center">
                   {t.uploadProfilePhoto}
