@@ -344,6 +344,7 @@ type DJ = {
   is_live: boolean | null;
   event_name: string | null;
   venue: string | null;
+  verification_status?: string | null;
 };
 
 export default function StageRequestPage() {
@@ -470,6 +471,17 @@ export default function StageRequestPage() {
     if (error || !data) {
       console.error("DJ not found:", error);
       setDj(null);
+      setDjLoading(false);
+      return;
+    }
+
+    if (String(data.verification_status || "") === "removed") {
+      console.warn("DJ removed from Blackline:", stage);
+      setDj(null);
+      setRequests([]);
+      setNowPlaying(null);
+      setUpNext(null);
+      previousNowPlayingId.current = null;
       setDjLoading(false);
       return;
     }
