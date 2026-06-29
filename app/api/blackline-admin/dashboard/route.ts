@@ -738,10 +738,11 @@ export async function PATCH(request: Request) {
       );
     }
 
-    const updatePayload =
-      status === "removed"
-        ? { verification_status: status, is_live: false }
-        : { verification_status: status };
+    const shouldForceOffline = ["removed", "rejected"].includes(status);
+
+    const updatePayload = shouldForceOffline
+      ? { verification_status: status, is_live: false }
+      : { verification_status: status };
 
     const { error } = await supabaseAdmin
       .from("djs")
