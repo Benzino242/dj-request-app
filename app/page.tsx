@@ -30,7 +30,7 @@ const djFeatures = [
 ];
 
 const trustPoints = [
-  "Paystack-powered guest payments",
+  "Secure guest payment flow",
   "10% Blackline platform fee",
   "DJs can receive paid requests before verification",
   "Withdrawals unlock after Blackline approval",
@@ -81,7 +81,7 @@ export default function HomePage() {
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm font-semibold text-zinc-500">
             <span className="rounded-full border border-zinc-800 bg-zinc-950 px-4 py-2">
-              Paystack payments
+              Secure guest payments
             </span>
             <span className="rounded-full border border-zinc-800 bg-zinc-950 px-4 py-2">
               Real-time requests
@@ -150,7 +150,7 @@ export default function HomePage() {
 
             <div className="mb-6 rounded-3xl border border-green-500/30 bg-green-500/10 p-6">
               <p className="text-sm font-black uppercase tracking-[0.25em] text-green-300">
-                Current launch fee
+                Platform fee
               </p>
               <p className="mt-3 text-5xl font-black text-green-400">10%</p>
               <p className="mt-3 text-zinc-300">
@@ -184,7 +184,7 @@ export default function HomePage() {
             </h2>
             <p className="text-lg leading-relaxed text-zinc-400">
               Guests can search songs, see queue energy, boost existing requests,
-              and keep their Paystack reference for support. The experience is
+              and keep their payment reference for support. The experience is
               designed for mobile phones inside busy nightlife spaces.
             </p>
           </div>
