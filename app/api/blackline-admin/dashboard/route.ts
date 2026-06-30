@@ -762,7 +762,11 @@ export async function PATCH(request: Request) {
           status === "removed"
             ? `DJ ${
                 djBeforeUpdate.stage_name || "Unknown DJ"
-              } was removed from Blackline`
+              } was removed from Blackline and forced offline. Public page now shows DJ Not Found.`
+            : status === "rejected"
+            ? `DJ ${
+                djBeforeUpdate.stage_name || "Unknown DJ"
+              } was rejected and forced offline. Paid requests are now closed.`
             : `DJ ${
                 djBeforeUpdate.stage_name || "Unknown DJ"
               } verification changed from ${
@@ -774,6 +778,8 @@ export async function PATCH(request: Request) {
           email: djBeforeUpdate.email,
           previous_status: djBeforeUpdate.verification_status,
           new_status: status,
+          previous_is_live: djBeforeUpdate.is_live,
+          forced_offline: shouldForceOffline,
         },
       },
     ]);
