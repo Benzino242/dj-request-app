@@ -4,28 +4,28 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 const languageOptions = [
-  { code: "en", label: "English" },
-  { code: "zh", label: "中文" },
-  { code: "ja", label: "日本語" },
-  { code: "ko", label: "한국어" },
-  { code: "id", label: "Bahasa Indonesia" },
-  { code: "ms", label: "Bahasa Melayu" },
-  { code: "th", label: "ไทย" },
-  { code: "hi", label: "हिन्दी" },
-  { code: "ar", label: "العربية" },
-  { code: "vi", label: "Tiếng Việt" },
-  { code: "tl", label: "Tagalog" },
-  { code: "pt", label: "Português" },
-  { code: "es", label: "Español" },
-  { code: "fr", label: "Français" },
-  { code: "de", label: "Deutsch" },
-  { code: "ru", label: "Русский" },
-  { code: "tr", label: "Türkçe" },
-  { code: "it", label: "Italiano" },
-  { code: "nl", label: "Nederlands" },
-  { code: "pl", label: "Polski" },
-  { code: "el", label: "Ελληνικά" },
-  { code: "uk", label: "Українська" },
+  { code: "en", label: "English", flag: "🇬🇧" },
+  { code: "zh", label: "中文", flag: "🇨🇳" },
+  { code: "ja", label: "日本語", flag: "🇯🇵" },
+  { code: "ko", label: "한국어", flag: "🇰🇷" },
+  { code: "id", label: "Bahasa Indonesia", flag: "🇮🇩" },
+  { code: "ms", label: "Bahasa Melayu", flag: "🇲🇾" },
+  { code: "th", label: "ไทย", flag: "🇹🇭" },
+  { code: "hi", label: "हिन्दी", flag: "🇮🇳" },
+  { code: "ar", label: "العربية", flag: "🇸🇦" },
+  { code: "vi", label: "Tiếng Việt", flag: "🇻🇳" },
+  { code: "tl", label: "Tagalog", flag: "🇵🇭" },
+  { code: "pt", label: "Português", flag: "🇵🇹" },
+  { code: "es", label: "Español", flag: "🇪🇸" },
+  { code: "fr", label: "Français", flag: "🇫🇷" },
+  { code: "de", label: "Deutsch", flag: "🇩🇪" },
+  { code: "ru", label: "Русский", flag: "🇷🇺" },
+  { code: "tr", label: "Türkçe", flag: "🇹🇷" },
+  { code: "it", label: "Italiano", flag: "🇮🇹" },
+  { code: "nl", label: "Nederlands", flag: "🇳🇱" },
+  { code: "pl", label: "Polski", flag: "🇵🇱" },
+  { code: "el", label: "Ελληνικά", flag: "🇬🇷" },
+  { code: "uk", label: "Українська", flag: "🇺🇦" },
 ] as const;
 
 type LanguageCode = (typeof languageOptions)[number]["code"];
@@ -1477,17 +1477,23 @@ function LanguageSelector({
   onChange: (language: LanguageCode) => void;
   label: string;
 }) {
+  const selectedLanguage = languageOptions.find((option) => option.code === language);
+
   return (
-    <label className="inline-flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-950/90 px-4 py-3 text-left text-sm font-bold text-zinc-300 shadow-2xl backdrop-blur">
-      <span className="text-purple-300">🌐 {label}</span>
+    <label className="inline-flex w-full max-w-[330px] items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-950/90 px-4 py-3 text-left text-sm font-bold text-zinc-300 shadow-2xl backdrop-blur sm:w-auto sm:max-w-none">
+      <span className="shrink-0 text-purple-300">🌐 {label}</span>
+      <span className="text-xl" aria-hidden="true">
+        {selectedLanguage?.flag}
+      </span>
       <select
         value={language}
         onChange={(event) => onChange(event.target.value as LanguageCode)}
-        className="max-w-[190px] rounded-xl border border-zinc-700 bg-black px-3 py-2 font-black text-white outline-none transition focus:border-purple-500"
+        className="min-w-0 flex-1 rounded-xl border border-zinc-700 bg-black px-3 py-2 font-black text-white outline-none transition focus:border-purple-500 sm:max-w-[220px]"
+        aria-label={label}
       >
         {languageOptions.map((option) => (
           <option key={option.code} value={option.code}>
-            {option.label}
+            {option.flag} {option.label}
           </option>
         ))}
       </select>
