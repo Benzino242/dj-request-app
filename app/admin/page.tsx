@@ -103,6 +103,35 @@ type DJ = {
   verification_status?: string | null;
 };
 
+const BLACKLINE_SUPPORT_EMAIL = "support@blacklinedj.com";
+
+function getBlacklineSupportHref(dj?: DJ | null) {
+  const stageSlug = (dj?.stage_slug || dj?.stage_name || "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  const publicUrl = stageSlug ? `https://blacklinedj.com/${stageSlug}` : "";
+
+  const subject = encodeURIComponent("Blackline verification review request");
+  const body = encodeURIComponent(
+    [
+      "Hi Blackline Support,",
+      "",
+      "I have updated my profile and payout details. Please review my DJ account again.",
+      "",
+      `DJ name: ${dj?.stage_name || ""}`,
+      `Blackline link: ${publicUrl}`,
+      `Account email: ${dj?.email || ""}`,
+    ].join("\n"),
+  );
+
+  return `mailto:${BLACKLINE_SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
+}
+
 type PaystackBank = {
   name: string;
   code: string;
@@ -4237,7 +4266,7 @@ export default function AdminPage() {
 
     if (nextLiveStatus && currentVerificationStatus === "rejected") {
       alert(
-        "This account cannot go live because verification was rejected. Please update your details and resubmit verification.",
+        "This account cannot go live because verification was rejected. Please update your details and contact Blackline Support for another review.",
       );
       return;
     }
@@ -4689,7 +4718,7 @@ export default function AdminPage() {
 
     if (verificationStatus === "rejected" && ["accepted", "played"].includes(status)) {
       alert(
-        "This account cannot accept or play requests because verification was rejected. Please update your details and resubmit verification.",
+        "This account cannot accept or play requests because verification was rejected. Please update your details and contact Blackline Support for another review.",
       );
       restoreScrollPosition(currentScrollY);
       return;
@@ -5008,7 +5037,8 @@ export default function AdminPage() {
   const isVerificationPending = verificationStatus === "pending";
   const isVerificationRejected = verificationStatus === "rejected";
   const rejectedVerificationNotice =
-    "Verification was rejected. This account cannot go live or take paid requests until Blackline approves it. Update your profile and payout details, then resubmit verification.";
+    "Verification was rejected. This account cannot go live or take paid requests until Blackline approves it. Update your profile and payout details, then contact Blackline Support for another review.";
+  const blacklineSupportHref = getBlacklineSupportHref(dj);
 
   const quickSetupActions = [
     {
@@ -5042,7 +5072,7 @@ export default function AdminPage() {
           ? quickSetupText.liveTitle
           : quickSetupText.openRequestsTitle,
       message: isVerificationRejected
-        ? "Verification was rejected. Resubmit verification before going live again."
+        ? "Verification was rejected. Contact Blackline Support before going live again."
         : dj?.is_live
           ? quickSetupText.liveMessage
           : quickSetupText.openRequestsMessage,
@@ -5092,7 +5122,7 @@ export default function AdminPage() {
           ? quickSetupText.withdrawalsReadyMessage
           : quickSetupText.connectPayoutMessage
         : isVerificationRejected
-          ? "Update your details and resubmit verification. Requests and withdrawals stay locked until approval."
+          ? "Update your details and contact Blackline Support for another review. Requests and withdrawals stay locked until approval."
           : isVerificationPending
             ? quickSetupText.verificationPendingMessage
             : quickSetupText.verificationNotStartedMessage,
@@ -5504,9 +5534,20 @@ export default function AdminPage() {
                 : "bg-yellow-500/10 border border-yellow-500/30 text-yellow-300"
             }`}
           >
-            {isVerificationRejected
-              ? rejectedVerificationNotice
-              : quickSetupText.verificationNote}
+            {isVerificationRejected ? (
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <p>{rejectedVerificationNotice}</p>
+
+                <a
+                  href={blacklineSupportHref}
+                  className="shrink-0 inline-flex items-center justify-center rounded-xl bg-red-600 hover:bg-red-700 px-4 py-3 text-white font-black transition"
+                >
+                  Contact Blackline Support
+                </a>
+              </div>
+            ) : (
+              quickSetupText.verificationNote
+            )}
           </div>
         )}
       </div>
@@ -5560,11 +5601,20 @@ export default function AdminPage() {
 
             <p className="text-zinc-400 mt-2 text-sm md:text-base">
               {isVerificationRejected
-                ? "This account cannot go live or take paid requests until Blackline approves verification."
+                ? "This account cannot go live or take paid requests until Blackline approves verification. Update your profile and payout details, then contact Blackline Support for another review."
                 : dj.is_live
                   ? t.liveGuestsMessage
                   : t.offlineGuestsMessage}
             </p>
+
+            {isVerificationRejected && (
+              <a
+                href={blacklineSupportHref}
+                className="mt-4 inline-flex w-full sm:w-auto items-center justify-center rounded-xl bg-red-600 hover:bg-red-700 px-5 py-3 text-white font-black transition"
+              >
+                Contact Blackline Support
+              </a>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -6332,13 +6382,16 @@ export default function AdminPage() {
                         {t.rejectedVerificationMessage}
                       </p>
 
-                      <button
-                        type="button"
-                        onClick={() => setVerificationStatus("pending")}
-                        className="mt-3 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700"
+                      <p className="mt-3 text-sm text-zinc-400 leading-relaxed">
+                        Update your profile and payout details, then contact Blackline Support for another review.
+                      </p>
+
+                      <a
+                        href={blacklineSupportHref}
+                        className="mt-3 inline-flex px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold transition"
                       >
-                        {t.resubmitVerification}
-                      </button>
+                        Contact Blackline Support
+                      </a>
                     </div>
                   )}
 
