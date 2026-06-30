@@ -95,6 +95,7 @@ export default function VerificationDashboardClient() {
  >(null);
 
  const [withdrawalSearch, setWithdrawalSearch] = useState("");
+ const [djSearch, setDjSearch] = useState("");
  const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(
  null,
  );
@@ -298,8 +299,54 @@ export default function VerificationDashboardClient() {
  );
 
  const dashboardCurrency = djEarnings[0]?.currency || "GHS";
+ const djSearchTerms = djSearch.trim().toLowerCase().split(/\s+/).filter(Boolean);
 
- const sortedDjs = [...activeDjs].sort((a, b) => {
+ function getDjSearchText(dj: DJ) {
+ const stageSlug = (dj.stage_slug || dj.stage_name || "")
+ .toLowerCase()
+ .trim()
+ .replace(/\s+/g, "-")
+ .replace(/[^a-z0-9-]/g, "")
+ .replace(/-+/g, "-")
+ .replace(/^-|-$/g, "");
+ const publicRequestUrl = stageSlug ? `https://blacklinedj.com/${stageSlug}` : "";
+
+ return [
+ dj.stage_name,
+ dj.stage_slug,
+ publicRequestUrl,
+ dj.email,
+ dj.country,
+ dj.preferred_currency,
+ dj.payout_email,
+ dj.payout_method,
+ dj.payout_provider,
+ dj.payout_status,
+ dj.payout_account_name,
+ dj.payout_account_number,
+ dj.paystack_recipient_code,
+ dj.verification_status || "not_started",
+ dj.is_live ? "live online taking requests" : "offline closed",
+ ]
+ .filter(Boolean)
+ .join(" ")
+ .toLowerCase();
+ }
+
+ function matchesDjSearch(dj: DJ) {
+ if (djSearchTerms.length === 0) return true;
+
+ const searchableText = getDjSearchText(dj);
+
+ return djSearchTerms.every((term) => searchableText.includes(term));
+ }
+
+ const filteredActiveDjs = activeDjs.filter(matchesDjSearch);
+ const filteredRemovedDjs = removedDjs.filter(matchesDjSearch);
+ const totalDjDirectoryCount = activeDjs.length + removedDjs.length;
+ const filteredDjDirectoryCount = filteredActiveDjs.length + filteredRemovedDjs.length;
+
+ const sortedDjs = [...filteredActiveDjs].sort((a, b) => {
  function getDjPriority(dj: DJ) {
  const djWithdrawals = withdrawals.filter(
  (withdrawal) => withdrawal.dj_id === dj.id,
@@ -1097,7 +1144,7 @@ export default function VerificationDashboardClient() {
  subtitle: string,
  items: DJ[],
  ) {
- const isCollapsed = collapsedDjGroups.includes(groupId);
+ const isCollapsed = djSearch.trim() ? false : collapsedDjGroups.includes(groupId);
  const isPriorityEmptyGroup =
  groupId === "pending" || groupId === "withdrawal-action";
 
@@ -1427,9 +1474,48 @@ export default function VerificationDashboardClient() {
  </div>
 
  <p className="text-sm text-zinc-500">
- Showing {activeDjs.length} active DJs
+ {djSearch.trim()
+ ? `Showing ${filteredDjDirectoryCount} of ${totalDjDirectoryCount} DJs`
+ : `Showing ${activeDjs.length} active DJs`}
  </p>
  </div>
+
+ <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-5">
+ <label className="block text-xs uppercase tracking-[0.25em] text-purple-400 font-black mb-3">
+ Search DJs
+ </label>
+
+ <div className="flex flex-col md:flex-row gap-3">
+ <input
+ type="text"
+ placeholder="Search DJ name, email, country, link, status..."
+ value={djSearch}
+ onChange={(event) => setDjSearch(event.target.value)}
+ className="w-full p-3 rounded-2xl bg-zinc-800 border-2 border-purple-500 text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+ />
+
+ {djSearch.trim() && (
+ <button
+ type="button"
+ onClick={() => setDjSearch("")}
+ className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-4 py-3 rounded-xl text-sm font-bold text-zinc-200"
+ >
+ Clear
+ </button>
+ )}
+ </div>
+
+ <p className="text-xs text-zinc-500 mt-3">
+ Searches DJ name, email, country, currency, Blackline link, payout details, live/offline state, and verification status.
+ </p>
+ </div>
+
+ {djSearch.trim() && filteredDjDirectoryCount === 0 && (
+ <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-4 mb-5">
+ <p className="text-red-300 font-bold">No DJs match “{djSearch}”.</p>
+ <p className="text-zinc-500 text-sm mt-1">Try searching by DJ name, email, country, link slug, or verification status.</p>
+ </div>
+ )}
 
  <div className="space-y-5">
  {renderDjGroup(
@@ -1457,7 +1543,7 @@ export default function VerificationDashboardClient() {
  "removed",
  " Removed DJs",
  "Hidden DJs kept for audit history and possible restoration.",
- removedDjs,
+ filteredRemovedDjs,
  )}
  </div>
  </section>
