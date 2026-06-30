@@ -3,8 +3,18 @@ import { redirect } from "next/navigation";
 import VerificationDashboardClient from "./VerificationDashboardClient";
 import BlacklineAdminLoginForm from "./BlacklineAdminLoginForm";
 
-export default async function VerificationAdminPage() {
+type VerificationAdminPageProps = {
+  searchParams?: Promise<{
+    error?: string;
+  }>;
+};
+
+export default async function VerificationAdminPage({
+  searchParams,
+}: VerificationAdminPageProps) {
   const cookieStore = await cookies();
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const hasLoginError = resolvedSearchParams.error === "1";
   const isUnlocked =
     cookieStore.get("blackline_admin_unlocked")?.value === "true";
 
@@ -14,7 +24,7 @@ export default async function VerificationAdminPage() {
     const password = String(formData.get("password") || "");
 
     if (password !== process.env.BLACKLINE_ADMIN_PASSWORD) {
-      return;
+      redirect("/blackline-admin/verifications?error=1");
     }
 
     const cookieStore = await cookies();
@@ -47,7 +57,12 @@ export default async function VerificationAdminPage() {
   }
 
   if (!isUnlocked) {
-    return <BlacklineAdminLoginForm unlockAdminPanel={unlockAdminPanel} />;
+    return (
+      <BlacklineAdminLoginForm
+        unlockAdminPanel={unlockAdminPanel}
+        hasLoginError={hasLoginError}
+      />
+    );
   }
 
   return (

@@ -1,15 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type BlacklineAdminLoginFormProps = {
   unlockAdminPanel: (formData: FormData) => void | Promise<void>;
+  hasLoginError?: boolean;
 };
 
 export default function BlacklineAdminLoginForm({
   unlockAdminPanel,
+  hasLoginError = false,
 }: BlacklineAdminLoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
+  const [showLoginError, setShowLoginError] = useState(hasLoginError);
+
+  useEffect(() => {
+    setShowLoginError(hasLoginError);
+  }, [hasLoginError]);
 
   return (
     <main className="min-h-screen bg-black text-white flex items-center justify-center p-6">
@@ -25,13 +32,27 @@ export default function BlacklineAdminLoginForm({
           Enter the admin password to continue.
         </p>
 
+        {showLoginError && (
+          <div className="mb-4 rounded-2xl border border-red-500/50 bg-red-500/10 p-4">
+            <p className="text-sm font-bold text-red-300">
+              Incorrect admin password.
+            </p>
+            <p className="mt-1 text-xs text-red-200/80">
+              Please try again or reset BLACKLINE_ADMIN_PASSWORD in Vercel.
+            </p>
+          </div>
+        )}
+
         <div className="relative">
           <input
             name="password"
             type={showPassword ? "text" : "password"}
             placeholder="Admin password"
             required
-            className="w-full bg-black border border-zinc-700 rounded-xl px-4 py-3 pr-14 text-white outline-none focus:border-purple-500"
+            onChange={() => setShowLoginError(false)}
+            className={`w-full rounded-xl border bg-black px-4 py-3 pr-14 text-white outline-none focus:border-purple-500 ${
+              showLoginError ? "border-red-500" : "border-zinc-700"
+            }`}
           />
 
           <button
