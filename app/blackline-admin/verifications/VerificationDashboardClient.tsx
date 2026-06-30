@@ -19,6 +19,7 @@ type DJ = {
  paystack_recipient_code?: string | null;
  verification_status?: string | null;
  profile_image?: string | null;
+ is_live?: boolean | null;
 };
 
 type Withdrawal = {
@@ -67,6 +68,7 @@ type ConfirmAction =
  status: "verified" | "rejected" | "pending" | "not_started" | "removed";
  title: string;
  message: string;
+ warning?: string;
  confirmText: string;
  buttonClass: string;
  }
@@ -76,6 +78,7 @@ type ConfirmAction =
  status: "approved" | "rejected" | "paid" | "pending";
  title: string;
  message: string;
+ warning?: string;
  confirmText: string;
  buttonClass: string;
  };
@@ -810,6 +813,16 @@ export default function VerificationDashboardClient() {
  </span>
  )}
 
+ <span
+ className={`px-3 py-1 rounded-full text-xs font-bold border ${
+ dj.is_live
+ ? "bg-green-500/10 border-green-500/30 text-green-400"
+ : "bg-zinc-800 border-zinc-700 text-zinc-400"
+ }`}
+ >
+ {dj.is_live ? "Live now" : "Offline"}
+ </span>
+
  {hasPendingWithdrawal && (
  <span className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 px-3 py-1 rounded-full text-xs font-bold">
  Pending withdrawal
@@ -956,9 +969,12 @@ export default function VerificationDashboardClient() {
  kind: "dj",
  id: dj.id,
  status: "rejected",
- title: "Reject DJ",
+ title: dj.is_live ? "Reject Live DJ" : "Reject DJ",
  message: `Are you sure you want to reject ${dj.stage_name}?`,
- confirmText: "Reject DJ",
+ warning: dj.is_live
+ ? "This DJ is currently live. Rejecting them will force them offline immediately and close paid requests on their public page."
+ : "Rejected DJs cannot go live or take paid requests until Blackline approves them again.",
+ confirmText: dj.is_live ? "Reject and Force Offline" : "Reject DJ",
  buttonClass: "bg-red-600 hover:bg-red-700",
  })
  }
@@ -1915,9 +1931,20 @@ export default function VerificationDashboardClient() {
  {confirmAction.title}
  </h2>
 
- <p className="text-zinc-400 mb-6 leading-relaxed">
+ <p className="text-zinc-400 mb-4 leading-relaxed">
  {confirmAction.message}
  </p>
+
+ {confirmAction.warning && (
+ <div className="mb-6 rounded-2xl border border-red-500/40 bg-red-500/10 p-4">
+ <p className="text-xs font-black uppercase tracking-[0.2em] text-red-300">
+ Important
+ </p>
+ <p className="mt-2 text-sm font-semibold leading-relaxed text-red-100">
+ {confirmAction.warning}
+ </p>
+ </div>
+ )}
 
  <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
  <button
