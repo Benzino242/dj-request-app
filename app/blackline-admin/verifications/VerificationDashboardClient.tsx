@@ -118,6 +118,7 @@ export default function VerificationDashboardClient() {
  ]);
  const [isRecentActivityCollapsed, setIsRecentActivityCollapsed] =
  useState(false);
+ const [connectionWarning, setConnectionWarning] = useState("");
  const isFetchingDashboardRef = useRef(false);
 
  async function fetchDashboardData(showLoader = false) {
@@ -143,7 +144,10 @@ export default function VerificationDashboardClient() {
 
  if (!response.ok) {
  console.error("BLACKLINE DASHBOARD API ERROR:", result);
- alert(result.error || "Failed to load Blackline dashboard data");
+ setConnectionWarning(
+ result.error ||
+ "Blackline dashboard could not refresh. It will retry automatically.",
+ );
  return;
  }
 
@@ -162,9 +166,12 @@ export default function VerificationDashboardClient() {
  setWithdrawals((result.withdrawals || []) as Withdrawal[]);
  setDjEarnings((result.djEarnings || []) as DjEarning[]);
  setAuditLogs((result.auditLogs || []) as AuditLog[]);
+ setConnectionWarning("");
  } catch (error) {
  console.error("BLACKLINE DASHBOARD FETCH ERROR:", error);
- alert("Failed to connect to Blackline dashboard API");
+ setConnectionWarning(
+ "Connection paused. Blackline will reconnect automatically when the network is ready.",
+ );
  } finally {
  isFetchingDashboardRef.current = false;
 
@@ -182,6 +189,32 @@ export default function VerificationDashboardClient() {
  const refreshInterval = setInterval(() => {
  fetchDashboardData();
  }, 10000);
+
+ const handleWindowFocus = () => {
+ fetchDashboardData();
+ };
+
+ const handleOnline = () => {
+ setConnectionWarning("Reconnected. Refreshing Blackline dashboard...");
+ fetchDashboardData();
+ };
+
+ const handleOffline = () => {
+ setConnectionWarning(
+ "You are offline. Blackline will reconnect automatically when the network is ready.",
+ );
+ };
+
+ const handleVisibilityChange = () => {
+ if (document.visibilityState === "visible") {
+ fetchDashboardData();
+ }
+ };
+
+ window.addEventListener("focus", handleWindowFocus);
+ window.addEventListener("online", handleOnline);
+ window.addEventListener("offline", handleOffline);
+ document.addEventListener("visibilitychange", handleVisibilityChange);
 
  const channel = supabase
  .channel("blackline-verification-dashboard")
@@ -233,6 +266,10 @@ export default function VerificationDashboardClient() {
 
  return () => {
  clearInterval(refreshInterval);
+ window.removeEventListener("focus", handleWindowFocus);
+ window.removeEventListener("online", handleOnline);
+ window.removeEventListener("offline", handleOffline);
+ document.removeEventListener("visibilitychange", handleVisibilityChange);
  supabase.removeChannel(channel);
  };
  }, []);
@@ -1268,6 +1305,32 @@ export default function VerificationDashboardClient() {
  <p className="text-zinc-400 mb-10">
  Manage DJ verification, earnings, payouts, and withdrawal activity.
  </p>
+
+ {connectionWarning && (
+ <div className="mb-6 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-yellow-100">
+ <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+ <div>
+ <p className="text-xs font-black uppercase tracking-[0.25em] text-yellow-400">
+ Connection Notice
+ </p>
+ <p className="mt-2 text-sm font-semibold text-yellow-100">
+ {connectionWarning}
+ </p>
+ <p className="mt-1 text-xs text-yellow-200/70">
+ No action is needed if your laptop just woke up. The dashboard retries automatically.
+ </p>
+ </div>
+
+ <button
+ type="button"
+ onClick={() => fetchDashboardData()}
+ className="self-start rounded-xl border border-yellow-500/40 bg-black/30 px-4 py-2 text-sm font-black text-yellow-100 hover:bg-yellow-500/10 md:self-center"
+ >
+ Retry now
+ </button>
+ </div>
+ </div>
+ )}
 
  {adminActionCount > 0 ? (
  <div className="mb-6 border rounded-3xl p-5 bg-yellow-500/10 border-yellow-500/40 shadow-[0_0_35px_rgba(250,204,21,0.18)]">
