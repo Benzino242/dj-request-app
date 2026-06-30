@@ -2,21 +2,62 @@
 
 import { useEffect, useState } from "react";
 
+type LoginErrorType = "wrong" | "locked" | null;
+
 type BlacklineAdminLoginFormProps = {
   unlockAdminPanel: (formData: FormData) => void | Promise<void>;
-  hasLoginError?: boolean;
+  loginErrorType?: LoginErrorType;
+  lockedUntil?: number | null;
 };
+
+function getRemainingSeconds(lockedUntil?: number | null) {
+  if (!lockedUntil) return 0;
+
+  return Math.max(0, Math.ceil((lockedUntil - Date.now()) / 1000));
+}
+
+function formatRemainingTime(seconds: number) {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+
+  return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
+}
 
 export default function BlacklineAdminLoginForm({
   unlockAdminPanel,
-  hasLoginError = false,
+  loginErrorType = null,
+  lockedUntil = null,
 }: BlacklineAdminLoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const [showLoginError, setShowLoginError] = useState(hasLoginError);
+  const [activeErrorType, setActiveErrorType] =
+    useState<LoginErrorType>(loginErrorType);
+  const [remainingLockSeconds, setRemainingLockSeconds] = useState(
+    getRemainingSeconds(lockedUntil),
+  );
+
+  const isLocked =
+    activeErrorType === "locked" && remainingLockSeconds > 0;
 
   useEffect(() => {
-    setShowLoginError(hasLoginError);
-  }, [hasLoginError]);
+    setActiveErrorType(loginErrorType);
+    setRemainingLockSeconds(getRemainingSeconds(lockedUntil));
+  }, [loginErrorType, lockedUntil]);
+
+  useEffect(() => {
+    if (!lockedUntil) return;
+
+    const interval = window.setInterval(() => {
+      const nextRemainingSeconds = getRemainingSeconds(lockedUntil);
+
+      setRemainingLockSeconds(nextRemainingSeconds);
+
+      if (nextRemainingSeconds <= 0) {
+        setActiveErrorType(null);
+      }
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, [lockedUntil]);
 
   return (
     <main className="min-h-screen bg-black text-white flex items-center justify-center p-6">
@@ -32,7 +73,7 @@ export default function BlacklineAdminLoginForm({
           Enter the admin password to continue.
         </p>
 
-        {showLoginError && (
+        {activeErrorType === "wrong" && (
           <div className="mb-4 rounded-2xl border border-red-500/50 bg-red-500/10 p-4">
             <p className="text-sm font-bold text-red-300">
               Incorrect admin password.
@@ -43,15 +84,36 @@ export default function BlacklineAdminLoginForm({
           </div>
         )}
 
+        {isLocked && (
+          <div className="mb-4 rounded-2xl border border-yellow-500/50 bg-yellow-500/10 p-4">
+            <p className="text-sm font-bold text-yellow-300">
+              Too many wrong attempts.
+            </p>
+            <p className="mt-1 text-xs text-yellow-100/80">
+              Blackline admin login is temporarily locked. Try again in {" "}
+              {formatRemainingTime(remainingLockSeconds)}.
+            </p>
+          </div>
+        )}
+
         <div className="relative">
           <input
             name="password"
             type={showPassword ? "text" : "password"}
             placeholder="Admin password"
             required
-            onChange={() => setShowLoginError(false)}
-            className={`w-full rounded-xl border bg-black px-4 py-3 pr-14 text-white outline-none focus:border-purple-500 ${
-              showLoginError ? "border-red-500" : "border-zinc-700"
+            disabled={isLocked}
+            onChange={() => {
+              if (activeErrorType === "wrong") {
+                setActiveErrorType(null);
+              }
+            }}
+            className={`w-full rounded-xl border bg-black px-4 py-3 pr-14 text-white outline-none focus:border-purple-500 disabled:cursor-not-allowed disabled:opacity-50 ${
+              activeErrorType === "wrong"
+                ? "border-red-500"
+                : isLocked
+                  ? "border-yellow-500"
+                  : "border-zinc-700"
             }`}
           />
 
@@ -59,7 +121,8 @@ export default function BlacklineAdminLoginForm({
             type="button"
             aria-label={showPassword ? "Hide password" : "Show password"}
             onClick={() => setShowPassword((currentValue) => !currentValue)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 text-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
+            disabled={isLocked}
+            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 text-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition disabled:cursor-not-allowed disabled:opacity-50"
           >
             {showPassword ? "🙈" : "👁️"}
           </button>
@@ -67,9 +130,10 @@ export default function BlacklineAdminLoginForm({
 
         <button
           type="submit"
-          className="w-full mt-5 bg-purple-600 hover:bg-purple-700 font-bold py-3 rounded-xl"
+          disabled={isLocked}
+          className="w-full mt-5 bg-purple-600 hover:bg-purple-700 font-bold py-3 rounded-xl disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Unlock
+          {isLocked ? "Temporarily locked" : "Unlock"}
         </button>
       </form>
     </main>

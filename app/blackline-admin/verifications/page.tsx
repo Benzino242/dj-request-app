@@ -9,33 +9,92 @@ type VerificationAdminPageProps = {
   }>;
 };
 
+const ADMIN_UNLOCK_COOKIE = "blackline_admin_unlocked";
+const ADMIN_FAILED_ATTEMPTS_COOKIE = "blackline_admin_failed_attempts";
+const ADMIN_LOCKED_UNTIL_COOKIE = "blackline_admin_locked_until";
+
+const MAX_FAILED_ATTEMPTS = 5;
+const LOCKOUT_SECONDS = 15 * 60;
+
+function getCookieOptions(maxAge: number) {
+  return {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict" as const,
+    path: "/blackline-admin/verifications",
+    maxAge,
+  };
+}
+
 export default async function VerificationAdminPage({
   searchParams,
 }: VerificationAdminPageProps) {
   const cookieStore = await cookies();
   const resolvedSearchParams = searchParams ? await searchParams : {};
-  const hasLoginError = resolvedSearchParams.error === "1";
-  const isUnlocked =
-    cookieStore.get("blackline_admin_unlocked")?.value === "true";
+
+  const isUnlocked = cookieStore.get(ADMIN_UNLOCK_COOKIE)?.value === "true";
+  const lockedUntilValue = Number(
+    cookieStore.get(ADMIN_LOCKED_UNTIL_COOKIE)?.value || 0,
+  );
+  const isLocked = lockedUntilValue > Date.now();
+  const loginErrorType = isLocked
+    ? "locked"
+    : resolvedSearchParams.error === "1"
+      ? "wrong"
+      : resolvedSearchParams.error === "locked"
+        ? "locked"
+        : null;
 
   async function unlockAdminPanel(formData: FormData) {
     "use server";
 
     const password = String(formData.get("password") || "");
+    const cookieStore = await cookies();
+
+    const lockedUntilValue = Number(
+      cookieStore.get(ADMIN_LOCKED_UNTIL_COOKIE)?.value || 0,
+    );
+
+    if (lockedUntilValue > Date.now()) {
+      redirect("/blackline-admin/verifications?error=locked");
+    }
 
     if (password !== process.env.BLACKLINE_ADMIN_PASSWORD) {
+      const currentFailedAttempts = Number(
+        cookieStore.get(ADMIN_FAILED_ATTEMPTS_COOKIE)?.value || 0,
+      );
+      const nextFailedAttempts = currentFailedAttempts + 1;
+
+      if (nextFailedAttempts >= MAX_FAILED_ATTEMPTS) {
+        const lockedUntil = Date.now() + LOCKOUT_SECONDS * 1000;
+
+        cookieStore.set(
+          ADMIN_LOCKED_UNTIL_COOKIE,
+          String(lockedUntil),
+          getCookieOptions(LOCKOUT_SECONDS),
+        );
+
+        cookieStore.set(
+          ADMIN_FAILED_ATTEMPTS_COOKIE,
+          "0",
+          getCookieOptions(0),
+        );
+
+        redirect("/blackline-admin/verifications?error=locked");
+      }
+
+      cookieStore.set(
+        ADMIN_FAILED_ATTEMPTS_COOKIE,
+        String(nextFailedAttempts),
+        getCookieOptions(LOCKOUT_SECONDS),
+      );
+
       redirect("/blackline-admin/verifications?error=1");
     }
 
-    const cookieStore = await cookies();
-
-    cookieStore.set("blackline_admin_unlocked", "true", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/blackline-admin/verifications",
-      maxAge: 60 * 60 * 8,
-    });
+    cookieStore.set(ADMIN_UNLOCK_COOKIE, "true", getCookieOptions(60 * 60 * 8));
+    cookieStore.set(ADMIN_FAILED_ATTEMPTS_COOKIE, "0", getCookieOptions(0));
+    cookieStore.set(ADMIN_LOCKED_UNTIL_COOKIE, "0", getCookieOptions(0));
 
     redirect("/blackline-admin/verifications");
   }
@@ -45,13 +104,7 @@ export default async function VerificationAdminPage({
 
     const cookieStore = await cookies();
 
-    cookieStore.set("blackline_admin_unlocked", "", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/blackline-admin/verifications",
-      maxAge: 0,
-    });
+    cookieStore.set(ADMIN_UNLOCK_COOKIE, "", getCookieOptions(0));
 
     redirect("/blackline-admin/verifications");
   }
@@ -60,7 +113,8 @@ export default async function VerificationAdminPage({
     return (
       <BlacklineAdminLoginForm
         unlockAdminPanel={unlockAdminPanel}
-        hasLoginError={hasLoginError}
+        loginErrorType={loginErrorType}
+        lockedUntil={isLocked || loginErrorType === "locked" ? lockedUntilValue : null}
       />
     );
   }
