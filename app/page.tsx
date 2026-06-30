@@ -62,7 +62,7 @@ const previewQueue = [
 
 function ProductPreview() {
   return (
-    <div className="relative mx-auto mt-16 max-w-6xl">
+    <div id="demo" className="relative mx-auto mt-16 max-w-6xl scroll-mt-8">
       <div className="absolute -left-10 top-20 hidden rounded-3xl border border-purple-500/30 bg-purple-500/10 px-5 py-4 text-left shadow-[0_0_35px_rgba(168,85,247,0.22)] backdrop-blur md:block">
         <p className="text-xs font-black uppercase tracking-[0.25em] text-purple-300">
           Live queue
@@ -250,6 +250,13 @@ export default function HomePage() {
             >
               Become a Blackline DJ
             </Link>
+
+            <a
+              href="#demo"
+              className="rounded-2xl border border-purple-500/50 bg-purple-500/10 px-8 py-5 text-xl font-black text-purple-100 transition hover:bg-purple-500/20"
+            >
+              Watch Demo
+            </a>
 
             <Link
               href="/admin"
