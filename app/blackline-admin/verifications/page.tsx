@@ -41,13 +41,25 @@ export default async function VerificationAdminPage() {
             Enter the admin password to continue.
           </p>
 
-          <input
-            name="password"
-            type="password"
-            placeholder="Admin password"
-            required
-            className="w-full bg-black border border-zinc-700 rounded-xl px-4 py-3 text-white outline-none focus:border-purple-500"
-          />
+          <div className="relative">
+            <input
+              id="blackline-admin-password-input"
+              name="password"
+              type="password"
+              placeholder="Admin password"
+              required
+              className="w-full bg-black border border-zinc-700 rounded-xl px-4 py-3 pr-14 text-white outline-none focus:border-purple-500"
+            />
+
+            <button
+              id="blackline-admin-password-toggle"
+              type="button"
+              aria-label="Show password"
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 text-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
+            >
+              👁️
+            </button>
+          </div>
 
           <button
             type="submit"
@@ -56,6 +68,30 @@ export default async function VerificationAdminPage() {
             Unlock
           </button>
         </form>
+
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function () {
+                var input = document.getElementById("blackline-admin-password-input");
+                var button = document.getElementById("blackline-admin-password-toggle");
+
+                if (!input || !button) return;
+
+                button.addEventListener("click", function () {
+                  var isPassword = input.getAttribute("type") === "password";
+
+                  input.setAttribute("type", isPassword ? "text" : "password");
+                  button.textContent = isPassword ? "🙈" : "👁️";
+                  button.setAttribute(
+                    "aria-label",
+                    isPassword ? "Hide password" : "Show password"
+                  );
+                });
+              })();
+            `,
+          }}
+        />
       </main>
     );
   }
