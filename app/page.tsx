@@ -236,41 +236,41 @@ function VideoDemoModal({
     >
       <div className="absolute inset-0" onClick={onClose} />
 
-      <div className="relative z-10 w-full max-w-5xl overflow-hidden rounded-[2rem] border border-purple-500/40 bg-zinc-950 shadow-[0_0_80px_rgba(168,85,247,0.25)]">
-        <div className="flex items-center justify-between gap-4 border-b border-zinc-800 px-5 py-4 md:px-6">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.3em] text-purple-300">
-              Watch Demo
-            </p>
-            <h2 className="mt-1 text-xl font-black text-white md:text-2xl">
-              See how Blackline works live
-            </h2>
-          </div>
+      <div className="relative z-10 w-full max-w-[540px] overflow-hidden rounded-[2rem] border border-purple-500/40 bg-zinc-950 shadow-[0_0_80px_rgba(168,85,247,0.3)]">
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 z-20 rounded-full border border-zinc-700 bg-black/80 px-4 py-2 text-sm font-black text-zinc-200 backdrop-blur transition hover:bg-zinc-900"
+          aria-label="Close demo video"
+        >
+          ✕ Close
+        </button>
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-full border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-black text-zinc-200 transition hover:bg-zinc-800"
-            aria-label="Close demo video"
-          >
-            ✕ Close
-          </button>
+        <div className="border-b border-zinc-800 bg-gradient-to-br from-purple-950/50 via-black to-black px-5 pb-4 pt-6 text-center md:px-7">
+          <p className="text-xs font-black uppercase tracking-[0.3em] text-purple-300">
+            Watch Demo
+          </p>
+          <h2 className="mx-auto mt-2 max-w-sm pr-20 text-2xl font-black leading-tight text-white md:pr-0 md:text-3xl">
+            See how Blackline works live
+          </h2>
         </div>
 
-        <div className="bg-black p-4 md:p-6">
-          <video
-            className="mx-auto max-h-[78vh] w-full max-w-[430px] rounded-[1.75rem] border border-zinc-800 bg-black shadow-2xl"
-            controls
-            autoPlay
-            playsInline
-            preload="metadata"
-            poster="/images/blackline-demo-thumbnail.png"
-          >
-            <source src="/videos/blackline-demo.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+        <div className="bg-black px-4 py-5 md:px-6 md:py-6">
+          <div className="mx-auto max-w-[390px] rounded-[2rem] border border-purple-500/20 bg-zinc-950 p-2 shadow-[0_0_45px_rgba(168,85,247,0.2)]">
+            <video
+              className="mx-auto max-h-[74vh] w-full rounded-[1.5rem] bg-black shadow-2xl"
+              controls
+              autoPlay
+              playsInline
+              preload="metadata"
+              poster="/images/blackline-demo-thumbnail.png"
+            >
+              <source src="/videos/blackline-demo.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
 
-          <p className="mx-auto mt-4 max-w-xl text-center text-sm leading-relaxed text-zinc-500">
+          <p className="mx-auto mt-4 max-w-md text-center text-sm leading-relaxed text-zinc-500">
             Guests scan the DJ QR code, request a song, boost the queue, and the
             DJ sees it live in the dashboard.
           </p>
