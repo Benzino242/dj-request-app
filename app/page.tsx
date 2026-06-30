@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 
 const platformHighlights = [
@@ -215,7 +216,73 @@ function ProductPreview() {
   );
 }
 
+function VideoDemoModal({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) {
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 px-4 py-6 backdrop-blur"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Blackline demo video"
+    >
+      <div className="absolute inset-0" onClick={onClose} />
+
+      <div className="relative z-10 w-full max-w-5xl overflow-hidden rounded-[2rem] border border-purple-500/40 bg-zinc-950 shadow-[0_0_80px_rgba(168,85,247,0.25)]">
+        <div className="flex items-center justify-between gap-4 border-b border-zinc-800 px-5 py-4 md:px-6">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.3em] text-purple-300">
+              Watch Demo
+            </p>
+            <h2 className="mt-1 text-xl font-black text-white md:text-2xl">
+              See how Blackline works live
+            </h2>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-full border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-black text-zinc-200 transition hover:bg-zinc-800"
+            aria-label="Close demo video"
+          >
+            ✕ Close
+          </button>
+        </div>
+
+        <div className="bg-black p-4 md:p-6">
+          <video
+            className="mx-auto max-h-[78vh] w-full max-w-[430px] rounded-[1.75rem] border border-zinc-800 bg-black shadow-2xl"
+            controls
+            autoPlay
+            playsInline
+            preload="metadata"
+            poster="/images/blackline-demo-thumbnail.png"
+          >
+            <source src="/videos/blackline-demo.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+
+          <p className="mx-auto mt-4 max-w-xl text-center text-sm leading-relaxed text-zinc-500">
+            Guests scan the DJ QR code, request a song, boost the queue, and the
+            DJ sees it live in the dashboard.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function HomePage() {
+  const [isDemoOpen, setIsDemoOpen] = useState(false);
+
   return (
     <main className="min-h-screen bg-black text-white">
       <section className="relative overflow-hidden px-6 py-20 md:py-28">
@@ -251,12 +318,13 @@ export default function HomePage() {
               Become a Blackline DJ
             </Link>
 
-            <a
-              href="#demo"
+            <button
+              type="button"
+              onClick={() => setIsDemoOpen(true)}
               className="rounded-2xl border border-purple-500/50 bg-purple-500/10 px-8 py-5 text-xl font-black text-purple-100 transition hover:bg-purple-500/20"
             >
               Watch Demo
-            </a>
+            </button>
 
             <Link
               href="/admin"
@@ -421,6 +489,29 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="border-t border-zinc-900 px-6 py-20">
+        <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-purple-500/30 bg-gradient-to-br from-zinc-950 via-black to-purple-950/40 p-6 text-center shadow-[0_0_60px_rgba(168,85,247,0.16)] md:p-10">
+          <p className="mb-3 text-sm font-black uppercase tracking-[0.3em] text-purple-300">
+            44-second demo
+          </p>
+          <h2 className="mx-auto mb-4 max-w-3xl text-4xl font-black md:text-5xl">
+            Watch the full guest-to-DJ request flow.
+          </h2>
+          <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-zinc-400">
+            A quick preview of QR scanning, song requests, paid boosts, live DJ
+            queue updates, and tracked earnings.
+          </p>
+
+          <button
+            type="button"
+            onClick={() => setIsDemoOpen(true)}
+            className="rounded-2xl bg-purple-600 px-10 py-5 text-2xl font-black transition hover:bg-purple-700"
+          >
+            ▶ Watch Demo Video
+          </button>
+        </div>
+      </section>
+
       <footer className="border-t border-zinc-900 px-6 py-8">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 text-sm text-zinc-500 md:flex-row md:items-center md:justify-between">
           <p>© {new Date().getFullYear()} Blackline DJ. Live DJ request platform.</p>
@@ -438,6 +529,8 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
+
+      <VideoDemoModal isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
     </main>
   );
 }
