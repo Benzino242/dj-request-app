@@ -30,6 +30,34 @@ const languageOptions = [
 
 type LanguageCode = (typeof languageOptions)[number]["code"];
 
+const footerLinkLabels: Record<
+  LanguageCode,
+  { support: string; terms: string; privacy: string }
+> = {
+  en: { support: "Support", terms: "Terms", privacy: "Privacy" },
+  zh: { support: "支持", terms: "条款", privacy: "隐私" },
+  ja: { support: "サポート", terms: "利用規約", privacy: "プライバシー" },
+  ko: { support: "지원", terms: "약관", privacy: "개인정보" },
+  id: { support: "Dukungan", terms: "Ketentuan", privacy: "Privasi" },
+  ms: { support: "Sokongan", terms: "Terma", privacy: "Privasi" },
+  th: { support: "ซัพพอร์ต", terms: "เงื่อนไข", privacy: "ความเป็นส่วนตัว" },
+  hi: { support: "सहायता", terms: "शर्तें", privacy: "गोपनीयता" },
+  ar: { support: "الدعم", terms: "الشروط", privacy: "الخصوصية" },
+  vi: { support: "Hỗ trợ", terms: "Điều khoản", privacy: "Quyền riêng tư" },
+  tl: { support: "Support", terms: "Terms", privacy: "Privacy" },
+  pt: { support: "Suporte", terms: "Termos", privacy: "Privacidade" },
+  es: { support: "Soporte", terms: "Términos", privacy: "Privacidad" },
+  fr: { support: "Support", terms: "Conditions", privacy: "Confidentialité" },
+  de: { support: "Support", terms: "Bedingungen", privacy: "Datenschutz" },
+  ru: { support: "Поддержка", terms: "Условия", privacy: "Конфиденциальность" },
+  tr: { support: "Destek", terms: "Şartlar", privacy: "Gizlilik" },
+  it: { support: "Supporto", terms: "Termini", privacy: "Privacy" },
+  nl: { support: "Support", terms: "Voorwaarden", privacy: "Privacy" },
+  pl: { support: "Wsparcie", terms: "Warunki", privacy: "Prywatność" },
+  el: { support: "Υποστήριξη", terms: "Όροι", privacy: "Απόρρητο" },
+  uk: { support: "Підтримка", terms: "Умови", privacy: "Приватність" },
+};
+
 const landingTranslations = {
   en: {
     languageLabel: "Language",
@@ -1685,6 +1713,7 @@ export default function HomePage() {
   }
 
   const t = landingTranslations[language];
+  const footerLinks = footerLinkLabels[language];
   const isRtl = language === "ar";
 
   return (
@@ -1818,9 +1847,9 @@ export default function HomePage() {
           <p>© {new Date().getFullYear()} Blackline DJ. {t.footerText}</p>
 
           <div className="flex flex-wrap gap-4">
-            <a href="mailto:support@blacklinedj.com" className="hover:text-purple-300">{t.support}</a>
-            <Link href="/signup" className="hover:text-purple-300">{t.djSignup}</Link>
-            <Link href="/admin" className="hover:text-purple-300">{t.djLogin}</Link>
+            <Link href="/support" className="hover:text-purple-300">{footerLinks.support}</Link>
+            <Link href="/terms" className="hover:text-purple-300">{footerLinks.terms}</Link>
+            <Link href="/privacy" className="hover:text-purple-300">{footerLinks.privacy}</Link>
           </div>
         </div>
       </footer>
