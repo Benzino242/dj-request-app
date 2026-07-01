@@ -45,10 +45,12 @@ const sections = [
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-black text-white">
-      <section className="relative overflow-hidden px-5 py-16 md:px-8 md:py-24">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(168,85,247,0.24),transparent_38%),radial-gradient(circle_at_bottom_left,rgba(34,197,94,0.11),transparent_35%)]" />
-        <div className="relative mx-auto max-w-4xl">
+    <main className="relative isolate min-h-screen overflow-hidden bg-black text-white">
+      <div className="fixed inset-0 -z-20 bg-black" />
+      <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,rgba(168,85,247,0.24),transparent_38%),radial-gradient(circle_at_bottom_left,rgba(34,197,94,0.11),transparent_35%)]" />
+
+      <section className="relative px-5 py-16 md:px-8 md:py-24">
+        <div className="mx-auto max-w-4xl">
           <Link
             href="/"
             className="inline-flex items-center rounded-full border border-zinc-800 bg-zinc-950 px-4 py-2 text-sm font-bold text-zinc-300 transition hover:border-purple-500 hover:text-white"
@@ -56,7 +58,7 @@ export default function PrivacyPage() {
             ← Back to Blackline
           </Link>
 
-          <div className="mt-10 rounded-[2rem] border border-purple-500/30 bg-zinc-950/80 p-6 shadow-[0_0_80px_rgba(168,85,247,0.18)] md:p-10">
+          <div className="mt-10 rounded-[2rem] border border-purple-500/30 bg-zinc-950/95 p-6 shadow-[0_0_80px_rgba(168,85,247,0.18)] md:p-10">
             <p className="text-xs font-black uppercase tracking-[0.35em] text-purple-300">
               Blackline Privacy
             </p>
@@ -77,7 +79,7 @@ export default function PrivacyPage() {
             {sections.map((section) => (
               <div
                 key={section.title}
-                className="rounded-3xl border border-zinc-800 bg-zinc-950 p-6"
+                className="rounded-3xl border border-zinc-800 bg-zinc-950/95 p-6"
               >
                 <h2 className="text-xl font-black text-white">{section.title}</h2>
                 <p className="mt-3 leading-relaxed text-zinc-400">{section.body}</p>
@@ -98,6 +100,23 @@ export default function PrivacyPage() {
               .
             </p>
           </div>
+
+          <footer className="mt-12 border-t border-zinc-900 pt-6 text-sm text-zinc-600">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <p>© {new Date().getFullYear()} Blackline DJ. Privacy Policy.</p>
+              <div className="flex flex-wrap gap-4">
+                <Link href="/support" className="hover:text-purple-300">
+                  Support
+                </Link>
+                <Link href="/terms" className="hover:text-purple-300">
+                  Terms
+                </Link>
+                <Link href="/privacy" className="hover:text-purple-300">
+                  Privacy
+                </Link>
+              </div>
+            </div>
+          </footer>
         </div>
       </section>
     </main>
