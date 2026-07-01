@@ -83,7 +83,11 @@ type ConfirmAction =
  buttonClass: string;
  };
 
-export default function VerificationDashboardClient() {
+export default function VerificationDashboardClient({
+ signOutAction,
+}: {
+ signOutAction?: () => void | Promise<void>;
+}) {
  const [djs, setDjs] = useState<DJ[]>([]);
  const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
  const [djEarnings, setDjEarnings] = useState<DjEarning[]>([]);
@@ -1298,13 +1302,28 @@ export default function VerificationDashboardClient() {
 
  return (
  <main className="min-h-screen bg-black text-white px-4 py-6 md:p-6">
+ <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+ <div>
  <h1 className="text-4xl md:text-5xl font-black text-purple-500 mb-3">
  Blackline Admin Dashboard
  </h1>
 
- <p className="text-zinc-400 mb-10">
+ <p className="text-zinc-400">
  Manage DJ verification, earnings, payouts, and withdrawal activity.
  </p>
+ </div>
+
+ {signOutAction && (
+ <form action={signOutAction} className="shrink-0">
+ <button
+ type="submit"
+ className="bg-zinc-900 hover:bg-red-950 border border-zinc-700 hover:border-red-500 text-zinc-200 hover:text-red-200 px-4 py-3 rounded-xl text-sm font-bold transition"
+ >
+ Sign out
+ </button>
+ </form>
+ )}
+ </div>
 
  {connectionWarning && (
  <div className="mb-6 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-yellow-100">

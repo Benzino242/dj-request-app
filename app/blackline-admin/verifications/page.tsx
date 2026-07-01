@@ -228,18 +228,5 @@ export default async function VerificationAdminPage({
     );
   }
 
-  return (
-    <>
-      <form action={lockAdminPanel} className="fixed top-4 right-4 z-50">
-        <button
-          type="submit"
-          className="bg-zinc-900/95 hover:bg-red-950 border border-zinc-700 hover:border-red-500 text-zinc-200 hover:text-red-200 px-4 py-2 rounded-xl text-sm font-bold shadow-xl transition"
-        >
-          Sign out
-        </button>
-      </form>
-
-      <VerificationDashboardClient />
-    </>
-  );
+  return <VerificationDashboardClient signOutAction={lockAdminPanel} />;
 }
