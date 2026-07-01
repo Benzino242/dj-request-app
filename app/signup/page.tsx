@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabase";
 
@@ -13,6 +14,10 @@ const RESERVED_STAGE_SLUGS = new Set([
   "blackline-admin",
   "blackline",
   "support",
+  "terms",
+  "privacy",
+  "videos",
+  "images",
   "www",
 ]);
 
@@ -65,6 +70,7 @@ export default function SignupPage() {
     useState<SlugAvailability>("idle");
 
   const cleanStageName = stageName.trim();
+  const cleanEmail = email.trim();
 
   const cleanStageSlug = useMemo(() => cleanSlugForUrl(stageSlug), [stageSlug]);
 
@@ -76,12 +82,15 @@ export default function SignupPage() {
   const slugTooLong = cleanStageSlug.length > 30;
 
   const slugIsChecking = slugAvailability === "checking";
+  const slugIsAvailable = slugAvailability === "available";
   const slugIsTaken = slugAvailability === "taken";
 
   const signupDisabled =
     loading ||
     !cleanStageName ||
     !cleanStageSlug ||
+    !cleanEmail ||
+    !password ||
     slugIsReserved ||
     slugTooShort ||
     slugTooLong ||
@@ -183,7 +192,7 @@ export default function SignupPage() {
     }
 
     const { data, error } = await supabase.auth.signUp({
-      email: email.trim(),
+      email: cleanEmail,
       password,
     });
 
@@ -212,7 +221,7 @@ export default function SignupPage() {
         {
           stage_name: cleanStageName,
           stage_slug: cleanStageSlug,
-          email: email.trim(),
+          email: cleanEmail,
           user_id: userId,
           verification_status: "not_started",
         },
@@ -248,166 +257,330 @@ export default function SignupPage() {
     }, 1500);
   }
 
+  function getSlugHelperText() {
+    if (cleanStageSlug && slugIsReserved) {
+      return {
+        className: "text-red-400",
+        text: "This public URL name is reserved. Please choose another one.",
+      };
+    }
+
+    if (cleanStageSlug && slugTooShort) {
+      return {
+        className: "text-red-400",
+        text: "Public URL name must be at least 3 characters.",
+      };
+    }
+
+    if (cleanStageSlug && slugTooLong) {
+      return {
+        className: "text-red-400",
+        text: "Public URL name must be 30 characters or less.",
+      };
+    }
+
+    if (cleanStageSlug && slugIsChecking) {
+      return {
+        className: "text-zinc-500",
+        text: "Checking public URL availability...",
+      };
+    }
+
+    if (cleanStageSlug && slugIsTaken) {
+      return {
+        className: "text-red-400",
+        text: "This public URL name is already taken. Please choose another one.",
+      };
+    }
+
+    if (cleanStageSlug && slugIsAvailable) {
+      return {
+        className: "text-green-400",
+        text: `Available: blacklinedj.com/${cleanStageSlug}`,
+      };
+    }
+
+    if (cleanStageSlug) {
+      return {
+        className: "text-purple-400",
+        text: `Guests will scan/open: blacklinedj.com/${cleanStageSlug}`,
+      };
+    }
+
+    return {
+      className: "text-zinc-500",
+      text: "This becomes your unique public Blackline link.",
+    };
+  }
+
+  const slugHelper = getSlugHelperText();
+
   return (
-    <main className="min-h-screen bg-black text-white flex items-center justify-center p-6">
-      <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl w-full max-w-md">
-        <h1 className="text-4xl font-bold text-purple-500 text-center mb-3">
-          Join Blackline
-        </h1>
+    <main className="relative min-h-screen overflow-hidden bg-black px-5 py-8 text-white md:px-8 md:py-12">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(168,85,247,0.28),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(34,197,94,0.12),transparent_34%)]" />
 
-        <p className="text-zinc-400 text-center mb-8">
-          Create your DJ profile and get your own request page.
-        </p>
-
-        <form onSubmit={handleSignup} className="space-y-4">
-          <div>
-            <input
-              type="text"
-              placeholder="DJ name e.g. DJ Don Dada"
-              value={stageName}
-              onChange={(e) => {
-                setStageName(e.target.value);
-                setMessage("");
-              }}
-              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-              required
-            />
-
-            <p className="text-xs text-zinc-500 mt-2">
-            Guests will see this name on your request page.
-            </p>
-          </div>
-
-          <div>
-            <input
-              type="text"
-              placeholder="Link name e.g. dj-don-dada"
-              value={stageSlug}
-              onChange={(e) => {
-                setSlugWasEdited(true);
-                setStageSlug(cleanSlugForUrl(e.target.value));
-                setMessage("");
-              }}
-              className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-              required
-            />
-
-            {cleanStageSlug && slugIsReserved ? (
-              <p className="text-xs text-red-400 mt-2">
-                This public URL name is reserved. Please choose another one.
-              </p>
-            ) : cleanStageSlug && slugTooShort ? (
-              <p className="text-xs text-red-400 mt-2">
-                Public URL name must be at least 3 characters.
-              </p>
-            ) : cleanStageSlug && slugTooLong ? (
-              <p className="text-xs text-red-400 mt-2">
-                Public URL name must be 30 characters or less.
-              </p>
-            ) : cleanStageSlug && slugIsChecking ? (
-              <p className="text-xs text-zinc-500 mt-2">
-                Checking public URL availability...
-              </p>
-            ) : cleanStageSlug && slugIsTaken ? (
-              <p className="text-xs text-red-400 mt-2">
-                This public URL name is already taken. Please choose another one.
-              </p>
-            ) : cleanStageSlug ? (
-              <p className="text-xs text-zinc-500 mt-2">
-                Guests will scan/open:{" "}
-                <span className="text-purple-400">
-                  blacklinedj.com/{cleanStageSlug}
-                </span>
-              </p>
-            ) : (
-              <p className="text-xs text-zinc-500 mt-2">
-              This is your unique page link. You can change it if the suggested link is already taken.
-              </p>
-            )}
-          </div>
-
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setMessage("");
-            }}
-            className="w-full p-4 rounded-xl bg-black border border-zinc-700"
-            required
-          />
-
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setMessage("");
-              }}
-              className="w-full p-4 pr-14 rounded-xl bg-black border border-zinc-700"
-              required
-            />
-
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-4 flex items-center text-zinc-400 hover:text-white"
+      <div className="relative mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl items-center">
+        <div className="grid w-full gap-8 lg:grid-cols-[1fr_480px] lg:items-center">
+          <section className="hidden lg:block">
+            <Link
+              href="/"
+              className="inline-flex rounded-full border border-zinc-800 bg-zinc-950 px-4 py-2 text-sm font-bold text-zinc-300 transition hover:border-purple-500 hover:text-white"
             >
-              {showPassword ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+              ← Back to Blackline
+            </Link>
+
+            <p className="mt-12 text-sm font-black uppercase tracking-[0.35em] text-purple-300">
+              For DJs
+            </p>
+
+            <h1 className="mt-5 max-w-3xl text-6xl font-black leading-[0.95] tracking-tight">
+              Create your DJ page. Share your QR. Start receiving paid requests.
+            </h1>
+
+            <p className="mt-6 max-w-2xl text-xl leading-relaxed text-zinc-400">
+              Blackline gives you a public request page, live queue, and dashboard
+              built for real events. Guests request from their phones while you
+              stay focused on the set.
+            </p>
+
+            <div className="mt-8 grid max-w-2xl gap-3">
+              {[
+                "Guests see your DJ display name on your request page.",
+                "Your Blackline link stays separate from your display name.",
+                "You can receive paid requests before verification.",
+                "Withdrawals unlock after Blackline approval.",
+                "Blackline platform fee is currently 10%.",
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="rounded-2xl border border-zinc-800 bg-zinc-950/80 px-4 py-3 text-sm font-bold text-zinc-300"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13.875 18.825A10.05 10.05 0 0112 19c-5 0-9.27-3.11-11-7 1.028-2.31 2.83-4.25 5.11-5.5M9.88 9.88A3 3 0 0114.12 14.12M6.1 6.1L17.9 17.9M3 3l18 18"
+                  <span className="mr-2 text-purple-400">✓</span>
+                  {item}
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="mx-auto w-full max-w-md">
+            <div className="mb-5 flex items-center justify-between gap-4 lg:hidden">
+              <Link
+                href="/"
+                className="rounded-full border border-zinc-800 bg-zinc-950 px-4 py-2 text-sm font-bold text-zinc-300"
+              >
+                ← Back
+              </Link>
+
+              <Link
+                href="/login"
+                className="rounded-full border border-zinc-800 bg-zinc-950 px-4 py-2 text-sm font-bold text-zinc-300"
+              >
+                DJ Login
+              </Link>
+            </div>
+
+            <div className="rounded-[2rem] border border-zinc-800 bg-zinc-950/95 p-6 shadow-[0_0_80px_rgba(168,85,247,0.16)] md:p-8">
+              <div className="text-center">
+                <p className="text-xs font-black uppercase tracking-[0.35em] text-purple-300">
+                  Join Blackline
+                </p>
+
+                <h2 className="mt-3 text-4xl font-black text-white md:text-5xl">
+                  Create your DJ account
+                </h2>
+
+                <p className="mt-4 text-zinc-400">
+                  Get your request page, Blackline link, QR-ready profile, and live
+                  DJ dashboard.
+                </p>
+              </div>
+
+              <div className="mt-6 grid grid-cols-3 gap-2 text-center text-[11px] font-black uppercase tracking-[0.12em] text-zinc-400">
+                <div className="rounded-2xl border border-purple-500/30 bg-purple-500/10 px-2 py-3">
+                  Paid requests
+                </div>
+                <div className="rounded-2xl border border-green-500/30 bg-green-500/10 px-2 py-3">
+                  Live queue
+                </div>
+                <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 px-2 py-3">
+                  QR ready
+                </div>
+              </div>
+
+              <form onSubmit={handleSignup} className="mt-7 space-y-5">
+                <div>
+                  <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-zinc-500">
+                    DJ display name
+                  </label>
+
+                  <input
+                    type="text"
+                    placeholder="e.g. DJ Don Dada"
+                    value={stageName}
+                    onChange={(e) => {
+                      setStageName(e.target.value);
+                      setMessage("");
+                    }}
+                    className="w-full rounded-2xl border border-zinc-700 bg-black p-4 text-white outline-none transition placeholder:text-zinc-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30"
+                    required
                   />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+
+                  <p className="mt-2 text-xs leading-relaxed text-zinc-500">
+                    Guests will see this name on your request page.
+                  </p>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-zinc-500">
+                    Blackline link name
+                  </label>
+
+                  <div className="overflow-hidden rounded-2xl border border-zinc-700 bg-black transition focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-500/30">
+                    <div className="border-b border-zinc-800 px-4 py-2 text-xs font-bold text-zinc-500">
+                      blacklinedj.com/
+                    </div>
+
+                    <input
+                      type="text"
+                      placeholder="dj-don-dada"
+                      value={stageSlug}
+                      onChange={(e) => {
+                        setSlugWasEdited(true);
+                        setStageSlug(cleanSlugForUrl(e.target.value));
+                        setMessage("");
+                      }}
+                      className="w-full bg-black p-4 text-white outline-none placeholder:text-zinc-600"
+                      required
+                    />
+                  </div>
+
+                  <p className={`mt-2 text-xs leading-relaxed ${slugHelper.className}`}>
+                    {slugHelper.text}
+                  </p>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-zinc-500">
+                    Account email
+                  </label>
+
+                  <input
+                    type="email"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setMessage("");
+                    }}
+                    className="w-full rounded-2xl border border-zinc-700 bg-black p-4 text-white outline-none transition placeholder:text-zinc-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-zinc-500">
+                    Password
+                  </label>
+
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Create a secure password"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        setMessage("");
+                      }}
+                      className="w-full rounded-2xl border border-zinc-700 bg-black p-4 pr-14 text-white outline-none transition placeholder:text-zinc-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30"
+                      required
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-4 flex items-center text-zinc-400 transition hover:text-white"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13.875 18.825A10.05 10.05 0 0112 19c-5 0-9.27-3.11-11-7 1.028-2.31 2.83-4.25 5.11-5.5M9.88 9.88A3 3 0 0114.12 14.12M6.1 6.1L17.9 17.9M3 3l18 18"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7S3.732 16.057 2.458 12z"
+                          />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-zinc-800 bg-black/60 p-4">
+                  <p className="text-sm font-black text-white">Before you start</p>
+                  <p className="mt-2 text-xs leading-relaxed text-zinc-500">
+                    You can receive paid requests before verification. Withdrawals
+                    become available after Blackline approves your account and
+                    payout details.
+                  </p>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={signupDisabled}
+                  className="w-full rounded-2xl bg-purple-600 p-4 text-xl font-black text-white transition hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7S3.732 16.057 2.458 12z"
-                  />
-                </svg>
+                  {loading ? "Creating account..." : "Create DJ Account"}
+                </button>
+              </form>
+
+              {message && (
+                <p className="mt-5 rounded-2xl border border-zinc-800 bg-black/60 p-4 text-center text-sm text-zinc-300">
+                  {message}
+                </p>
               )}
-            </button>
-          </div>
 
-          <button
-            type="submit"
-            disabled={signupDisabled}
-            className="w-full bg-purple-600 hover:bg-purple-700 p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
-          >
-            {loading ? "Creating Account..." : "Create DJ Account"}
-          </button>
-        </form>
-
-        {message && (
-          <p className="text-center text-sm text-zinc-300 mt-5">{message}</p>
-        )}
+              <div className="mt-6 flex flex-col gap-3 text-center text-sm text-zinc-500 sm:flex-row sm:items-center sm:justify-center">
+                <Link href="/login" className="font-bold text-purple-300 hover:text-purple-200">
+                  Already have an account? DJ Login
+                </Link>
+                <span className="hidden text-zinc-700 sm:block">•</span>
+                <a
+                  href="mailto:support@blacklinedj.com?subject=Blackline%20DJ%20Signup%20Help"
+                  className="font-bold text-zinc-400 hover:text-white"
+                >
+                  Need help?
+                </a>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
     </main>
   );
