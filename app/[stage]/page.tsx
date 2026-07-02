@@ -707,7 +707,7 @@ export default function StageRequestPage() {
         }
 
         try {
-          const verifyResponse = await fetch("/api/paystack/verify-transaction", {
+          const processResponse = await fetch("/api/paystack/verify-request", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -716,136 +716,32 @@ export default function StageRequestPage() {
               reference: paymentReference,
               expectedAmount: tipAmount,
               expectedCurrency: tipCurrency,
+              djId: dj.id,
+              guestName: name.trim(),
+              song: song.trim(),
+              artist: artist.trim(),
+              artwork: finalArtwork,
+              album: finalAlbum,
+              duplicateRequestId: duplicateRequest?.id ?? null,
             }),
           });
 
-          const verifyResult = await verifyResponse.json();
+          const processResult = await processResponse.json();
 
-          if (!verifyResponse.ok || !verifyResult.verified) {
-            console.error("PAYSTACK VERIFY ERROR:", verifyResult);
+          if (!processResponse.ok || !processResult.verified) {
+            console.error("PAYSTACK REQUEST VERIFY ERROR:", processResult);
             alert(
-              `Payment could not be verified yet. Please contact Blackline support with this reference: ${paymentReference}`
-            );
-            return;
-          }
-
-          const { data: existingPayment, error: existingPaymentError } =
-            await supabase
-              .from("payments")
-              .select("id, request_id, provider_reference")
-              .eq("provider_reference", paymentReference)
-              .maybeSingle();
-
-          if (existingPaymentError) {
-            console.error("PAYMENT REFERENCE CHECK ERROR:", existingPaymentError);
-          }
-
-          if (existingPayment) {
-            console.warn("DUPLICATE PAYMENT CALLBACK IGNORED:", existingPayment);
-
-            await fetchRequests(dj.id);
-
-            alert(
-              `Payment already recorded. Reference: ${paymentReference}`
-            );
-
-            setName("");
-            setSong("");
-            setArtist("");
-            setSongSearch("");
-            setSongResults([]);
-            setSelectedArtwork("");
-            setSelectedAlbum("");
-            setTipAmount(10);
-            setDuplicateRequest(null);
-            setSubmitting(false);
-            return;
-          }
-
-          let requestData;
-          let error;
-
-          if (duplicateRequest) {
-            const newTipTotal =
-              Number(duplicateRequest.tip_amount || 0) +
-              Number(tipAmount || 0);
-
-            const result = await supabase
-              .from("requests")
-              .update({
-                tip_amount: newTipTotal,
-                artwork: duplicateRequest.artwork || finalArtwork,
-                album: duplicateRequest.album || finalAlbum,
-              })
-              .eq("id", duplicateRequest.id)
-              .select()
-              .single();
-
-            requestData = result.data;
-            error = result.error;
-          } else {
-            const result = await supabase
-              .from("requests")
-              .insert([
-                {
-                  dj_id: dj.id,
-                  name: name.trim(),
-                  song: song.trim(),
-                  artist: artist.trim(),
-
-                  artwork: finalArtwork,
-                  album: finalAlbum,
-
-                  status: "pending",
-                  tip_amount: tipAmount,
-                  tip_currency: tipCurrency,
-                },
-              ])
-              .select()
-              .single();
-
-            requestData = result.data;
-            error = result.error;
-          }
-
-          if (error || !requestData) {
-            console.error("REQUEST SAVE ERROR:", error);
-            alert(
-              `Payment succeeded, but the request could not be saved. Please contact Blackline support with this reference: ${paymentReference}`
-            );
-            return;
-          }
-
-          const paidAmount = Number(tipAmount || 0);
-          const platformFee = Number((paidAmount * 0.1).toFixed(2));
-          const djAmount = Number((paidAmount - platformFee).toFixed(2));
-
-          const { error: paymentError } = await supabase.from("payments").insert([
-            {
-              dj_id: dj.id,
-              request_id: requestData.id,
-              guest_name: name.trim(),
-              song: song.trim(),
-              artist: artist.trim(),
-              amount: paidAmount,
-              currency: tipCurrency,
-              status: "paid",
-              provider: "paystack",
-              provider_reference: paymentReference,
-              dj_amount: djAmount,
-              platform_fee: platformFee,
-            },
-          ]);
-
-          if (paymentError) {
-            console.error("PAYMENT INSERT ERROR:", paymentError);
-            alert(
-              `Your request was saved, but the payment record could not be stored. Please contact Blackline support with this reference: ${paymentReference}`
+              `Payment could not be verified and saved yet. Please contact Blackline support with this reference: ${paymentReference}`
             );
             return;
           }
 
           await fetchRequests(dj.id);
+
+          const savedRequest = processResult.request || {};
+          const paidAmount = Number(processResult.amount || tipAmount || 0);
+          const paidCurrency = processResult.currency || tipCurrency;
+          const savedReference = processResult.reference || paymentReference;
 
           setName("");
           setSong("");
@@ -858,12 +754,12 @@ export default function StageRequestPage() {
           setDuplicateRequest(null);
 
           setPaymentSuccess({
-            song: requestData.song || song.trim(),
-            artist: requestData.artist || artist.trim(),
+            song: savedRequest.song || song.trim(),
+            artist: savedRequest.artist || artist.trim(),
             amount: paidAmount,
-            currency: tipCurrency,
-            reference: paymentReference,
-            isBoost: Boolean(duplicateRequest),
+            currency: paidCurrency,
+            reference: savedReference,
+            isBoost: Boolean(processResult.isBoost),
           });
 
           window.scrollTo({
@@ -873,7 +769,7 @@ export default function StageRequestPage() {
         } catch (err) {
           console.error("PAYMENT SUCCESS HANDLER ERROR:", err);
           alert(
-            `Payment succeeded, but something went wrong after payment. Please contact Blackline support with this reference: ${paymentReference}`
+            `Payment succeeded, but something went wrong while verifying and saving your request. Please contact Blackline support with this reference: ${paymentReference}`
           );
         } finally {
           setSubmitting(false);
