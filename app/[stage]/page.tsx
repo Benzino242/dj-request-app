@@ -3,6 +3,7 @@ import { translations, Language } from "../lib/translations";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "../../lib/supabase";
+import BookingModal from "../components/BookingModal";
 
 type PaymentSuccessTranslation = {
   paymentReceived: string;
@@ -379,6 +380,22 @@ export default function StageRequestPage() {
 
   const [selectedArtwork, setSelectedArtwork] = useState("");
   const [selectedAlbum, setSelectedAlbum] = useState("");
+
+  // BOOKING REQUEST STATES
+  const [showBookingModal, setShowBookingModal] = useState(false);
+
+  const [bookingName, setBookingName] = useState("");
+  const [bookingEmail, setBookingEmail] = useState("");
+  const [bookingPhone, setBookingPhone] = useState("");
+  const [bookingEventType, setBookingEventType] = useState("");
+  const [bookingDate, setBookingDate] = useState("");
+  const [bookingVenue, setBookingVenue] = useState("");
+  const [bookingBudget, setBookingBudget] = useState("");
+  const [bookingMessage, setBookingMessage] = useState("");
+
+  const [bookingSending, setBookingSending] = useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState("");
+  const [bookingError, setBookingError] = useState("");
 
   type AppleTrack = {
     id: number;
@@ -799,8 +816,50 @@ export default function StageRequestPage() {
         setSubmitting(false);
         alert("Payment cancelled");
       },
-    });
-  }
+      });
+      }
+      // BOOKING REQUEST FUNCTION
+      const submitBookingRequest = async () => {
+        if (!dj) return;
+      
+        setBookingSending(true);
+        setBookingError("");
+        setBookingSuccess("");
+      
+        const { error } = await supabase
+          .from("booking_requests")
+          .insert({
+            dj_id: dj.id,
+            name: bookingName,
+            email: bookingEmail,
+            phone: bookingPhone,
+            event_type: bookingEventType,
+            event_date: bookingDate || null,
+            venue: bookingVenue,
+            budget: bookingBudget,
+            message: bookingMessage,
+          });
+      
+        if (error) {
+          console.error("BOOKING REQUEST ERROR:", error);
+          setBookingError(error.message);
+          setBookingSending(false);
+          return;
+        }
+      
+        setBookingSuccess("Booking request sent successfully!");
+      
+        setBookingName("");
+        setBookingEmail("");
+        setBookingPhone("");
+        setBookingEventType("");
+        setBookingDate("");
+        setBookingVenue("");
+        setBookingBudget("");
+        setBookingMessage("");
+      
+        setBookingSending(false);
+      };
 
   if (djLoading) {
     return (
@@ -1534,19 +1593,28 @@ export default function StageRequestPage() {
   </div>
 </div>
                 
-          <button
-              onClick={handlePayment}
-              disabled={submitting || !canAcceptRequests || tipCurrency !== "GHS"}
-              className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
-            >
-              {!canAcceptRequests
-                ? t.requestsClosed
-                : tipCurrency !== "GHS"
-                ? `${tipCurrency} payments are coming soon. Please use GHS for now.`
-                : submitting
-                ? t.processingPayment
-                : `${t.pay} ${tipCurrency} ${tipAmount || 0} ${t.andRequest}`}
-            </button>
+<button
+  onClick={handlePayment}
+  disabled={submitting || !canAcceptRequests || tipCurrency !== "GHS"}
+  className="w-full bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-xl font-semibold disabled:opacity-50"
+>
+  {!canAcceptRequests
+    ? t.requestsClosed
+    : tipCurrency !== "GHS"
+    ? `${tipCurrency} payments are coming soon. Please use GHS for now.`
+    : submitting
+    ? t.processingPayment
+    : `${t.pay} ${tipCurrency} ${tipAmount || 0} ${t.andRequest}`}
+</button>
+
+{dj.booking_enabled && (
+  <button
+    onClick={() => setShowBookingModal(true)}
+    className="w-full mt-3 bg-zinc-800 hover:bg-zinc-700 transition p-4 rounded-xl text-xl font-semibold border border-zinc-700"
+  >
+    📅 Book DJ
+  </button>
+)}
                 
                           <p className="text-xs text-purple-300 text-center mt-4 leading-relaxed">
                             {paymentText.beforePaymentReference}
@@ -1690,15 +1758,52 @@ export default function StageRequestPage() {
                                   </p>
 
                                   {request.status !== "played" &&
-                                    request.status !== "finished" && (
-                                      <p className="text-xs text-cyan-400 mt-2">
-                                        {t.estimatedWait}: ~{getEstimatedWait(index)} mins
-                                      </p>
-                                    )}
-                              </div>
-                            ))}
-                        </div>
-                      </div>
-                    </main>
-                  );
-                }
+  request.status !== "finished" && (
+    <p className="text-xs text-cyan-400 mt-2">
+      {t.estimatedWait}: ~{getEstimatedWait(index)} mins
+    </p>
+  )}
+
+</div>
+</div>
+
+
+<BookingModal
+  open={showBookingModal}
+  onClose={() => setShowBookingModal(false)}
+
+  bookingName={bookingName}
+  setBookingName={setBookingName}
+
+  bookingEmail={bookingEmail}
+  setBookingEmail={setBookingEmail}
+
+  bookingPhone={bookingPhone}
+  setBookingPhone={setBookingPhone}
+
+  bookingEventType={bookingEventType}
+  setBookingEventType={setBookingEventType}
+
+  bookingDate={bookingDate}
+  setBookingDate={setBookingDate}
+
+  bookingVenue={bookingVenue}
+  setBookingVenue={setBookingVenue}
+
+  bookingBudget={bookingBudget}
+  setBookingBudget={setBookingBudget}
+
+  bookingMessage={bookingMessage}
+  setBookingMessage={setBookingMessage}
+
+  bookingSending={bookingSending}
+  bookingSuccess={bookingSuccess}
+  bookingError={bookingError}
+
+  submitBookingRequest={submitBookingRequest}
+/>
+
+
+</main>
+);
+}
