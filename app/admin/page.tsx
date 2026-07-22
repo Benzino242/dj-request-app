@@ -83,14 +83,33 @@ type DJ = {
   stage_slug?: string | null;
   email: string | null;
   user_id: string;
+
+  // Profile
   bio?: string | null;
+  profile_tagline?: string | null;
+  genre?: string | null;
   city?: string | null;
-  instagram?: string | null;
+  country?: string | null;
   profile_image?: string | null;
-  is_live?: boolean | null;
+
+  // Social
+  instagram?: string | null;
+  tiktok?: string | null;
+
+  // Event
   event_name?: string | null;
   venue?: string | null;
-  country?: string | null;
+
+  // Guest controls
+  tip_enabled?: boolean | null;
+  request_enabled?: boolean | null;
+  booking_enabled?: boolean | null;
+  booking_email?: string | null;
+
+  // Live status
+  is_live?: boolean | null;
+
+  // Payments
   preferred_currency?: string | null;
   payout_email?: string | null;
   payout_method?: string | null;
@@ -100,6 +119,8 @@ type DJ = {
   payout_account_number?: string | null;
   payout_bank_code?: string | null;
   paystack_recipient_code?: string | null;
+
+  // Verification
   verification_status?: string | null;
 };
 
