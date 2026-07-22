@@ -3877,6 +3877,15 @@ export default function AdminPage() {
   const [bio, setBio] = useState("");
   const [city, setCity] = useState("");
   const [instagram, setInstagram] = useState("");
+
+  const [profileTagline, setProfileTagline] = useState("");
+const [genre, setGenre] = useState("");
+const [tiktok, setTiktok] = useState("");
+const [bookingEmail, setBookingEmail] = useState("");
+const [bookingEnabled, setBookingEnabled] = useState(false);
+const [tipEnabled, setTipEnabled] = useState(true);
+const [requestEnabled, setRequestEnabled] = useState(true);
+
   const [eventName, setEventName] = useState("");
   const [venue, setVenue] = useState("");
   const [profileImage, setProfileImage] = useState("");
@@ -4224,12 +4233,21 @@ export default function AdminPage() {
     setDj(loadedDj);
 
     setDjDisplayName(loadedDj.stage_name || "");
-    setBio(loadedDj.bio || "");
-    setCity(loadedDj.city || "");
-    setInstagram(loadedDj.instagram || "");
-    setProfileImage(loadedDj.profile_image || "");
-    setEventName(loadedDj.event_name || "");
-    setVenue(loadedDj.venue || "");
+setBio(loadedDj.bio || "");
+setCity(loadedDj.city || "");
+setInstagram(loadedDj.instagram || "");
+
+setProfileTagline(loadedDj.profile_tagline || "");
+setGenre(loadedDj.genre || "");
+setTiktok(loadedDj.tiktok || "");
+setBookingEmail(loadedDj.booking_email || "");
+setBookingEnabled(loadedDj.booking_enabled ?? false);
+setTipEnabled(loadedDj.tip_enabled ?? true);
+setRequestEnabled(loadedDj.request_enabled ?? true);
+
+setProfileImage(loadedDj.profile_image || "");
+setEventName(loadedDj.event_name || "");
+setVenue(loadedDj.venue || "");
 
     setCountry(loadedDj.country || "");
     setPreferredCurrency(loadedDj.preferred_currency || "GHS");
@@ -4442,30 +4460,39 @@ export default function AdminPage() {
     }
 
     const { data, error } = await supabase
-      .from("djs")
-      .update({
-        stage_name: cleanDjDisplayName,
-        bio,
-        city,
-        instagram,
-        profile_image: profileImage,
-        event_name: eventName,
-        venue,
+  .from("djs")
+  .update({
+    stage_name: cleanDjDisplayName,
+    bio,
+    city,
+    instagram,
 
-        country,
-        preferred_currency: preferredCurrency,
-        payout_email: payoutEmail,
-        payout_method: payoutMethod,
-        payout_status: payoutStatus,
-        payout_provider: payoutProvider,
-        payout_account_name: payoutAccountName,
-        payout_account_number: payoutAccountNumber,
-        payout_bank_code: payoutBankCode || null,
-        verification_status: verificationStatus,
-      })
-      .eq("id", dj.id)
-      .select()
-      .single();
+    profile_tagline: profileTagline,
+    genre,
+    tiktok,
+    booking_email: bookingEmail,
+    booking_enabled: bookingEnabled,
+    tip_enabled: tipEnabled,
+    request_enabled: requestEnabled,
+
+    profile_image: profileImage,
+    event_name: eventName,
+    venue,
+
+    country,
+    preferred_currency: preferredCurrency,
+    payout_email: payoutEmail,
+    payout_method: payoutMethod,
+    payout_status: payoutStatus,
+    payout_provider: payoutProvider,
+    payout_account_name: payoutAccountName,
+    payout_account_number: payoutAccountNumber,
+    payout_bank_code: payoutBankCode || null,
+    verification_status: verificationStatus,
+  })
+  .eq("id", dj.id)
+  .select()
+  .single();
 
     if (error) {
       console.error("PROFILE UPDATE ERROR:", error);
