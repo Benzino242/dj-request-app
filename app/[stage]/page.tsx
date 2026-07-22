@@ -1763,11 +1763,6 @@ export default function StageRequestPage() {
       {t.estimatedWait}: ~{getEstimatedWait(index)} mins
     </p>
   )}
-
-</div>
-</div>
-
-
 <BookingModal
   open={showBookingModal}
   onClose={() => setShowBookingModal(false)}
@@ -1802,8 +1797,8 @@ export default function StageRequestPage() {
 
   submitBookingRequest={submitBookingRequest}
 />
-
-
+</div>
+</div>
 </main>
 );
 }
