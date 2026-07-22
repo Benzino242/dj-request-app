@@ -337,13 +337,32 @@ type DJ = {
   stage_name: string;
   stage_slug?: string | null;
   email: string | null;
+
   profile_image: string | null;
+
+  // DJ profile
   bio: string | null;
+  profile_tagline: string | null;
+  genre: string | null;
   city: string | null;
+  country: string | null;
+
+  // Social links
   instagram: string | null;
-  is_live: boolean | null;
+  tiktok: string | null;
+
+  // Event details
   event_name: string | null;
   venue: string | null;
+
+  // Guest interaction settings
+  tip_enabled: boolean | null;
+  request_enabled: boolean | null;
+  booking_enabled: boolean | null;
+  booking_email: string | null;
+
+  // Status
+  is_live: boolean | null;
   verification_status?: string | null;
 };
 
