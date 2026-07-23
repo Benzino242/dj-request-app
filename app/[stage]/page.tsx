@@ -2674,6 +2674,8 @@ index
 
 </div>
 
+</div>
+
 <BookingModal
 
   
