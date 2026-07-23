@@ -2757,4 +2757,3 @@ submitBookingRequest
   </main>
   );
   }
-}
