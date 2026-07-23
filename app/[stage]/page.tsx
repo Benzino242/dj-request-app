@@ -1763,42 +1763,47 @@ export default function StageRequestPage() {
       {t.estimatedWait}: ~{getEstimatedWait(index)} mins
     </p>
   )}
+
+    </div>
+  ))}
+</div>
+
+
 <BookingModal
-  open={showBookingModal}
-  onClose={() => setShowBookingModal(false)}
+      open={showBookingModal}
+      onClose={() => setShowBookingModal(false)}
 
-  bookingName={bookingName}
-  setBookingName={setBookingName}
+      bookingName={bookingName}
+      setBookingName={setBookingName}
 
-  bookingEmail={bookingEmail}
-  setBookingEmail={setBookingEmail}
+      bookingEmail={bookingEmail}
+      setBookingEmail={setBookingEmail}
 
-  bookingPhone={bookingPhone}
-  setBookingPhone={setBookingPhone}
+      bookingPhone={bookingPhone}
+      setBookingPhone={setBookingPhone}
 
-  bookingEventType={bookingEventType}
-  setBookingEventType={setBookingEventType}
+      bookingEventType={bookingEventType}
+      setBookingEventType={setBookingEventType}
 
-  bookingDate={bookingDate}
-  setBookingDate={setBookingDate}
+      bookingDate={bookingDate}
+      setBookingDate={setBookingDate}
 
-  bookingVenue={bookingVenue}
-  setBookingVenue={setBookingVenue}
+      bookingVenue={bookingVenue}
+      setBookingVenue={setBookingVenue}
 
-  bookingBudget={bookingBudget}
-  setBookingBudget={setBookingBudget}
+      bookingBudget={bookingBudget}
+      setBookingBudget={setBookingBudget}
 
-  bookingMessage={bookingMessage}
-  setBookingMessage={setBookingMessage}
+      bookingMessage={bookingMessage}
+      setBookingMessage={setBookingMessage}
 
-  bookingSending={bookingSending}
-  bookingSuccess={bookingSuccess}
-  bookingError={bookingError}
+      bookingSending={bookingSending}
+      bookingSuccess={bookingSuccess}
+      bookingError={bookingError}
 
-  submitBookingRequest={submitBookingRequest}
-/>
-</div>
-</div>
-</main>
-);
-}
+      submitBookingRequest={submitBookingRequest}
+    />
+
+    </main>
+    );
+    }
