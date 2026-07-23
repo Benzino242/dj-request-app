@@ -4929,45 +4929,60 @@ setVenue(loadedDj.venue || "");
 
     setBookingActionLoadingId(bookingId);
 
-    const now = new Date().toISOString();
-    const updatePayload =
-      status === "accepted"
-        ? {
-            status,
-            accepted_at: now,
-            rejected_at: null,
-            dj_read_at: now,
-          }
-        : {
-            status,
-            rejected_at: now,
-            accepted_at: null,
-            dj_read_at: now,
-          };
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
-    const { error } = await supabase
-      .from("booking_requests")
-      .update(updatePayload)
-      .eq("id", bookingId)
-      .eq("dj_id", dj.id);
-
-    if (error) {
-      console.error("BOOKING STATUS UPDATE ERROR:", error);
-      alert(
-        error.message ||
-          "The booking could not be updated. Please try again.",
-      );
+    if (!session?.access_token) {
+      alert("Your login session has expired. Please log in again.");
       setBookingActionLoadingId(null);
       return;
     }
 
-    setBookingRequests((currentBookings) =>
-      currentBookings.map((booking) =>
-        booking.id === bookingId
-          ? { ...booking, ...updatePayload }
-          : booking,
-      ),
-    );
+    try {
+      const response = await fetch("/api/bookings/respond", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          bookingId,
+          status,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        console.error("BOOKING STATUS UPDATE ERROR:", result);
+        alert(
+          result.error ||
+            "The booking could not be updated. Please try again.",
+        );
+        setBookingActionLoadingId(null);
+        return;
+      }
+
+      setBookingRequests((currentBookings) =>
+        currentBookings.map((booking) =>
+          booking.id === bookingId
+            ? (result.booking as BookingRequest)
+            : booking,
+        ),
+      );
+
+      if (result.warning) {
+        alert(result.warning);
+      } else if (status === "accepted") {
+        alert("Booking accepted. The client has been notified by email.");
+      } else {
+        alert("Booking rejected. The client has been notified by email.");
+      }
+    } catch (error) {
+      console.error("BOOKING RESPONSE ERROR:", error);
+      alert("The booking could not be updated. Please try again.");
+    }
 
     setBookingActionLoadingId(null);
   }
