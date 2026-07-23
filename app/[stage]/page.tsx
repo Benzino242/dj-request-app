@@ -558,9 +558,7 @@ isVIPRequest
 (
 tip
 : number) {
-    return 
-tip
- >= 50;
+    return tip >= 50;
   }
   function 
 getEstimatedWait
