@@ -1674,135 +1674,130 @@ export default function StageRequestPage() {
                         </div>
                 
                         <div className="space-y-4">
-                          {requests
-                            .filter((request) => request.status !== "finished")
-                            .map((request, index) => (
-                              <div
-                                key={request.id}
-                                className={`rounded-xl p-4 transition-all duration-300 ${
-                                  isVIPRequest(request.tip_amount)
-                                    ? "bg-zinc-900 border-2 border-yellow-400 shadow-[0_0_25px_rgba(250,204,21,0.45)] scale-[1.02]"
-                                    : index === 0
-                                    ? "bg-zinc-900 border border-yellow-500"
-                                    : "bg-zinc-900 border border-zinc-800"
-                                }`}
-                              >
-                                {isVIPRequest(request.tip_amount) && (
-                                  <div className="mb-2 inline-block bg-yellow-500 text-black text-xs font-black px-3 py-1 rounded-full">
-                                    {t.vipRequest}
-                                  </div>
-                                )}
-                
-                                    <div className="flex items-start justify-between gap-3 mb-2">
-                                    <div className="flex items-center gap-3 min-w-0">
-                                      {request.artwork && (
-                                        <img
-                                          src={request.artwork}
-                                          alt={request.song}
-                                          className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
-                                        />
-                                      )}
+  {requests
+    .filter((request) => request.status !== "finished")
+    .map((request, index) => (
+      <div
+        key={request.id}
+        className={`rounded-xl p-4 transition-all duration-300 ${
+          isVIPRequest(request.tip_amount)
+            ? "bg-zinc-900 border-2 border-yellow-400 shadow-[0_0_25px_rgba(250,204,21,0.45)] scale-[1.02]"
+            : index === 0
+            ? "bg-zinc-900 border border-yellow-500"
+            : "bg-zinc-900 border border-zinc-800"
+        }`}
+      >
+        {isVIPRequest(request.tip_amount) && (
+          <div className="mb-2 inline-block bg-yellow-500 text-black text-xs font-black px-3 py-1 rounded-full">
+            {t.vipRequest}
+          </div>
+        )}
 
-                                      <div className="min-w-0">
-                                        <p className="font-bold text-lg leading-tight break-words">
-                                          {request.song}
-                                        </p>
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <div className="flex items-center gap-3 min-w-0">
+            {request.artwork && (
+              <img
+                src={request.artwork}
+                alt={request.song}
+                className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
+              />
+            )}
 
-                                        <p className="text-zinc-400 text-sm">
-                                          {request.artist}
-                                        </p>
+            <div className="min-w-0">
+              <p className="font-bold text-lg leading-tight break-words">
+                {request.song}
+              </p>
 
-                                        {request.album && (
-                                          <p className="text-xs text-zinc-500 mt-1">
-                                            {request.album}
-                                          </p>
-                                        )}
-                                      </div>
-                                    </div>
+              <p className="text-zinc-400 text-sm">
+                {request.artist}
+              </p>
 
-                                    <div className="flex flex-col gap-2 items-end flex-shrink-0">
-                                      {index === 0 && (
-                                        <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
-                                          {t.topTip}
-                                        </span>
-                                      )}
+              {request.album && (
+                <p className="text-xs text-zinc-500 mt-1">
+                  {request.album}
+                </p>
+              )}
+            </div>
+          </div>
 
-                                      <span
-                                        className={`text-xs px-3 py-1 rounded-full font-bold ${
-                                          request.status === "accepted"
-                                            ? "bg-green-600 text-white"
-                                            : request.status === "rejected"
-                                            ? "bg-red-600 text-white"
-                                            : request.status === "played"
-                                            ? "bg-blue-600 text-white"
-                                            : "bg-yellow-500 text-black"
-                                        }`}
-                                      >
-                                        {request.status === "accepted"
-                                          ? t.accepted
-                                          : request.status === "rejected"
-                                          ? t.rejected
-                                          : request.status === "played"
-                                          ? t.played
-                                          : t.pending}
-                                      </span>
+          <div className="flex flex-col gap-2 items-end flex-shrink-0">
+            {index === 0 && (
+              <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
+                {t.topTip}
+              </span>
+            )}
 
-                                      <span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
-                                        {request.tip_currency} {request.tip_amount}
-                                      </span>
-                                    </div>
-                                  </div>
+            <span
+              className={`text-xs px-3 py-1 rounded-full font-bold ${
+                request.status === "accepted"
+                  ? "bg-green-600 text-white"
+                  : request.status === "rejected"
+                  ? "bg-red-600 text-white"
+                  : request.status === "played"
+                  ? "bg-blue-600 text-white"
+                  : "bg-yellow-500 text-black"
+              }`}
+            >
+              {request.status === "accepted"
+                ? t.accepted
+                : request.status === "rejected"
+                ? t.rejected
+                : request.status === "played"
+                ? t.played
+                : t.pending}
+            </span>
 
-                                  <p className="text-sm text-purple-400 mt-2">
-                                    {t.requestedBy} {request.name}
-                                  </p>
+            <span className="bg-green-600 text-xs px-3 py-1 rounded-full font-bold">
+              {request.tip_currency} {request.tip_amount}
+            </span>
+          </div>
+        </div>
 
-                                  {request.status !== "played" &&
-  request.status !== "finished" && (
-    <p className="text-xs text-cyan-400 mt-2">
-      {t.estimatedWait}: ~{getEstimatedWait(index)} mins
-    </p>
-  )}
+        <p className="text-sm text-purple-400 mt-2">
+          {t.requestedBy} {request.name}
+        </p>
 
+        {request.status !== "played" &&
+          request.status !== "finished" && (
+            <p className="text-xs text-cyan-400 mt-2">
+              {t.estimatedWait}: ~{getEstimatedWait(index)} mins
+            </p>
+          )}
+      </div>
+    ))}
 </div>
-))}
-
 
 <BookingModal
-      open={showBookingModal}
-      onClose={() => setShowBookingModal(false)}
+  open={showBookingModal}
+  onClose={() => setShowBookingModal(false)}
 
-      bookingName={bookingName}
-      setBookingName={setBookingName}
+  bookingName={bookingName}
+  setBookingName={setBookingName}
 
-      bookingEmail={bookingEmail}
-      setBookingEmail={setBookingEmail}
+  bookingEmail={bookingEmail}
+  setBookingEmail={setBookingEmail}
 
-      bookingPhone={bookingPhone}
-      setBookingPhone={setBookingPhone}
+  bookingPhone={bookingPhone}
+  setBookingPhone={setBookingPhone}
 
-      bookingEventType={bookingEventType}
-      setBookingEventType={setBookingEventType}
+  bookingEventType={bookingEventType}
+  setBookingEventType={setBookingEventType}
 
-      bookingDate={bookingDate}
-      setBookingDate={setBookingDate}
+  bookingDate={bookingDate}
+  setBookingDate={setBookingDate}
 
-      bookingVenue={bookingVenue}
-      setBookingVenue={setBookingVenue}
+  bookingVenue={bookingVenue}
+  setBookingVenue={setBookingVenue}
 
-      bookingBudget={bookingBudget}
-      setBookingBudget={setBookingBudget}
+  bookingBudget={bookingBudget}
+  setBookingBudget={setBookingBudget}
 
-      bookingMessage={bookingMessage}
-      setBookingMessage={setBookingMessage}
+  bookingMessage={bookingMessage}
+  setBookingMessage={setBookingMessage}
 
-      bookingSending={bookingSending}
-      bookingSuccess={bookingSuccess}
-      bookingError={bookingError}
+  bookingSending={bookingSending}
+  bookingSuccess={bookingSuccess}
+  bookingError={bookingError}
 
-      submitBookingRequest={submitBookingRequest}
-    />
-
-    </main>
-    );
-    }
+  submitBookingRequest={submitBookingRequest}
+/>
