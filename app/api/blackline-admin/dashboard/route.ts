@@ -412,19 +412,32 @@ export async function GET() {
     .from("requests")
     .select("id, dj_id, tip_amount, tip_currency, status");
 
+  const { data: bookingRequests, error: bookingRequestError } =
+    await supabaseAdmin
+      .from("booking_requests")
+      .select("*")
+      .order("created_at", { ascending: false });
+
   const { data: auditLogs, error: auditLogError } = await supabaseAdmin
     .from("audit_logs")
     .select("*")
     .order("created_at", { ascending: false })
     .limit(50);
 
-  if (djError || withdrawalError || requestError || auditLogError) {
+  if (
+    djError ||
+    withdrawalError ||
+    requestError ||
+    bookingRequestError ||
+    auditLogError
+  ) {
     return NextResponse.json(
       {
         error:
           djError?.message ||
           withdrawalError?.message ||
           requestError?.message ||
+          bookingRequestError?.message ||
           auditLogError?.message,
       },
       { status: 500 }
@@ -504,6 +517,7 @@ export async function GET() {
   return NextResponse.json({
     djs: allDjs || [],
     withdrawals: withdrawals || [],
+    bookingRequests: bookingRequests || [],
     djEarnings,
     auditLogs: auditLogs || [],
   });

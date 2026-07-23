@@ -36,6 +36,33 @@ type Withdrawal = {
  created_at?: string | null;
 };
 
+type BookingRequest = {
+ id: number;
+ dj_id: number;
+ name: string;
+ email?: string | null;
+ phone?: string | null;
+ event_type?: string | null;
+ event_date?: string | null;
+ venue?: string | null;
+ budget?: string | null;
+ message?: string | null;
+ status: string;
+ payment_status?: string | null;
+ payment_reference?: string | null;
+ currency?: string | null;
+ agreed_amount?: number | null;
+ commission_rate?: number | null;
+ commission_amount?: number | null;
+ dj_net_amount?: number | null;
+ blackline_read_at?: string | null;
+ accepted_at?: string | null;
+ rejected_at?: string | null;
+ completed_at?: string | null;
+ paid_at?: string | null;
+ created_at?: string | null;
+};
+
 type DjEarning = {
  dj_id: number;
  stage_name: string;
@@ -90,6 +117,7 @@ export default function VerificationDashboardClient({
 }) {
  const [djs, setDjs] = useState<DJ[]>([]);
  const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
+ const [bookingRequests, setBookingRequests] = useState<BookingRequest[]>([]);
  const [djEarnings, setDjEarnings] = useState<DjEarning[]>([]);
  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
  const [loading, setLoading] = useState(true);
@@ -168,6 +196,9 @@ export default function VerificationDashboardClient({
 
  setDjs(mergedDjs as DJ[]);
  setWithdrawals((result.withdrawals || []) as Withdrawal[]);
+ setBookingRequests(
+ (result.bookingRequests || []) as BookingRequest[],
+ );
  setDjEarnings((result.djEarnings || []) as DjEarning[]);
  setAuditLogs((result.auditLogs || []) as AuditLog[]);
  setConnectionWarning("");
@@ -266,6 +297,17 @@ export default function VerificationDashboardClient({
  fetchDashboardData();
  },
  )
+ .on(
+ "postgres_changes",
+ {
+ event: "*",
+ schema: "public",
+ table: "booking_requests",
+ },
+ () => {
+ fetchDashboardData();
+ },
+ )
  .subscribe();
 
  return () => {
@@ -317,7 +359,33 @@ export default function VerificationDashboardClient({
  ).length;
 
  const withdrawalActionCount = pendingWithdrawals + approvedWithdrawals;
- const adminActionCount = pendingCount + withdrawalActionCount;
+
+ const pendingBookingCount = bookingRequests.filter(
+ (booking) => booking.status === "pending",
+ ).length;
+
+ const acceptedAwaitingPaymentCount = bookingRequests.filter(
+ (booking) =>
+ booking.status === "accepted" &&
+ String(booking.payment_status || "unpaid") !== "paid",
+ ).length;
+
+ const paidBookingCount = bookingRequests.filter(
+ (booking) => booking.payment_status === "paid",
+ ).length;
+
+ const bookingActionCount =
+ pendingBookingCount + acceptedAwaitingPaymentCount;
+
+ const adminActionCount =
+ pendingCount + withdrawalActionCount + bookingActionCount;
+
+ const totalBookingCommission = bookingRequests
+ .filter((booking) => booking.payment_status === "paid")
+ .reduce(
+ (sum, booking) => sum + Number(booking.commission_amount || 0),
+ 0,
+ );
 
  const totalGrossRevenue = djEarnings.reduce(
  (sum, item) => sum + Number(item.grossRevenue || 0),
@@ -647,6 +715,7 @@ export default function VerificationDashboardClient({
  }
 
  function auditLogIcon(entityType?: string | null) {
+ if (entityType === "booking_request") return "📅";
  if (entityType === "withdrawal") return "";
  if (entityType === "dj") return "";
  return "";
@@ -1309,7 +1378,7 @@ export default function VerificationDashboardClient({
  </h1>
 
  <p className="text-zinc-400">
- Manage DJ verification, earnings, payouts, and withdrawal activity.
+ Manage DJ verification, bookings, earnings, payouts, and withdrawal activity.
  </p>
  </div>
 
@@ -1364,7 +1433,7 @@ export default function VerificationDashboardClient({
  </h2>
 
  <p className="text-sm text-zinc-400 mt-2">
- {pendingCount} DJs pending · {withdrawalActionCount} withdrawals pending/approved
+ {pendingCount} DJs pending · {withdrawalActionCount} withdrawals pending/approved · {bookingActionCount} bookings need attention
  </p>
  </div>
 
@@ -1381,6 +1450,13 @@ export default function VerificationDashboardClient({
  className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 px-4 py-3 rounded-xl text-sm font-bold text-center"
  >
  Review Withdrawals
+ </a>
+
+ <a
+ href="#booking-marketplace"
+ className="bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 px-4 py-3 rounded-xl text-sm font-bold text-center text-amber-200"
+ >
+ Review Bookings
  </a>
  </div>
  </div>
@@ -1402,7 +1478,7 @@ export default function VerificationDashboardClient({
  </div>
 
  <p className="text-sm text-zinc-400 mt-2">
- 0 DJs pending · 0 withdrawals pending/approved
+ 0 DJs pending · 0 withdrawals pending/approved · 0 bookings need attention
  </p>
  </div>
  )}
@@ -1443,6 +1519,30 @@ export default function VerificationDashboardClient({
  </div>
  </div>
 
+ <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
+ <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3">
+ <p className="text-amber-200/70 text-xs">Pending bookings</p>
+ <p className="text-2xl font-black text-amber-300">{pendingBookingCount}</p>
+ </div>
+
+ <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-2xl p-3">
+ <p className="text-cyan-200/70 text-xs">Awaiting payment</p>
+ <p className="text-2xl font-black text-cyan-300">{acceptedAwaitingPaymentCount}</p>
+ </div>
+
+ <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-3">
+ <p className="text-green-200/70 text-xs">Paid bookings</p>
+ <p className="text-2xl font-black text-green-300">{paidBookingCount}</p>
+ </div>
+
+ <div className="bg-purple-500/10 border border-purple-500/30 rounded-2xl p-3">
+ <p className="text-purple-200/70 text-xs">Booking commission</p>
+ <p className="text-2xl font-black text-purple-300">
+ {dashboardCurrency} {totalBookingCommission.toFixed(2)}
+ </p>
+ </div>
+ </div>
+
  <details className="mt-4 bg-black/30 border border-zinc-800 rounded-2xl p-4">
  <summary className="cursor-pointer text-sm font-bold text-zinc-300">
  Revenue details
@@ -1480,6 +1580,196 @@ export default function VerificationDashboardClient({
  </details>
  </div>
 
+ <section id="booking-marketplace" className="mb-14 scroll-mt-6">
+ <div className="bg-zinc-900 border border-amber-500/30 rounded-3xl p-5 shadow-[0_0_35px_rgba(251,191,36,0.1)]">
+ <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+ <div>
+ <p className="text-xs uppercase tracking-[0.25em] text-amber-400 font-black">
+ Booking Marketplace
+ </p>
+ <h2 className="text-3xl font-black mt-2">Booking Requests</h2>
+ <p className="text-zinc-400 text-sm mt-2">
+ Monitor every client request, DJ response, payment, and Blackline commission.
+ </p>
+ </div>
+
+ <div className="flex flex-wrap gap-2">
+ <span className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 px-3 py-2 rounded-full text-xs font-black">
+ {pendingBookingCount} pending
+ </span>
+ <span className="bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 px-3 py-2 rounded-full text-xs font-black">
+ {acceptedAwaitingPaymentCount} awaiting payment
+ </span>
+ <span className="bg-green-500/10 border border-green-500/30 text-green-300 px-3 py-2 rounded-full text-xs font-black">
+ {paidBookingCount} paid
+ </span>
+ </div>
+ </div>
+
+ {bookingRequests.length === 0 ? (
+ <div className="bg-black/30 border border-zinc-800 rounded-2xl p-6 text-center">
+ <div className="text-3xl mb-3">📭</div>
+ <p className="font-bold text-white">No booking requests yet</p>
+ <p className="text-sm text-zinc-500 mt-2">
+ Marketplace bookings will appear here automatically.
+ </p>
+ </div>
+ ) : (
+ <div className="space-y-4">
+ {bookingRequests.map((booking) => {
+ const djForBooking = djs.find((dj) => dj.id === booking.dj_id);
+ const bookingStatus = String(booking.status || "pending").toLowerCase();
+ const paymentStatus = String(
+ booking.payment_status || "unpaid",
+ ).toLowerCase();
+
+ const bookingStatusClass =
+ bookingStatus === "pending"
+ ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-300"
+ : bookingStatus === "accepted"
+ ? "border-green-500/30 bg-green-500/10 text-green-300"
+ : bookingStatus === "rejected" || bookingStatus === "cancelled"
+ ? "border-red-500/30 bg-red-500/10 text-red-300"
+ : "border-purple-500/30 bg-purple-500/10 text-purple-300";
+
+ const paymentStatusClass =
+ paymentStatus === "paid"
+ ? "border-green-500/30 bg-green-500/10 text-green-300"
+ : paymentStatus === "pending"
+ ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-300"
+ : paymentStatus === "failed" || paymentStatus === "refunded"
+ ? "border-red-500/30 bg-red-500/10 text-red-300"
+ : "border-zinc-700 bg-zinc-800/70 text-zinc-300";
+
+ return (
+ <article
+ key={booking.id}
+ className="bg-black/30 border border-zinc-800 rounded-2xl p-4 md:p-5 hover:border-amber-500/30 transition"
+ >
+ <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+ <div>
+ <div className="flex flex-wrap items-center gap-3">
+ <h3 className="text-xl font-black text-white">
+ {booking.name || "Unnamed client"}
+ </h3>
+ <span className={`border px-3 py-1 rounded-full text-xs font-black uppercase ${bookingStatusClass}`}>
+ {bookingStatus.replace(/_/g, " ")}
+ </span>
+ <span className={`border px-3 py-1 rounded-full text-xs font-black uppercase ${paymentStatusClass}`}>
+ Payment: {paymentStatus.replace(/_/g, " ")}
+ </span>
+ </div>
+
+ <p className="text-amber-300 font-bold mt-2">
+ {booking.event_type || "Event type not provided"}
+ </p>
+ <p className="text-sm text-zinc-400 mt-1">
+ DJ: <span className="text-white font-bold">{djForBooking?.stage_name || `DJ #${booking.dj_id}`}</span>
+ </p>
+ <p className="text-xs text-zinc-600 mt-2">
+ Booking #{booking.id} ·{" "}
+ {booking.created_at
+ ? new Date(booking.created_at).toLocaleString()
+ : "Unknown date"}
+ </p>
+ </div>
+
+ <div className="grid grid-cols-2 gap-2 min-w-[260px]">
+ <div className="bg-black/50 border border-zinc-800 rounded-xl p-3">
+ <p className="text-xs text-zinc-500">Client budget</p>
+ <p className="font-black text-amber-300 mt-1">{booking.budget || "Not provided"}</p>
+ </div>
+ <div className="bg-black/50 border border-zinc-800 rounded-xl p-3">
+ <p className="text-xs text-zinc-500">Agreed amount</p>
+ <p className="font-black text-white mt-1">
+ {booking.agreed_amount != null
+ ? `${booking.currency || dashboardCurrency} ${Number(booking.agreed_amount).toFixed(2)}`
+ : "Not set"}
+ </p>
+ </div>
+ </div>
+ </div>
+
+ <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
+ <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+ <p className="text-xs text-zinc-500">Event date</p>
+ <p className="font-semibold text-white mt-1">
+ {booking.event_date
+ ? new Date(`${booking.event_date}T00:00:00`).toLocaleDateString()
+ : "Not provided"}
+ </p>
+ </div>
+ <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+ <p className="text-xs text-zinc-500">Venue</p>
+ <p className="font-semibold text-white mt-1 break-words">{booking.venue || "Not provided"}</p>
+ </div>
+ <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+ <p className="text-xs text-zinc-500">Client email</p>
+ {booking.email ? (
+ <a href={`mailto:${booking.email}`} className="font-semibold text-cyan-300 mt-1 block break-all">
+ {booking.email}
+ </a>
+ ) : (
+ <p className="text-zinc-500 mt-1">Not provided</p>
+ )}
+ </div>
+ <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+ <p className="text-xs text-zinc-500">Client phone</p>
+ {booking.phone ? (
+ <a href={`tel:${booking.phone}`} className="font-semibold text-cyan-300 mt-1 block">
+ {booking.phone}
+ </a>
+ ) : (
+ <p className="text-zinc-500 mt-1">Not provided</p>
+ )}
+ </div>
+ </div>
+
+ {booking.message && (
+ <div className="bg-black/40 border border-zinc-800 rounded-xl p-4 mt-3">
+ <p className="text-xs uppercase tracking-wider text-zinc-500 font-black">Client message</p>
+ <p className="text-zinc-300 mt-2 whitespace-pre-wrap">{booking.message}</p>
+ </div>
+ )}
+
+ <div className="grid sm:grid-cols-3 gap-3 mt-3">
+ <div className="bg-purple-500/10 border border-purple-500/20 rounded-xl p-3">
+ <p className="text-xs text-purple-200/70">Commission rate</p>
+ <p className="font-black text-purple-300 mt-1">
+ {Number(booking.commission_rate ?? 10).toFixed(2)}%
+ </p>
+ </div>
+ <div className="bg-purple-500/10 border border-purple-500/20 rounded-xl p-3">
+ <p className="text-xs text-purple-200/70">Blackline commission</p>
+ <p className="font-black text-purple-300 mt-1">
+ {booking.commission_amount != null
+ ? `${booking.currency || dashboardCurrency} ${Number(booking.commission_amount).toFixed(2)}`
+ : "Calculated after payment"}
+ </p>
+ </div>
+ <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-3">
+ <p className="text-xs text-cyan-200/70">DJ net amount</p>
+ <p className="font-black text-cyan-300 mt-1">
+ {booking.dj_net_amount != null
+ ? `${booking.currency || dashboardCurrency} ${Number(booking.dj_net_amount).toFixed(2)}`
+ : "Calculated after payment"}
+ </p>
+ </div>
+ </div>
+
+ {booking.payment_reference && (
+ <p className="text-xs text-zinc-500 mt-3 break-all">
+ Payment reference: <span className="font-mono text-zinc-300">{booking.payment_reference}</span>
+ </p>
+ )}
+ </article>
+ );
+ })}
+ </div>
+ )}
+ </div>
+ </section>
+
  <section className="mb-14">
  <div className="bg-zinc-900 border border-purple-900/60 rounded-2xl overflow-hidden">
  <button
@@ -1492,7 +1782,7 @@ export default function VerificationDashboardClient({
  <div>
  <h2 className="text-3xl font-black">Recent Activity</h2>
  <p className="text-zinc-500 text-sm mt-1">
- Latest DJ verification and withdrawal changes.
+ Latest DJ verification, booking, and withdrawal changes.
  </p>
  </div>
 
