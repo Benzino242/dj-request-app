@@ -1764,9 +1764,8 @@ export default function StageRequestPage() {
     </p>
   )}
 
-    </div>
-  ))}
 </div>
+))}
 
 
 <BookingModal
