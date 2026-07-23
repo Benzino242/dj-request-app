@@ -1,3 +1,9 @@
+
+
+
+
+
+
 "use client";
 
 import { translations, Language } from "../lib/translations";
@@ -862,7 +868,7 @@ handlePayment
 
     paystack.newTransaction({
       key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!,
-      email: `${name.replace(/g, "").toLowerCase()}@blackline.app`,
+      email: `${name.replace(/\s/g, "").toLowerCase()}@blackline.app`,
       amount: tipAmount * 100,
       currency: tipCurrency,
 
@@ -2751,4 +2757,3 @@ submitBookingRequest
   </main>
   );
   }
-}
