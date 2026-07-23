@@ -64,7 +64,6 @@ export default function BookingModal({
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 w-full max-w-lg">
-
         <h2 className="text-2xl font-bold text-white mb-5">
           📅 Book This DJ
         </h2>
@@ -77,15 +76,17 @@ export default function BookingModal({
         />
 
         <input
+          type="email"
           className="w-full mb-3 p-3 rounded-xl bg-black border border-zinc-700"
-          placeholder="Email"
+          placeholder="Your email"
           value={bookingEmail}
           onChange={(e) => setBookingEmail(e.target.value)}
         />
 
         <input
+          type="tel"
           className="w-full mb-3 p-3 rounded-xl bg-black border border-zinc-700"
-          placeholder="Phone"
+          placeholder="Your phone number"
           value={bookingPhone}
           onChange={(e) => setBookingPhone(e.target.value)}
         />
@@ -97,7 +98,11 @@ export default function BookingModal({
           onChange={(e) => setBookingEventType(e.target.value)}
         />
 
+        <label className="block text-sm text-zinc-400 mb-2" htmlFor="booking-date">
+          Event date
+        </label>
         <input
+          id="booking-date"
           type="date"
           className="w-full mb-3 p-3 rounded-xl bg-black border border-zinc-700"
           value={bookingDate}
@@ -106,39 +111,36 @@ export default function BookingModal({
 
         <input
           className="w-full mb-3 p-3 rounded-xl bg-black border border-zinc-700"
-          placeholder="Venue"
+          placeholder="Event venue"
           value={bookingVenue}
           onChange={(e) => setBookingVenue(e.target.value)}
         />
 
         <input
           className="w-full mb-3 p-3 rounded-xl bg-black border border-zinc-700"
-          placeholder="Budget"
+          placeholder="Estimated budget"
           value={bookingBudget}
           onChange={(e) => setBookingBudget(e.target.value)}
         />
 
         <textarea
           className="w-full mb-3 p-3 rounded-xl bg-black border border-zinc-700"
-          placeholder="Message"
+          placeholder="Tell the DJ about your event"
           rows={4}
           value={bookingMessage}
           onChange={(e) => setBookingMessage(e.target.value)}
         />
 
         {bookingError && (
-          <p className="text-red-400 text-sm mb-3">
-            {bookingError}
-          </p>
+          <p className="text-red-400 text-sm mb-3">{bookingError}</p>
         )}
 
         {bookingSuccess && (
-          <p className="text-green-400 text-sm mb-3">
-            {bookingSuccess}
-          </p>
+          <p className="text-green-400 text-sm mb-3">{bookingSuccess}</p>
         )}
 
         <button
+          type="button"
           onClick={submitBookingRequest}
           disabled={bookingSending}
           className="w-full bg-purple-600 hover:bg-purple-700 p-3 rounded-xl font-bold disabled:opacity-50"
@@ -147,12 +149,12 @@ export default function BookingModal({
         </button>
 
         <button
+          type="button"
           onClick={onClose}
           className="w-full mt-3 bg-zinc-800 hover:bg-zinc-700 p-3 rounded-xl"
         >
           Close
         </button>
-
       </div>
     </div>
   );
