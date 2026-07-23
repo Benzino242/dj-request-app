@@ -1800,4 +1800,8 @@ export default function StageRequestPage() {
   bookingError={bookingError}
 
   submitBookingRequest={submitBookingRequest}
-/>
+  />
+  
+  </main>
+  );
+  }
