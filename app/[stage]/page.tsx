@@ -2407,16 +2407,17 @@ className
 
 
 {dj.booking_enabled && (
-
   <button
-    
-onClick
-={() => setShowBookingModal(true)}
-    
-className
-="w-full mt-3 bg-zinc-800 hover:bg-zinc-700 transition p-4 rounded-xl text-xl font-semibold border border-zinc-700"
+    type="button"
+    onClick={() => setShowBookingModal(true)}
+    className="group relative w-full mt-5 overflow-hidden rounded-xl border border-amber-400/60 bg-gradient-to-r from-amber-500/15 via-yellow-400/10 to-orange-500/15 p-4 text-xl font-black text-amber-100 shadow-[0_0_25px_rgba(251,191,36,0.18)] transition-all duration-300 hover:border-amber-300 hover:text-white hover:shadow-[0_0_38px_rgba(251,191,36,0.35)] active:scale-[0.98]"
   >
-     Book DJ
+    <span className="relative z-10 inline-flex items-center justify-center gap-3">
+      <span aria-hidden="true">📅</span>
+      Book This DJ
+    </span>
+
+    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
   </button>
 )}
                 
