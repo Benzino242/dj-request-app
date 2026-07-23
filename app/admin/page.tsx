@@ -4068,6 +4068,8 @@ const [requestEnabled, setRequestEnabled] = useState(true);
   const [bookingActionLoadingId, setBookingActionLoadingId] = useState<
     number | null
   >(null);
+  const [isBookingRequestsExpanded, setIsBookingRequestsExpanded] =
+    useState(false);
   const [isQuickSetupExpanded, setIsQuickSetupExpanded] = useState(false);
   const [showAllPlayedHistory, setShowAllPlayedHistory] = useState(false);
   const [isQrCodeExpanded, setIsQrCodeExpanded] = useState(false);
@@ -4882,10 +4884,14 @@ setVenue(loadedDj.venue || "");
   async function reviewBookingRequests() {
     if (!dj) return;
 
-    bookingRequestsRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+    setIsBookingRequestsExpanded(true);
+
+    window.setTimeout(() => {
+      bookingRequestsRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 50);
 
     const unreadBookingIds = bookingRequests
       .filter((booking) => !booking.dj_read_at)
@@ -5861,9 +5867,20 @@ setVenue(loadedDj.venue || "");
             <span className="bg-black/40 border border-zinc-800 text-zinc-300 px-4 py-2 rounded-full text-xs font-black">
               {bookingRequests.length} total
             </span>
+            <button
+              type="button"
+              onClick={() =>
+                setIsBookingRequestsExpanded((currentValue) => !currentValue)
+              }
+              className="bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-200 px-4 py-2 rounded-full text-xs font-black"
+            >
+              {isBookingRequestsExpanded ? "Hide bookings ▲" : "Show bookings ▼"}
+            </button>
           </div>
         </div>
 
+        {isBookingRequestsExpanded && (
+          <>
         {bookingRequests.length === 0 ? (
           <div className="bg-black/30 border border-zinc-800 rounded-2xl p-6 text-center">
             <div className="text-3xl mb-3">📭</div>
@@ -6043,6 +6060,8 @@ setVenue(loadedDj.venue || "");
               );
             })}
           </div>
+        )}
+          </>
         )}
       </section>
 

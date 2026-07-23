@@ -150,8 +150,11 @@ export default function VerificationDashboardClient({
  ]);
  const [isRecentActivityCollapsed, setIsRecentActivityCollapsed] =
  useState(false);
+ const [isBookingMarketplaceExpanded, setIsBookingMarketplaceExpanded] =
+ useState(false);
  const [connectionWarning, setConnectionWarning] = useState("");
  const isFetchingDashboardRef = useRef(false);
+ const bookingMarketplaceRef = useRef<HTMLElement | null>(null);
 
  async function fetchDashboardData(showLoader = false) {
  if (isFetchingDashboardRef.current) {
@@ -319,6 +322,17 @@ export default function VerificationDashboardClient({
  supabase.removeChannel(channel);
  };
  }, []);
+
+ function openBookingMarketplace() {
+ setIsBookingMarketplaceExpanded(true);
+
+ window.setTimeout(() => {
+ bookingMarketplaceRef.current?.scrollIntoView({
+ behavior: "smooth",
+ block: "start",
+ });
+ }, 50);
+ }
 
  const activeDjs = djs.filter(
  (dj) => dj.verification_status !== "removed",
@@ -1452,12 +1466,13 @@ export default function VerificationDashboardClient({
  Review Withdrawals
  </a>
 
- <a
- href="#booking-marketplace"
+ <button
+ type="button"
+ onClick={openBookingMarketplace}
  className="bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 px-4 py-3 rounded-xl text-sm font-bold text-center text-amber-200"
  >
  Review Bookings
- </a>
+ </button>
  </div>
  </div>
  </div>
@@ -1580,7 +1595,11 @@ export default function VerificationDashboardClient({
  </details>
  </div>
 
- <section id="booking-marketplace" className="mb-14 scroll-mt-6">
+ <section
+ id="booking-marketplace"
+ ref={bookingMarketplaceRef}
+ className="mb-14 scroll-mt-6"
+ >
  <div className="bg-zinc-900 border border-amber-500/30 rounded-3xl p-5 shadow-[0_0_35px_rgba(251,191,36,0.1)]">
  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
  <div>
@@ -1603,9 +1622,20 @@ export default function VerificationDashboardClient({
  <span className="bg-green-500/10 border border-green-500/30 text-green-300 px-3 py-2 rounded-full text-xs font-black">
  {paidBookingCount} paid
  </span>
+ <button
+ type="button"
+ onClick={() =>
+ setIsBookingMarketplaceExpanded((currentValue) => !currentValue)
+ }
+ className="bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-200 px-3 py-2 rounded-full text-xs font-black"
+ >
+ {isBookingMarketplaceExpanded ? "Hide bookings ▲" : "Show bookings ▼"}
+ </button>
  </div>
  </div>
 
+ {isBookingMarketplaceExpanded && (
+ <>
  {bookingRequests.length === 0 ? (
  <div className="bg-black/30 border border-zinc-800 rounded-2xl p-6 text-center">
  <div className="text-3xl mb-3">📭</div>
@@ -1766,6 +1796,8 @@ export default function VerificationDashboardClient({
  );
  })}
  </div>
+ )}
+ </>
  )}
  </div>
  </section>
