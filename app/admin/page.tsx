@@ -46,6 +46,33 @@ type Payment = {
   created_at?: string;
 };
 
+type BookingRequest = {
+  id: number;
+  dj_id: number;
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+  event_type?: string | null;
+  event_date?: string | null;
+  venue?: string | null;
+  budget?: string | null;
+  message?: string | null;
+  status: string;
+  payment_status?: string | null;
+  currency?: string | null;
+  agreed_amount?: number | null;
+  commission_rate?: number | null;
+  commission_amount?: number | null;
+  dj_net_amount?: number | null;
+  dj_read_at?: string | null;
+  blackline_read_at?: string | null;
+  accepted_at?: string | null;
+  rejected_at?: string | null;
+  completed_at?: string | null;
+  paid_at?: string | null;
+  created_at?: string | null;
+};
+
 type Withdrawal = {
   id: number;
   dj_name: string;
@@ -3909,6 +3936,7 @@ const [requestEnabled, setRequestEnabled] = useState(true);
   const [profileMessage, setProfileMessage] = useState("");
 
   const [requests, setRequests] = useState<SongRequest[]>([]);
+  const [bookingRequests, setBookingRequests] = useState<BookingRequest[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
@@ -4037,12 +4065,16 @@ const [requestEnabled, setRequestEnabled] = useState(true);
 
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
+  const [bookingActionLoadingId, setBookingActionLoadingId] = useState<
+    number | null
+  >(null);
   const [isQuickSetupExpanded, setIsQuickSetupExpanded] = useState(false);
   const [showAllPlayedHistory, setShowAllPlayedHistory] = useState(false);
   const [isQrCodeExpanded, setIsQrCodeExpanded] = useState(false);
   const [nowPlayingClockTick, setNowPlayingClockTick] = useState(0);
   const isFetchingDashboardRef = useRef(false);
   const requestQueueRef = useRef<HTMLDivElement | null>(null);
+  const bookingRequestsRef = useRef<HTMLDivElement | null>(null);
   const liveControlsRef = useRef<HTMLDivElement | null>(null);
   const profileSectionRef = useRef<HTMLDivElement | null>(null);
   const qrCodeSectionRef = useRef<HTMLDivElement | null>(null);
@@ -4593,6 +4625,20 @@ setVenue(loadedDj.venue || "");
         .eq("dj_id", activeDj.id)
         .order("created_at", { ascending: false });
 
+      const { data: bookingRequestsData, error: bookingRequestsError } =
+        await supabase
+          .from("booking_requests")
+          .select("*")
+          .eq("dj_id", activeDj.id)
+          .order("created_at", { ascending: false });
+
+      if (bookingRequestsError) {
+        console.error(
+          "BOOKING REQUESTS FETCH ERROR:",
+          bookingRequestsError,
+        );
+      }
+
       const { data: withdrawalsData } = await supabase
         .from("withdrawals")
         .select("*")
@@ -4618,6 +4664,9 @@ setVenue(loadedDj.venue || "");
         .slice(0, 20);
 
       setRequests((requestsData || []) as SongRequest[]);
+      setBookingRequests(
+        (bookingRequestsData || []) as BookingRequest[],
+      );
       setPayments((paymentsData || []) as Payment[]);
       setWithdrawals((withdrawalsData || []) as Withdrawal[]);
       setAuditLogs(filteredAuditLogs);
@@ -4723,6 +4772,20 @@ setVenue(loadedDj.venue || "");
       )
       .subscribe();
 
+    const bookingRequestsChannel = supabase
+      .channel(`admin-live-bookings-${activeDj.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "booking_requests",
+          filter: `dj_id=eq.${activeDj.id}`,
+        },
+        () => refreshDashboardIfVisible(),
+      )
+      .subscribe();
+
     const withdrawalsChannel = supabase
       .channel(`admin-live-withdrawals-${activeDj.id}`)
       .on(
@@ -4756,6 +4819,7 @@ setVenue(loadedDj.venue || "");
       document.removeEventListener("visibilitychange", handleVisibleRefresh);
       supabase.removeChannel(requestsChannel);
       supabase.removeChannel(paymentsChannel);
+      supabase.removeChannel(bookingRequestsChannel);
       supabase.removeChannel(withdrawalsChannel);
       supabase.removeChannel(auditLogsChannel);
     };
@@ -4813,6 +4877,99 @@ setVenue(loadedDj.venue || "");
     setActionLoadingId(null);
 
     restoreScrollPosition(currentScrollY);
+  }
+
+  async function reviewBookingRequests() {
+    if (!dj) return;
+
+    bookingRequestsRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    const unreadBookingIds = bookingRequests
+      .filter((booking) => !booking.dj_read_at)
+      .map((booking) => booking.id);
+
+    if (unreadBookingIds.length === 0) return;
+
+    const readAt = new Date().toISOString();
+    const { error } = await supabase
+      .from("booking_requests")
+      .update({ dj_read_at: readAt })
+      .eq("dj_id", dj.id)
+      .in("id", unreadBookingIds);
+
+    if (error) {
+      console.error("MARK BOOKINGS READ ERROR:", error);
+      return;
+    }
+
+    setBookingRequests((currentBookings) =>
+      currentBookings.map((booking) =>
+        unreadBookingIds.includes(booking.id)
+          ? { ...booking, dj_read_at: readAt }
+          : booking,
+      ),
+    );
+  }
+
+  async function updateBookingStatus(
+    bookingId: number,
+    status: "accepted" | "rejected",
+  ) {
+    if (!dj) return;
+
+    const actionLabel = status === "accepted" ? "accept" : "reject";
+    const confirmed = window.confirm(
+      `Are you sure you want to ${actionLabel} this booking request?`,
+    );
+
+    if (!confirmed) return;
+
+    setBookingActionLoadingId(bookingId);
+
+    const now = new Date().toISOString();
+    const updatePayload =
+      status === "accepted"
+        ? {
+            status,
+            accepted_at: now,
+            rejected_at: null,
+            dj_read_at: now,
+          }
+        : {
+            status,
+            rejected_at: now,
+            accepted_at: null,
+            dj_read_at: now,
+          };
+
+    const { error } = await supabase
+      .from("booking_requests")
+      .update(updatePayload)
+      .eq("id", bookingId)
+      .eq("dj_id", dj.id);
+
+    if (error) {
+      console.error("BOOKING STATUS UPDATE ERROR:", error);
+      alert(
+        error.message ||
+          "The booking could not be updated. Please try again.",
+      );
+      setBookingActionLoadingId(null);
+      return;
+    }
+
+    setBookingRequests((currentBookings) =>
+      currentBookings.map((booking) =>
+        booking.id === bookingId
+          ? { ...booking, ...updatePayload }
+          : booking,
+      ),
+    );
+
+    setBookingActionLoadingId(null);
   }
 
   async function deleteRequest(id: number) {
@@ -5035,6 +5192,14 @@ setVenue(loadedDj.venue || "");
   }
 
   const vipRequests = requests.filter((r) => r.tip_amount >= 50).length;
+
+  const pendingBookingRequests = bookingRequests.filter(
+    (booking) => booking.status === "pending",
+  );
+
+  const unreadBookingRequests = bookingRequests.filter(
+    (booking) => booking.status === "pending" && !booking.dj_read_at,
+  );
 
   const totalWithdrawals = withdrawals
     .filter((item) => ["pending", "approved", "paid"].includes(item.status))
@@ -5487,6 +5652,44 @@ setVenue(loadedDj.venue || "");
         </button>
       )}
 
+      {unreadBookingRequests.length > 0 && (
+        <button
+          type="button"
+          onClick={reviewBookingRequests}
+          className="w-full mb-6 md:mb-8 text-left relative overflow-hidden bg-gradient-to-r from-amber-500/20 via-zinc-900 to-orange-500/10 border border-amber-400/70 rounded-3xl p-4 md:p-5 shadow-[0_0_35px_rgba(251,191,36,0.28)] animate-pulse"
+        >
+          <div className="absolute -top-10 -right-10 w-28 h-28 bg-amber-400/20 rounded-full blur-3xl" />
+
+          <div className="relative z-10 flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-amber-400 text-black flex items-center justify-center text-2xl font-black shrink-0 shadow-[0_0_25px_rgba(251,191,36,0.5)]">
+              📅
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <p className="text-xs uppercase tracking-[0.25em] text-amber-300 font-black">
+                New booking request
+              </p>
+
+              <h2 className="text-xl md:text-2xl font-black text-white mt-1 leading-tight">
+                {unreadBookingRequests.length}{" "}
+                {unreadBookingRequests.length === 1
+                  ? "client wants"
+                  : "clients want"}{" "}
+                to book you
+              </h2>
+
+              <p className="text-sm text-zinc-300 mt-1">
+                Tap to review the event details and respond.
+              </p>
+            </div>
+
+            <div className="hidden sm:block bg-amber-400 text-black px-4 py-2 rounded-full text-sm font-black">
+              Review now
+            </div>
+          </div>
+        </button>
+      )}
+
       <div className="bg-zinc-900 border border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.16)] rounded-3xl p-4 md:p-6 mb-10">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-5">
           <div>
@@ -5618,6 +5821,215 @@ setVenue(loadedDj.venue || "");
           color="text-green-400"
         />
       </div>
+
+      <section
+        ref={bookingRequestsRef}
+        className="scroll-mt-6 bg-zinc-900 border border-amber-500/30 shadow-[0_0_30px_rgba(251,191,36,0.1)] rounded-3xl p-4 md:p-6 mb-10"
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div>
+            <p className="text-xs uppercase tracking-[0.25em] text-amber-400 font-black">
+              Booking marketplace
+            </p>
+            <h2 className="text-2xl md:text-3xl font-black text-white mt-2">
+              📅 Booking Requests
+            </h2>
+            <p className="text-sm text-zinc-400 mt-2">
+              Review clients who want to book you for an event.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <span className="bg-amber-500/10 border border-amber-500/30 text-amber-300 px-4 py-2 rounded-full text-xs font-black">
+              {pendingBookingRequests.length} pending
+            </span>
+            <span className="bg-black/40 border border-zinc-800 text-zinc-300 px-4 py-2 rounded-full text-xs font-black">
+              {bookingRequests.length} total
+            </span>
+          </div>
+        </div>
+
+        {bookingRequests.length === 0 ? (
+          <div className="bg-black/30 border border-zinc-800 rounded-2xl p-6 text-center">
+            <div className="text-3xl mb-3">📭</div>
+            <p className="text-white font-bold">No booking requests yet</p>
+            <p className="text-sm text-zinc-500 mt-2">
+              New requests will appear here when clients use the Book This DJ
+              form.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {bookingRequests.map((booking) => {
+              const normalizedStatus = String(
+                booking.status || "pending",
+              ).toLowerCase();
+              const isPending = normalizedStatus === "pending";
+              const isAccepted = normalizedStatus === "accepted";
+              const isRejected = normalizedStatus === "rejected";
+
+              const statusClass = isPending
+                ? "bg-yellow-500/10 border-yellow-500/30 text-yellow-300"
+                : isAccepted
+                  ? "bg-green-500/10 border-green-500/30 text-green-300"
+                  : isRejected
+                    ? "bg-red-500/10 border-red-500/30 text-red-300"
+                    : "bg-purple-500/10 border-purple-500/30 text-purple-300";
+
+              return (
+                <article
+                  key={booking.id}
+                  className={`relative overflow-hidden rounded-2xl border p-4 md:p-5 ${
+                    isPending
+                      ? "bg-gradient-to-br from-amber-950/50 via-black/40 to-zinc-950 border-amber-500/40"
+                      : "bg-black/30 border-zinc-800"
+                  }`}
+                >
+                  {isPending && (
+                    <div className="absolute -top-12 -right-12 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl" />
+                  )}
+
+                  <div className="relative z-10">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-3">
+                          <h3 className="text-xl md:text-2xl font-black text-white">
+                            {booking.name || "Unnamed client"}
+                          </h3>
+                          <span
+                            className={`border px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider ${statusClass}`}
+                          >
+                            {normalizedStatus.replace(/_/g, " ")}
+                          </span>
+                        </div>
+
+                        <p className="text-amber-300 font-bold mt-2">
+                          {booking.event_type || "Event type not provided"}
+                        </p>
+
+                        <p className="text-xs text-zinc-500 mt-2">
+                          Received{" "}
+                          {booking.created_at
+                            ? new Date(booking.created_at).toLocaleString()
+                            : "recently"}
+                        </p>
+                      </div>
+
+                      {booking.budget && (
+                        <div className="bg-black/50 border border-amber-500/20 rounded-xl px-4 py-3 sm:text-right">
+                          <p className="text-xs uppercase tracking-wider text-zinc-500 font-black">
+                            Client budget
+                          </p>
+                          <p className="text-xl font-black text-amber-300 mt-1">
+                            {booking.budget}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-5">
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500">Event date</p>
+                        <p className="text-white font-semibold mt-1">
+                          {booking.event_date
+                            ? new Date(
+                                `${booking.event_date}T00:00:00`,
+                              ).toLocaleDateString()
+                            : "Not provided"}
+                        </p>
+                      </div>
+
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500">Venue</p>
+                        <p className="text-white font-semibold mt-1 break-words">
+                          {booking.venue || "Not provided"}
+                        </p>
+                      </div>
+
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500">Client email</p>
+                        {booking.email ? (
+                          <a
+                            href={`mailto:${booking.email}`}
+                            className="text-cyan-300 hover:text-cyan-200 font-semibold mt-1 block break-all"
+                          >
+                            {booking.email}
+                          </a>
+                        ) : (
+                          <p className="text-zinc-400 mt-1">Not provided</p>
+                        )}
+                      </div>
+
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-3">
+                        <p className="text-xs text-zinc-500">Client phone</p>
+                        {booking.phone ? (
+                          <a
+                            href={`tel:${booking.phone}`}
+                            className="text-cyan-300 hover:text-cyan-200 font-semibold mt-1 block"
+                          >
+                            {booking.phone}
+                          </a>
+                        ) : (
+                          <p className="text-zinc-400 mt-1">Not provided</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {booking.message && (
+                      <div className="bg-black/40 border border-zinc-800 rounded-xl p-4 mt-3">
+                        <p className="text-xs uppercase tracking-wider text-zinc-500 font-black">
+                          Client message
+                        </p>
+                        <p className="text-zinc-200 mt-2 whitespace-pre-wrap leading-relaxed">
+                          {booking.message}
+                        </p>
+                      </div>
+                    )}
+
+                    {isPending && (
+                      <div className="grid sm:grid-cols-2 gap-3 mt-5">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            updateBookingStatus(booking.id, "accepted")
+                          }
+                          disabled={bookingActionLoadingId === booking.id}
+                          className="bg-green-600 hover:bg-green-700 px-5 py-4 rounded-xl font-black text-white disabled:opacity-50"
+                        >
+                          {bookingActionLoadingId === booking.id
+                            ? "Updating..."
+                            : "Accept Booking Request"}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            updateBookingStatus(booking.id, "rejected")
+                          }
+                          disabled={bookingActionLoadingId === booking.id}
+                          className="bg-red-600 hover:bg-red-700 px-5 py-4 rounded-xl font-black text-white disabled:opacity-50"
+                        >
+                          {bookingActionLoadingId === booking.id
+                            ? "Updating..."
+                            : "Reject"}
+                        </button>
+                      </div>
+                    )}
+
+                    {isAccepted && (
+                      <div className="mt-5 bg-green-500/10 border border-green-500/30 text-green-300 rounded-xl p-4 text-sm">
+                        You accepted this request. Client payment and final
+                        pricing will be connected in the next booking-payment
+                        step.
+                      </div>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </section>
 
       <div
         ref={liveControlsRef}
