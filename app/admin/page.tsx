@@ -59,6 +59,9 @@ type BookingRequest = {
   message?: string | null;
   status: string;
   payment_status?: string | null;
+  payment_token?: string | null;
+  payment_expires_at?: string | null;
+  payment_link_sent_at?: string | null;
   currency?: string | null;
   agreed_amount?: number | null;
   commission_rate?: number | null;
@@ -4070,6 +4073,9 @@ const [requestEnabled, setRequestEnabled] = useState(true);
   >(null);
   const [isBookingRequestsExpanded, setIsBookingRequestsExpanded] =
     useState(false);
+  const [bookingFinalPrices, setBookingFinalPrices] = useState<
+    Record<number, string>
+  >({});
   const [isQuickSetupExpanded, setIsQuickSetupExpanded] = useState(false);
   const [showAllPlayedHistory, setShowAllPlayedHistory] = useState(false);
   const [isQrCodeExpanded, setIsQrCodeExpanded] = useState(false);
@@ -4993,6 +4999,74 @@ setVenue(loadedDj.venue || "");
     setBookingActionLoadingId(null);
   }
 
+  async function sendBookingPaymentLink(bookingId: number) {
+    const agreedAmount = Number(bookingFinalPrices[bookingId] || 0);
+
+    if (!Number.isFinite(agreedAmount) || agreedAmount < 1) {
+      alert("Enter a valid final price of at least GHS 1.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Send a GHS ${agreedAmount.toFixed(2)} payment link to this client?`,
+    );
+
+    if (!confirmed) return;
+
+    setBookingActionLoadingId(bookingId);
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session?.access_token) {
+      alert("Your login session has expired. Please log in again.");
+      setBookingActionLoadingId(null);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/bookings/payment-link", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          bookingId,
+          agreedAmount,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        alert(result.error || "The payment link could not be created.");
+        setBookingActionLoadingId(null);
+        return;
+      }
+
+      setBookingRequests((currentBookings) =>
+        currentBookings.map((booking) =>
+          booking.id === bookingId
+            ? (result.booking as BookingRequest)
+            : booking,
+        ),
+      );
+
+      if (result.warning) {
+        alert(result.warning);
+      } else {
+        alert("Final price saved. The payment link was emailed to the client.");
+      }
+    } catch (error) {
+      console.error("BOOKING PAYMENT LINK ERROR:", error);
+      alert("The payment link could not be created. Please try again.");
+    }
+
+    setBookingActionLoadingId(null);
+  }
+
   async function deleteRequest(id: number) {
     if (!window.confirm("Delete this request?")) return;
 
@@ -5174,22 +5248,45 @@ setVenue(loadedDj.venue || "");
     ? recentPlayedHistory
     : recentPlayedHistory.slice(0, 1);
 
-  const currency = payments[0]?.currency || requests[0]?.tip_currency || "GHS";
+  const currency =
+    payments[0]?.currency ||
+    bookingRequests[0]?.currency ||
+    requests[0]?.tip_currency ||
+    "GHS";
 
-  const grossRevenue = payments.reduce(
-    (sum, payment) => sum + Number(payment.amount || 0),
-    0,
+  const paidBookingRequests = bookingRequests.filter(
+    (booking) => booking.payment_status === "paid",
   );
 
-  const netEarnings = payments.reduce(
-    (sum, payment) => sum + Number(payment.dj_amount || 0),
-    0,
-  );
+  const grossRevenue =
+    payments.reduce(
+      (sum, payment) => sum + Number(payment.amount || 0),
+      0,
+    ) +
+    paidBookingRequests.reduce(
+      (sum, booking) => sum + Number(booking.agreed_amount || 0),
+      0,
+    );
 
-  const serviceFees = payments.reduce(
-    (sum, payment) => sum + Number(payment.platform_fee || 0),
-    0,
-  );
+  const netEarnings =
+    payments.reduce(
+      (sum, payment) => sum + Number(payment.dj_amount || 0),
+      0,
+    ) +
+    paidBookingRequests.reduce(
+      (sum, booking) => sum + Number(booking.dj_net_amount || 0),
+      0,
+    );
+
+  const serviceFees =
+    payments.reduce(
+      (sum, payment) => sum + Number(payment.platform_fee || 0),
+      0,
+    ) +
+    paidBookingRequests.reduce(
+      (sum, booking) => sum + Number(booking.commission_amount || 0),
+      0,
+    );
 
   const pendingPayouts = payments.filter(
     (payment) => payment.payout_status === "pending",
@@ -5899,6 +5996,8 @@ setVenue(loadedDj.venue || "");
               const isPending = normalizedStatus === "pending";
               const isAccepted = normalizedStatus === "accepted";
               const isRejected = normalizedStatus === "rejected";
+              const isAwaitingPayment =
+                normalizedStatus === "awaiting_payment";
 
               const statusClass = isPending
                 ? "bg-yellow-500/10 border-yellow-500/30 text-yellow-300"
@@ -6048,13 +6147,76 @@ setVenue(loadedDj.venue || "");
                       </div>
                     )}
 
-                    {isAccepted && (
-                      <div className="mt-5 bg-green-500/10 border border-green-500/30 text-green-300 rounded-xl p-4 text-sm">
-                        You accepted this request. Client payment and final
-                        pricing will be connected in the next booking-payment
-                        step.
-                      </div>
-                    )}
+                    {(isAccepted || isAwaitingPayment) &&
+                      booking.payment_status !== "paid" && (
+                        <div className="mt-5 bg-purple-500/10 border border-purple-500/30 rounded-2xl p-4">
+                          <p className="text-xs uppercase tracking-[0.2em] text-purple-300 font-black">
+                            {isAwaitingPayment
+                              ? "Payment link sent"
+                              : "Set final price"}
+                          </p>
+
+                          <p className="text-sm text-zinc-300 mt-2">
+                            {isAwaitingPayment
+                              ? "You can update the price and resend a fresh 7-day payment link if needed."
+                              : "Enter the agreed booking price. Blackline will email the client a secure 7-day Paystack payment link."}
+                          </p>
+
+                          <div className="grid sm:grid-cols-[1fr_auto] gap-3 mt-4">
+                            <div className="relative">
+                              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 font-bold">
+                                GHS
+                              </span>
+                              <input
+                                type="number"
+                                min="1"
+                                step="0.01"
+                                value={
+                                  bookingFinalPrices[booking.id] ??
+                                  (booking.agreed_amount != null
+                                    ? String(booking.agreed_amount)
+                                    : "")
+                                }
+                                onChange={(event) =>
+                                  setBookingFinalPrices((currentPrices) => ({
+                                    ...currentPrices,
+                                    [booking.id]: event.target.value,
+                                  }))
+                                }
+                                placeholder="Final agreed price"
+                                className="w-full bg-black border border-purple-500/30 rounded-xl py-4 pl-16 pr-4 text-white"
+                              />
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() =>
+                                sendBookingPaymentLink(booking.id)
+                              }
+                              disabled={
+                                bookingActionLoadingId === booking.id
+                              }
+                              className="bg-purple-600 hover:bg-purple-700 px-5 py-4 rounded-xl font-black text-white disabled:opacity-50"
+                            >
+                              {bookingActionLoadingId === booking.id
+                                ? "Sending..."
+                                : isAwaitingPayment
+                                  ? "Update & Resend Link"
+                                  : "Save Price & Send Link"}
+                            </button>
+                          </div>
+
+                          {isAwaitingPayment &&
+                            booking.payment_expires_at && (
+                              <p className="text-xs text-zinc-500 mt-3">
+                                Current link expires{" "}
+                                {new Date(
+                                  booking.payment_expires_at,
+                                ).toLocaleString()}
+                              </p>
+                            )}
+                        </div>
+                      )}
                   </div>
                 </article>
               );

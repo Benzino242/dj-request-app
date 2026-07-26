@@ -380,7 +380,7 @@ export default function VerificationDashboardClient({
 
  const acceptedAwaitingPaymentCount = bookingRequests.filter(
  (booking) =>
- booking.status === "accepted" &&
+ ["accepted", "awaiting_payment"].includes(booking.status) &&
  String(booking.payment_status || "unpaid") !== "paid",
  ).length;
 

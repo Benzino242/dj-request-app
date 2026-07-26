@@ -463,13 +463,41 @@ export async function GET() {
       (withdrawal) => withdrawal.dj_id === dj.id
     );
 
-    const grossRevenue = djRequests.reduce(
+    const djPaidBookings = (bookingRequests || []).filter(
+      (booking) =>
+        booking.dj_id === dj.id && booking.payment_status === "paid"
+    );
+
+    const songRequestGrossRevenue = djRequests.reduce(
       (sum, request) => sum + Number(request.tip_amount || 0),
       0
     );
 
-    const platformRevenue = grossRevenue * (PLATFORM_FEE_PERCENT / 100);
-    const djRevenue = grossRevenue - platformRevenue;
+    const bookingGrossRevenue = djPaidBookings.reduce(
+      (sum, booking) => sum + Number(booking.agreed_amount || 0),
+      0
+    );
+
+    const songRequestPlatformRevenue =
+      songRequestGrossRevenue * (PLATFORM_FEE_PERCENT / 100);
+
+    const bookingPlatformRevenue = djPaidBookings.reduce(
+      (sum, booking) => sum + Number(booking.commission_amount || 0),
+      0
+    );
+
+    const bookingDjRevenue = djPaidBookings.reduce(
+      (sum, booking) => sum + Number(booking.dj_net_amount || 0),
+      0
+    );
+
+    const grossRevenue = songRequestGrossRevenue + bookingGrossRevenue;
+    const platformRevenue =
+      songRequestPlatformRevenue + bookingPlatformRevenue;
+    const djRevenue =
+      songRequestGrossRevenue -
+      songRequestPlatformRevenue +
+      bookingDjRevenue;
 
     const activeWithdrawals = djWithdrawals.filter((withdrawal) =>
       ["pending", "approved", "paid"].includes(withdrawal.status || "")
@@ -645,10 +673,20 @@ export async function PATCH(request: Request) {
           .select("*")
           .eq("dj_id", withdrawalBeforeUpdate.dj_id);
 
-      if (requestError || withdrawalError) {
+      const { data: paidBookings, error: bookingError } =
+        await supabaseAdmin
+          .from("booking_requests")
+          .select("id, dj_id, payment_status, dj_net_amount")
+          .eq("dj_id", withdrawalBeforeUpdate.dj_id)
+          .eq("payment_status", "paid");
+
+      if (requestError || withdrawalError || bookingError) {
         return NextResponse.json(
           {
-            error: requestError?.message || withdrawalError?.message,
+            error:
+              requestError?.message ||
+              withdrawalError?.message ||
+              bookingError?.message,
           },
           { status: 500 }
         );
@@ -660,7 +698,11 @@ export async function PATCH(request: Request) {
       );
 
       const platformRevenue = grossRevenue * (PLATFORM_FEE_PERCENT / 100);
-      const djRevenue = grossRevenue - platformRevenue;
+      const bookingDjRevenue = (paidBookings || []).reduce(
+        (sum, booking) => sum + Number(booking.dj_net_amount || 0),
+        0
+      );
+      const djRevenue = grossRevenue - platformRevenue + bookingDjRevenue;
 
       const activeWithdrawals = (djWithdrawals || []).filter(
         (item) =>
