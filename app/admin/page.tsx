@@ -6702,17 +6702,36 @@ setVenue(loadedDj.venue || "");
                     </h3>
                   </div>
 
-                  <span
-                    className={`rounded-full border px-3 py-1 text-xs font-black ${
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={bookingEnabled}
+                    onClick={() => setBookingEnabled((current) => !current)}
+                    className={`inline-flex items-center gap-3 rounded-full border px-3 py-2 text-xs font-black transition ${
                       bookingEnabled
-                        ? "border-green-500/30 bg-green-500/10 text-green-400"
-                        : "border-zinc-600 bg-zinc-800 text-zinc-400"
+                        ? "border-green-500/40 bg-green-500/10 text-green-300"
+                        : "border-zinc-600 bg-zinc-800 text-zinc-300"
                     }`}
                   >
-                    {bookingEnabled
-                      ? bookingText.visiblePublicly
-                      : bookingText.bookingDisabled}
-                  </span>
+                    <span
+                      className={`relative h-6 w-11 rounded-full transition ${
+                        bookingEnabled ? "bg-green-500" : "bg-zinc-600"
+                      }`}
+                    >
+                      <span
+                        className={`absolute top-1 h-4 w-4 rounded-full bg-white shadow transition ${
+                          bookingEnabled ? "left-6" : "left-1"
+                        }`}
+                      />
+                    </span>
+
+                    <span>
+                      {bookingText.acceptBookingRequests}:{" "}
+                      {bookingEnabled
+                        ? bookingText.visiblePublicly
+                        : bookingText.bookingDisabled}
+                    </span>
+                  </button>
                 </div>
 
                 <p className="mt-2 text-sm leading-relaxed text-zinc-400">

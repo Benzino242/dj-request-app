@@ -29,6 +29,8 @@ export type BookingTranslation = {
   detailsAppear: string;
   visiblePublicly: string;
   bookingDisabled: string;
+  acceptBookingRequests: string;
+  unavailableForBookings: string;
   currency: string;
   startingPrice: string;
   advertisedStartingPrice: string;
@@ -64,6 +66,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "These details appear above your Book This DJ button.",
     visiblePublicly: "Visible publicly",
     bookingDisabled: "Booking disabled",
+    acceptBookingRequests: "Accept booking requests",
+    unavailableForBookings: "This DJ is currently unavailable for bookings.",
     currency: "Currency",
     startingPrice: "Starting price",
     advertisedStartingPrice:
@@ -98,6 +102,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "这些信息会显示在“预订这位 DJ”按钮上方。",
     visiblePublicly: "公开可见",
     bookingDisabled: "预订已关闭",
+    acceptBookingRequests: "接受预订请求",
+    unavailableForBookings: "这位 DJ 目前暂不接受预订。",
     currency: "货币",
     startingPrice: "起始价格",
     advertisedStartingPrice:
@@ -132,6 +138,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "この情報は「この DJ を予約」ボタンの上に表示されます。",
     visiblePublicly: "公開中",
     bookingDisabled: "予約無効",
+    acceptBookingRequests: "予約リクエストを受け付ける",
+    unavailableForBookings: "この DJ は現在予約を受け付けていません。",
     currency: "通貨",
     startingPrice: "開始価格",
     advertisedStartingPrice:
@@ -166,6 +174,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "이 정보는 DJ 예약 버튼 위에 표시됩니다.",
     visiblePublicly: "공개 표시",
     bookingDisabled: "예약 비활성화",
+    acceptBookingRequests: "예약 요청 받기",
+    unavailableForBookings: "이 DJ는 현재 예약할 수 없습니다.",
     currency: "통화",
     startingPrice: "시작 가격",
     advertisedStartingPrice:
@@ -200,6 +210,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "Detail ini muncul di atas tombol Pesan DJ Ini.",
     visiblePublicly: "Terlihat publik",
     bookingDisabled: "Pemesanan dinonaktifkan",
+    acceptBookingRequests: "Terima permintaan pemesanan",
+    unavailableForBookings: "DJ ini sedang tidak tersedia untuk dipesan.",
     currency: "Mata uang",
     startingPrice: "Harga awal",
     advertisedStartingPrice:
@@ -234,6 +246,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "Butiran ini muncul di atas butang Tempah DJ Ini.",
     visiblePublicly: "Dipaparkan kepada umum",
     bookingDisabled: "Tempahan dinyahaktifkan",
+    acceptBookingRequests: "Terima permintaan tempahan",
+    unavailableForBookings: "DJ ini tidak tersedia untuk tempahan buat masa ini.",
     currency: "Mata wang",
     startingPrice: "Harga permulaan",
     advertisedStartingPrice:
@@ -268,6 +282,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "ข้อมูลนี้จะแสดงเหนือปุ่มจอง DJ คนนี้",
     visiblePublicly: "แสดงต่อสาธารณะ",
     bookingDisabled: "ปิดการจอง",
+    acceptBookingRequests: "รับคำขอจอง",
+    unavailableForBookings: "ขณะนี้ DJ คนนี้ไม่พร้อมรับการจอง",
     currency: "สกุลเงิน",
     startingPrice: "ราคาเริ่มต้น",
     advertisedStartingPrice:
@@ -302,6 +318,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "यह जानकारी इस DJ को बुक करें बटन के ऊपर दिखाई देती है।",
     visiblePublicly: "सार्वजनिक रूप से दिखाई देगा",
     bookingDisabled: "बुकिंग बंद",
+    acceptBookingRequests: "बुकिंग अनुरोध स्वीकार करें",
+    unavailableForBookings: "यह DJ फिलहाल बुकिंग के लिए उपलब्ध नहीं है।",
     currency: "मुद्रा",
     startingPrice: "शुरुआती कीमत",
     advertisedStartingPrice:
@@ -336,6 +354,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "تظهر هذه التفاصيل أعلى زر احجز منسق الموسيقى.",
     visiblePublicly: "ظاهر للعامة",
     bookingDisabled: "الحجز معطل",
+    acceptBookingRequests: "قبول طلبات الحجز",
+    unavailableForBookings: "منسق الموسيقى غير متاح للحجز حالياً.",
     currency: "العملة",
     startingPrice: "السعر المبدئي",
     advertisedStartingPrice:
@@ -370,6 +390,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "Thông tin này xuất hiện phía trên nút Đặt DJ này.",
     visiblePublicly: "Hiển thị công khai",
     bookingDisabled: "Đã tắt đặt lịch",
+    acceptBookingRequests: "Nhận yêu cầu đặt lịch",
+    unavailableForBookings: "DJ này hiện không nhận đặt lịch.",
     currency: "Tiền tệ",
     startingPrice: "Giá khởi điểm",
     advertisedStartingPrice:
@@ -404,6 +426,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "Lalabas ito sa itaas ng I-book ang DJ na Ito.",
     visiblePublicly: "Nakikita ng publiko",
     bookingDisabled: "Naka-disable ang booking",
+    acceptBookingRequests: "Tumanggap ng booking request",
+    unavailableForBookings: "Hindi available ang DJ na ito para sa booking sa ngayon.",
     currency: "Pera",
     startingPrice: "Panimulang presyo",
     advertisedStartingPrice:
@@ -438,6 +462,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "Estes dados aparecem acima do botão Reservar Este DJ.",
     visiblePublicly: "Visível publicamente",
     bookingDisabled: "Reservas desativadas",
+    acceptBookingRequests: "Aceitar pedidos de reserva",
+    unavailableForBookings: "Este DJ não está disponível para reservas neste momento.",
     currency: "Moeda",
     startingPrice: "Preço inicial",
     advertisedStartingPrice:
@@ -472,6 +498,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "Estos datos aparecen encima del botón Reservar Este DJ.",
     visiblePublicly: "Visible públicamente",
     bookingDisabled: "Reservas desactivadas",
+    acceptBookingRequests: "Aceptar solicitudes de reserva",
+    unavailableForBookings: "Este DJ no está disponible para reservas actualmente.",
     currency: "Moneda",
     startingPrice: "Precio inicial",
     advertisedStartingPrice:
@@ -506,6 +534,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "Ces informations apparaissent au-dessus du bouton Réserver Ce DJ.",
     visiblePublicly: "Visible publiquement",
     bookingDisabled: "Réservations désactivées",
+    acceptBookingRequests: "Accepter les demandes de réservation",
+    unavailableForBookings: "Ce DJ n’est actuellement pas disponible à la réservation.",
     currency: "Devise",
     startingPrice: "Prix de départ",
     advertisedStartingPrice:
@@ -540,6 +570,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "Diese Angaben erscheinen über der Schaltfläche Diesen DJ Buchen.",
     visiblePublicly: "Öffentlich sichtbar",
     bookingDisabled: "Buchung deaktiviert",
+    acceptBookingRequests: "Buchungsanfragen annehmen",
+    unavailableForBookings: "Dieser DJ ist derzeit nicht buchbar.",
     currency: "Währung",
     startingPrice: "Startpreis",
     advertisedStartingPrice:
@@ -574,6 +606,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "Эти данные отображаются над кнопкой бронирования DJ.",
     visiblePublicly: "Видно всем",
     bookingDisabled: "Бронирование отключено",
+    acceptBookingRequests: "Принимать запросы на бронирование",
+    unavailableForBookings: "Этот DJ сейчас недоступен для бронирования.",
     currency: "Валюта",
     startingPrice: "Начальная цена",
     advertisedStartingPrice:
@@ -608,6 +642,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "Bu bilgiler Bu DJ’i Ayırt düğmesinin üzerinde görünür.",
     visiblePublicly: "Herkese açık",
     bookingDisabled: "Rezervasyon kapalı",
+    acceptBookingRequests: "Rezervasyon taleplerini kabul et",
+    unavailableForBookings: "Bu DJ şu anda rezervasyon için uygun değil.",
     currency: "Para birimi",
     startingPrice: "Başlangıç fiyatı",
     advertisedStartingPrice:
@@ -642,6 +678,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "Questi dettagli appaiono sopra il pulsante Prenota Questo DJ.",
     visiblePublicly: "Visibile pubblicamente",
     bookingDisabled: "Prenotazioni disattivate",
+    acceptBookingRequests: "Accetta richieste di prenotazione",
+    unavailableForBookings: "Questo DJ non è attualmente disponibile per le prenotazioni.",
     currency: "Valuta",
     startingPrice: "Prezzo iniziale",
     advertisedStartingPrice:
@@ -676,6 +714,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "Deze gegevens verschijnen boven de knop Boek Deze DJ.",
     visiblePublicly: "Openbaar zichtbaar",
     bookingDisabled: "Boeken uitgeschakeld",
+    acceptBookingRequests: "Boekingsaanvragen accepteren",
+    unavailableForBookings: "Deze DJ is momenteel niet beschikbaar voor boekingen.",
     currency: "Valuta",
     startingPrice: "Vanafprijs",
     advertisedStartingPrice:
@@ -710,6 +750,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "Te dane pojawiają się nad przyciskiem Zarezerwuj Tego DJ-a.",
     visiblePublicly: "Widoczne publicznie",
     bookingDisabled: "Rezerwacje wyłączone",
+    acceptBookingRequests: "Przyjmuj prośby o rezerwację",
+    unavailableForBookings: "Ten DJ nie jest obecnie dostępny do rezerwacji.",
     currency: "Waluta",
     startingPrice: "Cena początkowa",
     advertisedStartingPrice:
@@ -744,6 +786,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "Αυτές οι πληροφορίες εμφανίζονται πάνω από το κουμπί κράτησης.",
     visiblePublicly: "Δημόσια ορατό",
     bookingDisabled: "Η κράτηση απενεργοποιήθηκε",
+    acceptBookingRequests: "Αποδοχή αιτημάτων κράτησης",
+    unavailableForBookings: "Αυτός ο DJ δεν είναι διαθέσιμος για κράτηση αυτή τη στιγμή.",
     currency: "Νόμισμα",
     startingPrice: "Αρχική τιμή",
     advertisedStartingPrice:
@@ -778,6 +822,8 @@ export const bookingTranslations: Record<Language, BookingTranslation> = {
     detailsAppear: "Ці дані відображаються над кнопкою бронювання DJ.",
     visiblePublicly: "Видно всім",
     bookingDisabled: "Бронювання вимкнено",
+    acceptBookingRequests: "Приймати запити на бронювання",
+    unavailableForBookings: "Цей DJ зараз недоступний для бронювання.",
     currency: "Валюта",
     startingPrice: "Початкова ціна",
     advertisedStartingPrice:
