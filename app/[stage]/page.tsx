@@ -2497,6 +2497,17 @@ className
     </button>
   </div>
 )}
+
+{!dj.booking_enabled && (
+  <div className="mt-5 rounded-2xl border border-zinc-700 bg-black/40 p-5 text-center">
+    <div className="text-3xl" aria-hidden="true">
+      📅
+    </div>
+    <p className="mt-3 text-base font-bold leading-relaxed text-zinc-300">
+      {bookingText.unavailableForBookings}
+    </p>
+  </div>
+)}
                         </div>
                       </div>
                 
