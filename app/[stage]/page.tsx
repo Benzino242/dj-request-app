@@ -399,6 +399,40 @@ type DJ = {
   verification_status?: string | null;
 };
 
+function getSocialProfileUrl(
+  value: string | null | undefined,
+  platform: "instagram" | "tiktok",
+) {
+  const rawValue = String(value || "").trim();
+
+  if (!rawValue) return "";
+
+  if (/^https?:\/\//i.test(rawValue)) {
+    return rawValue;
+  }
+
+  if (/^(www\.)?(instagram\.com|tiktok\.com)\//i.test(rawValue)) {
+    return `https://${rawValue}`;
+  }
+
+  const handle = rawValue.replace(/^@/, "").replace(/^\/+|\/+$/g, "");
+
+  return platform === "instagram"
+    ? `https://www.instagram.com/${handle}/`
+    : `https://www.tiktok.com/@${handle}`;
+}
+
+function getSocialHandle(value: string | null | undefined) {
+  const rawValue = String(value || "").trim();
+
+  if (!rawValue) return "";
+
+  const withoutQuery = rawValue.split(/[?#]/)[0].replace(/\/+$/, "");
+  const finalPart = withoutQuery.split("/").filter(Boolean).pop() || rawValue;
+
+  return `@${finalPart.replace(/^@/, "")}`;
+}
+
 
 export default function 
 StageRequestPage
@@ -1538,27 +1572,39 @@ className
           
 
 
-{dj.instagram && (
+{(dj.instagram || dj.tiktok) && (
+  <div className="mt-4 flex flex-wrap justify-center gap-3">
+    {dj.instagram && (
+      <a
+        href={getSocialProfileUrl(dj.instagram, "instagram")}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Open ${dj.stage_name} on Instagram`}
+        className="inline-flex items-center gap-2 rounded-full border border-pink-500/40 bg-gradient-to-r from-purple-500/15 to-pink-500/15 px-4 py-2 text-sm font-bold text-pink-200 transition hover:border-pink-400 hover:from-purple-500/25 hover:to-pink-500/25 hover:text-white"
+      >
+        <span aria-hidden="true">◎</span>
+        <span>Instagram</span>
+        <span className="text-pink-300/70">
+          {getSocialHandle(dj.instagram)}
+        </span>
+      </a>
+    )}
 
-  <div 
-className
-="mt-4">
-    <a
-      
-href
-={`https://instagram.com/${dj.instagram.replace("@", "")}`}
-      
-target
-="_blank"
-      
-rel
-="noopener noreferrer"
-      
-className
-="inline-block bg-purple-500/15 border border-purple-500/30 text-purple-300 text-sm font-bold px-4 py-2 rounded-full hover:bg-purple-500/25 transition"
-    >
-       {dj.instagram}
-    </a>
+    {dj.tiktok && (
+      <a
+        href={getSocialProfileUrl(dj.tiktok, "tiktok")}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Open ${dj.stage_name} on TikTok`}
+        className="inline-flex items-center gap-2 rounded-full border border-cyan-400/40 bg-gradient-to-r from-cyan-400/10 to-pink-500/10 px-4 py-2 text-sm font-bold text-cyan-100 transition hover:border-cyan-300 hover:from-cyan-400/20 hover:to-pink-500/20 hover:text-white"
+      >
+        <span aria-hidden="true">♪</span>
+        <span>TikTok</span>
+        <span className="text-cyan-200/70">
+          {getSocialHandle(dj.tiktok)}
+        </span>
+      </a>
+    )}
   </div>
 )}
         </div>
