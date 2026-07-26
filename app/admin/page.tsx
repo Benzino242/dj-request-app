@@ -6554,7 +6554,14 @@ setVenue(loadedDj.venue || "");
                   </h2>
 
                   <p className="text-sm text-zinc-500 mt-2 leading-relaxed break-words">
-                    {[eventName, venue, instagram ? `@${instagram.replace(/^@/, "")}` : ""]
+                    {[
+                      eventName,
+                      venue,
+                      instagram
+                        ? `Instagram @${instagram.replace(/^@/, "")}`
+                        : "",
+                      tiktok ? "TikTok ✓" : "",
+                    ]
                       .filter(Boolean)
                       .join(" · ") || quickSetupText.profileTodoMessage}
                   </p>
@@ -6657,7 +6664,7 @@ setVenue(loadedDj.venue || "");
                 />
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-3 gap-4">
                 <input
                   type="text"
                   placeholder={t.cityPlaceholder}
@@ -6671,6 +6678,14 @@ setVenue(loadedDj.venue || "");
                   placeholder={t.instagramPlaceholder}
                   value={instagram}
                   onChange={(e) => setInstagram(e.target.value)}
+                  className="w-full p-4 rounded-xl bg-black border border-zinc-700"
+                />
+
+                <input
+                  type="text"
+                  placeholder="TikTok @handle or profile URL"
+                  value={tiktok}
+                  onChange={(e) => setTiktok(e.target.value)}
                   className="w-full p-4 rounded-xl bg-black border border-zinc-700"
                 />
               </div>
