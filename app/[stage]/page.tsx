@@ -2408,6 +2408,17 @@ className
 
 </button>
 
+                          <p 
+className
+="text-xs text-purple-300 text-center mt-4 leading-relaxed">
+                            {paymentText.beforePaymentReference}
+                          </p>
+
+                          <p 
+className
+="text-xs text-zinc-500 text-center mt-3 leading-relaxed">
+                            {t.boostingDisclaimer}
+                          </p>
 
 {dj.booking_enabled && (
   <div className="mt-5 overflow-hidden rounded-2xl border border-amber-400/40 bg-gradient-to-br from-amber-500/10 via-zinc-950 to-purple-500/10 p-4 shadow-[0_0_30px_rgba(251,191,36,0.12)]">
@@ -2465,18 +2476,6 @@ className
     </button>
   </div>
 )}
-                
-                          <p 
-className
-="text-xs text-purple-300 text-center mt-4 leading-relaxed">
-                            {paymentText.beforePaymentReference}
-                          </p>
-
-                          <p 
-className
-="text-xs text-zinc-500 text-center mt-3 leading-relaxed">
-                            {t.boostingDisclaimer}
-                          </p>
                         </div>
                       </div>
                 
