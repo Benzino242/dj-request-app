@@ -6765,6 +6765,38 @@ setVenue(loadedDj.venue || "");
                       className="w-full rounded-xl border border-zinc-700 bg-black p-4"
                     >
                       <option value="GHS">GHS</option>
+                      <option value="NGN">NGN</option>
+                      <option value="KES">KES</option>
+                      <option value="ZAR">ZAR</option>
+
+                      <option value="USD">USD</option>
+                      <option value="CAD">CAD</option>
+                      <option value="MXN">MXN</option>
+                      <option value="BRL">BRL</option>
+
+                      <option value="EUR">EUR</option>
+                      <option value="GBP">GBP</option>
+                      <option value="PLN">PLN</option>
+                      <option value="UAH">UAH</option>
+                      <option value="TRY">TRY</option>
+
+                      <option value="AED">AED</option>
+                      <option value="QAR">QAR</option>
+                      <option value="SAR">SAR</option>
+
+                      <option value="SGD">SGD</option>
+                      <option value="MYR">MYR</option>
+                      <option value="IDR">IDR</option>
+                      <option value="THB">THB</option>
+                      <option value="PHP">PHP</option>
+                      <option value="VND">VND</option>
+                      <option value="CNY">CNY</option>
+                      <option value="JPY">JPY</option>
+                      <option value="KRW">KRW</option>
+                      <option value="INR">INR</option>
+
+                      <option value="AUD">AUD</option>
+                      <option value="NZD">NZD</option>
                     </select>
                   </div>
 
