@@ -135,6 +135,9 @@ type DJ = {
   request_enabled?: boolean | null;
   booking_enabled?: boolean | null;
   booking_email?: string | null;
+  booking_event_types?: string[] | null;
+  booking_starting_price?: number | null;
+  booking_currency?: string | null;
 
   // Live status
   is_live?: boolean | null;
@@ -3913,6 +3916,9 @@ const [genre, setGenre] = useState("");
 const [tiktok, setTiktok] = useState("");
 const [bookingEmail, setBookingEmail] = useState("");
 const [bookingEnabled, setBookingEnabled] = useState(false);
+const [bookingEventTypes, setBookingEventTypes] = useState<string[]>([]);
+const [bookingStartingPrice, setBookingStartingPrice] = useState("");
+const [bookingCurrency, setBookingCurrency] = useState("GHS");
 const [tipEnabled, setTipEnabled] = useState(true);
 const [requestEnabled, setRequestEnabled] = useState(true);
 
@@ -4282,6 +4288,17 @@ setGenre(loadedDj.genre || "");
 setTiktok(loadedDj.tiktok || "");
 setBookingEmail(loadedDj.booking_email || "");
 setBookingEnabled(loadedDj.booking_enabled ?? false);
+setBookingEventTypes(
+  loadedDj.booking_event_types?.length
+    ? loadedDj.booking_event_types
+    : ["Weddings", "Private Parties", "Corporate Events"],
+);
+setBookingStartingPrice(
+  loadedDj.booking_starting_price != null
+    ? String(loadedDj.booking_starting_price)
+    : "",
+);
+setBookingCurrency(loadedDj.booking_currency || "GHS");
 setTipEnabled(loadedDj.tip_enabled ?? true);
 setRequestEnabled(loadedDj.request_enabled ?? true);
 
@@ -4512,6 +4529,11 @@ setVenue(loadedDj.venue || "");
     tiktok,
     booking_email: bookingEmail,
     booking_enabled: bookingEnabled,
+    booking_event_types: bookingEventTypes,
+    booking_starting_price: bookingStartingPrice.trim()
+      ? Number(bookingStartingPrice)
+      : null,
+    booking_currency: bookingCurrency,
     tip_enabled: tipEnabled,
     request_enabled: requestEnabled,
 
@@ -6665,6 +6687,109 @@ setVenue(loadedDj.venue || "");
                 rows={4}
                 className="w-full p-4 rounded-xl bg-black border border-zinc-700"
               />
+
+              <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-5">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-[0.2em] text-amber-400">
+                      Public booking information
+                    </p>
+                    <h3 className="mt-1 text-xl font-black text-white">
+                      What can guests book you for?
+                    </h3>
+                  </div>
+
+                  <span
+                    className={`rounded-full border px-3 py-1 text-xs font-black ${
+                      bookingEnabled
+                        ? "border-green-500/30 bg-green-500/10 text-green-400"
+                        : "border-zinc-600 bg-zinc-800 text-zinc-400"
+                    }`}
+                  >
+                    {bookingEnabled ? "Visible publicly" : "Booking disabled"}
+                  </span>
+                </div>
+
+                <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+                  These details appear above your Book This DJ button.
+                </p>
+
+                <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {[
+                    "Weddings",
+                    "Private Parties",
+                    "Corporate Events",
+                    "Birthdays",
+                    "Festivals",
+                    "Clubs & Nightlife",
+                  ].map((eventType) => {
+                    const isSelected = bookingEventTypes.includes(eventType);
+
+                    return (
+                      <label
+                        key={eventType}
+                        className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition ${
+                          isSelected
+                            ? "border-amber-400/50 bg-amber-400/10 text-amber-100"
+                            : "border-zinc-700 bg-black/40 text-zinc-400 hover:border-zinc-600"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() =>
+                            setBookingEventTypes((currentTypes) =>
+                              currentTypes.includes(eventType)
+                                ? currentTypes.filter(
+                                    (currentType) => currentType !== eventType,
+                                  )
+                                : [...currentTypes, eventType],
+                            )
+                          }
+                          className="h-4 w-4 accent-amber-500"
+                        />
+                        <span className="font-semibold">{eventType}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-5 grid gap-4 sm:grid-cols-[150px_1fr]">
+                  <div>
+                    <label className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-zinc-400">
+                      Currency
+                    </label>
+                    <select
+                      value={bookingCurrency}
+                      onChange={(e) => setBookingCurrency(e.target.value)}
+                      className="w-full rounded-xl border border-zinc-700 bg-black p-4"
+                    >
+                      <option value="GHS">GHS</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-zinc-400">
+                      Starting price
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      inputMode="decimal"
+                      placeholder="e.g. 2000"
+                      value={bookingStartingPrice}
+                      onChange={(e) => setBookingStartingPrice(e.target.value)}
+                      className="w-full rounded-xl border border-zinc-700 bg-black p-4"
+                    />
+                  </div>
+                </div>
+
+                <p className="mt-3 text-xs leading-relaxed text-zinc-500">
+                  This is an advertised starting price only. You will still set
+                  the final agreed amount before sending the client a payment link.
+                </p>
+              </div>
             </div>
           )}
 

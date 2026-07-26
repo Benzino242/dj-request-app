@@ -387,6 +387,9 @@ type DJ = {
   request_enabled: boolean | null;
   booking_enabled: boolean | null;
   booking_email: string | null;
+  booking_event_types: string[] | null;
+  booking_starting_price: number | null;
+  booking_currency: string | null;
 
   
 // Status
@@ -2407,18 +2410,60 @@ className
 
 
 {dj.booking_enabled && (
-  <button
-    type="button"
-    onClick={() => setShowBookingModal(true)}
-    className="group relative w-full mt-5 overflow-hidden rounded-xl border border-amber-400/60 bg-gradient-to-r from-amber-500/15 via-yellow-400/10 to-orange-500/15 p-4 text-xl font-black text-amber-100 shadow-[0_0_25px_rgba(251,191,36,0.18)] transition-all duration-300 hover:border-amber-300 hover:text-white hover:shadow-[0_0_38px_rgba(251,191,36,0.35)] active:scale-[0.98]"
-  >
-    <span className="relative z-10 inline-flex items-center justify-center gap-3">
-      <span aria-hidden="true">📅</span>
-      Book This DJ
-    </span>
+  <div className="mt-5 overflow-hidden rounded-2xl border border-amber-400/40 bg-gradient-to-br from-amber-500/10 via-zinc-950 to-purple-500/10 p-4 shadow-[0_0_30px_rgba(251,191,36,0.12)]">
+    <div className="mb-4">
+      <p className="text-xs font-black uppercase tracking-[0.22em] text-amber-300">
+        Available for
+      </p>
 
-    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-  </button>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {(dj.booking_event_types?.length
+          ? dj.booking_event_types
+          : ["Weddings", "Private Parties", "Corporate Events"]
+        ).map((eventType) => (
+          <span
+            key={eventType}
+            className="rounded-full border border-zinc-700 bg-black/50 px-3 py-2 text-sm font-semibold text-zinc-200"
+          >
+            {eventType === "Weddings"
+              ? "🎧 "
+              : eventType === "Private Parties"
+                ? "🎉 "
+                : eventType === "Corporate Events"
+                  ? "🏢 "
+                  : "🎵 "}
+            {eventType}
+          </span>
+        ))}
+      </div>
+
+      <div className="mt-4 rounded-xl border border-purple-500/30 bg-purple-500/10 p-3">
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-purple-300">
+          Starting from
+        </p>
+        <p className="mt-1 text-2xl font-black text-white">
+          {Number(dj.booking_starting_price) > 0
+            ? `${dj.booking_currency || "GHS"} ${Number(
+                dj.booking_starting_price,
+              ).toLocaleString()}`
+            : "Contact DJ for pricing"}
+        </p>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      onClick={() => setShowBookingModal(true)}
+      className="group relative w-full overflow-hidden rounded-xl border border-amber-400/60 bg-gradient-to-r from-amber-500/20 via-yellow-400/15 to-orange-500/20 p-4 text-xl font-black text-amber-100 shadow-[0_0_25px_rgba(251,191,36,0.18)] transition-all duration-300 hover:border-amber-300 hover:text-white hover:shadow-[0_0_38px_rgba(251,191,36,0.35)] active:scale-[0.98]"
+    >
+      <span className="relative z-10 inline-flex items-center justify-center gap-3">
+        <span aria-hidden="true">📅</span>
+        Book This DJ
+      </span>
+
+      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+    </button>
+  </div>
 )}
                 
                           <p 
