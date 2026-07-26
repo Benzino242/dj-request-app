@@ -1,8 +1,12 @@
 "use client";
 
+import type { Language } from "../lib/translations";
+import { bookingTranslations } from "../lib/bookingTranslations";
+
 type BookingModalProps = {
   open: boolean;
   onClose: () => void;
+  language: Language;
 
   bookingName: string;
   setBookingName: (value: string) => void;
@@ -38,6 +42,7 @@ type BookingModalProps = {
 export default function BookingModal({
   open,
   onClose,
+  language,
   bookingName,
   setBookingName,
   bookingEmail,
@@ -61,99 +66,105 @@ export default function BookingModal({
 }: BookingModalProps) {
   if (!open) return null;
 
+  const bookingText =
+    bookingTranslations[language] || bookingTranslations.en;
+
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 w-full max-w-lg">
-        <h2 className="text-2xl font-bold text-white mb-5">
-          📅 Book This DJ
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm">
+      <div className="my-auto w-full max-w-lg rounded-3xl border border-zinc-700 bg-zinc-900 p-6">
+        <h2 className="mb-5 text-2xl font-bold text-white">
+          📅 {bookingText.modalTitle}
         </h2>
 
         <input
-          className="w-full mb-3 p-3 rounded-xl bg-black border border-zinc-700"
-          placeholder="Your name"
+          className="mb-3 w-full rounded-xl border border-zinc-700 bg-black p-3"
+          placeholder={bookingText.yourName}
           value={bookingName}
           onChange={(e) => setBookingName(e.target.value)}
         />
 
         <input
           type="email"
-          className="w-full mb-3 p-3 rounded-xl bg-black border border-zinc-700"
-          placeholder="Your email"
+          className="mb-3 w-full rounded-xl border border-zinc-700 bg-black p-3"
+          placeholder={bookingText.yourEmail}
           value={bookingEmail}
           onChange={(e) => setBookingEmail(e.target.value)}
         />
 
         <input
           type="tel"
-          className="w-full mb-3 p-3 rounded-xl bg-black border border-zinc-700"
-          placeholder="Your phone number"
+          className="mb-3 w-full rounded-xl border border-zinc-700 bg-black p-3"
+          placeholder={bookingText.yourPhone}
           value={bookingPhone}
           onChange={(e) => setBookingPhone(e.target.value)}
         />
 
         <input
-          className="w-full mb-3 p-3 rounded-xl bg-black border border-zinc-700"
-          placeholder="Event type"
+          className="mb-3 w-full rounded-xl border border-zinc-700 bg-black p-3"
+          placeholder={bookingText.eventType}
           value={bookingEventType}
           onChange={(e) => setBookingEventType(e.target.value)}
         />
 
-        <label className="block text-sm text-zinc-400 mb-2" htmlFor="booking-date">
-          Event date
+        <label
+          className="mb-2 block text-sm text-zinc-400"
+          htmlFor="booking-date"
+        >
+          {bookingText.eventDate}
         </label>
         <input
           id="booking-date"
           type="date"
-          className="w-full mb-3 p-3 rounded-xl bg-black border border-zinc-700"
+          className="mb-3 w-full rounded-xl border border-zinc-700 bg-black p-3"
           value={bookingDate}
           onChange={(e) => setBookingDate(e.target.value)}
         />
 
         <input
-          className="w-full mb-3 p-3 rounded-xl bg-black border border-zinc-700"
-          placeholder="Event venue"
+          className="mb-3 w-full rounded-xl border border-zinc-700 bg-black p-3"
+          placeholder={bookingText.eventVenue}
           value={bookingVenue}
           onChange={(e) => setBookingVenue(e.target.value)}
         />
 
         <input
-          className="w-full mb-3 p-3 rounded-xl bg-black border border-zinc-700"
-          placeholder="Estimated budget"
+          className="mb-3 w-full rounded-xl border border-zinc-700 bg-black p-3"
+          placeholder={bookingText.estimatedBudget}
           value={bookingBudget}
           onChange={(e) => setBookingBudget(e.target.value)}
         />
 
         <textarea
-          className="w-full mb-3 p-3 rounded-xl bg-black border border-zinc-700"
-          placeholder="Tell the DJ about your event"
+          className="mb-3 w-full rounded-xl border border-zinc-700 bg-black p-3"
+          placeholder={bookingText.tellDj}
           rows={4}
           value={bookingMessage}
           onChange={(e) => setBookingMessage(e.target.value)}
         />
 
         {bookingError && (
-          <p className="text-red-400 text-sm mb-3">{bookingError}</p>
+          <p className="mb-3 text-sm text-red-400">{bookingError}</p>
         )}
 
         {bookingSuccess && (
-          <p className="text-green-400 text-sm mb-3">{bookingSuccess}</p>
+          <p className="mb-3 text-sm text-green-400">{bookingSuccess}</p>
         )}
 
         <button
           type="button"
           onClick={submitBookingRequest}
           disabled={bookingSending}
-          className="w-full bg-purple-600 hover:bg-purple-700 p-3 rounded-xl font-bold disabled:opacity-50"
+          className="w-full rounded-xl bg-purple-600 p-3 font-bold hover:bg-purple-700 disabled:opacity-50"
         >
-          {bookingSending ? "Sending..." : "Send Booking Request"}
+          {bookingSending ? bookingText.sending : bookingText.sendRequest}
         </button>
 
         <button
           type="button"
           onClick={onClose}
-          className="w-full mt-3 bg-zinc-800 hover:bg-zinc-700 p-3 rounded-xl"
+          className="mt-3 w-full rounded-xl bg-zinc-800 p-3 hover:bg-zinc-700"
         >
-          Close
+          {bookingText.close}
         </button>
       </div>
     </div>

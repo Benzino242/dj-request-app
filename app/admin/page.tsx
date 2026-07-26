@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import QRCodeBox from "../components/QRCodeBox";
 import { translations, Language } from "../lib/translations";
+import { bookingTranslations } from "../lib/bookingTranslations";
 
 type RequestStatus =
   | "pending"
@@ -3965,6 +3966,8 @@ const [requestEnabled, setRequestEnabled] = useState(true);
   const [language, setLanguage] = useState<Language>("en");
 
   const t = translations[language];
+  const bookingText =
+    bookingTranslations[language] || bookingTranslations.en;
   const quickSetupText = quickSetupTranslations[language] || quickSetupTranslations.en;
   const dashboardAlertText =
     dashboardAlertTranslations[language] || dashboardAlertTranslations.en;
@@ -6692,10 +6695,10 @@ setVenue(loadedDj.venue || "");
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="text-xs font-black uppercase tracking-[0.2em] text-amber-400">
-                      Public booking information
+                      {bookingText.publicBookingInformation}
                     </p>
                     <h3 className="mt-1 text-xl font-black text-white">
-                      What can guests book you for?
+                      {bookingText.whatCanGuestsBook}
                     </h3>
                   </div>
 
@@ -6706,12 +6709,14 @@ setVenue(loadedDj.venue || "");
                         : "border-zinc-600 bg-zinc-800 text-zinc-400"
                     }`}
                   >
-                    {bookingEnabled ? "Visible publicly" : "Booking disabled"}
+                    {bookingEnabled
+                      ? bookingText.visiblePublicly
+                      : bookingText.bookingDisabled}
                   </span>
                 </div>
 
                 <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-                  These details appear above your Book This DJ button.
+                  {bookingText.detailsAppear}
                 </p>
 
                 <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -6748,7 +6753,19 @@ setVenue(loadedDj.venue || "");
                           }
                           className="h-4 w-4 accent-amber-500"
                         />
-                        <span className="font-semibold">{eventType}</span>
+                        <span className="font-semibold">
+                          {eventType === "Weddings"
+                            ? bookingText.weddings
+                            : eventType === "Private Parties"
+                              ? bookingText.privateParties
+                              : eventType === "Corporate Events"
+                                ? bookingText.corporateEvents
+                                : eventType === "Birthdays"
+                                  ? bookingText.birthdays
+                                  : eventType === "Festivals"
+                                    ? bookingText.festivals
+                                    : bookingText.clubsNightlife}
+                        </span>
                       </label>
                     );
                   })}
@@ -6757,7 +6774,7 @@ setVenue(loadedDj.venue || "");
                 <div className="mt-5 grid gap-4 sm:grid-cols-[150px_1fr]">
                   <div>
                     <label className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-zinc-400">
-                      Currency
+                      {bookingText.currency}
                     </label>
                     <select
                       value={bookingCurrency}
@@ -6802,7 +6819,7 @@ setVenue(loadedDj.venue || "");
 
                   <div>
                     <label className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-zinc-400">
-                      Starting price
+                      {bookingText.startingPrice}
                     </label>
                     <input
                       type="number"
@@ -6818,8 +6835,7 @@ setVenue(loadedDj.venue || "");
                 </div>
 
                 <p className="mt-3 text-xs leading-relaxed text-zinc-500">
-                  This is an advertised starting price only. You will still set
-                  the final agreed amount before sending the client a payment link.
+                  {bookingText.advertisedStartingPrice}
                 </p>
               </div>
             </div>

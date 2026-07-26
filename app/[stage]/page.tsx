@@ -7,6 +7,7 @@
 "use client";
 
 import { translations, Language } from "../lib/translations";
+import { bookingTranslations } from "../lib/bookingTranslations";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "../../lib/supabase";
@@ -522,6 +523,8 @@ setPaymentSuccess
   } | null>(null);
 
   const t = translations[language];
+  const bookingText =
+    bookingTranslations[language] || bookingTranslations.en;
   const paymentText =
     paymentSuccessTranslations[language] || paymentSuccessTranslations.en;
   const nowPlayingCountdownText =
@@ -1024,7 +1027,7 @@ submitBookingRequest
           return;
         }
       
-        setBookingSuccess("Booking request sent successfully!");
+        setBookingSuccess(bookingText.requestSent);
       
         setBookingName("");
         setBookingEmail("");
@@ -1352,9 +1355,15 @@ className
 ="bg-zinc-900 p-8 rounded-3xl shadow-2xl w-full max-w-md border border-zinc-800">
       <div 
 className
-="flex justify-end mb-6">
+="mb-6">
+  <label
+    htmlFor="guest-language"
+    className="mb-2 block text-xs font-black uppercase tracking-[0.2em] text-purple-300"
+  >
+    🌐 {t.language}
+  </label>
   <select
-    
+id="guest-language"
 value
 ={language}
     
@@ -1366,74 +1375,74 @@ e
 .target.value as Language)}
     
 className
-="bg-black border border-zinc-700 rounded-xl px-4 py-2 text-sm"
+="w-full bg-black border border-purple-500/50 rounded-xl px-4 py-3 text-sm font-bold text-white"
   >
       <option 
 value
-="en"> English</option>
+="en">🇬🇧 English</option>
     <option 
 value
-="zh"> </option>
+="zh">🇨🇳 中文</option>
     <option 
 value
-="ja"> </option>
+="ja">🇯🇵 日本語</option>
     <option 
 value
-="ko"> </option>
+="ko">🇰🇷 한국어</option>
     <option 
 value
-="id"> Bahasa Indonesia</option>
+="id">🇮🇩 Bahasa Indonesia</option>
     <option 
 value
-="ms"> Bahasa Melayu</option>
+="ms">🇲🇾 Bahasa Melayu</option>
     <option 
 value
-="th"> </option>
+="th">🇹🇭 ไทย</option>
     <option 
 value
-="hi"> </option>
+="hi">🇮🇳 हिन्दी</option>
     <option 
 value
-="ar"> </option>
+="ar">🇸🇦 العربية</option>
     <option 
 value
-="vi"> Ting Vit</option>
+="vi">🇻🇳 Tiếng Việt</option>
     <option 
 value
-="tl"> Tagalog</option>
+="tl">🇵🇭 Tagalog</option>
     <option 
 value
-="pt"> Portugueas</option>
+="pt">🇵🇹 Português</option>
     <option 
 value
-="es"> Espaf1ol</option>
+="es">🇪🇸 Español</option>
     <option 
 value
-="fr"> Frane7ais</option>
+="fr">🇫🇷 Français</option>
     <option 
 value
-="de"> Deutsch</option>
+="de">🇩🇪 Deutsch</option>
     <option 
 value
-="ru"> </option>
+="ru">🇷🇺 Русский</option>
     <option 
 value
-="tr"> Tfcrke7e</option>
+="tr">🇹🇷 Türkçe</option>
     <option 
 value
-="it"> Italiano</option>
+="it">🇮🇹 Italiano</option>
     <option 
 value
-="nl"> Nederlands</option>
+="nl">🇳🇱 Nederlands</option>
     <option 
 value
-="pl"> Polski</option>
+="pl">🇵🇱 Polski</option>
     <option 
 value
-="el"> </option>
+="el">🇬🇷 Ελληνικά</option>
     <option 
 value
-="uk"> </option>
+="uk">🇺🇦 Українська</option>
    </select>
     </div>
     <div 
@@ -2424,7 +2433,7 @@ className
   <div className="mt-5 overflow-hidden rounded-2xl border border-amber-400/40 bg-gradient-to-br from-amber-500/10 via-zinc-950 to-purple-500/10 p-4 shadow-[0_0_30px_rgba(251,191,36,0.12)]">
     <div className="mb-4">
       <p className="text-xs font-black uppercase tracking-[0.22em] text-amber-300">
-        Available for
+        {bookingText.availableFor}
       </p>
 
       <div className="mt-3 flex flex-wrap gap-2">
@@ -2443,21 +2452,33 @@ className
                 : eventType === "Corporate Events"
                   ? "🏢 "
                   : "🎵 "}
-            {eventType}
+            {eventType === "Weddings"
+              ? bookingText.weddings
+              : eventType === "Private Parties"
+                ? bookingText.privateParties
+                : eventType === "Corporate Events"
+                  ? bookingText.corporateEvents
+                  : eventType === "Birthdays"
+                    ? bookingText.birthdays
+                    : eventType === "Festivals"
+                      ? bookingText.festivals
+                      : eventType === "Clubs & Nightlife"
+                        ? bookingText.clubsNightlife
+                        : eventType}
           </span>
         ))}
       </div>
 
       <div className="mt-4 rounded-xl border border-purple-500/30 bg-purple-500/10 p-3">
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-purple-300">
-          Starting from
+          {bookingText.startingFrom}
         </p>
         <p className="mt-1 text-2xl font-black text-white">
           {Number(dj.booking_starting_price) > 0
             ? `${dj.booking_currency || "GHS"} ${Number(
                 dj.booking_starting_price,
               ).toLocaleString()}`
-            : "Contact DJ for pricing"}
+            : bookingText.contactDjForPricing}
         </p>
       </div>
     </div>
@@ -2469,7 +2490,7 @@ className
     >
       <span className="relative z-10 inline-flex items-center justify-center gap-3">
         <span aria-hidden="true">📅</span>
-        Book This DJ
+        {bookingText.bookThisDj}
       </span>
 
       <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -2724,6 +2745,9 @@ index
   
 open
 ={showBookingModal}
+
+language
+={language}
   
 onClose
 ={() => setShowBookingModal(false)}
