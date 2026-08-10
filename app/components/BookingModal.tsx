@@ -2,6 +2,14 @@
 
 import type { Language } from "../lib/translations";
 import { bookingTranslations } from "../lib/bookingTranslations";
+import { availabilityTranslations } from "../lib/availabilityTranslations";
+
+type BookingAvailabilityStatus =
+  | "available"
+  | "booked"
+  | "unavailable"
+  | "not_set"
+  | null;
 
 type BookingModalProps = {
   open: boolean;
@@ -22,6 +30,9 @@ type BookingModalProps = {
 
   bookingDate: string;
   setBookingDate: (value: string) => void;
+  bookingAvailability: BookingAvailabilityStatus;
+  bookingAvailabilityLoading: boolean;
+  bookingAvailabilityError: string;
 
   bookingVenue: string;
   setBookingVenue: (value: string) => void;
@@ -53,6 +64,9 @@ export default function BookingModal({
   setBookingEventType,
   bookingDate,
   setBookingDate,
+  bookingAvailability,
+  bookingAvailabilityLoading,
+  bookingAvailabilityError,
   bookingVenue,
   setBookingVenue,
   bookingBudget,
@@ -68,6 +82,15 @@ export default function BookingModal({
 
   const bookingText =
     bookingTranslations[language] || bookingTranslations.en;
+  const availabilityText =
+    availabilityTranslations[language] || availabilityTranslations.en;
+  const today = new Date();
+  const minimumDate = `${today.getFullYear()}-${String(
+    today.getMonth() + 1,
+  ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  const dateIsBlocked =
+    bookingAvailability === "booked" ||
+    bookingAvailability === "unavailable";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm">
@@ -115,10 +138,41 @@ export default function BookingModal({
         <input
           id="booking-date"
           type="date"
+          min={minimumDate}
           className="mb-3 w-full rounded-xl border border-zinc-700 bg-black p-3"
           value={bookingDate}
           onChange={(e) => setBookingDate(e.target.value)}
         />
+
+        <div className="mb-4 rounded-xl border border-zinc-700 bg-black/50 p-3">
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-purple-300">
+            📅 {availabilityText.checkAvailability}
+          </p>
+
+          <p
+            className={`mt-2 text-sm font-bold ${
+              bookingAvailability === "available"
+                ? "text-green-400"
+                : dateIsBlocked
+                  ? "text-red-400"
+                  : "text-amber-300"
+            }`}
+          >
+            {!bookingDate
+              ? availabilityText.selectDate
+              : bookingAvailabilityLoading
+                ? availabilityText.checking
+                : bookingAvailabilityError
+                  ? bookingAvailabilityError
+                  : bookingAvailability === "available"
+                    ? `✅ ${availabilityText.dateAvailable}`
+                    : bookingAvailability === "booked"
+                      ? `❌ ${availabilityText.dateBooked}`
+                      : bookingAvailability === "unavailable"
+                        ? `❌ ${availabilityText.dateUnavailable}`
+                        : `⚠️ ${availabilityText.availabilityNotSet}`}
+          </p>
+        </div>
 
         <input
           className="mb-3 w-full rounded-xl border border-zinc-700 bg-black p-3"
@@ -153,7 +207,9 @@ export default function BookingModal({
         <button
           type="button"
           onClick={submitBookingRequest}
-          disabled={bookingSending}
+          disabled={
+            bookingSending || bookingAvailabilityLoading || dateIsBlocked
+          }
           className="w-full rounded-xl bg-purple-600 p-3 font-bold hover:bg-purple-700 disabled:opacity-50"
         >
           {bookingSending ? bookingText.sending : bookingText.sendRequest}

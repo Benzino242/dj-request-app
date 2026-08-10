@@ -8,6 +8,7 @@
 
 import { translations, Language } from "../lib/translations";
 import { bookingTranslations } from "../lib/bookingTranslations";
+import { availabilityTranslations } from "../lib/availabilityTranslations";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "../../lib/supabase";
@@ -506,6 +507,13 @@ setBookingSuccess
   const [bookingError, 
 setBookingError
 ] = useState("");
+  const [bookingAvailability, setBookingAvailability] = useState<
+    "available" | "booked" | "unavailable" | "not_set" | null
+  >(null);
+  const [bookingAvailabilityLoading, setBookingAvailabilityLoading] =
+    useState(false);
+  const [bookingAvailabilityError, setBookingAvailabilityError] =
+    useState("");
 
   type AppleTrack = {
     id: number;
@@ -559,6 +567,8 @@ setPaymentSuccess
   const t = translations[language];
   const bookingText =
     bookingTranslations[language] || bookingTranslations.en;
+  const availabilityText =
+    availabilityTranslations[language] || availabilityTranslations.en;
   const paymentText =
     paymentSuccessTranslations[language] || paymentSuccessTranslations.en;
   const nowPlayingCountdownText =
@@ -592,6 +602,50 @@ setNowPlayingClockTick
 
   const previousNowPlayingId = useRef<number | null>(null);
   const songSearchBoxRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function checkBookingAvailability() {
+      if (!dj?.id || !bookingDate) {
+        setBookingAvailability(null);
+        setBookingAvailabilityError("");
+        setBookingAvailabilityLoading(false);
+        return;
+      }
+
+      setBookingAvailabilityLoading(true);
+      setBookingAvailabilityError("");
+
+      const { data, error } = await supabase
+        .from("dj_availability")
+        .select("status")
+        .eq("dj_id", dj.id)
+        .eq("availability_date", bookingDate)
+        .maybeSingle();
+
+      if (cancelled) return;
+
+      if (error) {
+        console.error("DJ AVAILABILITY CHECK ERROR:", error);
+        setBookingAvailability(null);
+        setBookingAvailabilityError(availabilityText.couldNotCheck);
+      } else {
+        setBookingAvailability(
+          (data?.status as "available" | "booked" | "unavailable") ||
+            "not_set",
+        );
+      }
+
+      setBookingAvailabilityLoading(false);
+    }
+
+    checkBookingAvailability();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [dj?.id, bookingDate, availabilityText.couldNotCheck]);
 
   function 
 isVIPRequest
@@ -1035,6 +1089,26 @@ onCancel
 submitBookingRequest
  = async () => {
         if (!dj) return;
+
+        if (!bookingDate) {
+          setBookingError(availabilityText.selectDate);
+          return;
+        }
+
+        if (bookingAvailabilityLoading) {
+          setBookingError(availabilityText.checking);
+          return;
+        }
+
+        if (bookingAvailability === "booked") {
+          setBookingError(availabilityText.dateBooked);
+          return;
+        }
+
+        if (bookingAvailability === "unavailable") {
+          setBookingError(availabilityText.dateUnavailable);
+          return;
+        }
       
         setBookingSending(true);
         setBookingError("");
@@ -2843,6 +2917,15 @@ bookingDate
   
 setBookingDate
 ={setBookingDate}
+
+bookingAvailability
+={bookingAvailability}
+
+bookingAvailabilityLoading
+={bookingAvailabilityLoading}
+
+bookingAvailabilityError
+={bookingAvailabilityError}
 
   
 bookingVenue

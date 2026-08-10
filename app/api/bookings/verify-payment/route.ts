@@ -198,6 +198,26 @@ export async function POST(request: Request) {
     );
   }
 
+  if (updatedBooking.event_date) {
+    const { error: availabilityError } = await supabaseAdmin
+      .from("dj_availability")
+      .upsert(
+        {
+          dj_id: booking.dj_id,
+          availability_date: updatedBooking.event_date,
+          status: "booked",
+        },
+        { onConflict: "dj_id,availability_date" },
+      );
+
+    if (availabilityError) {
+      console.error(
+        "BOOKING AVAILABILITY UPDATE ERROR:",
+        availabilityError,
+      );
+    }
+  }
+
   const { data: dj } = await supabaseAdmin
     .from("djs")
     .select("stage_name, booking_email, email")

@@ -5,6 +5,28 @@ import { supabase } from "../../lib/supabase";
 import QRCodeBox from "../components/QRCodeBox";
 import { translations, Language } from "../lib/translations";
 import { bookingTranslations } from "../lib/bookingTranslations";
+import {
+  availabilityLocales,
+  availabilityTranslations,
+} from "../lib/availabilityTranslations";
+
+type AvailabilityStatus = "available" | "booked" | "unavailable";
+
+function getAvailabilityDateKey(year: number, month: number, day: number) {
+  return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+function getAvailabilityCalendarDays(month: Date) {
+  const year = month.getFullYear();
+  const monthIndex = month.getMonth();
+  const numberOfDays = new Date(year, monthIndex + 1, 0).getDate();
+  const mondayFirstOffset = (new Date(year, monthIndex, 1).getDay() + 6) % 7;
+
+  return [
+    ...Array.from({ length: mondayFirstOffset }, () => null),
+    ...Array.from({ length: numberOfDays }, (_, index) => index + 1),
+  ];
+}
 
 type RequestStatus =
   | "pending"
@@ -3947,6 +3969,14 @@ const [requestEnabled, setRequestEnabled] = useState(true);
 
   const [requests, setRequests] = useState<SongRequest[]>([]);
   const [bookingRequests, setBookingRequests] = useState<BookingRequest[]>([]);
+  const [availabilityMonth, setAvailabilityMonth] = useState(
+    () => new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+  );
+  const [availabilityEntries, setAvailabilityEntries] = useState<
+    Record<string, AvailabilityStatus>
+  >({});
+  const [availabilityLoading, setAvailabilityLoading] = useState(false);
+  const [availabilitySavingDate, setAvailabilitySavingDate] = useState("");
   const [payments, setPayments] = useState<Payment[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
@@ -3968,6 +3998,9 @@ const [requestEnabled, setRequestEnabled] = useState(true);
   const t = translations[language];
   const bookingText =
     bookingTranslations[language] || bookingTranslations.en;
+  const availabilityText =
+    availabilityTranslations[language] || availabilityTranslations.en;
+  const availabilityLocale = availabilityLocales[language] || "en-GB";
   const quickSetupText = quickSetupTranslations[language] || quickSetupTranslations.en;
   const dashboardAlertText =
     dashboardAlertTranslations[language] || dashboardAlertTranslations.en;
@@ -4350,6 +4383,105 @@ setVenue(loadedDj.venue || "");
       loadPaystackBanks(preferredCurrency);
     }
   }, [payoutMethod, preferredCurrency]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadAvailabilityMonth() {
+      if (!dj?.id) return;
+
+      const year = availabilityMonth.getFullYear();
+      const monthIndex = availabilityMonth.getMonth();
+      const firstDate = getAvailabilityDateKey(year, monthIndex, 1);
+      const finalDay = new Date(year, monthIndex + 1, 0).getDate();
+      const lastDate = getAvailabilityDateKey(year, monthIndex, finalDay);
+
+      setAvailabilityLoading(true);
+
+      const { data, error } = await supabase
+        .from("dj_availability")
+        .select("availability_date, status")
+        .eq("dj_id", dj.id)
+        .gte("availability_date", firstDate)
+        .lte("availability_date", lastDate)
+        .order("availability_date", { ascending: true });
+
+      if (cancelled) return;
+
+      if (error) {
+        console.error("DJ AVAILABILITY FETCH ERROR:", error);
+        setAvailabilityEntries({});
+      } else {
+        const nextEntries: Record<string, AvailabilityStatus> = {};
+
+        for (const entry of data || []) {
+          nextEntries[String(entry.availability_date)] =
+            entry.status as AvailabilityStatus;
+        }
+
+        setAvailabilityEntries(nextEntries);
+      }
+
+      setAvailabilityLoading(false);
+    }
+
+    loadAvailabilityMonth();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [dj?.id, availabilityMonth]);
+
+  async function cycleAvailabilityDate(dateKey: string) {
+    if (!dj || availabilitySavingDate) return;
+
+    const currentStatus = availabilityEntries[dateKey];
+    const nextStatus: AvailabilityStatus | null =
+      !currentStatus
+        ? "available"
+        : currentStatus === "available"
+          ? "booked"
+          : currentStatus === "booked"
+            ? "unavailable"
+            : null;
+    const previousEntries = availabilityEntries;
+
+    setAvailabilitySavingDate(dateKey);
+    setAvailabilityEntries((currentEntries) => {
+      const updatedEntries = { ...currentEntries };
+
+      if (nextStatus) {
+        updatedEntries[dateKey] = nextStatus;
+      } else {
+        delete updatedEntries[dateKey];
+      }
+
+      return updatedEntries;
+    });
+
+    const result = nextStatus
+      ? await supabase.from("dj_availability").upsert(
+          {
+            dj_id: dj.id,
+            availability_date: dateKey,
+            status: nextStatus,
+          },
+          { onConflict: "dj_id,availability_date" },
+        )
+      : await supabase
+          .from("dj_availability")
+          .delete()
+          .eq("dj_id", dj.id)
+          .eq("availability_date", dateKey);
+
+    if (result.error) {
+      console.error("DJ AVAILABILITY SAVE ERROR:", result.error);
+      setAvailabilityEntries(previousEntries);
+      alert(availabilityText.couldNotSave);
+    }
+
+    setAvailabilitySavingDate("");
+  }
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -5964,6 +6096,149 @@ setVenue(loadedDj.venue || "");
           color="text-green-400"
         />
       </div>
+
+      <section className="mb-10 rounded-3xl border border-cyan-500/30 bg-zinc-900 p-4 shadow-[0_0_30px_rgba(34,211,238,0.08)] md:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.25em] text-cyan-400">
+              {availabilityText.availableDates}
+            </p>
+            <h2 className="mt-2 text-2xl font-black text-white md:text-3xl">
+              📅 {availabilityText.manageAvailability}
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+              {availabilityText.calendarHelp}
+            </p>
+          </div>
+
+          <div className="flex items-center justify-between gap-3 sm:justify-end">
+            <button
+              type="button"
+              aria-label={availabilityText.previousMonth}
+              onClick={() =>
+                setAvailabilityMonth(
+                  (currentMonth) =>
+                    new Date(
+                      currentMonth.getFullYear(),
+                      currentMonth.getMonth() - 1,
+                      1,
+                    ),
+                )
+              }
+              className="rounded-xl border border-zinc-700 bg-black px-4 py-3 font-black text-white hover:border-cyan-400"
+            >
+              ←
+            </button>
+
+            <p className="min-w-[150px] text-center text-lg font-black capitalize text-white">
+              {new Intl.DateTimeFormat(availabilityLocale, {
+                month: "long",
+                year: "numeric",
+              }).format(availabilityMonth)}
+            </p>
+
+            <button
+              type="button"
+              aria-label={availabilityText.nextMonth}
+              onClick={() =>
+                setAvailabilityMonth(
+                  (currentMonth) =>
+                    new Date(
+                      currentMonth.getFullYear(),
+                      currentMonth.getMonth() + 1,
+                      1,
+                    ),
+                )
+              }
+              className="rounded-xl border border-zinc-700 bg-black px-4 py-3 font-black text-white hover:border-cyan-400"
+            >
+              →
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-5 flex flex-wrap gap-2 text-xs font-bold">
+          <span className="rounded-full border border-green-500/30 bg-green-500/10 px-3 py-2 text-green-300">
+            ● {availabilityText.available}
+          </span>
+          <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-2 text-cyan-300">
+            ● {availabilityText.booked}
+          </span>
+          <span className="rounded-full border border-red-500/30 bg-red-500/10 px-3 py-2 text-red-300">
+            ● {availabilityText.unavailable}
+          </span>
+          <span className="rounded-full border border-zinc-700 bg-black/40 px-3 py-2 text-zinc-400">
+            ○ {availabilityText.notSet}
+          </span>
+        </div>
+
+        <div className="mt-5 grid grid-cols-7 gap-1 text-center text-[10px] font-black uppercase text-zinc-500 sm:gap-2 sm:text-xs">
+          {Array.from({ length: 7 }, (_, index) => {
+            const monday = new Date(2024, 0, 1 + index);
+
+            return (
+              <div key={index} className="py-2">
+                {new Intl.DateTimeFormat(availabilityLocale, {
+                  weekday: "short",
+                }).format(monday)}
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="grid grid-cols-7 gap-1 sm:gap-2">
+          {getAvailabilityCalendarDays(availabilityMonth).map(
+            (dayNumber, cellIndex) => {
+              if (!dayNumber) {
+                return <div key={`blank-${cellIndex}`} />;
+              }
+
+              const dateKey = getAvailabilityDateKey(
+                availabilityMonth.getFullYear(),
+                availabilityMonth.getMonth(),
+                dayNumber,
+              );
+              const status = availabilityEntries[dateKey];
+              const statusLabel =
+                status === "available"
+                  ? availabilityText.available
+                  : status === "booked"
+                    ? availabilityText.booked
+                    : status === "unavailable"
+                      ? availabilityText.unavailable
+                      : availabilityText.notSet;
+              const statusClass =
+                status === "available"
+                  ? "border-green-500/50 bg-green-500/15 text-green-200"
+                  : status === "booked"
+                    ? "border-cyan-500/50 bg-cyan-500/15 text-cyan-200"
+                    : status === "unavailable"
+                      ? "border-red-500/50 bg-red-500/15 text-red-200"
+                      : "border-zinc-700 bg-black/40 text-zinc-300 hover:border-zinc-500";
+
+              return (
+                <button
+                  key={dateKey}
+                  type="button"
+                  onClick={() => cycleAvailabilityDate(dateKey)}
+                  disabled={
+                    availabilityLoading || availabilitySavingDate === dateKey
+                  }
+                  aria-label={`${dayNumber}: ${statusLabel}`}
+                  className={`aspect-square min-w-0 rounded-lg border p-1 transition disabled:opacity-50 sm:rounded-xl sm:p-2 ${statusClass}`}
+                >
+                  <span className="block text-sm font-black sm:text-lg">
+                    {dayNumber}
+                  </span>
+                  <span className="mt-1 hidden truncate text-[9px] font-bold sm:block lg:text-[10px]">
+                    {availabilitySavingDate === dateKey ? "…" : statusLabel}
+                  </span>
+                </button>
+              );
+            },
+          )}
+        </div>
+      </section>
 
       <section
         ref={bookingRequestsRef}
