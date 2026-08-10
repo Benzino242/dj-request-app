@@ -9,6 +9,9 @@ const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const resendApiKey = process.env.RESEND_API_KEY;
 const blacklineAlertEmail = process.env.BLACKLINE_ALERT_EMAIL;
 const blacklineAlertFrom = process.env.BLACKLINE_ALERT_FROM;
+const myBlacklineUrl = `${(
+  process.env.NEXT_PUBLIC_SITE_URL || "https://blacklinedj.com"
+).replace(/\/+$/, "")}/my-blackline`;
 
 type BookingResponseStatus = "accepted" | "rejected";
 
@@ -263,6 +266,11 @@ export async function POST(request: Request) {
             ? "The DJ or Blackline will contact you to confirm the final price and secure payment."
             : "No payment has been taken. You can contact Blackline if you need help finding another DJ."}
         </p>
+        <p>
+          <a href="${escapeHtml(myBlacklineUrl)}" style="display:inline-block;padding:13px 20px;background:#7c3aed;color:#fff;text-decoration:none;border-radius:10px;font-weight:bold;">
+            View My Bookings
+          </a>
+        </p>
         <p>Blackline DJ</p>
       </div>
     `;
@@ -286,6 +294,9 @@ ${
     ? "The DJ or Blackline will contact you to confirm the final price and secure payment."
     : "No payment has been taken. You can contact Blackline if you need help finding another DJ."
 }
+
+View and track your bookings:
+${myBlacklineUrl}
 
 Blackline DJ
 `;

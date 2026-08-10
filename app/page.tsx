@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { myBlacklineTranslations } from "./lib/myBlacklineTranslations";
 
 const languageOptions = [
   { code: "en", label: "English", flag: "🇬🇧" },
@@ -1713,6 +1714,7 @@ export default function HomePage() {
   }
 
   const t = landingTranslations[language];
+  const guestText = myBlacklineTranslations[language];
   const footerLinks = footerLinkLabels[language];
   const isRtl = language === "ar";
 
@@ -1740,6 +1742,7 @@ export default function HomePage() {
           <p className="mx-auto mb-10 max-w-3xl text-lg leading-relaxed text-zinc-400 md:text-xl">{t.heroBody}</p>
 
           <div className="flex flex-col justify-center gap-4 md:flex-row">
+            <Link href="/my-blackline" className="rounded-2xl border border-purple-400/60 bg-purple-500/15 px-8 py-5 text-xl font-black text-purple-100 transition hover:bg-purple-500/25">📅 {guestText.title}</Link>
             <Link href="/signup" className="rounded-2xl bg-purple-600 px-8 py-5 text-xl font-black transition hover:bg-purple-700">{t.becomeDj}</Link>
             <button type="button" onClick={() => setIsDemoOpen(true)} className="rounded-2xl border border-purple-500/50 bg-purple-500/10 px-8 py-5 text-xl font-black text-purple-100 transition hover:bg-purple-500/20">{t.watchDemo}</button>
             <Link href="/admin" className="rounded-2xl border border-zinc-700 bg-zinc-900 px-8 py-5 text-xl font-black transition hover:bg-zinc-800">{t.djLogin}</Link>
@@ -1827,6 +1830,7 @@ export default function HomePage() {
           <p className="mx-auto mb-10 max-w-2xl text-xl leading-relaxed text-zinc-400">{t.launchBody}</p>
 
           <div className="flex flex-col justify-center gap-4 md:flex-row">
+            <Link href="/my-blackline" className="rounded-2xl border border-purple-400/60 bg-purple-500/15 px-10 py-5 text-2xl font-black text-purple-100 transition hover:bg-purple-500/25">📅 {guestText.title}</Link>
             <Link href="/signup" className="rounded-2xl bg-purple-600 px-10 py-5 text-2xl font-black transition hover:bg-purple-700">{t.createAccount}</Link>
             <Link href="/admin" className="rounded-2xl border border-zinc-700 bg-zinc-900 px-10 py-5 text-2xl font-black transition hover:bg-zinc-800">{t.djLogin}</Link>
           </div>

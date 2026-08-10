@@ -9,6 +9,9 @@ const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
 const resendApiKey = process.env.RESEND_API_KEY;
 const blacklineAlertEmail = process.env.BLACKLINE_ALERT_EMAIL;
 const blacklineAlertFrom = process.env.BLACKLINE_ALERT_FROM;
+const myBlacklineUrl = `${(
+  process.env.NEXT_PUBLIC_SITE_URL || "https://blacklinedj.com"
+).replace(/\/+$/, "")}/my-blackline`;
 const COMMISSION_RATE = 10;
 
 async function sendEmail(to: string, subject: string, html: string, text: string) {
@@ -231,8 +234,8 @@ export async function POST(request: Request) {
     sendEmail(
       String(booking.email || ""),
       `Payment confirmed for your ${djName} booking`,
-      `<h2>Booking payment confirmed</h2><p>Hi ${booking.name || "there"},</p><p>Your ${formattedAmount} payment for ${djName} was verified successfully.</p><p>Payment reference: <strong>${reference}</strong></p><p>Blackline DJ</p>`,
-      `Booking payment confirmed\n\nYour ${formattedAmount} payment for ${djName} was verified successfully.\nReference: ${reference}`,
+      `<h2>Booking payment confirmed</h2><p>Hi ${booking.name || "there"},</p><p>Your ${formattedAmount} payment for ${djName} was verified successfully.</p><p>Payment reference: <strong>${reference}</strong></p><p><a href="${myBlacklineUrl}" style="display:inline-block;padding:13px 20px;background:#7c3aed;color:#fff;text-decoration:none;border-radius:10px;font-weight:bold;">View My Bookings</a></p><p>Blackline DJ</p>`,
+      `Booking payment confirmed\n\nYour ${formattedAmount} payment for ${djName} was verified successfully.\nReference: ${reference}\n\nView and track your bookings:\n${myBlacklineUrl}`,
     ),
     sendEmail(
       String(dj?.booking_email || dj?.email || ""),

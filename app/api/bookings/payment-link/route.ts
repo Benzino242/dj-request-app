@@ -244,6 +244,11 @@ export async function POST(request: Request) {
           </a>
         </p>
         <p>This secure payment link expires in 7 days.</p>
+        <p>
+          <a href="${escapeHtml(`${siteUrl}/my-blackline`)}" style="display:inline-block;padding:12px 18px;background:#18181b;color:#fff;text-decoration:none;border-radius:10px;font-weight:bold;">
+            View My Bookings
+          </a>
+        </p>
         <p>Blackline DJ</p>
       </div>
     `,
@@ -261,6 +266,9 @@ Pay securely:
 ${paymentUrl}
 
 This payment link expires in 7 days.
+
+View and track your bookings:
+${siteUrl}/my-blackline
 
 Blackline DJ
 `,
