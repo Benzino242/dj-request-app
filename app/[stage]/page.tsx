@@ -9,8 +9,10 @@
 import { translations, Language } from "../lib/translations";
 import { bookingTranslations } from "../lib/bookingTranslations";
 import { availabilityTranslations } from "../lib/availabilityTranslations";
+import { myBlacklineTranslations } from "../lib/myBlacklineTranslations";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import { supabase } from "../../lib/supabase";
 import BookingModal from "../components/BookingModal";
 
@@ -569,6 +571,8 @@ setPaymentSuccess
     bookingTranslations[language] || bookingTranslations.en;
   const availabilityText =
     availabilityTranslations[language] || availabilityTranslations.en;
+  const myBlacklineText =
+    myBlacklineTranslations[language] || myBlacklineTranslations.en;
   const paymentText =
     paymentSuccessTranslations[language] || paymentSuccessTranslations.en;
   const nowPlayingCountdownText =
@@ -1113,6 +1117,16 @@ submitBookingRequest
         setBookingSending(true);
         setBookingError("");
         setBookingSuccess("");
+
+        const {
+          data: { user: bookingUser },
+        } = await supabase.auth.getUser();
+        const accountEmail = String(bookingUser?.email || "").trim().toLowerCase();
+        const requestEmail = bookingEmail.trim().toLowerCase();
+        const guestUserId =
+          bookingUser && accountEmail && accountEmail === requestEmail
+            ? bookingUser.id
+            : null;
       
         const { error } = await supabase
           .from("booking_requests")
@@ -1126,6 +1140,7 @@ submitBookingRequest
             venue: bookingVenue,
             budget: bookingBudget,
             message: bookingMessage,
+            guest_user_id: guestUserId,
           });
       
         if (error) {
@@ -1968,6 +1983,7 @@ onClick
     >
       Use "{song}" and enter artist manually
     </button>
+
   </div>
 )}
 
@@ -2628,6 +2644,13 @@ className
     </p>
   </div>
 )}
+
+<Link
+  href="/my-blackline"
+  className="mt-3 flex w-full items-center justify-center rounded-xl border border-purple-500/40 bg-purple-500/10 p-3 text-sm font-black text-purple-200 transition hover:bg-purple-500/20"
+>
+  {myBlacklineText.title} · {myBlacklineText.myBookings} →
+</Link>
                         </div>
                       </div>
                 
