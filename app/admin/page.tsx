@@ -6417,6 +6417,15 @@ setVenue(loadedDj.venue || "");
                       </div>
                     )}
 
+                    {(isAccepted || isAwaitingPayment || normalizedStatus === "confirmed" || normalizedStatus === "completed") && (
+                      <a
+                        href={`/my-blackline/bookings/${booking.id}`}
+                        className="mt-5 inline-flex items-center justify-center rounded-xl border border-purple-500/40 bg-purple-600 px-5 py-3 font-black text-white hover:bg-purple-700"
+                      >
+                        📋 Open event plan
+                      </a>
+                    )}
+
                     {isPending && (
                       <div className="grid sm:grid-cols-2 gap-3 mt-5">
                         <button

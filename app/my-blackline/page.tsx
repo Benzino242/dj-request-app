@@ -43,6 +43,13 @@ function getDj(booking: GuestBooking) {
   return Array.isArray(booking.djs) ? booking.djs[0] : booking.djs;
 }
 
+const editableStatuses = new Set([
+  "accepted",
+  "awaiting_payment",
+  "confirmed",
+  "completed",
+]);
+
 export default function MyBlacklinePage() {
   const [language, setLanguage] = useState<Language>("en");
   const [user, setUser] = useState<User | null>(null);
@@ -223,7 +230,12 @@ export default function MyBlacklinePage() {
                         <div className="rounded-2xl bg-black p-4"><p className="text-xs uppercase tracking-wider text-zinc-500">{text.budget}</p><p className="mt-2 font-bold">{price}</p></div>
                         <div className="rounded-2xl bg-black p-4"><p className="text-xs uppercase tracking-wider text-zinc-500">{text.payment}</p><p className="mt-2 font-bold capitalize">{String(booking.payment_status || "unpaid").replaceAll("_", " ")}</p></div>
                       </div>
-                      {dj?.stage_slug && <Link href={`/${dj.stage_slug}`} className="mt-5 inline-flex rounded-xl border border-purple-500/40 bg-purple-500/10 px-4 py-3 font-black text-purple-300 hover:bg-purple-500/20">{text.viewDj} →</Link>}
+                      <div className="mt-5 flex flex-wrap gap-3">
+                        {editableStatuses.has(String(booking.status || "")) && (
+                          <Link href={`/my-blackline/bookings/${booking.id}`} className="inline-flex rounded-xl bg-purple-600 px-4 py-3 font-black text-white hover:bg-purple-700">📋 Open event plan</Link>
+                        )}
+                        {dj?.stage_slug && <Link href={`/${dj.stage_slug}`} className="inline-flex rounded-xl border border-purple-500/40 bg-purple-500/10 px-4 py-3 font-black text-purple-300 hover:bg-purple-500/20">{text.viewDj} →</Link>}
+                      </div>
                     </article>
                   );
                 })}
