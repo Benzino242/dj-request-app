@@ -46,6 +46,8 @@ type Copy = {
   event: string; genre: string; language: string; all: string; clear: string;
   results: string; verified: string; available: string; from: string; experience: string;
   years: string; travels: string; view: string; loading: string; empty: string; error: string;
+  eventDate: string; currency: string; maxBudget: string; verifiedOnly: string;
+  availableOnDate: string; checkingDate: string;
 };
 
 const en: Copy = {
@@ -56,6 +58,8 @@ const en: Copy = {
   verified: "Verified", available: "Available for bookings", from: "Starting from", experience: "Experience",
   years: "years", travels: "Travels up to", view: "View profile & book", loading: "Finding DJs...",
   empty: "No DJs match these filters yet.", error: "We could not load the DJ marketplace. Please try again.",
+  eventDate: "Event date", currency: "Currency", maxBudget: "Maximum budget", verifiedOnly: "Verified DJs only",
+  availableOnDate: "Available on selected date", checkingDate: "Checking availability...",
 };
 
 const copy: Record<Language, Copy> = {
@@ -96,6 +100,12 @@ export default function FindDJsPage() {
   const [eventType, setEventType] = useState("");
   const [genre, setGenre] = useState("");
   const [spokenLanguage, setSpokenLanguage] = useState("");
+  const [eventDate, setEventDate] = useState("");
+  const [currency, setCurrency] = useState("");
+  const [maxBudget, setMaxBudget] = useState("");
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [dateAvailability, setDateAvailability] = useState<Record<number, string>>({});
+  const [checkingDate, setCheckingDate] = useState(false);
 
   useEffect(() => {
     const saved = window.localStorage.getItem("blackline-language") || window.localStorage.getItem("blacklineLandingLanguage");
@@ -122,9 +132,44 @@ export default function FindDJsPage() {
     void loadDJs();
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadAvailability() {
+      if (!eventDate) {
+        setDateAvailability({});
+        setCheckingDate(false);
+        return;
+      }
+
+      setCheckingDate(true);
+      const { data, error } = await supabase
+        .from("dj_availability")
+        .select("dj_id,status")
+        .eq("availability_date", eventDate);
+
+      if (cancelled) return;
+
+      if (error) {
+        console.error("DJ marketplace availability error:", error);
+        setDateAvailability({});
+      } else {
+        const availability = Object.fromEntries(
+          (data || []).map((item) => [Number(item.dj_id), String(item.status || "")]),
+        );
+        setDateAvailability(availability);
+      }
+      setCheckingDate(false);
+    }
+
+    void loadAvailability();
+    return () => { cancelled = true; };
+  }, [eventDate]);
+
   const eventOptions = useMemo(() => Array.from(new Set(djs.flatMap((dj) => dj.booking_event_types || []))).sort(), [djs]);
   const genreOptions = useMemo(() => Array.from(new Set(djs.flatMap((dj) => dj.marketplace_genres || []))).sort(), [djs]);
   const spokenLanguageOptions = useMemo(() => Array.from(new Set(djs.flatMap((dj) => dj.marketplace_languages || []))).sort(), [djs]);
+  const currencyOptions = useMemo(() => Array.from(new Set(djs.map((dj) => String(dj.booking_currency || "").trim().toUpperCase()).filter(Boolean))).sort(), [djs]);
 
   const filteredDJs = useMemo(() => djs.filter((dj) => {
     const keywordText = [dj.stage_name, dj.profile_tagline, dj.bio, dj.city, dj.country, ...(dj.marketplace_genres || [])].join(" ").toLowerCase();
@@ -133,11 +178,18 @@ export default function FindDJsPage() {
       && (!location || locationText.includes(normalize(location)))
       && contains(dj.booking_event_types, eventType)
       && contains(dj.marketplace_genres, genre)
-      && contains(dj.marketplace_languages, spokenLanguage);
-  }), [djs, query, location, eventType, genre, spokenLanguage]);
+      && contains(dj.marketplace_languages, spokenLanguage)
+      && (!currency || normalize(dj.booking_currency) === normalize(currency))
+      && (!maxBudget || (Number(dj.booking_starting_price) > 0 && Number(dj.booking_starting_price) <= Number(maxBudget)))
+      && (!verifiedOnly || dj.verification_status === "verified")
+      && (!eventDate || dateAvailability[dj.id] === "available");
+  }), [djs, query, location, eventType, genre, spokenLanguage, currency, maxBudget, verifiedOnly, eventDate, dateAvailability]);
 
   const t = copy[language];
-  const clearFilters = () => { setQuery(""); setLocation(""); setEventType(""); setGenre(""); setSpokenLanguage(""); };
+  const clearFilters = () => {
+    setQuery(""); setLocation(""); setEventType(""); setGenre(""); setSpokenLanguage("");
+    setEventDate(""); setCurrency(""); setMaxBudget(""); setVerifiedOnly(false);
+  };
 
   return (
     <main dir={language === "ar" ? "rtl" : "ltr"} className="min-h-screen bg-black text-white">
@@ -171,7 +223,27 @@ export default function FindDJsPage() {
                 </select>
               </label>
             ))}
+            <label className="grid gap-2 text-xs font-black uppercase tracking-[0.2em] text-zinc-500">
+              {t.eventDate}
+              <input type="date" value={eventDate} min={new Date().toISOString().slice(0, 10)} onChange={(e) => setEventDate(e.target.value)} className="rounded-2xl border border-zinc-800 bg-black px-4 py-4 text-base font-bold normal-case tracking-normal text-white outline-none focus:border-purple-500" />
+            </label>
+            <label className="grid gap-2 text-xs font-black uppercase tracking-[0.2em] text-zinc-500">
+              {t.currency}
+              <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="rounded-2xl border border-zinc-800 bg-black px-4 py-4 text-base font-bold normal-case tracking-normal text-white outline-none focus:border-purple-500">
+                <option value="">{t.all}</option>
+                {currencyOptions.map((option) => <option key={option} value={option}>{option}</option>)}
+              </select>
+            </label>
+            <label className="grid gap-2 text-xs font-black uppercase tracking-[0.2em] text-zinc-500">
+              {t.maxBudget}
+              <input type="number" min="0" inputMode="decimal" value={maxBudget} onChange={(e) => setMaxBudget(e.target.value)} placeholder="0" className="rounded-2xl border border-zinc-800 bg-black px-4 py-4 text-base font-bold normal-case tracking-normal text-white outline-none focus:border-purple-500" />
+            </label>
+            <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-zinc-800 bg-black px-4 py-4 font-black text-zinc-300 transition hover:border-purple-500">
+              <input type="checkbox" checked={verifiedOnly} onChange={(e) => setVerifiedOnly(e.target.checked)} className="h-5 w-5 accent-purple-600" />
+              {t.verifiedOnly}
+            </label>
           </div>
+          {eventDate && <p className={`mt-4 text-sm font-bold ${checkingDate ? "text-zinc-400" : "text-green-300"}`}>{checkingDate ? t.checkingDate : `✓ ${t.availableOnDate}`}</p>}
         </div>
 
         <div className="mb-6 mt-10 flex items-center justify-between gap-4">
@@ -195,6 +267,7 @@ export default function FindDJsPage() {
                     <div className="flex flex-wrap gap-2">
                       {dj.verification_status === "verified" && <span className="rounded-full border border-green-500/40 bg-green-500/15 px-3 py-1 text-xs font-black text-green-300">✓ {t.verified}</span>}
                       {dj.booking_enabled && <span className="rounded-full border border-purple-500/40 bg-purple-500/20 px-3 py-1 text-xs font-black text-purple-200">{t.available}</span>}
+                      {eventDate && dateAvailability[dj.id] === "available" && <span className="rounded-full border border-cyan-500/40 bg-cyan-500/15 px-3 py-1 text-xs font-black text-cyan-200">📅 {t.availableOnDate}</span>}
                     </div>
                     <h3 className="mt-3 text-3xl font-black">{dj.stage_name}</h3>
                     <p className="mt-1 font-semibold text-zinc-300">📍 {[dj.city, dj.country].filter(Boolean).join(", ") || (dj.marketplace_service_areas || [])[0] || "Blackline DJ"}</p>
