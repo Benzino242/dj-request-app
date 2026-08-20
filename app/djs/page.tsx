@@ -300,7 +300,7 @@ export default function FindDJsPage() {
             return (
               <article key={dj.id} className={`overflow-hidden rounded-[2rem] border bg-zinc-950 shadow-2xl ${dj.marketplace_featured ? "border-purple-400 shadow-[0_0_45px_rgba(168,85,247,0.18)]" : "border-zinc-800"}`}>
                 <div className="relative aspect-[4/3] bg-gradient-to-br from-purple-950 via-zinc-950 to-black">
-                  {dj.profile_image ? <img src={dj.profile_image} alt={dj.stage_name} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-7xl">🎧</div>}
+                  {dj.profile_image ? <img src={dj.profile_image} alt={dj.stage_name} className="h-full w-full object-cover object-top" /> : <div className="flex h-full items-center justify-center text-7xl">🎧</div>}
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/60 to-transparent p-6 pt-20">
                     <div className="flex flex-wrap gap-2">
                       {dj.verification_status === "verified" && <span className="rounded-full border border-green-500/40 bg-green-500/15 px-3 py-1 text-xs font-black text-green-300">✓ {t.verified}</span>}
