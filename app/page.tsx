@@ -1742,6 +1742,7 @@ export default function HomePage() {
           <p className="mx-auto mb-10 max-w-3xl text-lg leading-relaxed text-zinc-400 md:text-xl">{t.heroBody}</p>
 
           <div className="flex flex-col justify-center gap-4 md:flex-row">
+            <Link href="/djs" className="rounded-2xl border border-yellow-400/60 bg-yellow-500/10 px-8 py-5 text-xl font-black text-yellow-100 transition hover:bg-yellow-500/20">🔎 Find DJs</Link>
             <Link href="/my-blackline" className="rounded-2xl border border-purple-400/60 bg-purple-500/15 px-8 py-5 text-xl font-black text-purple-100 transition hover:bg-purple-500/25">📅 {guestText.title}</Link>
             <Link href="/signup" className="rounded-2xl bg-purple-600 px-8 py-5 text-xl font-black transition hover:bg-purple-700">{t.becomeDj}</Link>
             <button type="button" onClick={() => setIsDemoOpen(true)} className="rounded-2xl border border-purple-500/50 bg-purple-500/10 px-8 py-5 text-xl font-black text-purple-100 transition hover:bg-purple-500/20">{t.watchDemo}</button>
