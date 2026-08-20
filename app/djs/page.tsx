@@ -208,6 +208,11 @@ export default function FindDJsPage() {
   }, [filteredDJs, sortOrder]);
 
   const t = copy[language];
+  const resultsGridClass = sortedDJs.length === 1
+    ? "mx-auto grid max-w-xl gap-6"
+    : sortedDJs.length === 2
+      ? "mx-auto grid max-w-5xl gap-6 md:grid-cols-2"
+      : "grid gap-6 md:grid-cols-2 xl:grid-cols-3";
   const clearFilters = () => {
     setQuery(""); setLocation(""); setEventType(""); setGenre(""); setSpokenLanguage("");
     setEventDate(""); setCurrency(""); setMaxBudget(""); setVerifiedOnly(false);
@@ -225,7 +230,7 @@ export default function FindDJsPage() {
             </select>
           </div>
           <p className="mt-12 text-sm font-black tracking-[0.3em] text-purple-400">{t.eyebrow}</p>
-          <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight sm:text-6xl md:text-7xl">{t.title}</h1>
+          <h1 className="mt-4 max-w-5xl text-balance text-4xl font-black leading-[1.08] sm:text-5xl lg:text-6xl">{t.title}</h1>
           <p className="mt-5 max-w-3xl text-lg leading-relaxed text-zinc-400 md:text-xl">{t.subtitle}</p>
         </div>
       </section>
@@ -288,7 +293,7 @@ export default function FindDJsPage() {
         {!loading && loadError && <div className="rounded-3xl border border-red-500/40 bg-red-500/10 p-8 text-center font-bold text-red-300">{t.error}</div>}
         {!loading && !loadError && filteredDJs.length === 0 && <div className="rounded-3xl border border-zinc-800 bg-zinc-950 p-12 text-center text-xl font-bold text-zinc-400">{t.empty}</div>}
 
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className={resultsGridClass}>
           {sortedDJs.map((dj) => {
             const slug = dj.stage_slug || dj.stage_name.toLowerCase().trim().replace(/\s+/g, "-");
             const currency = dj.booking_currency || "GHS";
