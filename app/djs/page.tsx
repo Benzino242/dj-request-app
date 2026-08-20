@@ -48,6 +48,7 @@ type Copy = {
   years: string; travels: string; view: string; loading: string; empty: string; error: string;
   eventDate: string; currency: string; maxBudget: string; verifiedOnly: string;
   availableOnDate: string; checkingDate: string;
+  sortBy: string; recommended: string; priceLow: string; experienceHigh: string; nameAZ: string;
 };
 
 const en: Copy = {
@@ -60,6 +61,8 @@ const en: Copy = {
   empty: "No DJs match these filters yet.", error: "We could not load the DJ marketplace. Please try again.",
   eventDate: "Event date", currency: "Currency", maxBudget: "Maximum budget", verifiedOnly: "Verified DJs only",
   availableOnDate: "Available on selected date", checkingDate: "Checking availability...",
+  sortBy: "Sort by", recommended: "Recommended", priceLow: "Price: low to high",
+  experienceHigh: "Most experienced", nameAZ: "Name: A–Z",
 };
 
 const copy: Record<Language, Copy> = {
@@ -106,6 +109,7 @@ export default function FindDJsPage() {
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [dateAvailability, setDateAvailability] = useState<Record<number, string>>({});
   const [checkingDate, setCheckingDate] = useState(false);
+  const [sortOrder, setSortOrder] = useState("recommended");
 
   useEffect(() => {
     const saved = window.localStorage.getItem("blackline-language") || window.localStorage.getItem("blacklineLandingLanguage");
@@ -185,6 +189,24 @@ export default function FindDJsPage() {
       && (!eventDate || dateAvailability[dj.id] === "available");
   }), [djs, query, location, eventType, genre, spokenLanguage, currency, maxBudget, verifiedOnly, eventDate, dateAvailability]);
 
+  const sortedDJs = useMemo(() => {
+    const results = [...filteredDJs];
+    if (sortOrder === "price") {
+      return results.sort((a, b) => {
+        const aPrice = Number(a.booking_starting_price) > 0 ? Number(a.booking_starting_price) : Number.POSITIVE_INFINITY;
+        const bPrice = Number(b.booking_starting_price) > 0 ? Number(b.booking_starting_price) : Number.POSITIVE_INFINITY;
+        return aPrice - bPrice;
+      });
+    }
+    if (sortOrder === "experience") {
+      return results.sort((a, b) => Number(b.marketplace_years_experience || 0) - Number(a.marketplace_years_experience || 0));
+    }
+    if (sortOrder === "name") {
+      return results.sort((a, b) => a.stage_name.localeCompare(b.stage_name));
+    }
+    return results;
+  }, [filteredDJs, sortOrder]);
+
   const t = copy[language];
   const clearFilters = () => {
     setQuery(""); setLocation(""); setEventType(""); setGenre(""); setSpokenLanguage("");
@@ -246,9 +268,20 @@ export default function FindDJsPage() {
           {eventDate && <p className={`mt-4 text-sm font-bold ${checkingDate ? "text-zinc-400" : "text-green-300"}`}>{checkingDate ? t.checkingDate : `✓ ${t.availableOnDate}`}</p>}
         </div>
 
-        <div className="mb-6 mt-10 flex items-center justify-between gap-4">
-          <h2 className="text-2xl font-black md:text-3xl">{filteredDJs.length} {t.results}</h2>
-          <Link href="/my-blackline" className="font-black text-purple-300 hover:text-purple-200">My Blackline →</Link>
+        <div className="mb-6 mt-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <h2 className="text-2xl font-black md:text-3xl">{sortedDJs.length} {t.results}</h2>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <label className="grid gap-1 text-xs font-black uppercase tracking-[0.18em] text-zinc-500">
+              {t.sortBy}
+              <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)} className="rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm font-bold normal-case tracking-normal text-white outline-none focus:border-purple-500">
+                <option value="recommended">{t.recommended}</option>
+                <option value="price">{t.priceLow}</option>
+                <option value="experience">{t.experienceHigh}</option>
+                <option value="name">{t.nameAZ}</option>
+              </select>
+            </label>
+            <Link href="/my-blackline" className="pb-3 font-black text-purple-300 hover:text-purple-200">My Blackline →</Link>
+          </div>
         </div>
 
         {loading && <div className="rounded-3xl border border-zinc-800 bg-zinc-950 p-12 text-center text-xl font-bold text-zinc-400">{t.loading}</div>}
@@ -256,7 +289,7 @@ export default function FindDJsPage() {
         {!loading && !loadError && filteredDJs.length === 0 && <div className="rounded-3xl border border-zinc-800 bg-zinc-950 p-12 text-center text-xl font-bold text-zinc-400">{t.empty}</div>}
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {filteredDJs.map((dj) => {
+          {sortedDJs.map((dj) => {
             const slug = dj.stage_slug || dj.stage_name.toLowerCase().trim().replace(/\s+/g, "-");
             const currency = dj.booking_currency || "GHS";
             return (
