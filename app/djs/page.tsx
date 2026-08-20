@@ -209,10 +209,10 @@ export default function FindDJsPage() {
 
   const t = copy[language];
   const resultsGridClass = sortedDJs.length === 1
-    ? "mx-auto grid max-w-xl gap-6"
+    ? "mx-auto grid max-w-2xl gap-8"
     : sortedDJs.length === 2
-      ? "mx-auto grid max-w-5xl gap-6 md:grid-cols-2"
-      : "grid gap-6 md:grid-cols-2 xl:grid-cols-3";
+      ? "mx-auto grid max-w-6xl gap-8 md:grid-cols-2"
+      : "grid gap-8 md:grid-cols-2 xl:grid-cols-3";
   const clearFilters = () => {
     setQuery(""); setLocation(""); setEventType(""); setGenre(""); setSpokenLanguage("");
     setEventDate(""); setCurrency(""); setMaxBudget(""); setVerifiedOnly(false);
@@ -298,32 +298,76 @@ export default function FindDJsPage() {
             const slug = dj.stage_slug || dj.stage_name.toLowerCase().trim().replace(/\s+/g, "-");
             const currency = dj.booking_currency || "GHS";
             return (
-              <article key={dj.id} className={`overflow-hidden rounded-[2rem] border bg-zinc-950 shadow-2xl ${dj.marketplace_featured ? "border-purple-400 shadow-[0_0_45px_rgba(168,85,247,0.18)]" : "border-zinc-800"}`}>
-                <div className="relative aspect-[4/3] bg-gradient-to-br from-purple-950 via-zinc-950 to-black">
-                  {dj.profile_image ? <img src={dj.profile_image} alt={dj.stage_name} className="h-full w-full object-contain object-center" /> : <div className="flex h-full items-center justify-center text-7xl">🎧</div>}
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/60 to-transparent p-6 pt-20">
-                    <div className="flex flex-wrap gap-2">
-                      {dj.verification_status === "verified" && <span className="rounded-full border border-green-500/40 bg-green-500/15 px-3 py-1 text-xs font-black text-green-300">✓ {t.verified}</span>}
-                      {dj.booking_enabled && <span className="rounded-full border border-purple-500/40 bg-purple-500/20 px-3 py-1 text-xs font-black text-purple-200">{t.available}</span>}
-                      {eventDate && dateAvailability[dj.id] === "available" && <span className="rounded-full border border-cyan-500/40 bg-cyan-500/15 px-3 py-1 text-xs font-black text-cyan-200">📅 {t.availableOnDate}</span>}
+                  <article
+                    key={dj.id}
+                    className={`group relative overflow-hidden rounded-[2rem] border bg-[#08080b] shadow-[0_28px_90px_rgba(0,0,0,0.55)] ring-1 ring-white/[0.04] transition duration-500 hover:-translate-y-1 hover:border-purple-400/60 hover:shadow-[0_32px_100px_rgba(126,34,206,0.24)] ${dj.marketplace_featured ? "border-purple-400/70 shadow-[0_28px_100px_rgba(168,85,247,0.24)]" : "border-zinc-800"}`}
+                  >
+                    <div className="absolute inset-x-10 top-0 z-20 h-px bg-gradient-to-r from-transparent via-purple-400 to-transparent opacity-80" />
+
+                    <div className="relative aspect-[5/4] overflow-hidden bg-black sm:aspect-[16/10]">
+                      {dj.profile_image ? (
+                        <>
+                          <img
+                            src={dj.profile_image}
+                            alt=""
+                            aria-hidden="true"
+                            className="absolute inset-0 h-full w-full scale-125 object-cover object-center opacity-30 blur-2xl saturate-0"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-r from-purple-950/70 via-black/10 to-cyan-950/25" />
+                          <img
+                            src={dj.profile_image}
+                            alt={dj.stage_name}
+                            className="relative h-full w-full object-contain object-center transition duration-700 group-hover:scale-[1.025]"
+                          />
+                        </>
+                      ) : (
+                        <div className="flex h-full items-center justify-center bg-gradient-to-br from-purple-950 via-zinc-950 to-black text-7xl">🎧</div>
+                      )}
+
+                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.34)_100%)]" />
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/85 to-transparent px-5 pb-5 pt-24 sm:px-7 sm:pb-6">
+                        <div className="flex flex-wrap gap-2">
+                          {dj.verification_status === "verified" && <span className="rounded-full border border-emerald-400/40 bg-emerald-950/80 px-3 py-1.5 text-xs font-black text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.12)] backdrop-blur-md">✓ {t.verified}</span>}
+                          {dj.booking_enabled && <span className="rounded-full border border-purple-400/40 bg-purple-950/80 px-3 py-1.5 text-xs font-black text-purple-200 shadow-[0_0_20px_rgba(168,85,247,0.16)] backdrop-blur-md">{t.available}</span>}
+                          {eventDate && dateAvailability[dj.id] === "available" && <span className="rounded-full border border-cyan-400/40 bg-cyan-950/80 px-3 py-1.5 text-xs font-black text-cyan-200 backdrop-blur-md">📅 {t.availableOnDate}</span>}
+                        </div>
+                        <h3 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">{dj.stage_name}</h3>
+                        <p className="mt-1.5 text-sm font-bold text-zinc-300 sm:text-base">📍 {[dj.city, dj.country].filter(Boolean).join(", ") || (dj.marketplace_service_areas || [])[0] || "Blackline DJ"}</p>
+                      </div>
                     </div>
-                    <h3 className="mt-3 text-3xl font-black">{dj.stage_name}</h3>
-                    <p className="mt-1 font-semibold text-zinc-300">📍 {[dj.city, dj.country].filter(Boolean).join(", ") || (dj.marketplace_service_areas || [])[0] || "Blackline DJ"}</p>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <p className="min-h-12 text-zinc-400">{dj.profile_tagline || dj.bio || "Professional DJ available through Blackline."}</p>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {(dj.marketplace_genres || []).slice(0, 4).map((item) => <span key={item} className="rounded-full border border-zinc-700 bg-black px-3 py-2 text-sm font-bold text-zinc-300">{item}</span>)}
-                  </div>
-                  <div className="mt-6 grid grid-cols-2 gap-3">
-                    <div className="rounded-2xl border border-zinc-800 bg-black p-4"><p className="text-xs uppercase tracking-wider text-zinc-500">{t.from}</p><p className="mt-1 text-xl font-black text-purple-300">{Number(dj.booking_starting_price) > 0 ? `${currency} ${Number(dj.booking_starting_price).toLocaleString()}` : "—"}</p></div>
-                    <div className="rounded-2xl border border-zinc-800 bg-black p-4"><p className="text-xs uppercase tracking-wider text-zinc-500">{t.experience}</p><p className="mt-1 text-xl font-black">{dj.marketplace_years_experience ? `${dj.marketplace_years_experience} ${t.years}` : "—"}</p></div>
-                  </div>
-                  {dj.marketplace_travel_distance_km ? <p className="mt-4 text-sm font-semibold text-zinc-500">🚗 {t.travels} {dj.marketplace_travel_distance_km} km</p> : null}
-                  <Link href={`/${encodeURIComponent(slug)}`} className="mt-6 block rounded-2xl bg-purple-600 px-5 py-4 text-center text-lg font-black transition hover:bg-purple-500">{t.view} →</Link>
-                </div>
-              </article>
+
+                    <div className="relative p-5 sm:p-7">
+                      <div className="absolute -top-px left-7 right-7 h-px bg-gradient-to-r from-transparent via-zinc-600/70 to-transparent" />
+                      <p className="text-sm leading-6 text-zinc-400 sm:text-base">{dj.profile_tagline || dj.bio || "Professional DJ available through Blackline."}</p>
+
+                      {(dj.marketplace_genres || []).length > 0 && (
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {(dj.marketplace_genres || []).slice(0, 4).map((item) => <span key={item} className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-bold text-zinc-300">{item}</span>)}
+                        </div>
+                      )}
+
+                      <div className="mt-5 grid grid-cols-2 gap-3">
+                        <div className="rounded-2xl border border-purple-400/15 bg-gradient-to-br from-purple-950/45 to-black p-4">
+                          <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-zinc-500">{t.from}</p>
+                          <p className="mt-1.5 text-lg font-black text-purple-300 sm:text-xl">{Number(dj.booking_starting_price) > 0 ? `${currency} ${Number(dj.booking_starting_price).toLocaleString()}` : "—"}</p>
+                        </div>
+                        <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900/80 to-black p-4">
+                          <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-zinc-500">{t.experience}</p>
+                          <p className="mt-1.5 text-lg font-black text-white sm:text-xl">{dj.marketplace_years_experience ? `${dj.marketplace_years_experience} ${t.years}` : "—"}</p>
+                        </div>
+                      </div>
+
+                      {dj.marketplace_travel_distance_km ? <p className="mt-4 text-sm font-bold text-zinc-500">🚗 {t.travels} {dj.marketplace_travel_distance_km} km</p> : null}
+
+                      <Link
+                        href={`/${encodeURIComponent(slug)}`}
+                        className="mt-5 flex items-center justify-between rounded-2xl border border-purple-300/30 bg-gradient-to-r from-purple-700 via-purple-600 to-fuchsia-600 px-5 py-4 text-base font-black text-white shadow-[0_16px_40px_rgba(147,51,234,0.25)] transition duration-300 hover:brightness-110 sm:text-lg"
+                      >
+                        <span>{t.view}</span>
+                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-xl transition duration-300 group-hover:translate-x-1">→</span>
+                      </Link>
+                    </div>
+                  </article>
             );
           })}
         </div>
