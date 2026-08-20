@@ -5,6 +5,7 @@ import { supabase } from "../../lib/supabase";
 import QRCodeBox from "../components/QRCodeBox";
 import { translations, Language } from "../lib/translations";
 import { bookingTranslations } from "../lib/bookingTranslations";
+import { marketplaceTranslations } from "../lib/marketplaceTranslations";
 import {
   availabilityLocales,
   availabilityTranslations,
@@ -178,6 +179,15 @@ type DJ = {
 
   // Verification
   verification_status?: string | null;
+
+  // Marketplace
+  marketplace_listed?: boolean | null;
+  marketplace_service_areas?: string[] | null;
+  marketplace_genres?: string[] | null;
+  marketplace_languages?: string[] | null;
+  marketplace_years_experience?: number | null;
+  marketplace_travel_distance_km?: number | null;
+  marketplace_featured?: boolean | null;
 };
 
 const BLACKLINE_SUPPORT_EMAIL = "support@blacklinedj.com";
@@ -3944,6 +3954,12 @@ const [bookingStartingPrice, setBookingStartingPrice] = useState("");
 const [bookingCurrency, setBookingCurrency] = useState("GHS");
 const [tipEnabled, setTipEnabled] = useState(true);
 const [requestEnabled, setRequestEnabled] = useState(true);
+const [marketplaceListed, setMarketplaceListed] = useState(false);
+const [marketplaceServiceAreas, setMarketplaceServiceAreas] = useState("");
+const [marketplaceGenres, setMarketplaceGenres] = useState("");
+const [marketplaceLanguages, setMarketplaceLanguages] = useState("");
+const [marketplaceYearsExperience, setMarketplaceYearsExperience] = useState("");
+const [marketplaceTravelDistance, setMarketplaceTravelDistance] = useState("");
 
   const [eventName, setEventName] = useState("");
   const [venue, setVenue] = useState("");
@@ -3998,6 +4014,8 @@ const [requestEnabled, setRequestEnabled] = useState(true);
   const t = translations[language];
   const bookingText =
     bookingTranslations[language] || bookingTranslations.en;
+  const marketplaceText =
+    marketplaceTranslations[language] || marketplaceTranslations.en;
   const availabilityText =
     availabilityTranslations[language] || availabilityTranslations.en;
   const availabilityLocale = availabilityLocales[language] || "en-GB";
@@ -4337,6 +4355,20 @@ setBookingStartingPrice(
 setBookingCurrency(loadedDj.booking_currency || "GHS");
 setTipEnabled(loadedDj.tip_enabled ?? true);
 setRequestEnabled(loadedDj.request_enabled ?? true);
+setMarketplaceListed(loadedDj.marketplace_listed ?? false);
+setMarketplaceServiceAreas((loadedDj.marketplace_service_areas || []).join(", "));
+setMarketplaceGenres((loadedDj.marketplace_genres || []).join(", "));
+setMarketplaceLanguages((loadedDj.marketplace_languages || []).join(", "));
+setMarketplaceYearsExperience(
+  loadedDj.marketplace_years_experience != null
+    ? String(loadedDj.marketplace_years_experience)
+    : "",
+);
+setMarketplaceTravelDistance(
+  loadedDj.marketplace_travel_distance_km != null
+    ? String(loadedDj.marketplace_travel_distance_km)
+    : "",
+);
 
 setProfileImage(loadedDj.profile_image || "");
 setEventName(loadedDj.event_name || "");
@@ -4651,6 +4683,22 @@ setVenue(loadedDj.venue || "");
       return;
     }
 
+    if (
+      marketplaceListed &&
+      (!profileImage.trim() ||
+        !bio.trim() ||
+        !city.trim() ||
+        !country.trim() ||
+        !bookingEnabled ||
+        bookingEventTypes.length === 0 ||
+        !bookingStartingPrice.trim() ||
+        Number(bookingStartingPrice) <= 0)
+    ) {
+      setProfileMessage(marketplaceText.requirements);
+      setSavingProfile(false);
+      return;
+    }
+
     const { data, error } = await supabase
   .from("djs")
   .update({
@@ -4671,6 +4719,25 @@ setVenue(loadedDj.venue || "");
     booking_currency: bookingCurrency,
     tip_enabled: tipEnabled,
     request_enabled: requestEnabled,
+    marketplace_listed: marketplaceListed,
+    marketplace_service_areas: marketplaceServiceAreas
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean),
+    marketplace_genres: marketplaceGenres
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean),
+    marketplace_languages: marketplaceLanguages
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean),
+    marketplace_years_experience: marketplaceYearsExperience.trim()
+      ? Number(marketplaceYearsExperience)
+      : null,
+    marketplace_travel_distance_km: marketplaceTravelDistance.trim()
+      ? Number(marketplaceTravelDistance)
+      : null,
 
     profile_image: profileImage,
     event_name: eventName,
@@ -7154,6 +7221,126 @@ setVenue(loadedDj.venue || "");
 
                 <p className="mt-3 text-xs leading-relaxed text-zinc-500">
                   {bookingText.advertisedStartingPrice}
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-purple-500/30 bg-purple-500/5 p-5">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-[0.2em] text-purple-400">
+                      {marketplaceText.eyebrow}
+                    </p>
+                    <h3 className="mt-1 text-xl font-black text-white">
+                      {marketplaceText.title}
+                    </h3>
+                    <p className="mt-2 text-sm text-zinc-400">
+                      {marketplaceText.description}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={marketplaceListed}
+                    onClick={() => setMarketplaceListed((current) => !current)}
+                    className={`inline-flex shrink-0 items-center gap-3 rounded-full border px-3 py-2 text-xs font-black transition ${
+                      marketplaceListed
+                        ? "border-purple-400/50 bg-purple-500/15 text-purple-200"
+                        : "border-zinc-600 bg-zinc-800 text-zinc-300"
+                    }`}
+                  >
+                    <span
+                      className={`relative h-6 w-11 rounded-full transition ${
+                        marketplaceListed ? "bg-purple-500" : "bg-zinc-600"
+                      }`}
+                    >
+                      <span
+                        className={`absolute top-1 h-4 w-4 rounded-full bg-white shadow transition ${
+                          marketplaceListed ? "left-6" : "left-1"
+                        }`}
+                      />
+                    </span>
+                    <span>
+                      {marketplaceText.publish}: {marketplaceListed
+                        ? marketplaceText.listed
+                        : marketplaceText.hidden}
+                    </span>
+                  </button>
+                </div>
+
+                <div className="mt-5 grid gap-4 md:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
+                      {marketplaceText.serviceAreas}
+                    </span>
+                    <input
+                      value={marketplaceServiceAreas}
+                      onChange={(event) => setMarketplaceServiceAreas(event.target.value)}
+                      placeholder={marketplaceText.serviceAreasPlaceholder}
+                      className="w-full rounded-xl border border-zinc-700 bg-black p-4"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
+                      {marketplaceText.genres}
+                    </span>
+                    <input
+                      value={marketplaceGenres}
+                      onChange={(event) => setMarketplaceGenres(event.target.value)}
+                      placeholder={marketplaceText.genresPlaceholder}
+                      className="w-full rounded-xl border border-zinc-700 bg-black p-4"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
+                      {marketplaceText.languages}
+                    </span>
+                    <input
+                      value={marketplaceLanguages}
+                      onChange={(event) => setMarketplaceLanguages(event.target.value)}
+                      placeholder={marketplaceText.languagesPlaceholder}
+                      className="w-full rounded-xl border border-zinc-700 bg-black p-4"
+                    />
+                  </label>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <label className="block">
+                      <span className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
+                        {marketplaceText.yearsExperience}
+                      </span>
+                      <input
+                        type="number"
+                        min="0"
+                        max="80"
+                        value={marketplaceYearsExperience}
+                        onChange={(event) => setMarketplaceYearsExperience(event.target.value)}
+                        className="w-full rounded-xl border border-zinc-700 bg-black p-4"
+                      />
+                    </label>
+
+                    <label className="block">
+                      <span className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
+                        {marketplaceText.travelDistance}
+                      </span>
+                      <input
+                        type="number"
+                        min="0"
+                        max="50000"
+                        value={marketplaceTravelDistance}
+                        onChange={(event) => setMarketplaceTravelDistance(event.target.value)}
+                        className="w-full rounded-xl border border-zinc-700 bg-black p-4"
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <p className="mt-3 text-xs text-zinc-500">
+                  {marketplaceText.commaHint}
+                </p>
+                <p className="mt-2 text-xs text-purple-300/80">
+                  {marketplaceText.requirements}
                 </p>
               </div>
             </div>
