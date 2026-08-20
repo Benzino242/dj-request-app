@@ -208,11 +208,7 @@ export default function FindDJsPage() {
   }, [filteredDJs, sortOrder]);
 
   const t = copy[language];
-  const resultsGridClass = sortedDJs.length === 1
-    ? "mx-auto grid max-w-2xl gap-8"
-    : sortedDJs.length === 2
-      ? "mx-auto grid max-w-6xl gap-8 md:grid-cols-2"
-      : "grid gap-8 md:grid-cols-2 xl:grid-cols-3";
+  const resultsGridClass = "mx-auto grid max-w-6xl gap-8";
   const clearFilters = () => {
     setQuery(""); setLocation(""); setEventType(""); setGenre(""); setSpokenLanguage("");
     setEventDate(""); setCurrency(""); setMaxBudget(""); setVerifiedOnly(false);
@@ -300,68 +296,72 @@ export default function FindDJsPage() {
             return (
                   <article
                     key={dj.id}
-                    className={`group relative overflow-hidden rounded-[2rem] border bg-[#08080b] shadow-[0_28px_90px_rgba(0,0,0,0.55)] ring-1 ring-white/[0.04] transition duration-500 hover:-translate-y-1 hover:border-purple-400/60 hover:shadow-[0_32px_100px_rgba(126,34,206,0.24)] ${dj.marketplace_featured ? "border-purple-400/70 shadow-[0_28px_100px_rgba(168,85,247,0.24)]" : "border-zinc-800"}`}
+                    className={`group relative overflow-hidden rounded-[2rem] border bg-[#08080b] shadow-[0_28px_90px_rgba(0,0,0,0.55)] ring-1 ring-white/[0.04] transition duration-500 hover:-translate-y-1 hover:border-purple-400/60 hover:shadow-[0_32px_100px_rgba(126,34,206,0.24)] lg:grid lg:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.95fr)] ${dj.marketplace_featured ? "border-purple-400/70 shadow-[0_28px_100px_rgba(168,85,247,0.24)]" : "border-zinc-800"}`}
                   >
-                    <div className="absolute inset-x-10 top-0 z-20 h-px bg-gradient-to-r from-transparent via-purple-400 to-transparent opacity-80" />
+                    <div className="absolute inset-x-10 top-0 z-20 h-px bg-gradient-to-r from-transparent via-purple-400 to-cyan-300 opacity-90" />
 
-                    <div className="relative aspect-[5/4] overflow-hidden bg-black sm:aspect-[16/10]">
+                    <div className="relative min-h-[22rem] overflow-hidden border-b border-white/10 bg-black sm:min-h-[30rem] lg:min-h-[42rem] lg:border-b-0 lg:border-r">
                       {dj.profile_image ? (
                         <>
                           <img
                             src={dj.profile_image}
                             alt=""
                             aria-hidden="true"
-                            className="absolute inset-0 h-full w-full scale-125 object-cover object-center opacity-30 blur-2xl saturate-0"
+                            className="absolute inset-0 h-full w-full scale-125 object-cover object-center opacity-25 blur-3xl saturate-0"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-r from-purple-950/70 via-black/10 to-cyan-950/25" />
+                          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_38%,rgba(168,85,247,0.18),transparent_48%)]" />
+                          <div className="absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-purple-950/75 to-transparent" />
                           <img
                             src={dj.profile_image}
                             alt={dj.stage_name}
-                            className="relative h-full w-full object-contain object-center transition duration-700 group-hover:scale-[1.025]"
+                            className="relative h-full min-h-[22rem] w-full object-contain object-center p-4 transition duration-700 group-hover:scale-[1.02] sm:min-h-[30rem] sm:p-7 lg:min-h-[42rem] lg:p-10"
                           />
                         </>
                       ) : (
                         <div className="flex h-full items-center justify-center bg-gradient-to-br from-purple-950 via-zinc-950 to-black text-7xl">🎧</div>
                       )}
-
-                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.34)_100%)]" />
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/85 to-transparent px-5 pb-5 pt-24 sm:px-7 sm:pb-6">
-                        <div className="flex flex-wrap gap-2">
-                          {dj.verification_status === "verified" && <span className="rounded-full border border-emerald-400/40 bg-emerald-950/80 px-3 py-1.5 text-xs font-black text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.12)] backdrop-blur-md">✓ {t.verified}</span>}
-                          {dj.booking_enabled && <span className="rounded-full border border-purple-400/40 bg-purple-950/80 px-3 py-1.5 text-xs font-black text-purple-200 shadow-[0_0_20px_rgba(168,85,247,0.16)] backdrop-blur-md">{t.available}</span>}
-                          {eventDate && dateAvailability[dj.id] === "available" && <span className="rounded-full border border-cyan-400/40 bg-cyan-950/80 px-3 py-1.5 text-xs font-black text-cyan-200 backdrop-blur-md">📅 {t.availableOnDate}</span>}
-                        </div>
-                        <h3 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">{dj.stage_name}</h3>
-                        <p className="mt-1.5 text-sm font-bold text-zinc-300 sm:text-base">📍 {[dj.city, dj.country].filter(Boolean).join(", ") || (dj.marketplace_service_areas || [])[0] || "Blackline DJ"}</p>
-                      </div>
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/15" />
+                      <div className="absolute bottom-5 left-5 rounded-full border border-white/10 bg-black/65 px-4 py-2 text-[0.65rem] font-black uppercase tracking-[0.24em] text-zinc-300 backdrop-blur-xl sm:bottom-7 sm:left-7">Blackline DJ</div>
                     </div>
 
-                    <div className="relative p-5 sm:p-7">
-                      <div className="absolute -top-px left-7 right-7 h-px bg-gradient-to-r from-transparent via-zinc-600/70 to-transparent" />
-                      <p className="text-sm leading-6 text-zinc-400 sm:text-base">{dj.profile_tagline || dj.bio || "Professional DJ available through Blackline."}</p>
+                    <div className="relative flex flex-col p-6 sm:p-8 lg:p-10">
+                      <div className="absolute right-0 top-0 h-48 w-48 rounded-full bg-purple-600/10 blur-3xl" />
+                      <div className="relative flex flex-wrap gap-2">
+                        {dj.verification_status === "verified" && <span className="rounded-full border border-emerald-400/40 bg-emerald-950/70 px-3.5 py-2 text-xs font-black text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.12)]">✓ {t.verified}</span>}
+                        {dj.booking_enabled && <span className="rounded-full border border-purple-400/40 bg-purple-950/70 px-3.5 py-2 text-xs font-black text-purple-200 shadow-[0_0_20px_rgba(168,85,247,0.16)]">{t.available}</span>}
+                        {eventDate && dateAvailability[dj.id] === "available" && <span className="rounded-full border border-cyan-400/40 bg-cyan-950/70 px-3.5 py-2 text-xs font-black text-cyan-200">📅 {t.availableOnDate}</span>}
+                      </div>
+
+                      <div className="relative mt-6 border-b border-white/10 pb-6">
+                        <p className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-purple-300">DJ profile</p>
+                        <h3 className="mt-2 text-4xl font-black tracking-tight text-white sm:text-5xl">{dj.stage_name}</h3>
+                        <p className="mt-3 text-base font-bold text-zinc-300">📍 {[dj.city, dj.country].filter(Boolean).join(", ") || (dj.marketplace_service_areas || [])[0] || "Blackline DJ"}</p>
+                      </div>
+
+                      <p className="relative mt-6 text-base leading-7 text-zinc-400">{dj.profile_tagline || dj.bio || "Professional DJ available through Blackline."}</p>
 
                       {(dj.marketplace_genres || []).length > 0 && (
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          {(dj.marketplace_genres || []).slice(0, 4).map((item) => <span key={item} className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-bold text-zinc-300">{item}</span>)}
+                        <div className="relative mt-5 flex flex-wrap gap-2">
+                          {(dj.marketplace_genres || []).slice(0, 4).map((item) => <span key={item} className="rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-2 text-xs font-bold text-zinc-300">{item}</span>)}
                         </div>
                       )}
 
-                      <div className="mt-5 grid grid-cols-2 gap-3">
-                        <div className="rounded-2xl border border-purple-400/15 bg-gradient-to-br from-purple-950/45 to-black p-4">
+                      <div className="relative mt-7 grid grid-cols-2 gap-3">
+                        <div className="rounded-2xl border border-purple-400/20 bg-gradient-to-br from-purple-950/55 to-black p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
                           <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-zinc-500">{t.from}</p>
-                          <p className="mt-1.5 text-lg font-black text-purple-300 sm:text-xl">{Number(dj.booking_starting_price) > 0 ? `${currency} ${Number(dj.booking_starting_price).toLocaleString()}` : "—"}</p>
+                          <p className="mt-2 text-xl font-black text-purple-300 sm:text-2xl">{Number(dj.booking_starting_price) > 0 ? `${currency} ${Number(dj.booking_starting_price).toLocaleString()}` : "—"}</p>
                         </div>
-                        <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900/80 to-black p-4">
+                        <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900/85 to-black p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
                           <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-zinc-500">{t.experience}</p>
-                          <p className="mt-1.5 text-lg font-black text-white sm:text-xl">{dj.marketplace_years_experience ? `${dj.marketplace_years_experience} ${t.years}` : "—"}</p>
+                          <p className="mt-2 text-xl font-black text-white sm:text-2xl">{dj.marketplace_years_experience ? `${dj.marketplace_years_experience} ${t.years}` : "—"}</p>
                         </div>
                       </div>
 
-                      {dj.marketplace_travel_distance_km ? <p className="mt-4 text-sm font-bold text-zinc-500">🚗 {t.travels} {dj.marketplace_travel_distance_km} km</p> : null}
+                      {dj.marketplace_travel_distance_km ? <p className="relative mt-5 text-sm font-bold text-zinc-500">🚗 {t.travels} {dj.marketplace_travel_distance_km} km</p> : null}
 
                       <Link
                         href={`/${encodeURIComponent(slug)}`}
-                        className="mt-5 flex items-center justify-between rounded-2xl border border-purple-300/30 bg-gradient-to-r from-purple-700 via-purple-600 to-fuchsia-600 px-5 py-4 text-base font-black text-white shadow-[0_16px_40px_rgba(147,51,234,0.25)] transition duration-300 hover:brightness-110 sm:text-lg"
+                        className="relative mt-auto flex items-center justify-between rounded-2xl border border-purple-300/30 bg-gradient-to-r from-purple-700 via-purple-600 to-fuchsia-600 px-5 py-4 text-base font-black text-white shadow-[0_16px_40px_rgba(147,51,234,0.25)] transition duration-300 hover:brightness-110 sm:mt-8 sm:text-lg"
                       >
                         <span>{t.view}</span>
                         <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-xl transition duration-300 group-hover:translate-x-1">→</span>
